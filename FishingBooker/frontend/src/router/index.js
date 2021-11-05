@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MainPage from "../views/MainPage";
-import Adventures from "../views/Adventures";
-import Cotages from "../views/Cotages";
-import Ships from "../views/Ships";
+import MainPage from "../views/MainPage.vue";
+import Adventures from "../views/Adventures.vue"
 const routes = [
   {
     path: "/",
@@ -13,19 +11,7 @@ const routes = [
     path: "/adventures",
     name: "Adventures",
     component: Adventures,
-  },
-  {
-    path: "/cotages",
-    name: "Cotages",
-    component: Cotages,
-  },
-  {
-    path: "/ships",
-    name: "Ships",
-    component: Ships,
-  },
-
-  
+  }
 ];
 
 const router = createRouter({

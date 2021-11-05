@@ -1,16 +1,16 @@
 <template>
-  <Header></Header>
   <NavBar></NavBar>
+  <SearchAdventures></SearchAdventures>
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
 import NavBar from "@/components/Navbar.vue";
+import SearchAdventures from "@/components/SearchAdventures.vue";
 export default {
 
     components:{
-        Header,
-        NavBar
+        NavBar,
+        SearchAdventures
     }
 }
 </script>

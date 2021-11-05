@@ -1,12 +1,12 @@
 <template>
-  <div class="background">
-      <div class="header">
+  <div class="background" v-if="['MainPage'].indexOf($route.name) == -1">
+      <div class="headerr">
           <div class="logo">
               <h1 id="logo">Fishing booker</h1>
           </div>
           <div class="buttons-div">
            <a href="#" class="link-light">Sign up</a>
-           <a href="#" class="link-light">Log in</a>
+           <a href="#" class="link-light" @click="$emit('open-modal')">Log in</a>
         </div>
       </div>
   </div>
@@ -14,7 +14,12 @@
 
 <script>
 export default {
-
+    data(){
+        return{
+            show:true
+        }
+    },
+    emits:['open-modal']
 }
 </script>
 
@@ -24,8 +29,9 @@ export default {
     height: 40vh;
     background:url(../assets/fish-crop.jpg);
     background-size:cover;
+    position: relative;
 }
- .header{
+ .headerr{
         display:flex;
         flex:1;
         flex-direction: row;
@@ -43,7 +49,7 @@ export default {
     .buttons-div{
         display: flex;
         flex: 1;
-        justify-content: end;
+        justify-content:flex-end;
         margin-right: 8%;
         margin-top: 15px;
     }
@@ -54,5 +60,19 @@ export default {
         height: 15px;
         font-size: 20px;
     }
+
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
+}
+.page-wraper{
+     position: relative;
+     width: 100vw;
+ min-height: 100vh;
+ overflow-x: hidden;
+}
+
 
 </style>

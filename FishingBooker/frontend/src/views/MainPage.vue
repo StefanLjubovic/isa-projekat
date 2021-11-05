@@ -6,7 +6,7 @@
           </div>
           <div class="buttons-div">
            <a href="#" class="link-light">Sign up</a>
-           <a href="#" class="link-light">Log in</a>
+           <a href="#" class="link-light" @click="showModal=true">Log in</a>
         </div>
       </div>
       <div class="body">
@@ -29,11 +29,20 @@
               <i class="fas fa-car-side fa-5x" style="color:white"></i>
           </div>
       </div>
+         <transition name="fade" appear>
+  <LoginModal v-if="showModal" @close-modal="showModal=false"></LoginModal>
+  </transition>
   </div>
 </template>
 
 <script>
+import LoginModal from "@/components/LoginModal.vue";
 export default {
+    data(){
+        return{
+            showModal: false
+        }
+    },
     methods:{
         routeAdventures: function(){
             this.$router.push({ path: 'adventures' })
@@ -44,6 +53,9 @@ export default {
         routeShips: function(){
             this.$router.push({ path: 'ships' })
         },
+    },
+    components:{
+        LoginModal
     }
 }
 </script>
@@ -80,7 +92,7 @@ export default {
     .buttons-div{
         display: flex;
         flex: 1;
-        justify-content: end;
+        justify-content: flex-end;
         margin-right: 8%;
         margin-top: 15px;
     }
@@ -95,7 +107,7 @@ export default {
         display: flex;
         flex:1;
         color:white;
-        justify-content: start;
+        justify-content: center;
         font-size: 25px;
     }
     .footer{
@@ -128,5 +140,13 @@ export default {
   color: grey;
   box-shadow: 0 0 5px grey;
   text-shadow: 0 0 5px grey;
+}
+
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
 }
 </style>
