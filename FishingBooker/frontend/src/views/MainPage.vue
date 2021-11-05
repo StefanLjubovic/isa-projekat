@@ -5,7 +5,7 @@
               <h1 id="logo">Fishing booker</h1>
           </div>
           <div class="buttons-div">
-           <a href="#" class="link-light">Sign up</a>
+           <a href="#" class="link-light" @click="openRegistration">Sign up</a>
            <a href="#" class="link-light" @click="showModal=true">Log in</a>
         </div>
       </div>
@@ -53,6 +53,9 @@ export default {
         routeShips: function(){
             this.$router.push({ path: 'ships' })
         },
+        openRegistration: function(){
+            this.$router.push({ path: 'client-registration' })
+        }
     },
     components:{
         LoginModal

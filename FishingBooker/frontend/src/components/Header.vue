@@ -1,5 +1,5 @@
 <template>
-  <div class="background" v-if="['MainPage'].indexOf($route.name) == -1">
+  <div class="background" v-if="['MainPage,ClientRegistration'].indexOf($route.name) == -1">
       <div class="headerr">
           <div class="logo">
               <h1 id="logo">Fishing booker</h1>

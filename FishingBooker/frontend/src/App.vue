@@ -31,6 +31,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   background: #8495e8;
+    width:100%;
+  min-height: 100vh;
+  height: auto;
 }
 
 .fade-enter-active, .fade-leave-active {
