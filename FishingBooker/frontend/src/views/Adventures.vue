@@ -1,64 +1,61 @@
 <template>
   <NavBar @change-state="changeState"></NavBar>
-  <SearchAdventures v-if="state==0"/>
-  <SearchShips v-if="state==1"/>
-  <div class="adventures-wrapper" v-if="state==0">
-   <div class="gap" v-for="adventure in adventures" :key="adventure.name">
-      <Adventure :adventure="adventure"/>
+  <SearchEntities :searchTitle="searchTitle"/>
+  <div class="adventures-wrapper">
+   <div class="gap" v-for="entity in entities" :key="entity.name">
+      <Entity :entity="entity"/>
     </div>
   </div>
-
 </template>
 
 <script>
 import NavBar from "@/components/Navbar.vue";
-import Adventure from "@/components/AdventureDiv.vue";
-import SearchAdventures from "@/components/SearchAdventures.vue";
-import SearchShips from "@/components/SearchShips.vue";
+import Entity from "@/components/EntityDiv.vue";
+import SearchEntities from "@/components/SearchEntities.vue";
 export default {
 
     components:{
         NavBar,
-        SearchAdventures,
-        Adventure,
-        SearchShips
+        SearchEntities,
+        Entity,
     },
     data(){
       return{
         state: 0,
-        adventures :[
+        searchTitle: 'All adventures',
+        entities :[
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1, Novi Sad',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           { 
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
           {
-            name: 'Marijina vikendica',
+            name: 'Marijino pecanje',
             address: 'Bulevar Kralja Petra 1',
             desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
           },
@@ -68,6 +65,9 @@ export default {
     methods:{
       changeState: function(state){
         this.state=state;
+        if(state==0)this.searchTitle="Adventures we offer";
+        else if(state==1) this.searchTitle="Ships we offer";
+        else if(state==2) this.searchTitle="Cottages we offer";
       }
     }
 }

@@ -2,7 +2,7 @@
   <div class="wrapper container">
       <div class="title-div">
       <h1>
-          Adventures we offer
+          {{searchTitle}}
       </h1>
       <button type="button" class="btn btn-success">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
     </div>
@@ -18,13 +18,13 @@
   </div>
 </div>
         <div class="form-group">
-       <input type="text" class="form-control" placeholder="Search by name*" value="" />
+       <input type="text" class="form-control" placeholder="Search by name*" v-model="name" />
       </div>
       <div class="form-group">
-       <input type="text" class="form-control" placeholder="Search by address*" value="" />
+       <input type="text" class="form-control" placeholder="Search by address*"  v-model="address"  />
       </div>
       <div class="form-group">
-       <input type="text" class="form-control" placeholder="Search by mark*" value="" />
+       <input type="text" class="form-control" placeholder="Search by mark*" v-model="mark" />
       </div>
       <button type="button" class="btn confirm-btn"><i class="fas fa-search"></i></button>
     </div>
@@ -35,13 +35,19 @@
 export default {
 data(){
     return{
-        sort: ""
+        sort: "",
+        name: "",
+        address:"",
+        mark: ""
     }
 },
+props:['searchTitle']
+,
 methods:{
     changeButtonState: function(state){
         this.sort=state;
         this.$refs.btnToggle.innerText = state
+        console.log(this.name);
     }
 }
 }

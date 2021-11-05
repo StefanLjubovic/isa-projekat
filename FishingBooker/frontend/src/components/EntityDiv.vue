@@ -3,9 +3,9 @@
       <div class="img-div">
           <img class="img-class" src='../assets/fish.jpg' alt="none">
       </div>
-      <h4>🚗{{adventure.name}}</h4>
-      <h6>📍{{adventure.address}}</h6>
-      <p id="desc">📖{{adventure.desciption}}</p>
+      <h4>🚗{{entity.name}}</h4>
+      <h6>📍{{entity.address}}</h6>
+      <p id="desc">📖{{entity.desciption}}</p>
     <div class="grade-div"><p>4.5<i class="fas fa-star star"></i></p></div>
   </div>
 </template>
@@ -13,11 +13,11 @@
 <script>
 export default {
     props:{
-        adventure:Object,
+        entity:Object,
 
     },
     methods:{
-        OpenAdventure: function(){
+        OpenEntity: function(){
             console.log("aaaa")
         }
     }
