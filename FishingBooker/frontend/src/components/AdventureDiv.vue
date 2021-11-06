@@ -1,5 +1,5 @@
 <template>
-  <div class="div-wrapper" @click="OpenAdventure">
+  <div class="div-wrapper" @click="$emit('adventure-details')">
       <div class="img-div">
           <img class="img-class" src='../assets/fish.jpg' alt="none">
       </div>
@@ -17,10 +17,9 @@ export default {
 
     },
     methods:{
-        OpenAdventure: function(){
-            console.log("aaaa")
-        }
-    }
+
+    },
+    emits: ['adventure-details']
 }
 </script>
 

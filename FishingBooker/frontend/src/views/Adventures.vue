@@ -1,10 +1,10 @@
 <template>
   <NavBar @change-state="changeState"></NavBar>
-  <SearchAdventures v-if="state==0"/>
   <SearchShips v-if="state==1"/>
+  <SearchAdventures v-if="state==0"/>
   <div class="adventures-wrapper" v-if="state==0">
    <div class="gap" v-for="adventure in adventures" :key="adventure.name">
-      <Adventure :adventure="adventure"/>
+      <Adventure :adventure="adventure" @adventure-details="openAdventureDetails(adventure)"/>
     </div>
   </div>
 
@@ -28,46 +28,104 @@ export default {
         state: 0,
         adventures :[
           {
-            name: 'Marijina vikendica',
+            id: '1',
+            name: 'Fishing in the Sunset',
             address: 'Bulevar Kralja Petra 1, Novi Sad',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
+            desciption: 'Qui ex veniam occaecat id cupidatat magna non consectetur.',
+            averageGrade: 4.5,
+            images: [
+              '1.jpg',
+              '2.jpg',
+              '3.jpg',
+              '4.jpg',
+              '5.jfif'
+            ],
+            allowedBehaviour: [
+              'Alkohol',
+              'Kucni ljubimci',
+              'Hranjenje riba'
+            ],
+            unallowedBehaviour: [
+              'Pusenje',
+              'Velika buka'
+            ],
+            fishingInstructor: {
+              firstName: 'Stefan',
+              lastName: 'Ljubovic',
+              shortBiography: 'Sint eu minim est minim dolore reprehenderit dolore irure veniam cillum in aute sunt incididunt.'
+            },
+            maxPersons: 5,
+            cancellationPercentage: 20
           },
           {
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
-          },
-          { 
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
+            id: '2',
+            name: 'Fishing in the Sunset',
+            address: 'Bulevar Kralja Petra 1, Novi Sad',
+            desciption: 'Qui ex veniam occaecat id cupidatat magna non consectetur.',
+            averageGrade: 4.5,
+            images: [
+              '1.jpg',
+              '2.jpg',
+              '3.jpg',
+              '4.jpg',
+              '5.jfif'
+            ],
+            allowedBehaviour: [
+              'Alkohol',
+              'Kucni ljubimci',
+              'Hranjenje riba'
+            ],
+            unallowedBehaviour: [
+              'Pusenje',
+              'Velika buka'
+            ],
+            fishingInstructor: {
+              firstName: 'Stefan',
+              lastName: 'Ljubovic',
+              shortBiography: 'Sint eu minim est minim dolore reprehenderit dolore irure veniam cillum in aute sunt incididunt.'
+            },
+            maxPersons: 5,
+            cancellationPercentage: 20
           },
           {
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
-          },
-          {
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
-          },
-          {
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
-          },
-          {
-            name: 'Marijina vikendica',
-            address: 'Bulevar Kralja Petra 1',
-            desciption: 'blablablablabla blablablablabl ablablablabab lablablablablablabla'
-          },
+            id: '3',
+            name: 'Fishing in the Sunset',
+            address: 'Bulevar Kralja Petra 1, Novi Sad',
+            desciption: 'Qui ex veniam occaecat id cupidatat magna non consectetur.',
+            averageGrade: 4.5,
+            images: [
+              '1.jpg',
+              '2.jpg',
+              '3.jpg',
+              '4.jpg',
+              '5.jfif'
+            ],
+            allowedBehaviour: [
+              'Alkohol',
+              'Kucni ljubimci',
+              'Hranjenje riba'
+            ],
+            unallowedBehaviour: [
+              'Pusenje',
+              'Velika buka'
+            ],
+            fishingInstructor: {
+              firstName: 'Stefan',
+              lastName: 'Ljubovic',
+              shortBiography: 'Sint eu minim est minim dolore reprehenderit dolore irure veniam cillum in aute sunt incididunt.'
+            },
+            maxPersons: 5,
+            cancellationPercentage: 20
+          }
         ]
       }
     },
     methods:{
       changeState: function(state){
         this.state=state;
+      },
+      openAdventureDetails: function(adventure) {
+        this.$router.push({ path: `/adventureDetails/${adventure.id}` })
       }
     }
 }
