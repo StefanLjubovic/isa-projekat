@@ -53,4 +53,8 @@ body{
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
     opacity: 0
 }
+html {
+    height: 100%;
+    width: 100%;
+}
 </style>

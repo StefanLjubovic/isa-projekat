@@ -5,8 +5,14 @@
               <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
           </div>
           <div class="buttons-div">
-           <a href="#" class="link-light">Sign up</a>
-           <a href="#" class="link-light" @click="$emit('open-modal')">Log in</a>
+           <a href="#" class="link-light dropdown-toggle item" 
+           role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
+           <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
+    <a class="dropdown-item" href="#">As instructor</a>
+    <a class="dropdown-item" href="#">As cottage owner</a>
+  </div>
+           <a href="#" class="link-light item" @click="$emit('open-modal')">Log in</a>
         </div>
       </div>
   </div>
@@ -23,6 +29,9 @@ export default {
     methods:{
         goToMainPage: function(){
              this.$router.push({ path: '/' })
+        },
+        openSignUp: function(){
+            this.$router.push({ path: '/client-registration' })
         }
     }
 }
@@ -57,8 +66,11 @@ export default {
         margin-right: 8%;
         margin-top: 15px;
     }
+    .drop{
+        margin-top: 2vh;
+    }
 
-    a{
+    .item{
         text-decoration: none;
         margin-right: 5%;
         height: 15px;

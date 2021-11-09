@@ -1,4 +1,5 @@
 <template>
+<div class="container">
   <div class="form-content">
       <div class="form form-wrapper">
                     <div class="row">
@@ -82,6 +83,7 @@
                         </div>
                     </div>
                       <div class="btn-div"><button class="btn droptdown-btn mt-4" @click.prevent="submitForm()">Save</button> <button class="btn cancel-btn mt-4">Cancel</button></div>
+                </div>
                 </div>
                 </div>
 </template>

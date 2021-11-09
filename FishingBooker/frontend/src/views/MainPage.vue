@@ -5,8 +5,14 @@
               <h1 id="logo">Fishing booker</h1>
           </div>
           <div class="buttons-div">
-           <a href="#" class="link-light" @click="openSignUp">Sign up</a>
-           <a href="#" class="link-light" @click="showModal=true">Log in</a>
+           <a href="#" class="link-light dropdown-toggle item" 
+           role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
+           <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
+    <a class="dropdown-item" href="#">As instructor</a>
+    <a class="dropdown-item" href="#">As cottage owner</a>
+  </div>
+           <a href="#" class="link-light item" @click="showModal=true">Log in</a>
         </div>
       </div>
       <div class="body">
@@ -99,8 +105,8 @@ export default {
         margin-right: 8%;
         margin-top: 15px;
     }
-
-    a{
+    
+    .item{
         text-decoration: none;
         margin-right: 5%;
         height: 15px;
@@ -117,6 +123,9 @@ export default {
         display: flex;
         flex:2;
         justify-content: center;
+    }
+    .drop{
+        margin-top: 2vh;
     }
     .body{
         display:flex;

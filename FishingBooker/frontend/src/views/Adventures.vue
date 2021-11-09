@@ -76,6 +76,9 @@ export default {
     created(){
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
+       if(this.state==0)this.searchTitle="Adventures we offer";
+        else if(this.state==1) this.searchTitle="Ships we offer";
+        else if(this.state==2) this.searchTitle="Cottages we offer";
     }
 }
 </script>
