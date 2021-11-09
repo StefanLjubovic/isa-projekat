@@ -11,7 +11,7 @@ const routes = [
   {
     path: "/adventures",
     name: "Adventures",
-    component: Adventures,
+    component: Adventures
   },
   {
     path: "/client-registration",

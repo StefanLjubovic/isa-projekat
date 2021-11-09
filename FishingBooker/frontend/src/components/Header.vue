@@ -1,8 +1,8 @@
 <template>
-  <div class="background" v-if="['MainPage,ClientRegistration'].indexOf($route.name) == -1">
+  <div class="background-img">
       <div class="headerr">
           <div class="logo">
-              <h1 id="logo">Fishing booker</h1>
+              <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
           </div>
           <div class="buttons-div">
            <a href="#" class="link-light">Sign up</a>
@@ -19,17 +19,21 @@ export default {
             show:true
         }
     },
-    emits:['open-modal']
+    emits:['open-modal'],
+    methods:{
+        goToMainPage: function(){
+             this.$router.push({ path: '/' })
+        }
+    }
 }
 </script>
 
 <style scoped>
-.background{
+.background-img{
     width:100%;
     height: 40vh;
     background:url(../assets/fish-crop.jpg);
     background-size:cover;
-    position: relative;
 }
  .headerr{
         display:flex;
@@ -73,6 +77,8 @@ export default {
  min-height: 100vh;
  overflow-x: hidden;
 }
-
+h1{
+    cursor: pointer;
+}
 
 </style>

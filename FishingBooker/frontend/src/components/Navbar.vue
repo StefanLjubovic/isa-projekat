@@ -8,6 +8,7 @@
       <a class="nav-item nav-link active" href="#" v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
       <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
       <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">All Cottages</a>
+      <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==3 }" @click="changeState(3)">My profile</a>
     </div>
   </div>
 </nav>
@@ -15,14 +16,9 @@
 
 <script>
 export default {
-  data(){
-    return{
-      state: 0
-    }
-  },
+  props:['state'],
   methods:{
     changeState: function(state){
-      this.state=state;
       this.$emit('change-state',state);
     }
   }

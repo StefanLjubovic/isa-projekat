@@ -5,7 +5,7 @@
               <h1 id="logo">Fishing booker</h1>
           </div>
           <div class="buttons-div">
-           <a href="#" class="link-light" @click="openRegistration">Sign up</a>
+           <a href="#" class="link-light" @click="openSignUp">Sign up</a>
            <a href="#" class="link-light" @click="showModal=true">Log in</a>
         </div>
       </div>
@@ -40,25 +40,25 @@ import LoginModal from "@/components/LoginModal.vue";
 export default {
     data(){
         return{
-            showModal: false
+            showModal: false,
         }
     },
     methods:{
         routeAdventures: function(){
-            this.$router.push({ path: 'adventures' })
+            this.$router.push({ name: 'Adventures', params: {data: 0 } })
         },
         routeCotages: function(){
-            this.$router.push({ path: 'cotages' })
+            this.$router.push({ name: 'Adventures', params: {data: 2 } })
         },
         routeShips: function(){
-            this.$router.push({ path: 'ships' })
+            this.$router.push({ name: 'Adventures', params: {data: 1} })
         },
-        openRegistration: function(){
-            this.$router.push({ path: 'client-registration' })
+        openSignUp: function(){
+            this.$router.push({ path: '/client-registration' })
         }
     },
     components:{
-        LoginModal
+        LoginModal,
     }
 }
 </script>

@@ -81,7 +81,13 @@
                             </div>
                         </div>
                     </div>
-                      <div class="btn-div"><button class="btn droptdown-btn mt-4" @click.prevent="submitForm()">Save</button> <button class="btn cancel-btn mt-4">Cancel</button></div>
+                      <div class="btn-div">
+                          <div class="password-btn">
+                          <button class="btn cancel-btn mt-4">Change password</button>
+                          <button class="btn droptdown-btn mt-4" @click.prevent="submitForm()">Save</button>
+                          </div>
+                       <button class="btn cancel-btn mt-4">Cancel</button>
+                       </div>
                 </div>
                 </div>
 </template>
@@ -172,21 +178,26 @@ export default {
     background: #0062cc;
     color: #fff;
 }
-
+.password-btn{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
 .droptdown-btn{
     width: 8vw;
-    height: 50px;
+    height: 60px;
     color:white;
     border-radius: 5px;
   background: #0e0f40;
 }
 .cancel-btn{
     width: 8vw;
-    height: 50px;
+    height: 60px;
     background:white;
     border-radius: 5px;
   color: #0e0f40;
   margin-left: 50px;
+  border-color:#0e0f40 ;
 }
 
 .btn-div{

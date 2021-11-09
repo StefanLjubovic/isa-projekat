@@ -1,8 +1,8 @@
 <template>
-<div>
-  <Header @open-modal="showModal=true"></Header>
+<div id="appContainer">
+  <Header @open-modal="openLogin"></Header>
   <transition name="fade" appear>
-    <LoginModal v-if="showModal" @close-modal="showModal=false"></LoginModal>
+    <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
   </transition>
   <router-view />
   </div>
@@ -14,13 +14,25 @@ export default {
   name:"App",
   components:{
     Header,
-    LoginModal    
+    LoginModal   
   },
   data(){
     return{
       showModal: false
     }
-  }
+  },
+  methods:{
+    openLogin: function(){
+      this.showModal = true;
+			document.getElementById('appContainer').style.overflow = 'hidden';
+			document.getElementById('appContainer').style.height = '100vh';
+		},
+    closeLogin: function(){
+      this.showModal = false;
+			document.getElementById('appContainer').style.overflow = 'unset';
+			document.getElementById('appContainer').style.height = 'unset';
+    }
+    }
 }
 </script>
 <style>
@@ -30,12 +42,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background: #8495e8;
-    width:100%;
-  min-height: 100vh;
-  height: auto;
+  position: relative;
 }
-
+body{
+    background-color: #A3D2F9
+}
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
 }
