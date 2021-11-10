@@ -26,7 +26,7 @@
       <div class="form-group">
        <input type="text" class="form-control" placeholder="Search by mark*" v-model="mark" />
       </div>
-      <button type="button" class="btn confirm-btn"><i class="fas fa-search"></i></button>
+      <button type="button" class="btn confirm-btn" @click="sortAndFilterEntities"><i class="fas fa-search"></i></button>
     </div>
   </div>
 </template>
@@ -47,7 +47,9 @@ methods:{
     changeButtonState: function(state){
         this.sort=state;
         this.$refs.btnToggle.innerText = state
-        console.log(this.name);
+    },
+    sortAndFilterEntities: function(){
+        this.$emit('filter-sort',this.sort,this.name,this.address,this.mark);
     }
 }
 }

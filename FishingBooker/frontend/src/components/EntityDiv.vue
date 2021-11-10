@@ -3,10 +3,14 @@
       <div class="img-div">
           <img class="img-class" src='../assets/fish.jpg' alt="none">
       </div>
+      <div class="entity-content">
+          <div>
       <h4>🚗{{entity.name}}</h4>
       <h6>📍{{entity.address}}</h6>
-      <p id="desc">📖{{entity.desciption}}</p>
-    <div class="grade-div"><p>4.5<i class="fas fa-star star"></i></p></div>
+      <p id="desc">📖{{entity.description}}</p>
+      </div>
+    <div class="grade-div"><p>{{entity.averageGrade}}<i class="fas fa-star star"></i></p></div>
+    </div>
   </div>
 </template>
 
@@ -26,17 +30,19 @@ export default {
 
 <style>
 .div-wrapper{
-    width: 300px;
-    height: 50vh;
+    width: 16vw;
+    height: 45vh;
     border-radius: 10px;
     background: white;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     cursor: pointer;
+    position:relative;
 }
 .img-div{
     width: 100%;
-    height: 50%;
+    height: 40%;
     padding: 15px;
 }
 .img-class{
@@ -60,15 +66,22 @@ export default {
     align-items: flex-end;
     padding-right: 40px;
     font-size: 25px;
-    position: relative;
+    position: absolute;
+    bottom:5px;
+    right:5px;
 }
 .star{
-   color: #ffff0f ;  
+   color: #FDCC0D ;  
    margin-left:5px;
    bottom:15px;
    position: absolute;
    bottom: 17px;
    right:10px;
 
+}
+.entity-content{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 </style>

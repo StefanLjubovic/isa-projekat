@@ -122,11 +122,8 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import AdventuresService from '@/services/adventuresService';
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
 import {reactive, computed} from 'vue'
-
-const adventuresService=new AdventuresService();
 export default {
     data(){
         return{
@@ -177,7 +174,6 @@ export default {
             console.log(this.v$)
         },
         changePassword(){
-            console.log(adventuresService.hello());
             this.v$.password.$touch()
             this.v$.confirm.$touch()
             console.log(this.v$.password.$error )
