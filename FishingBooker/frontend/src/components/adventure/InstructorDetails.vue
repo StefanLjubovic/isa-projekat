@@ -33,7 +33,7 @@ export default ({
 }
 
 .instr-text {
-    padding: 15px;
+    padding-left: 15px;
     display: flex;
     flex-direction: column;
     text-align: left;

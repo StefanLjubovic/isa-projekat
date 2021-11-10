@@ -5,7 +5,17 @@
         <div class="content">
             <div class="left">
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
-                <ImageGallery :images="adventure.images"/><hr/>
+                <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
+
+                <div class="btn-placeholder">
+                    <button class="btn" @click="toggleSubscribe">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
+                </div>
+                <CalendarView/>
+                
+                <p>If you cancel the reservation, the instructor retains {{ adventure.cancellationPercentage }}
+                    % of the price!
+                </p><hr/>
+                <PricelistTable :pricelist="adventure.pricelist"/><hr/>
             </div>
             <div class="right">
                 <AdventureTextDescription :adventure="adventure"/><hr/>
@@ -17,12 +27,14 @@
 </template>
 
 <script>
-import NavBar from "@/components/Navbar.vue";
-import AdventureCaption from "@/components/adventure/AdventureCaption.vue";
-import InstructorDetails from "@/components/adventure/InstructorDetails.vue";
-import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue";
-import Map from "@/components/Map.vue";
-import ImageGallery from "@/components/ImageGallery.vue";
+import NavBar from "@/components/Navbar.vue"
+import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
+import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
+import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue"
+import Map from "@/components/Map.vue"
+import ImageGallery from "@/components/ImageGallery.vue"
+import CalendarView from "@/components/CalendarView.vue"
+import PricelistTable from "@/components/entities/PricelistTable.vue"
 
 export default {
     components: {
@@ -31,7 +43,9 @@ export default {
         InstructorDetails,
         AdventureTextDescription,
         Map,
-        ImageGallery
+        ImageGallery,
+        CalendarView,
+        PricelistTable
     },
     data() {
         return {
@@ -53,7 +67,9 @@ export default {
                     '1.jpg',
                     '2.jpg',
                     '3.jpg',
-                    '4.jpg'
+                    '4.jpg',
+                    '5.jpg',
+                    '6.jpg'
                 ],
                 allowedBehaviour: [
                     'Alcochol',
@@ -74,6 +90,12 @@ export default {
                 fishingEquipment: [
                     'Stick',
                     'Hook'
+                ],
+                pricelist: [
+                    { service: "Basic adventure", price: 2000 },
+                    { service: "Boat ride", price: 1000 },
+                    { service: "Additional equpment", price: 3000 },
+                    { service: "Professional photographer", price: 2000 },
                 ]
             }
         }
@@ -91,13 +113,18 @@ export default {
 #page {
     padding-top: 50px;
     padding-bottom: 50px;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .content {
     display: flex;
-    margin-top: 20px;
+    margin-top: 30px;
     justify-content: space-between;
 }
 
@@ -105,7 +132,16 @@ export default {
     width: 63%;
 }
 .right {
-    width: 27%;
+    width: 30%;
+}
+
+.btn-placeholder {
+    display: flex;
+    justify-content: left;
+}
+.btn {
+    background-color: #2c3e50;
+    color: white;
 }
 
 </style>

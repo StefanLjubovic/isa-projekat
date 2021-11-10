@@ -28,7 +28,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Cambria';
+  font-family: 'Calibri';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

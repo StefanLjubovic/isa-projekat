@@ -43,8 +43,5 @@ export default ({
     margin-top: 10px;
 }
 
-.options {
-
-}
 
 </style>

@@ -18,6 +18,7 @@ export default ({
 <style scoped>
 p {
     margin-bottom: 0;
+    text-align: left;
 }
 
 img {

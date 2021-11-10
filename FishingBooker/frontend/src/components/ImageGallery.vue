@@ -1,8 +1,10 @@
 <template>
   <div>
-    <!-- directive -->
+    <h2>{{ description }}</h2>
     <div class="images" v-viewer>
-      <img v-for="src in images" :key="src" :src="require('../assets/adventure/' + src)">
+      <span class="gallery" v-for="src in images" :key="src">
+          <img :src="require('../assets/adventure/' + src)" v-if="images.indexOf(src) < 6">
+      </span>
     </div>
   </div>
 </template>
@@ -11,15 +13,27 @@
 
   export default ({
     props: {
-        images: Array
+        images: Array,
+        description: String
     }
   })
 </script>
 
 <style scoped>
 img {
-    height: 150px;
-    width: 250px;
-    margin: 2px
+    height: 140px;
+    width: 219px;
+    margin: 2px;
 }
+
+img:hover {
+  cursor: pointer;
+}
+
+h2 {
+  font-size: 20px;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
 </style>
