@@ -1,12 +1,13 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
-  <SearchEntities :searchTitle="searchTitle" v-if="state==0 || state==1 ||state==2 " @filter-sort="filterSort"/>
+  <SearchEntities :searchTitle="searchTitle" v-if="state!=3" @filter-sort="filterSort"/>
   <div class="adventures-wrapper" v-if="state==0 || state==1 ||state==2 ">
    <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
       <Entity :entity="entity"/>
     </div>
   </div>
   <ClientProfile v-if="state==3"/>
+  <ClientHistory v-if="state==4 || state==5 || state==6"/>
 </template>
 
 <script>
@@ -14,6 +15,7 @@ import NavBar from "@/components/Navbar.vue";
 import Entity from "@/components/EntityDiv.vue";
 import SearchEntities from "@/components/SearchEntities.vue";
 import ClientProfile from "@/components/ClientProfile.vue";
+import ClientHistory from "@/components/ClientHistory.vue";
 import Server from '../server'
 export default {
 
@@ -21,7 +23,8 @@ export default {
         NavBar,
         SearchEntities,
         Entity,
-        ClientProfile
+        ClientProfile,
+        ClientHistory
     },
     data(){
       return{
@@ -40,7 +43,11 @@ export default {
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
+        else if(state==4) this.searchTitle="History of reserved cottages"
+        else if(state==5) this.searchTitle="History of reserved ships"
+        else if(state==6) this.searchTitle="History of reserved adventures"
       },
+
       filterSort: function(sort,name,address,mark){
         console.log(sort,name,address,mark)
         this.entitiesForDisplay=this.entities.filter(

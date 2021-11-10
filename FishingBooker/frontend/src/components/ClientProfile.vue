@@ -17,7 +17,7 @@
                         <div class="col-md md-6 mb-4 ">
                             <div class="form-group mb-4 form">
                                 <input type="text" class="form-control" placeholder="Email *" 
-                                v-model="state.client.email" :disabled="edit"/>
+                                v-model="state.client.email" :disabled="true"/>
                                 <span class="text-danger" v-if="v$.email.$error">
                                     {{v$.email.$errors[0].$message}}
                                 </span>

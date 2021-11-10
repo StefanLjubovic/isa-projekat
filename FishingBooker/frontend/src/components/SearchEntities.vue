@@ -4,9 +4,9 @@
       <h1>
           {{searchTitle}}
       </h1>
-      <button type="button" class="btn btn-success">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
+      <button type="button" class="btn btn-success" v-if="!searchTitle.includes('History')">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
     </div>
-    <div class="filter-div">
+    <div class="filter-div" v-if="!searchTitle.includes('History')">
         <div class="dropdown">
   <button class="btn droptdown-btn dropdown-toggle" ref="btnToggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
   </button>
@@ -26,9 +26,22 @@
       <div class="form-group">
        <input type="text" class="form-control" placeholder="Search by mark*" v-model="mark" />
       </div>
-      <button type="button" class="btn confirm-btn" @click="sortAndFilterEntities"><i class="fas fa-search"></i></button>
+      <button v-if="!searchTitle.includes('History')" type="button" class="btn confirm-btn" @click="sortAndFilterEntities"><i class="fas fa-search"></i></button>
     </div>
+     <div class="sort-history" v-if="searchTitle.includes('History')">
+        <div class="dropdown">
+  <button class="btn droptdown-btn dropdown-toggle" ref="btnSort" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Sort by
+  </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" @click="sortHistory('')">&nbsp;</a>
+        <a class="dropdown-item" href="#" @click="sortHistory('Date')">Date</a>
+        <a class="dropdown-item" href="#" @click="sortHistory('Duration')">Duration</a>
+        <a class="dropdown-item" href="#" @click="sortHistory('Price')">Price</a>
   </div>
+</div>
+</div>
+    </div>
 </template>
 
 <script>
@@ -50,6 +63,12 @@ methods:{
     },
     sortAndFilterEntities: function(){
         this.$emit('filter-sort',this.sort,this.name,this.address,this.mark);
+    },
+    sortHistory: function(value){
+        this.sort=value;
+        this.$refs.btnSort.innerText = value
+        if(value == '') this.$refs.btnSort.innerText = 'Sort by'
+        this.$emit('sort-history',value);
     }
 }
 }
@@ -71,6 +90,11 @@ methods:{
     display: flex;
     flex-direction: row;
     justify-content:space-around ;
+}
+.sort-history{
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2vw;
 }
 input{
     width: 300px;
