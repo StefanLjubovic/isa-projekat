@@ -124,7 +124,7 @@ hr {
 
 .content {
     display: flex;
-    margin-top: 30px;
+    margin-top: 50px;
     justify-content: space-between;
 }
 
