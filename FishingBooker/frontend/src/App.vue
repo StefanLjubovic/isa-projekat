@@ -1,10 +1,10 @@
 <template>
-<div id="appContainer">
-  <Header @open-modal="openLogin"></Header>
-  <transition name="fade" appear>
-    <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
-  </transition>
-  <router-view />
+  <div id="appContainer">
+    <Header @open-modal="openLogin" @log-out="logOut"></Header>
+    <transition name="fade" appear>
+      <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
+    </transition>
+    <router-view />
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   data(){
     return{
-      showModal: false
+      showModal: false,
     }
   },
   methods:{
@@ -33,8 +33,11 @@ export default {
       this.showModal = false;
 			document.getElementById('appContainer').style.overflow = 'unset';
 			document.getElementById('appContainer').style.height = 'unset';
+    },
+    logOut: function() {
+      // TODO
     }
-    }
+  }
 }
 </script>
 

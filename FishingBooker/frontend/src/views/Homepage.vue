@@ -1,13 +1,40 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
-  <SearchEntities :searchTitle="searchTitle" v-if="state!=3" @filter-sort="filterSort"/>
-  <div class="adventures-wrapper" v-if="state==0 || state==1 ||state==2 ">
-   <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
-      <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
-    </div>
+
+  <!-- Options for all roles -->
+  <SearchEntities v-if="state!=3" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    <div v-if="(role == 0 || role == 5) && (state==0 || state==1 ||state==2)" class="adventures-wrapper">
+    <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
   </div>
-  <ClientProfile v-if="state==3"/>
-  <ClientHistory v-if="state==4 || state==5 || state==6"/>
+  
+  <!-- Client and unregistrated user options (role 0 && 5) -->
+  <div v-if="role == 0 || role == 5">
+    <ClientProfile v-if="state==3"/>
+    <ClientHistory v-if="state==4 || state==5 || state==6"/>
+  </div>
+
+  <!-- Admin options (role 1) -->
+  <div v-if="role == 1">
+
+  </div>
+
+  <!-- Cottage owner options (role 2) -->
+  <div v-if="role == 2">
+
+  </div>
+
+  <!-- Ship owner options (role 3) -->
+  <div v-if="role == 3">
+
+  </div>
+
+  <!-- Fishing instructor options (role 4) -->
+  <div v-if="role == 4">
+
+  </div>
+  
 </template>
 
 <script>
