@@ -9,6 +9,4 @@ import java.util.*;
 public class Cottage extends Entity {
    private int bedNumber;
    private int roomNumber;
-   public Location location;
-
 }

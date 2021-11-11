@@ -15,8 +15,27 @@ public class Entity {
    private ArrayList<String> images;
    private ArrayList<String> allowedBehavior;
    private ArrayList<String> unallowedBehavior;
+   public Location location;
 
    public Entity(){}
+   public Entity(String name, String description, double averageGrade){
+      id="1";
+      ownerId="2";
+      images=new ArrayList<>();
+      allowedBehavior=new ArrayList<>();
+      unallowedBehavior=new ArrayList<>();
+      this.name=name;
+      this.description=description;
+      this.averageGrade=averageGrade;
+   }
+
+   public Location getLocation() {
+      return location;
+   }
+
+   public void setLocation(Location location) {
+      this.location = location;
+   }
 
    public String getId() {
       return id;
@@ -82,14 +101,4 @@ public class Entity {
       this.allowedBehavior = allowedBehavior;
    }
 
-   public Entity(String name, String description, double averageGrade){
-      id="1";
-      ownerId="2";
-      images=new ArrayList<>();
-      allowedBehavior=new ArrayList<>();
-      unallowedBehavior=new ArrayList<>();
-      this.name=name;
-      this.description=description;
-      this.averageGrade=averageGrade;
-   }
 }

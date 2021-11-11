@@ -1,13 +1,14 @@
 <template>
-  <table class="table table-color container">
+<div class="container">
+    <h1 class="mt-4">My Reservations</h1>
+  <table class="table table-color">
   <thead>
     <tr>
-      <th scope="col">{{entityName}}</th>
+      <th scope="col">Name</th>
       <th scope="col">Date from</th>
       <th scope="col">Duration</th>
       <th scope="col">Price</th>
-      <th scope="col">Complaint</th>
-      <th scope="col">Revision</th>
+      <th scope="col">Cancel</th>
     </tr>
   </thead>
   <tbody>
@@ -16,11 +17,11 @@
       <td>{{entity.date}}</td>
       <td>{{entity.duration}} days</td>
       <td>{{entity.price}}</td>
-      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint')"></i></td>
-      <td><i class="fas fa-plus-square fa-2x icon"></i></td>
+      <td><i class="fas fa-window-close fa-2x icon"></i></td>
     </tr>
   </tbody>
 </table>
+</div>
 </template>
 
 <script>
@@ -74,6 +75,9 @@ export default {
     .icon{
         cursor: pointer;
         color: #0e0f40;
-
+    }
+    h1{
+        display: flex;
+        justify-content: flex-start;
     }
 </style>

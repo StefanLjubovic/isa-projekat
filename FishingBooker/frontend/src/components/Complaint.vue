@@ -2,15 +2,10 @@
   <div id="app">
   <div class="modal-overlay" @click="$emit('close-modal')"></div>
    <div class="modal-inner">
-     <h1>Log In</h1>
-      <div class="form-group input mb-4 mt-2">
-       <input type="text" class="form-control input" placeholder="Email *" value="" />
-      </div>
-      <div class="form-group">
-       <input type="text" class="form-control input" placeholder="Password *" value="" />
-      </div>
+     <h1>What didnt you like?</h1>
+      <textarea id="w3review" name="w3review" rows="6" cols="50" class="mt-4"/>
       <div class="form-group mt-4 button-div">
-        <button type="button" class="btn log-btn p-2">Log in</button>
+        <button type="button" class="btn log-btn p-2">Submit</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
       </div>
 </div>
@@ -36,7 +31,7 @@ export default {
  display: flex;
  justify-content: center;
  align-items: center;
-  left:0;
+ left:0;
  top:0;
  width: 100vw;
  min-height: 100vh;
@@ -56,8 +51,8 @@ export default {
 .modal-inner{
   flex-direction: column;
   justify-content: space-around;
-  width: 400px;
-  height: 300px;
+  width: 25vw;
+  height: 40vh;
    background-color: #8495e8;
   z-index: 1000;
    position: fixed;
@@ -81,14 +76,11 @@ export default {
   color: #0e0f40;
   width: 30%;
 }
-.input{
-  height: 50px;
-}
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-    opacity: 0
+
+textarea{
+    border-radius: 5px;
+    border:none;
+    height: 15vh;
 }
 
 </style>
