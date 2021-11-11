@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-<div class="profile-header">
+<div class="profile-header mt-4">
     <div class="ml-4">
     <h1>
         My profile

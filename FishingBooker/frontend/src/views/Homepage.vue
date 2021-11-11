@@ -1,8 +1,6 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
-    <h1 class="mt-4 subscription-title container" v-if="state==8">My Subscriptions</h1>
-
-
+    <h1 class="mt-4 subscription-title container" v-if="state!=3">{{searchTitle}}</h1>
 
   <!-- Options for all roles -->
   <SearchEntities v-if="state!=3 && state !=7 && state !=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
@@ -83,6 +81,8 @@ export default {
         else if(state==4) this.searchTitle="History of reserved cottages"
         else if(state==5) this.searchTitle="History of reserved ships"
         else if(state==6) this.searchTitle="History of reserved adventures"
+        else if(state==7) this.searchTitle="My Reservations"
+        else if(state==8) this.searchTitle="My Subscriptions"
       },
 
       filterSort: function(sort,name,address,mark){
