@@ -1,7 +1,7 @@
 <template>
     <div class="instructor">
         <div>
-            <img class="photo rounded" src="../../assets/adventure/instructor.png"/>
+            <img class="photo rounded" src="../../assets/instructor.png"/>
         </div>
         <div>
             <div class="instr-text">

@@ -8,4 +8,13 @@ const app = createApp(App);
 app.use(VueViewer);
 app.use(router);
 
+app.config.globalProperties.role = 0;
+/*  0 - client
+    1 - admin
+    2 - cottage owner
+    3 - ship owner
+    4 - fishing instructor
+    5 - unregistrated user  -> ovako u enumeraciji za role
+*/
+
 app.mount("#app");

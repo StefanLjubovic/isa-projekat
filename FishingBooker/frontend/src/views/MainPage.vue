@@ -51,13 +51,13 @@ export default {
     },
     methods:{
         routeAdventures: function(){
-            this.$router.push({ name: 'Adventures', params: {data: 0 } })
+            this.$router.push({ name: 'Homepage', params: {data: 0 } })
         },
         routeCotages: function(){
-            this.$router.push({ name: 'Adventures', params: {data: 2 } })
+            this.$router.push({ name: 'Homepage', params: {data: 2 } })
         },
         routeShips: function(){
-            this.$router.push({ name: 'Adventures', params: {data: 1} })
+            this.$router.push({ name: 'Homepage', params: {data: 1} })
         },
         openSignUp: function(){
             this.$router.push({ path: '/client-registration' })

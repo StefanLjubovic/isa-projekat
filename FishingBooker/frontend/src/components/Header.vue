@@ -1,31 +1,35 @@
 <template>
-  <div class="background-img">
-      <div class="headerr">
-          <div class="logo">
-              <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
-          </div>
-          <div class="buttons-div">
-           <a href="#" class="link-light dropdown-toggle item" 
-           role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
-           <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
-    <a class="dropdown-item" href="#">As instructor</a>
-    <a class="dropdown-item" href="#">As cottage owner</a>
-  </div>
-           <a href="#" class="link-light item" @click="$emit('open-modal')">Log in</a>
+    <div :class="'background-img'+role" class="background-img">
+        <div class="headerr">
+            <div class="logo">
+                <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
+            </div>
+            <div class="buttons-div">
+                <div v-if="role == 5" class="unregistrated-user-options" >
+                    <a href="#" class="link-light dropdown-toggle item" role="button" id="dropdownMenuButton" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign Up</a>
+                    <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
+                            <a class="dropdown-item" href="#">As advertiser</a>
+                    </div>
+                    <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
+                </div>
+                <div class="registrated-user-option">
+                    <a v-if="role != 5" href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
+                </div>
+            </div>
         </div>
-      </div>
-  </div>
+    </div>
 </template>
 
 <script>
 export default {
     data(){
         return{
-            show:true
+            show:true,
         }
     },
-    emits:['open-modal'],
+    emits:['open-modal', 'log-out'],
     methods:{
         goToMainPage: function(){
              this.$router.push({ path: '/' })
@@ -38,12 +42,30 @@ export default {
 </script>
 
 <style scoped>
-.background-img{
-    width:100%;
-    height: 40vh;
-    background:url(../assets/fish-crop.jpg);
-    background-size:cover;
+.background-img {
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%;
+    height: 45vh;
 }
+
+.background-img0, .background-img5 {
+    background-image: url(../assets/fish.jpg);
+}
+.background-img1 {
+    background-image: url(../assets/admin.jpg);
+}
+.background-img2 {
+    background-image: url(../assets/cottage.jpg);
+}
+.background-img3 {
+    background-image: url(../assets/ship-owner.jpg);
+}
+.background-img4 {
+    background-image: url(../assets/instructor.jpg);
+}
+
  .headerr{
         display:flex;
         flex:1;
