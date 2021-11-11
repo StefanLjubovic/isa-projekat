@@ -4,7 +4,7 @@
         <AdventureCaption :adventureName="cottage.name"/>
         <div class="content">
             <div class="left-side">
-                <ImageGallery :images=cottage.images  description="Photos from previous events"/>
+                <ImageGallery :images=cottage.images  description="Photos of our cottage"/>
                 <hr/>
                 <div class="btn-wrap">
                     <button class="btn" @click="toggleSubscribe">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i></button>               
@@ -58,12 +58,12 @@
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                     averageGrade: 4.5,
                     images: [
-                        '1.jpg',
-                        '2.jpg',
-                        '3.jpg',
-                        '4.jpg',
-                        '5.jpg',
-                        '6.jpg'
+                        '7.jpg',
+                        '8.jpg',
+                        '9.jpg',
+                        '10.jpg',
+                        '11.jpg',
+                        '12.jpg'
                     ],
                     allowedBehaviour: [
                         'Alcohol',

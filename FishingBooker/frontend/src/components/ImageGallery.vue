@@ -3,7 +3,7 @@
     <h2>{{ description }}</h2>
     <div class="images" v-viewer>
       <span class="gallery" v-for="src in images" :key="src">
-          <img :src="require('../assets/adventure/' + src)" v-if="images.indexOf(src) < 6">
+          <img :src="require('../assets/' + src)" v-if="images.indexOf(src) < 6">
       </span>
     </div>
   </div>
