@@ -3,19 +3,25 @@
     <h1 class="mt-4 subscription-title container" v-if="state!=3">{{searchTitle}}</h1>
 
   <!-- Options for all roles -->
-  <SearchEntities v-if="state!=3 && state !=7 && state !=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
-    <div v-if="(role == 0 || role == 5) && (state==0 || state==1 ||state==2 || state==8)" class="adventures-wrapper">
+  <SearchEntities v-if="state!=3 " :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+  <div v-if="state==0 || state==1 ||state==2" class="adventures-wrapper">
     <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
-        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
-      </div>
+      <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+    </div>
   </div>
   
   <!-- Client and unregistrated user options (role 0 && 5) -->
   <div v-if="role == 0 || role == 5">
-      <ClientProfile v-if="state==3"/>
-  <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint"/>
-  <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
-  <ClientReservations v-if="state==7"/>
+    <ClientProfile v-if="state==3"/>
+    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint"/>
+    <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
+    <ClientReservations v-if="state==7"/>
+    <SearchEntities v-if="state ==7 || state ==8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    <div v-if="state==8" class="adventures-wrapper">
+      <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div>
   </div>
 
   <!-- Admin options (role 1) -->
@@ -145,7 +151,6 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-left: 6vw;
 }
 .subscription-title{
   display: flex;
