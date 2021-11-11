@@ -1,11 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav navigation">
-
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="navbar-nav navigation">
+      <div class="options">
         <!-- Options for all roles -->
         <a class="nav-item nav-link active" href="#" v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
         <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
@@ -24,7 +20,6 @@
                 <a class="dropdown-item" href="#" @click="changeState(6)" >Adventures</a>
             </div>
           </div>
-          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==3 }" @click="changeState(3)">My profile</a>
         </div>
         
         <!-- Admin options (role 1) -->
@@ -46,9 +41,13 @@
         <div v-if="role == 4">
 
         </div>
-
-
       </div>
+      
+      <div class="my-profile">
+        <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==3 }" @click="changeState(3)">My profile</a>
+      </div>
+      
+
     </div>
   </nav>
 </template>
@@ -65,28 +64,45 @@ export default {
 </script>
 
 <style>
+.navbar {
+  position: relative;
+  margin-top: -45px;
+  height: 45px;
+  background-color: rgba(19, 28, 37, 0.4);
+}
+
+
 .client {
   display: flex;
-  justify-content: space-between;
 }
 
 .navigation{
   display: flex;
-  margin-left: 20vw;
+  justify-content: space-between;
+  margin-left: 15%;
+  margin-right: 15%;
+  width: 100%;
+}
+
+.options {
+  display: flex;
 }
 
 div > a{
   font-size: 20px;
-  color: #0e0f40;
+  width: 140px;
+}
+div > button {
+  width: 140px;
 }
 .drop-btn{
   border:none;
   background: transparent;
   font-size: 20px;
 }
-.active-link{
-  color:white;
-  background:#0e0f40;
+.active-link {
+  background-color: rgba(25, 35, 46, 0.7);
+  height: 45px;
 }
 
 </style>

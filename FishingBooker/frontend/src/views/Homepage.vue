@@ -3,10 +3,10 @@
 
   <!-- Options for all roles -->
   <SearchEntities v-if="state!=3" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
-    <div v-if="(role == 0 || role == 5) && (state==0 || state==1 ||state==2)" class="adventures-wrapper">
+  <div v-if="state==0 || state==1 ||state==2" class="adventures-wrapper">
     <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
-        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
-      </div>
+      <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+    </div>
   </div>
   
   <!-- Client and unregistrated user options (role 0 && 5) -->
@@ -124,7 +124,6 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-left: 6vw;
 }
 .gap{
   margin-left: 10vw;

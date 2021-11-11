@@ -14,8 +14,8 @@
                     </div>
                     <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
                 </div>
-                <div class="registrated-user-option">
-                    <a v-if="role != 5" href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
+                <div v-if="role != 5" class="registrated-user-option">
+                    <a href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@ export default {
     background-repeat: no-repeat;
     background-position: center center;
     width: 100%;
-    height: 45vh;
+    height: 50vh;
 }
 
 .background-img0, .background-img5 {
@@ -66,40 +66,33 @@ export default {
     background-image: url(../assets/instructor.jpg);
 }
 
- .headerr{
-        display:flex;
-        flex:1;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 20px;
-    }
-   #logo{
-        color:rgba(14, 14, 14, 0.88)
-    }
-    .logo{
-        display: flex;
-        flex: 1;
-        justify-content: center;
-    }
-    .buttons-div{
-        display: flex;
-        flex: 1;
-        justify-content:flex-end;
-        margin-right: 8%;
-        margin-top: 15px;
-    }
-    .drop{
-        margin-top: 2vh;
-    }
+.headerr{
+    display:flex;
+    justify-content: space-between;
+    padding: 1% 15%;
+    text-shadow: 1px 1px 4px #5f5f5f;
+}
+#logo{
+    color:rgba(255, 255, 255, 0.88);
+}
+.buttons-div{
+    width: 170px;
+    margin-top: 15px;
+    text-align: right;
+}
+.drop{
+    margin-top: 2vh;
+    text-shadow: none;
+}
 
-    .item{
-        text-decoration: none;
-        margin-right: 5%;
-        height: 15px;
-        font-size: 20px;
-    }
+.item{
+    text-decoration: none;
+    margin-left: 15%;
+    height: 15px;
+    font-size: 18px;
+}
 
-    .fade-enter-active, .fade-leave-active {
+.fade-enter-active, .fade-leave-active {
     transition: opacity .5s
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
