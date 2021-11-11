@@ -1,5 +1,6 @@
 <template>
 <div class="container">
+  <h1 class="mt-4">My Reservations</h1>
   <table class="table table-color">
   <thead>
     <tr>

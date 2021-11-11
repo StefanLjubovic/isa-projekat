@@ -1,9 +1,9 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
-    <h1 class="mt-4 subscription-title container" v-if="state!=3">{{searchTitle}}</h1>
+    <h1 class="mt-4 subscription-title container" v-if="state==8 && role==0" >My Subscriptions</h1>
 
   <!-- Options for all roles -->
-  <SearchEntities v-if="state!=3 " :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+  <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
   <div v-if="state==0 || state==1 ||state==2" class="adventures-wrapper">
     <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
       <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -16,7 +16,6 @@
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint"/>
     <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
     <ClientReservations v-if="state==7"/>
-    <SearchEntities v-if="state ==7 || state ==8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     <div v-if="state==8" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -87,8 +86,6 @@ export default {
         else if(state==4) this.searchTitle="History of reserved cottages"
         else if(state==5) this.searchTitle="History of reserved ships"
         else if(state==6) this.searchTitle="History of reserved adventures"
-        else if(state==7) this.searchTitle="My Reservations"
-        else if(state==8) this.searchTitle="My Subscriptions"
       },
 
       filterSort: function(sort,name,address,mark){
