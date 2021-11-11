@@ -5,7 +5,7 @@
                 <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
             </div>
             <div class="buttons-div">
-                <div class="unregistrated-user-options" v-if="role == 5">
+                <div v-if="role == 5" class="unregistrated-user-options" >
                     <a href="#" class="link-light dropdown-toggle item" role="button" id="dropdownMenuButton" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign Up</a>
                     <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
@@ -15,7 +15,7 @@
                     <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
                 </div>
                 <div class="registrated-user-option">
-                    <a href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
+                    <a v-if="role != 5" href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
                 </div>
             </div>
         </div>
@@ -24,9 +24,6 @@
 
 <script>
 export default {
-    props: {
-        role: Number
-    },
     data(){
         return{
             show:true,

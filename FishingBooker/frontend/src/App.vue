@@ -1,6 +1,6 @@
 <template>
   <div id="appContainer">
-    <Header :role="role" @open-modal="openLogin" @log-out="logOut"></Header>
+    <Header @open-modal="openLogin" @log-out="logOut"></Header>
     <transition name="fade" appear>
       <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
     </transition>
@@ -21,14 +21,6 @@ export default {
   data(){
     return{
       showModal: false,
-      role: 0,
-      /*  0 - client
-            1 - admin
-            2 - cottage owner
-            3 - ship owner
-            4 - fishing instructor
-            5 - unregistrated user  -> ovako u enumeraciji za role
-        */
     }
   },
   methods:{
