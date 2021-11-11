@@ -1,5 +1,5 @@
 <template>
-  <div class="div-wrapper" @click="OpenAdventure">
+  <div class="div-wrapper" @click="$emit('entity-details')">
       <div class="img-div">
           <img class="img-class" src='../assets/fish.jpg' alt="none">
       </div>
@@ -21,10 +21,9 @@ export default {
 
     },
     methods:{
-        OpenEntity: function(){
-            console.log("aaaa")
-        }
-    }
+
+    },
+    emits: ['entity-details']
 }
 </script>
 

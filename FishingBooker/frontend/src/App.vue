@@ -7,9 +7,11 @@
   <router-view />
   </div>
 </template>
+
 <script>
 import Header from "@/components/Header.vue";
 import LoginModal from "@/components/LoginModal.vue";
+
 export default {
   name:"App",
   components:{
@@ -35,17 +37,19 @@ export default {
     }
 }
 </script>
+
 <style>
 #app {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Calibri';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   position: relative;
-}
-body{
-    background-color: #A3D2F9
+} 
+
+body {
+    background-color: #d7dceb
 }
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
