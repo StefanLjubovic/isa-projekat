@@ -1,10 +1,10 @@
 <template>
-<div id="appContainer">
-  <Header @open-modal="openLogin"></Header>
-  <transition name="fade" appear>
-    <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
-  </transition>
-  <router-view />
+  <div id="appContainer">
+    <Header :role="role" @open-modal="openLogin" @log-out="logOut"></Header>
+    <transition name="fade" appear>
+      <LoginModal v-if="showModal" @close-modal="closeLogin"></LoginModal>
+    </transition>
+    <router-view />
   </div>
 </template>
 
@@ -20,7 +20,15 @@ export default {
   },
   data(){
     return{
-      showModal: false
+      showModal: false,
+      role: 0,
+      /*  0 - client
+            1 - admin
+            2 - cottage owner
+            3 - ship owner
+            4 - fishing instructor
+            5 - unregistrated user  -> ovako u enumeraciji za role
+        */
     }
   },
   methods:{
@@ -33,8 +41,11 @@ export default {
       this.showModal = false;
 			document.getElementById('appContainer').style.overflow = 'unset';
 			document.getElementById('appContainer').style.height = 'unset';
+    },
+    logOut: function() {
+      // TODO
     }
-    }
+  }
 }
 </script>
 

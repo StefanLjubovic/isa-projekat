@@ -31,7 +31,8 @@ export default {
         state: 0,
         searchTitle: 'All adventures',
         entities: [],
-        entitiesForDisplay: []
+        entitiesForDisplay: [],
+        role: undefined
       }
     },
     methods:{
@@ -75,6 +76,9 @@ export default {
       }
     },
     async mounted(){
+      // TODO: check user type 
+      this.role = 0;
+
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
       /*const resp=await Server.getAllEntities(this.state)
