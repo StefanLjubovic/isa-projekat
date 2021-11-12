@@ -8,7 +8,7 @@ const app = createApp(App);
 app.use(VueViewer);
 app.use(router);
 
-app.config.globalProperties.role = 0;
+app.config.globalProperties.role = 2;
 /*  0 - client
     1 - admin
     2 - cottage owner

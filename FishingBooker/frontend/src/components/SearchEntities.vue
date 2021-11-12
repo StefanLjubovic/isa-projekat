@@ -4,7 +4,7 @@
       <h1>
           {{searchTitle}}
       </h1>
-      <button type="button" class="btn btn-success" v-if="!searchTitle.includes('History')">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
+      <button type="button" class="btn btn-success" v-if="!searchTitle.includes('History') && (role==0 || role == 5)">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
     </div>
     <div class="filter-div" v-if="!searchTitle.includes('History')">
         <div class="dropdown">
