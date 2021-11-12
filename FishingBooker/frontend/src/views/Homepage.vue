@@ -1,21 +1,19 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
-    <h1 class="mt-4 subscription-title container" v-if="state==8 && role==0" >My Subscriptions</h1>
-
-  <!-- Options for all roles -->
-  <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
-  <div v-if="state==0 || state==1 ||state==2" class="adventures-wrapper">
-    <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
-      <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
-    </div>
-  </div>
   
   <!-- Client and unregistrated user options (role 0 && 5) -->
   <div v-if="role == 0 || role == 5">
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
+      <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div>
     <ClientProfile v-if="state==3"/>
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint"/>
     <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
     <ClientReservations v-if="state==7"/>
+    <h1 class="mt-4 subscription-title container" v-if="state==8" >My Subscriptions</h1>
     <div v-if="state==8" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -25,12 +23,21 @@
 
   <!-- Admin options (role 1) -->
   <div v-if="role == 1">
-
+    <SearchEntities v-if="state == 0 || state == 1 || state == 2" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    <div v-if="state == 0 || state == 1 || state == 2" class="adventures-wrapper">
+      <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div>
+    <AllUsers v-if="state == 4"/>
+    <Requests :state="state" v-if="state == 5 || state == 6 || state == 7 || state == 8" />
+    <Complaints v-if="state == 10"/>
+    <ClientProfile v-if="state == 3"/>
   </div>
 
   <!-- Cottage owner options (role 2) -->
   <div v-if="role == 2">
-
+    
   </div>
 
   <!-- Ship owner options (role 3) -->
@@ -46,14 +53,17 @@
 </template>
 
 <script>
-import NavBar from "@/components/Navbar.vue";
-import Entity from "@/components/EntityDiv.vue";
-import SearchEntities from "@/components/SearchEntities.vue";
-import ClientProfile from "@/components/ClientProfile.vue";
-import ClientHistory from "@/components/ClientHistory.vue";
-import ClientReservations from "@/components/ClientReservations.vue";
-import Complaint from "@/components/Complaint.vue";
-import Server from '../server'
+import NavBar from "@/components/Navbar.vue"
+import Entity from "@/components/EntityDiv.vue"
+import SearchEntities from "@/components/SearchEntities.vue"
+import ClientProfile from "@/components/ClientProfile.vue"
+import ClientHistory from "@/components/ClientHistory.vue"
+import ClientReservations from "@/components/ClientReservations.vue"
+import Complaint from "@/components/Complaint.vue"
+//import Server from '../server'
+import AllUsers from "@/components/admin/AllUsers.vue"
+import Requests from "@/components/admin/Requests.vue"
+import Complaints from "@/components/admin/Complaints.vue"
 
 export default {
     components:{
@@ -63,7 +73,10 @@ export default {
         ClientProfile,
         ClientHistory,
         Complaint,
-        ClientReservations
+        ClientReservations,
+        AllUsers,
+        Requests,
+        Complaints
     },
     data(){
       return{
@@ -77,9 +90,9 @@ export default {
     methods:{
       changeState: async function(state){
         this.state=state;
-        const resp=await Server.getAllEntities(this.state)
+        /*const resp=await Server.getAllEntities(this.state)
         this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-        this.entities=resp.data;
+        this.entities=resp.data;*/
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
@@ -128,10 +141,10 @@ export default {
     async mounted(){
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
-      const resp=await Server.getAllEntities(this.state)
+      /*const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       console.log(this.entitiesForDisplay)
-      this.entities=resp.data;
+      this.entities=resp.data;*/
       if(this.state==0) this.searchTitle="Adventures we offer";
         else if(this.state==1)this.searchTitle="Ships we offer"
         else if(this.state==2) this.searchTitle="Cottages we offer";

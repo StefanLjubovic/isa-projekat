@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .div-wrapper{
     width: 16vw;
     height: 45vh;
