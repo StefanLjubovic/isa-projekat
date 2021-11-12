@@ -35,7 +35,7 @@
   <!-- Cottage owner options (role 2) -->
   <div v-if="role == 2">
     <div v-if="state == 21">
-        <button  type="button" id="add-new-cottage" class="btn btn-success"> Add new cottage &nbsp; <i class="bi bi-plus-circle"></i></button>
+        <button  type="button" id="add-new-cottage" class="btn btn-success"> Add new cottage &nbsp; <i class="fa-solid fa-circle-plus"></i></button>
         <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 21" class="cottages-wrapper">
@@ -43,8 +43,7 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>  
-    <div v-if="state==22">
-    </div>
+    <CottageReservations v-if="state==22"/>
   </div>
 
   <!-- Ship owner options (role 3) -->
@@ -67,6 +66,7 @@ import ClientProfile from "@/components/ClientProfile.vue"
 import ClientHistory from "@/components/ClientHistory.vue"
 import ClientReservations from "@/components/ClientReservations.vue"
 import Complaint from "@/components/Complaint.vue"
+import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import Server from '../server'
 
 export default {
@@ -77,7 +77,8 @@ export default {
         ClientProfile,
         ClientHistory,
         Complaint,
-        ClientReservations
+        ClientReservations,
+        CottageReservations
         
     },
     data(){
