@@ -10,8 +10,9 @@
       </div>
     </div>
     <ClientProfile v-if="state==3"/>
-    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint"/>
+    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision"/>
     <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
+    <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
     <ClientReservations v-if="state==7"/>
     <h1 class="mt-4 subscription-title container" v-if="state==8" >My Subscriptions</h1>
     <div v-if="state==8" class="adventures-wrapper">
@@ -60,6 +61,7 @@ import ClientProfile from "@/components/ClientProfile.vue"
 import ClientHistory from "@/components/ClientHistory.vue"
 import ClientReservations from "@/components/ClientReservations.vue"
 import Complaint from "@/components/Complaint.vue"
+import RevisionModal from "@/components/client/RevisionModal.vue"
 //import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
@@ -76,13 +78,15 @@ export default {
         ClientReservations,
         AllUsers,
         Requests,
-        Complaints
+        Complaints,
+        RevisionModal
     },
     data(){
       return{
         state: 0,
         searchTitle: 'All adventures',
         showComplaint: false,
+        showRevision: false,
         entities: [],
         entitiesForDisplay: []
       }
@@ -135,7 +139,17 @@ export default {
         this.showComplaint=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
-      }
+      },
+      closeRevision: function(){
+          this.showRevision=false;
+        document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+      },
+      openRevision: function(){
+        this.showRevision=true;
+        document.getElementById('appContainer').style.overflow ='hidden';
+        document.getElementById('appContainer').style.height='100vh';
+      },
     },
 
     async mounted(){

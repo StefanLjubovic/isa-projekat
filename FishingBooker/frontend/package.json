@@ -17,6 +17,7 @@
     "v-viewer": "^3.0.10",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-star-rating": "^2.1.0",
     "vue-sweet-calendar": "^0.4.1"
   },
   "devDependencies": {
