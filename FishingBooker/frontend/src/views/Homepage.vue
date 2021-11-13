@@ -34,11 +34,21 @@
     <Requests :state="state" v-if="state == 5 || state == 6 || state == 7 || state == 8" />
     <Complaints v-if="state == 10"/>
     <ClientProfile v-if="state == 3"/>
+
   </div>
 
   <!-- Cottage owner options (role 2) -->
   <div v-if="role == 2">
-    
+    <div v-if="state == 21">
+        <button  type="button" id="add-new-cottage" class="btn btn-success"> Add new cottage &nbsp; <i class="fa-solid fa-circle-plus"></i></button>
+        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    </div>
+    <div v-if="state == 21" class="cottages-wrapper">
+        <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div>  
+    <CottageReservations v-if="state==22"/>
   </div>
 
   <!-- Ship owner options (role 3) -->
@@ -62,10 +72,12 @@ import ClientHistory from "@/components/ClientHistory.vue"
 import ClientReservations from "@/components/ClientReservations.vue"
 import Complaint from "@/components/Complaint.vue"
 import RevisionModal from "@/components/client/RevisionModal.vue"
-//import Server from '../server'
+import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
+import CottageReservations from "@/components/cottage/CottageReservations.vue"
+
 
 export default {
     components:{
@@ -79,7 +91,8 @@ export default {
         AllUsers,
         Requests,
         Complaints,
-        RevisionModal
+        RevisionModal,
+        CottageReservations
     },
     data(){
       return{
@@ -94,15 +107,17 @@ export default {
     methods:{
       changeState: async function(state){
         this.state=state;
-        /*const resp=await Server.getAllEntities(this.state)
+        const resp=await Server.getAllEntities(this.state)
         this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-        this.entities=resp.data;*/
+        this.entities=resp.data;
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
         else if(state==4) this.searchTitle="History of reserved cottages"
         else if(state==5) this.searchTitle="History of reserved ships"
         else if(state==6) this.searchTitle="History of reserved adventures"
+
+        else if(state==21) this.searchTitle=""
       },
 
       filterSort: function(sort,name,address,mark){
@@ -125,9 +140,9 @@ export default {
         if(this.state == 0){
           this.$router.push({ path: `/adventureDetails/${entity.id}` })
         } else if (this.state == 1) {
-          // navigacija za detalje o kolibi
-        } else if (this.state == 2) {
           // navigacija za detalje o brodu
+        } else if (this.state == 2) {
+          this.$router.push({ path: `/cottageDetails/${entity.id}` })
         }
       },
       closeComplaint: function(){
@@ -155,10 +170,10 @@ export default {
     async mounted(){
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
-      /*const resp=await Server.getAllEntities(this.state)
+      const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       console.log(this.entitiesForDisplay)
-      this.entities=resp.data;*/
+      this.entities=resp.data;
       if(this.state==0) this.searchTitle="Adventures we offer";
         else if(this.state==1)this.searchTitle="Ships we offer"
         else if(this.state==2) this.searchTitle="Cottages we offer";
@@ -176,6 +191,18 @@ export default {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+
+.cottages-wrapper{
+  height: 100%;
+  display: flex;
+  padding-top: 50px;
+  padding-bottom: 20px;
+  padding-left: 5%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 .subscription-title{
   display: flex;
   justify-content: flex-start;
@@ -183,5 +210,10 @@ export default {
 .gap{
   margin-left: 10vw;
   margin-top: 5vh;
+}
+
+#add-new-cottage{
+  margin-left: 58%;
+  margin-top: 3%;
 }
 </style>

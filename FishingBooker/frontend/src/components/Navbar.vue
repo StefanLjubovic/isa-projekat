@@ -1,12 +1,14 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="navbar-nav navigation">
-      <div class="options">
-        <!-- Options for all roles -->
-        <a class="nav-item nav-link active" href="#a" v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
-        <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
-        <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">All Cottages</a>
-        
+
+      <div v-if="role!=2" class="all-users">
+        <!-- Options for clients and unregistrated users -->
+        <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
+        <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
+        <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">All Cottages</a>
+      </div>
+
         <!-- Client options (role 0) -->
         <div v-if="role == 0" class="client">
           <div class="dropdown">
@@ -44,8 +46,11 @@
         </div>
 
         <!-- Cottage owner options (role 2) -->
-        <div v-if="role == 2">
-
+        <div v-if="role == 2" class="cottage-owner">
+            <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==21 }" @click="changeState(21)">My Cottages</a>
+            <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==22 }" @click="changeState(22)">Reservation History</a>
+            <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==23 }" @click="changeState(23)">My Schedule</a>
+            <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==24 }" @click="changeState(24)">Analytics</a>
         </div>
 
         <!-- Ship owner options (role 3) -->
@@ -62,9 +67,6 @@
       <div class="my-profile">
         <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==3 }" @click="changeState(3)">My profile</a>
       </div>
-      
-
-    </div>
   </nav>
 </template>
 
@@ -86,10 +88,25 @@ export default {
   background-color: rgba(19, 28, 37, 0.4);
 }
 
+.all-users{
+  display: flex;
+  align-items: center;
+}
+
 
 .client, .admin {
   display: flex;
   align-items: center;
+}
+
+.cottage-owner{
+  display: flex;
+  align-items: center;
+  margin-right: 25%;
+}
+
+.cottage-owner a{
+  width: 148px;
 }
 
 .navigation{
