@@ -23,16 +23,16 @@
       </div>
       <div class="footer">
           <div class="big-button" @click="routeCotages">
-              <h2 style="color:white">See all <br>cotages</h2>
-              <i class="fas fa-home fa-5x" style="color:white"></i>
+              <h2 style="color:white">See all <br>cottages</h2>
+              <i class="fas fa-home fa-4x" style="color:white"></i>
           </div>
           <div class="big-button" @click="routeShips">
               <h2 style="color:white">See all <br>ships</h2>
-              <i class="fas fa-ship fa-5x" style="color:white"></i>
+              <i class="fas fa-ship fa-4x" style="color:white"></i>
           </div>
           <div class="big-button" @click="routeAdventures">
               <h2 style="color:white">See all <br>advenutures</h2>
-              <i class="fas fa-car-side fa-5x" style="color:white"></i>
+              <i class="fas fa-fish fa-4x" style="color:white"></i>
           </div>
       </div>
          <transition name="fade" appear>
@@ -79,7 +79,7 @@ export default {
         overflow: auto;
         background:url(../assets/main_page.jpg);
         background-size:cover;
-        box-shadow: inset 0 0 0 1000px rgba(8, 86, 230, 0.2);
+        box-shadow: inset 0 0 0 1000px rgba(16, 50, 112, 0.2);
         display: flex;
         flex-direction: column;
         text-shadow: 1px 1px 3px #363636;
@@ -93,7 +93,8 @@ export default {
     }
    #logo{
         color:rgba(255, 255, 255, 0.88);
-        margin-top:10px;
+        margin-top:15px;
+        margin-left: -130px;
     }
     .logo{
         display: flex;
@@ -121,7 +122,7 @@ export default {
         justify-content: center;
     }
     h1 {
-        font-size: 80px;
+        font-size: 70px;
         text-align: right;
         margin-right: 22%;
         margin-top: -20px;
@@ -130,7 +131,9 @@ export default {
     .footer{
         display: flex;
         flex:2;
-        justify-content: center;
+        justify-content: space-between;
+        margin-left: 15%;
+        margin-right: 15%;
     }
     .drop{
         margin-top: 2vh;
@@ -144,12 +147,12 @@ export default {
         flex:1;
     }
     .big-button{
-        height: 80%;
-        width: 15%;
+        height: 90%;
+        width: 27%;
+        margin-top: -30px;
         border-radius: 10px;
         background: transparent;
-        box-shadow: inset 0 0 0 1000px rgba(0,0,0,.4);
-        margin-right: 30px;
+        box-shadow: inset 0 0 0 1000px rgba(3, 17, 37, 0.4);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -157,11 +160,14 @@ export default {
         cursor:pointer;
     }
     .big-button:hover {
-  color: grey;
-  box-shadow: 0 0 5px grey;
-  text-shadow: 0 0 5px grey;
+  background-color: rgba(52, 66, 87, 0.5);
+  box-shadow: 5px 10px 18px #272727;
+  margin-top: -33px;
 }
 
+i {
+    margin-top: 20px;
+}
 
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s

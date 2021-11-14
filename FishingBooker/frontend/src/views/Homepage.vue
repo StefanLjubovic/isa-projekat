@@ -93,7 +93,7 @@ export default {
         Requests,
         Complaints,
         RevisionModal,
-        CottageReservations
+        CottageReservations,
         MyProfile,
         AdminAnalytics
     },
