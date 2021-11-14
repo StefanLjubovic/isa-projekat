@@ -15,50 +15,89 @@
   <tbody>
     <tr v-for="reservation in reservations" :key="reservation.id">
       <td>{{reservation.name}}</td>
-      <td><a href="#" @click="openModalForUserDetails(reservation.client)">{{reservation.client.email}}</a></td>
+      <td><a href="#" @click="openModalForClientDetails(reservation.client)">{{reservation.client.email}}</a></td>
       <td>{{reservation.dateTime}}</td>
       <td>{{reservation.duration}} days</td>
       <td>{{reservation.price}} </td>
-      <td><i class="fas fa-plus-square icon"></i></td>
+      <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client)"></i></td>
     </tr>
   </tbody>
 </table>
 </div>
 
+<!--Modal for client information -->
+
 <div v-if="selectedClient" class="modal fade" id="client-details-modal">
-        <div class="modal-dialog rounded">
-            <div class="modal-header">
-                <h3>Client Information</h3>
-                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <div class="client-info">
-                    <div class="labels">
-                        <p>Email:</p>
-                        <p>First name:</p>
-                        <p>Last name:</p>
-                        <p>Street name:</p>
-                        <p>Street number:</p>
-                        <p>Postal code:</p>
-                        <p>City:</p>
-                        <p>Country:</p>
-                        <p>Phone number:</p>
-                    </div>
-                    <div class="info">
-                        <p>{{ selectedClient.email }}</p>
-                        <p>{{ selectedClient.firstName }}</p>
-                        <p>{{ selectedClient.lastName }}</p>
-                        <p>{{ selectedClient.streetName }}</p>
-                        <p>{{ selectedClient.streetNumber }}</p>
-                        <p>{{ selectedClient.postalCode }}</p>
-                        <p>{{ selectedClient.city }}</p>
-                        <p>{{ selectedClient.country }}</p>
-                        <p>{{ selectedClient.phoneNumber }}</p>
-                    </div>
+  <div class="modal-dialog rounded">
+      <div class="modal-header">
+          <h3>Client Information</h3>
+          <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+      </div>
+          <div class="modal-content">
+            <div class="client-info">
+               <div class="labels">
+                   <p>Email:</p>
+                    <p>First name:</p>
+                    <p>Last name:</p>
+                    <p>Street name:</p>
+                    <p>Street number:</p>
+                    <p>Postal code:</p>
+                    <p>City:</p>
+                    <p>Country:</p>
+                    <p>Phone number:</p>
+                 </div>
+                <div class="info">
+                    <p>{{ selectedClient.email }}</p>
+                    <p>{{ selectedClient.firstName }}</p>
+                    <p>{{ selectedClient.lastName }}</p>
+                    <p>{{ selectedClient.streetName }}</p>
+                    <p>{{ selectedClient.streetNumber }}</p>
+                    <p>{{ selectedClient.postalCode }}</p>
+                    <p>{{ selectedClient.city }}</p>
+                    <p>{{ selectedClient.country }}</p>
+                    <p>{{ selectedClient.phoneNumber }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+       </div>
+     </div>
+  </div>
+
+  <!--Modal for report -->
+
+<div v-if="selectedClient" class="modal fade" id="report-modal">
+  <div class="modal-dialog rounded">
+      <div class="modal-header">
+          <h3>Report</h3>
+          <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+      </div>
+          <div class="modal-content">
+            <div class="client-info">
+               <div class="labels">
+                   <p>Email:</p>
+                    <p>First name:</p>
+                    <p>Last name:</p><br/>
+                    <p>Comment:</p>                 
+                 </div>
+                <div class="info">
+                    <p>{{ selectedClient.email }}</p>
+                    <p>{{ selectedClient.firstName }}</p>
+                    <p>{{ selectedClient.lastName }}</p>               
+                </div>
+            </div>
+            <div class="comment-area">
+               <textarea placeholder="Your comment" cols="50" rows="4"></textarea>
+            </div> <br/>
+            <div class="options">
+                <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
+                <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
+            </div><br/>
+            <div class="confirm-buttons">
+                <button class="btn save-button"  @click.prevent="sendReport()" >Submit</button>
+                <button class="btn cancel-button">Cancel</button>
+            </div>
+       </div>
+     </div>
+  </div>
 
 </template>
 
@@ -135,10 +174,20 @@ export default {
    
   },
   methods: {
-      openModalForUserDetails: function(client) {
+      openModalForClientDetails: function(client) {
         this.selectedClient = client;
         window.$('#client-details-modal').modal('show');
-     },
+      },
+      openModalForReport : function(client) {
+        this.selectedClient = client;
+        window.$('#report-modal').modal('show');
+      },
+      sendReport() {
+            this.v$.$validate()
+            console.log(this.v$)
+
+            window.$('#report-modal').modal('hide');
+      }
   }
 }
 </script>
@@ -156,7 +205,8 @@ export default {
     .icon{
         cursor: pointer;
         color: #151649;
-        size: inherit;
+        width: 90px;
+        height: 80%;
     }
     .modal-dialog {
       background-color: #ffffff;
@@ -165,6 +215,21 @@ export default {
     .client-info {
         display: flex;
         justify-content: space-between;
+    }
+
+    .comment-area{
+      align-self: left;
+      margin-left: 5px;
+      border-width: 1px solid #888 ;
+      font-size: 18px;
+      resize: none;
+      outline: none;
+
+    }
+
+    .options{
+      text-align: left;
+      margin-left: 12px;
     }
 
     .info {
@@ -178,6 +243,7 @@ export default {
     .modal-content {
         padding: 30px;
         font-size: 20px;
+        background-color: rgb(211, 222, 223);
     }
 
     .btn-close {
@@ -191,5 +257,20 @@ export default {
       margin-left: 15px;
       margin-top: 17px;
     }
+
+    .cancel-button {
+      background-color: white;
+      border-color: rgb(218, 214, 214);
+      color: #2c3e50;
+      width: 80px;
+      margin-left: 10px;
+    }
+
+    .save-button {
+      background-color: #2c3e50;
+      color: white;
+      width: 80px;
+      margin-right: 10px;
+  }
 
 </style>
