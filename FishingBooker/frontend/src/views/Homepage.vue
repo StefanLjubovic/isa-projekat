@@ -49,6 +49,7 @@
       </div>
     </div>  
     <CottageReservations v-if="state==22"/>
+    <ClientProfile v-if="state == 3"/>
   </div>
 
   <!-- Ship owner options (role 3) -->
@@ -144,7 +145,7 @@ export default {
           this.$router.push({ path: `/adventureDetails/${entity.id}` })
         } else if (this.state == 1) {
           // navigacija za detalje o brodu
-        } else if (this.state == 2) {
+        } else if (this.state == 2 || this.state == 21) {
           this.$router.push({ path: `/cottageDetails/${entity.id}` })
         }
       },
