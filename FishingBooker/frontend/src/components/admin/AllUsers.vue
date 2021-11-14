@@ -1,4 +1,41 @@
 <template>
+    <div v-if="selectedUser" class="modal fade" id="user-details-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>Client Information</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="client-info">
+                    <div class="labels">
+                        <p>Email:</p>
+                        <p>First name:</p>
+                        <p>Last name:</p>
+                        <p>Street name:</p>
+                        <p>Street number:</p>
+                        <p>Postal code:</p>
+                        <p>City:</p>
+                        <p>Country:</p>
+                        <p>Phone number:</p>
+                        <p>Role:</p>
+                    </div>
+                    <div class="info">
+                        <p>{{ selectedUser.email }}</p>
+                        <p>{{ selectedUser.firstName }}</p>
+                        <p>{{ selectedUser.lastName }}</p>
+                        <p>{{ selectedUser.streetName }}</p>
+                        <p>{{ selectedUser.streetNumber }}</p>
+                        <p>{{ selectedUser.postalCode }}</p>
+                        <p>{{ selectedUser.city }}</p>
+                        <p>{{ selectedUser.country }}</p>
+                        <p>{{ selectedUser.phoneNumber }}</p>
+                        <p>{{ roleToString(selectedUser.role) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="page">
         <h1>All Users</h1>
         <div class="filter-search">
@@ -54,7 +91,7 @@
                         <td v-else-if="user.role == 4">Fishing instructor</td>
                         <td v-else></td>
 
-                        <td><button class="btn btn-info" @click="userDeatils(user)"><i class="fas fa-info"></i></button></td>
+                        <td><button class="btn btn-info" @click="openModalForUserDetails(user)"><i class="fas fa-info"></i></button></td>
                         <td><button class="btn btn-delete" @click="removeUser(user)"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 </tbody>
@@ -65,6 +102,7 @@
 </template>
 
 <script>
+
 export default {
     data() {
         return {
@@ -104,6 +142,7 @@ export default {
             ],
             users: [],
             searchParams: "",
+            selectedUser: undefined
         }
     },
     mounted() {
@@ -118,8 +157,9 @@ export default {
                 }
             }
         },
-        userDetails: function(user) {
-            console.log(user);
+        openModalForUserDetails: function(user) {
+            this.selectedUser = user;
+            window.$('#user-details-modal').modal('show');
         },
         filterByRole: function(role) {
             if(role == -1) {
@@ -134,6 +174,14 @@ export default {
                                                || user.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.phoneNumber.includes(this.searchParams));
+        },
+        roleToString: function(role) {
+            if(role == 0) return "Client";
+            else if(role == 1) return "Administrator";
+            else if(role == 2) return "Cottage owner";
+            else if(role == 3) return "Ship owner";
+            else if(role == 4) return "Fishing instructor";
+            else return "";
         }
     }
 }
@@ -171,6 +219,12 @@ h1 {
     border-color: #2c3e50;
 }
 
+.btn-close {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
 .search {
     display: flex;
 }
@@ -185,5 +239,25 @@ h1 {
     padding-top: 10px;
 }
 
+.modal-dialog {
+    background-color: #ffffff;
+}
 
+.client-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info {
+    text-align: right;
+}
+
+.labels {
+    text-align: left;
+}
+
+.modal-content {
+    padding: 30px;
+    font-size: 20px;
+}
 </style>

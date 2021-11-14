@@ -37,7 +37,7 @@
             <div class="dropdown-menu dropdown-menu-admin" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="#a" @click="changeState(5)" >Requests for Registration</a>
                 <a class="dropdown-item" href="#a" @click="changeState(6)" >Requests for Deleting Account</a>
-                <a class="dropdown-item" href="#a" @click="changeState(7)" >Report Requests</a>
+                <a class="dropdown-item" href="#a" @click="changeState(7)" >Report Requests for Penalty</a>
                 <a class="dropdown-item" href="#a" @click="changeState(8)" >Requests for Revisions and Evaluations</a>
             </div>
           </div>
@@ -146,6 +146,10 @@ div > button {
 
 .dropdown-menu-admin {
   width: 300px;
+}
+.dropdown-item:hover {
+  background-color: rgb(231, 227, 226);
+  width: 100%;
 }
 
 </style>

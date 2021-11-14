@@ -1,4 +1,22 @@
 <template>
+    <div v-if="selectedComplaint" class="modal fade" id="response-to-complaint-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>Response to Complaint</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <p><b>From:</b> {{ selectedComplaint.client.email }} </p>
+                <p><b>Content:</b> {{ selectedComplaint.content }} </p>
+                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."></textarea>
+                <div class="confirm-buttons">
+                    <button class="btn submit-btn">Submit</button>
+                    <button class="btn cancel-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="page">
         <h1>Complaints</h1>
         <div class="filter-search">
@@ -36,14 +54,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="complaint in complaints" :key="complaint.id">
+                    <tr v-for="complaint in complaints" :key="complaint.id" >
                         <th scope="row">{{ complaints.indexOf(complaint) + 1 }}</th>
                         <td>{{ complaint.client.email }}</td>
                         <td>{{ complaint.client.firstName }} {{ complaint.client.lastName }}</td>
                         <td>Marija Kljestan</td>
                         <td>Marijina vikendica</td>
 
-                        <td><button class="btn btn-info" @click="reportDeatils(complaint)"><i class="fas fa-info"></i></button></td>
+                        <td><button class="btn btn-info" @click="reportDeatils(complaint)">Read	&amp; Response</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -100,6 +118,7 @@ export default ({
             ],
             complaints: [],
             searchParams: "",
+            selectedComplaint: undefined
         }
     },
     mounted() {
@@ -107,7 +126,8 @@ export default ({
     },
     methods: {
         reportDeatils: function(complaint) {
-            console.log(complaint);
+            this.selectedComplaint = complaint;
+            window.$('#response-to-complaint-modal').modal('show');
         },
         filterByAdvertiserType: function(type) {
             if(type == -1) {
@@ -154,7 +174,7 @@ h1 {
 }
 
 .btn-info {
-    width: 40px;
+    width: auto;
     border-color: #2c3e50;
 }
 
@@ -170,6 +190,41 @@ h1 {
 .complaints-table {
     margin-top: 20px;
     padding-top: 10px;
+}
+
+.modal-dialog {
+    background-color: white;
+}
+
+.modal-content {
+    padding: 30px;
+    font-size: 17px;
+    text-align: left;
+}
+
+.btn-close {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+.textarea {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: auto;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: #2c3e50;
+    border-color: #cfd3d8;
+    margin-left: 10px;
 }
 
 </style>

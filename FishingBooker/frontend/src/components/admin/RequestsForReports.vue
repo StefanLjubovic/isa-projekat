@@ -1,6 +1,6 @@
 <template>
     <div id="page">
-        <h2>Report Requests</h2>
+        <h1>Report Requests for Penalty</h1>
         <div class="filter-search">
             <div class="dropdown">
                 <button class="btn dropdown-toggle drop-btn" ref="btnToggle" id="dropdownMenuButton" data-toggle="dropdown" 
@@ -31,6 +31,8 @@
                         <th scope="col">Service</th>
                         <th scope="col">E-mail</th>
                         <th scope="col">Client</th>
+                        <th scope="col">Report</th>
+                        <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -42,7 +44,14 @@
                         <td>{{ report.client.email }}</td>
                         <td>{{ report.client.firstName }} {{ report.client.lastName }}</td>
 
-                        <td><button class="btn btn-info" @click="reportDeatils(report)"><i class="fas fa-info"></i></button></td>
+                        <td>
+                            <div id="to-hover">
+                                <button class="btn btn-info"><i class="fas fa-info"></i></button>
+                                <div id="to-show" class="card rounded">{{ report.content }}</div>
+                            </div> 
+                        </td>
+                        <td><button class="btn" @click="approveReport(report)"><i class="fas fa-check"></i></button></td>
+                        <td><button class="btn btn-delete" @click="disapproveReport(report)"><i class="fas fa-times"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -113,9 +122,6 @@ export default ({
         this.reports = this.allReports;
     },
     methods: {
-        reportDeatils: function(report) {
-            console.log(report);
-        },
         filterByContent: function(content) {
             if(content == -1) {
                 this.reports = this.allReports;
@@ -131,6 +137,12 @@ export default ({
             this.reports = this.allReports.filter((report) => report.client.email.includes(this.searchParams.toLowerCase())
                                                || report.client.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || report.client.lastName.toLowerCase().includes(this.searchParams.toLowerCase()));
+        },
+        approveReport: function(report) {
+            console.log(report);
+        },
+        disapproveReport: function(report) {
+            console.log(report);
         }
     }
 })
@@ -142,9 +154,9 @@ export default ({
     padding-bottom: 150px;
 }
 
-h2 {
+h1 {
     text-align: left;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 
 .filter-search {
@@ -165,7 +177,9 @@ h2 {
 
 .btn-info {
     width: 40px;
-    border-color: #2c3e50;
+    background-color: transparent;
+    color: #2c3e50;
+    border-color: transparent;
 }
 
 .search {
@@ -180,6 +194,19 @@ h2 {
 .reports-table {
     margin-top: 20px;
     padding-top: 10px;
+}
+
+#to-show {
+    padding: 20px;
+    display: none;
+    background-color: #ffffff;
+    position:absolute;
+    width:250px;
+    height: auto;
+    border-color: #2c3e50;
+}
+#to-hover:hover > #to-show {
+    display: block; 
 }
 
 </style>

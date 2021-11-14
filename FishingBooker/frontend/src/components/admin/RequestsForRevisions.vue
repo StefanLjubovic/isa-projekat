@@ -1,6 +1,23 @@
 <template>
+    <div v-if="selectedRevision" class="modal fade" id="revision-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>Revision Details</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <p><b>Content:</b> {{ selectedRevision.content }} </p>
+                <p><b>Mark:</b> {{ selectedRevision.mark }} </p>
+                <div class="confirm-buttons">
+                    <button class="btn submit-btn"><i class="fas fa-check"></i> Approve </button>
+                    <button class="btn cancel-btn"><i class="fas fa-times"></i> Disapprove </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="page">
-        <h2>Requests for Revisions and Evaluations</h2>
+        <h1>Requests for Revisions and Evaluations</h1>
         <div class="filter-search">
 
             <div class="dropdown">
@@ -110,6 +127,7 @@ export default ({
             ],
             revisions: [],
             searchParams: "",
+            selectedRevision: undefined
         }
     },
     mounted() {
@@ -125,7 +143,8 @@ export default ({
             // filter po roli advertisera
         },
         revisionDeatils: function(revision) {
-            console.log(revision);
+            this.selectedRevision = revision;
+            window.$('#revision-modal').modal('show');
         },
         search: function() {
             this.revisions = this.allRevisions.filter((revision) => revision.client.email.includes(this.searchParams.toLowerCase())
@@ -142,9 +161,9 @@ export default ({
     padding-bottom: 150px;
 }
 
-h2 {
+h1 {
     text-align: left;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 
 .filter-search {
@@ -181,5 +200,41 @@ h2 {
     margin-top: 20px;
     padding-top: 10px;
 }
+
+.modal-dialog {
+    background-color: white;
+}
+
+.modal-content {
+    padding: 30px;
+    font-size: 17px;
+    text-align: left;
+}
+
+.btn-close {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+.textarea {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: auto;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: #2c3e50;
+    border-color: #cfd3d8;
+    margin-left: 10px;
+}
+
 
 </style>
