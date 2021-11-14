@@ -1,6 +1,22 @@
 <template>
+    <div v-if="selectedRequest" class="modal fade" id="response-to-rejection-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>What is the reason for rejection?</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."></textarea>
+                <div class="confirm-buttons">
+                    <button class="btn submit-btn" @click="sumbitRejection()">Submit</button>
+                    <button class="btn cancel-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="page">
-        <h2>Requests for Registration</h2>
+        <h1>Requests for Registration</h1>
         <div class="filter-search">
             <div class="dropdown">
                 <button class="btn dropdown-toggle drop-btn" ref="btnToggle" id="dropdownMenuButton" data-toggle="dropdown" 
@@ -34,6 +50,8 @@
                         <th scope="col">Last name</th>
                         <th scope="col">Phone number</th>
                         <th scope="col">Role </th>
+                        <th scope="col">Explanation</th>
+                        <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -52,7 +70,14 @@
                         <td v-else-if="request.role == 4">Fishing instructor</td>
                         <td v-else></td>
 
-                        <td><button class="btn btn-info" @click="requestDeatils(request)"><i class="fas fa-info"></i></button></td>
+                        <td>
+                            <div id="to-hover">
+                                <button class="btn btn-info"><i class="fas fa-info"></i></button>
+                                <div id="to-show" class="card rounded">{{ request.explanation }}</div>
+                            </div> 
+                        </td>
+                        <td><button class="btn" @click="approveRequest(request)"><i class="fas fa-check"></i></button></td>
+                        <td><button class="btn btn-delete" @click="rejectRequest(request)"><i class="fas fa-times"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -105,14 +130,19 @@ export default ({
             ],
             requests: [],
             searchParams: "",
+            selectedRequest: undefined
         }
     },
     mounted() {
         this.requests = this.allRequests;
     },
     methods: {
-        requestDeatils: function(request) {
-            console.log(request);
+        rejectRequest: function(request) {
+            this.selectedRequest = request;
+            window.$('#response-to-rejection-modal').modal('show');
+        },
+        sumbitRejection: function() {
+            console.log(this.selectedRequest);
         },
         filterByRole: function(role) {
             if(role == -1) {
@@ -138,9 +168,9 @@ export default ({
     padding-bottom: 150px;
 }
 
-h2 {
+h1 {
     text-align: left;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
 }
 
 .filter-search {
@@ -161,7 +191,9 @@ h2 {
 
 .btn-info {
     width: 40px;
-    border-color: #2c3e50;
+    background-color: transparent;
+    color: #2c3e50;
+    border-color: transparent;
 }
 
 .search {
@@ -178,4 +210,50 @@ h2 {
     padding-top: 10px;
 }
 
+.modal-dialog {
+    background-color: white;
+}
+
+.modal-content {
+    padding: 30px;
+    font-size: 17px;
+    text-align: left;
+}
+
+.btn-close {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+
+.textarea {
+    margin-bottom: 20px;
+    width: auto;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: #2c3e50;
+    border-color: #cfd3d8;
+    margin-left: 10px;
+}
+
+#to-show {
+    padding: 20px;
+    display: none;
+    background-color: #ffffff;
+    position:absolute;
+    width:250px;
+    height: auto;
+    border-color: #2c3e50;
+}
+#to-hover:hover > #to-show {
+    display: block; 
+}
 </style>

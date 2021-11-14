@@ -32,7 +32,8 @@
     <AllUsers v-if="state == 4"/>
     <Requests :state="state" v-if="state == 5 || state == 6 || state == 7 || state == 8" />
     <Complaints v-if="state == 10"/>
-    <ClientProfile v-if="state == 3"/>
+    <MyProfile v-if="state == 3"/>
+    <AdminAnalytics v-if="state == 9"/>
   </div>
 
   <!-- Cottage owner options (role 2) -->
@@ -64,6 +65,8 @@ import Complaint from "@/components/Complaint.vue"
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
+import MyProfile from "@/components/MyProfile.vue"
+import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 
 export default {
     components:{
@@ -76,7 +79,9 @@ export default {
         ClientReservations,
         AllUsers,
         Requests,
-        Complaints
+        Complaints,
+        MyProfile,
+        AdminAnalytics
     },
     data(){
       return{

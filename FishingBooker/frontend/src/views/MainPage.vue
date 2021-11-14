@@ -2,7 +2,7 @@
   <div class="page">
       <div class="header">
           <div class="logo">
-              <h1 id="logo">Fishing booker</h1>
+              <h2 id="logo">Fishing booker</h2>
           </div>
           <div class="buttons-div">
            <a href="#" class="link-light dropdown-toggle item" 
@@ -18,7 +18,7 @@
       <div class="body">
       <div class="body-gap"></div>
       <div class="message">
-          <h1>For&nbsp; your&nbsp;  best &nbsp; fishing <br> &emsp;&emsp;&emsp;&emsp;&emsp;experience!</h1>
+          <h1>For your best fishing experience!</h1>
       </div>
       </div>
       <div class="footer">
@@ -79,19 +79,21 @@ export default {
         overflow: auto;
         background:url(../assets/main_page.jpg);
         background-size:cover;
-        box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+        box-shadow: inset 0 0 0 1000px rgba(8, 86, 230, 0.2);
         display: flex;
         flex-direction: column;
+        text-shadow: 1px 1px 3px #363636;
     }
     .header{
         display:flex;
         flex:1;
         flex-direction: row;
         justify-content: space-between;
-        padding: 20px;
+        margin: 2vh 5vw;
     }
    #logo{
-        color:rgba(14, 14, 14, 0.88)
+        color:rgba(255, 255, 255, 0.88);
+        margin-top:10px;
     }
     .logo{
         display: flex;
@@ -117,7 +119,13 @@ export default {
         flex:1;
         color:white;
         justify-content: center;
-        font-size: 25px;
+    }
+    h1 {
+        font-size: 80px;
+        text-align: right;
+        margin-right: 22%;
+        margin-top: -20px;
+        width: 1000px;
     }
     .footer{
         display: flex;
