@@ -49,7 +49,7 @@
       </div>
     </div>  
     <CottageReservations v-if="state==22"/>
-    <ClientProfile v-if="state == 3"/>
+    <MyProfile v-if="state == 3"/>
   </div>
 
   <!-- Ship owner options (role 3) -->

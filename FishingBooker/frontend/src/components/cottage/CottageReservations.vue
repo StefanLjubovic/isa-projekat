@@ -1,4 +1,5 @@
 <template>
+
 <div class="container">
   <table class=" table table-striped table-cottage-reservations">
   <thead>
@@ -12,32 +13,52 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="r in reservations" :key="r.id">
-      <td>{{r.name}}</td>
-      <td><a href="#">{{r.client}}</a></td>
-      <td>{{r.dateTime}}</td>
-      <td>{{r.duration}} days</td>
-      <td>{{r.price}} </td>
+    <tr v-for="reservation in reservations" :key="reservation.id">
+      <td>{{reservation.name}}</td>
+      <td><a href="#" @click="openModalForUserDetails(reservation.client)">{{reservation.client.email}}</a></td>
+      <td>{{reservation.dateTime}}</td>
+      <td>{{reservation.duration}} days</td>
+      <td>{{reservation.price}} </td>
       <td><i class="fas fa-plus-square icon"></i></td>
     </tr>
   </tbody>
 </table>
 </div>
 
-<!--div class="bg-modal">
-      <div class="modal-content">
-        <div class="login-title">
-          <h3 style="color: rgb(161, 89, 21); font-weight: bolder;"> Client information </h3>
+<div v-if="selectedClient" class="modal fade" id="client-details-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>Client Information</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="client-info">
+                    <div class="labels">
+                        <p>Email:</p>
+                        <p>First name:</p>
+                        <p>Last name:</p>
+                        <p>Street name:</p>
+                        <p>Street number:</p>
+                        <p>Postal code:</p>
+                        <p>City:</p>
+                        <p>Country:</p>
+                        <p>Phone number:</p>
+                    </div>
+                    <div class="info">
+                        <p>{{ selectedClient.email }}</p>
+                        <p>{{ selectedClient.firstName }}</p>
+                        <p>{{ selectedClient.lastName }}</p>
+                        <p>{{ selectedClient.streetName }}</p>
+                        <p>{{ selectedClient.streetNumber }}</p>
+                        <p>{{ selectedClient.postalCode }}</p>
+                        <p>{{ selectedClient.city }}</p>
+                        <p>{{ selectedClient.country }}</p>
+                        <p>{{ selectedClient.phoneNumber }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div v-on:click="loginClose" class="close">+</div>
-        <div class = "form-div">
-            <input v-model="usernameLog" type="text" class="login-inputs" placeholder="korisničko ime"><br/>
-            <input v-model="passwordLog" type="password" class="login-inputs" placeholder="lozinka"> <br/><br/>
-            <button v-on:click="loginUser" class="button" style="background-color: rgb(224, 142, 64); color: white;"> Prijavite se</button>
-        </div>
-      </div>
-    
-</div-->
+    </div>
 
 </template>
 
@@ -52,7 +73,18 @@ export default {
         {
           id: '1',
           name: 'Marijina vikendica',
-          client: 'anagavrilovic@gmail.com',
+          client: {
+            email: 'anagavrilovic@gmail.com',
+            firstName: 'Ana',
+            lastName: 'Gavrilovic',
+            streetName: 'Bulevar Kralja Petra I',
+            streetNumber: '65',
+            postalCode: '21000',
+            city: 'Novi Sad',
+            country: 'Serbia',
+            phoneNumber: '0651234567'
+
+          },
           dateTime: '5.10.2021',
           duration: 5,
           price: 50000
@@ -60,7 +92,18 @@ export default {
         {
           id: '2',
           name: 'Marijina vikendica',
-          client: 'stefanljubovic@gmail.com',
+          client: {
+            email: 'stefanljubovic@gmail.com',
+            firstName: 'Stefan',
+            lastName: 'Ljubovic',
+            streetName: 'Bulevar Despota Stefana',
+            streetNumber: '7',
+            postalCode: '21000',
+            city: 'Novi Sad',
+            country: 'Serbia',
+            phoneNumber: '0641234567'
+
+          },
           dateTime: '5.11.2021',
           duration: 7,
           price: 70000
@@ -68,16 +111,34 @@ export default {
         {
           id: '3',
           name: 'Marijina vikendica',
-          client: 'monicageller@gmail.com',
-          dateTime: '5.11.1994',
+          client: {
+            email: 'tamarapantic@gmail.com',
+            firstName: 'Tamara',
+            lastName: 'Pantic',
+            streetName: 'Bulevar Despota Stefana',
+            streetNumber: '5a',
+            postalCode: '21000',
+            city: 'Novi Sad',
+            country: 'Serbia',
+            phoneNumber: '0661234567'
+
+          },
+          dateTime: '5.11.2020',
           duration: 7,
           price: 70000
         }
-      ]
+      ],
+      selectedClient: undefined
     }
   },
   mounted(){
    
+  },
+  methods: {
+      openModalForUserDetails: function(client) {
+        this.selectedClient = client;
+        window.$('#client-details-modal').modal('show');
+     },
   }
 }
 </script>
@@ -97,43 +158,38 @@ export default {
         color: #151649;
         size: inherit;
     }
-    .bg-modal{
-      width: 100%;
-      height: 100%;
-      background-color: rbg(0,0,0, 0.7);
-      position: fixed;
-      top:0;
-      display: none;
-      justify-content: center;
-      align-items: center;
+    .modal-dialog {
+      background-color: #ffffff;
     }
 
-    .form-div{
-      margin-top: 100px;
+    .client-info {
+        display: flex;
+        justify-content: space-between;
     }
 
-     .modal-content{
-      width: 500px;
-      height: 600px;
-      border-radius: 10px;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-    }
-    .login-title{
-      margin-top: 50px;
-      font-weight: bold;
-      align-self: center;
-      align-items: center;
+    .info {
+        text-align: right;
     }
 
-    .close{
-      position: absolute;
-      top:0;
-      right: 15px;
-      font-size: 40px;
-      transform: rotate(45deg);
-      cursor: pointer;
+    .labels {
+        text-align: left;
+    }
+
+    .modal-content {
+        padding: 30px;
+        font-size: 20px;
+    }
+
+    .btn-close {
+      background-color: transparent;
+      border-color: transparent;
+      color: transparent;
+      margin-right: 12px;
+    }
+
+    h3 {
+      margin-left: 15px;
+      margin-top: 17px;
     }
 
 </style>
