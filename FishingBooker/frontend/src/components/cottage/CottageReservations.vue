@@ -83,10 +83,8 @@
                     <p>{{ selectedClient.firstName }}</p>
                     <p>{{ selectedClient.lastName }}</p>               
                 </div>
-            </div>
-            <div class="comment-area">
-               <textarea placeholder="Your comment" cols="50" rows="4"></textarea>
-            </div> <br/>
+            </div>            
+            <textarea class="comment-area" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
             <div class="options">
                 <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
                 <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
@@ -220,11 +218,14 @@ export default {
     .comment-area{
       align-self: left;
       margin-left: 5px;
+      background-color: #ffffff;
       border-width: 1px solid #888 ;
       font-size: 18px;
       resize: none;
       outline: none;
-
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 10px;
     }
 
     .options{

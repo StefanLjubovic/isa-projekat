@@ -4,7 +4,7 @@
             <h1>My Profile</h1>
             <div class="options">
                 <button class="btn" @click="editMode=!editMode"><i class="fas fa-pen"></i></button>
-                <button class="btn"><i class="fas fa-trash"></i></button>
+                <button class="btn" @click="openModalForDeletingAccount()"><i class="fas fa-trash"></i></button>
             </div>
         </div>
         <div class="profile-form">
@@ -36,6 +36,27 @@
             </div>
         </div>
     </div>
+
+
+ <!--Modal for deleting account -->
+
+<div class="modal fade" id="delete-account-modal">
+  <div class="modal-dialog rounded">
+      <div class="modal-header">
+          <h3>What is the reason for deleting?</h3>
+          <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+      </div>
+          <div class="modal-content">
+              <br/>
+            <textarea class="reason-area" cols="40" rows="6"></textarea><br/>
+            <div class="confirm-buttons">
+                <button class="btn save-button"  @click.prevent="sendRequest()" >Submit</button>
+                <button class="btn cancel-button">Cancel</button>
+            </div>
+       </div>
+     </div>
+  </div>
+
 </template>
 
 <script>
@@ -93,7 +114,15 @@ export default ({
             console.log(this.v$)
 
             this.editMode = !this.editMode;
-        }
+        },
+
+        openModalForDeletingAccount() {
+            window.$('#delete-account-modal').modal('show');
+        },
+
+        sendRequest(){
+            window.$('#delete-account-modal').modal('hide');
+        },
     }
 })
 </script>
@@ -158,6 +187,44 @@ export default ({
     margin-right: 10px;
 }
 
+.modal-content {
+    padding: 30px;
+    font-size: 20px;
+    background-color: rgb(211, 222, 223);
+}
 
+.modal-dialog{
+    background-color: #ffffff;
+}
+
+.btn-close {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+    margin-right: 0px;
+    margin-bottom: 15px;
+}
+
+ h3 {
+    margin-left: 7%;
+    margin-top: 18px;
+}
+
+ .reason-area{
+     align-self: left;
+     margin-left: 5px;
+     background-color: #ffffff;
+     border-width: 1px solid #888 ;
+     font-size: 18px;
+     resize: none;
+     outline: none;
+     -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+      border-radius: 10px;
+}
+
+.confirm-buttons{
+    margin-left: 30%;
+}
 
 </style>
