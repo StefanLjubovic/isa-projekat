@@ -22,6 +22,9 @@
 <script>
 
 export default {
+  /*props: {
+    dateList,
+  },*/
   data() {
     const month = new Date().getMonth();
     const year = new Date().getFullYear();

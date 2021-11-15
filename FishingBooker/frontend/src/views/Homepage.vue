@@ -70,6 +70,7 @@
     </div> 
   </div>
   <AdventureReservations v-if="state == 1"/>
+  <MyScheduleInstructor v-if="state == 2"/>
   <MyProfile v-if="state == 3"/>
 </template>
 
@@ -90,6 +91,7 @@ import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import AdventureReservations from "@/components/adventure/AdventureReservations.vue"
+import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 
 export default {
     components:{
@@ -107,7 +109,8 @@ export default {
         CottageReservations,
         MyProfile,
         AdminAnalytics,
-        AdventureReservations
+        AdventureReservations,
+        MyScheduleInstructor
     },
     data(){
       return{
