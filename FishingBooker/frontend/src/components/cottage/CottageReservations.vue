@@ -73,7 +73,7 @@
           <div class="modal-content">
             <div class="client-info">
                <div class="labels">
-                   <p>Email:</p>
+                    <p>Email:</p>
                     <p>First name:</p>
                     <p>Last name:</p><br/>
                     <p>Comment:</p>                 

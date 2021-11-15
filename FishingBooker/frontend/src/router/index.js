@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "../views/MainPage.vue";
 import Homepage from "../views/Homepage.vue"
 import ClientRegistration from "../views/ClientRegistration.vue"
+import AdvertiserRegistation from "../views/AdvertiserRegistration.vue"
 import AdventureDetails from "../views/AdventureDetails.vue"
 import CottageDetails from "../views/CottageDetails.vue"
 
@@ -10,7 +11,8 @@ const routes = [
   { path: "/homepage", name: "Homepage", component: Homepage },
   { path: "/adventureDetails/:id", name: "AdventureDetails", component: AdventureDetails },
   { path: "/cottageDetails/:id",   name: "CottageDetails",   component: CottageDetails },
-  { path: "/client-registration", name: "ClientRegistration", component: ClientRegistration }
+  { path: "/client-registration", name: "ClientRegistration", component: ClientRegistration },
+  { path: "/advertiser-registration", name: "AdvertiserRegistration", component: AdvertiserRegistation}
 ];
 
 const router = createRouter({
