@@ -5,7 +5,7 @@
     <table class=" table table-striped table-cottage-reservations">
     <thead>
       <tr>
-        <th scope="col">Cottage</th>
+        <th scope="col">Adventure</th>
         <th scope="col">Client</th>
         <th scope="col">Date and Time</th>
         <th scope="col">Duration</th>
@@ -105,14 +105,13 @@
 
 <script>
 export default {
-  props:['state'],
-  emits:['open-complaint'],
+    name: "AdventureReservations",
   data(){
     return{
       reservations: [
         {
           id: '1',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'anagavrilovic@gmail.com',
             firstName: 'Ana',
@@ -131,7 +130,7 @@ export default {
         },
         {
           id: '2',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'stefanljubovic@gmail.com',
             firstName: 'Stefan',
@@ -150,7 +149,7 @@ export default {
         },
         {
           id: '3',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'tamarapantic@gmail.com',
             firstName: 'Tamara',

@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="navbar-nav navigation">
       <div class="options">
-        <div v-if="role!=2" class="all-users">
+        <div v-if="role!=2 && role != 3 && role != 4" class="all-users">
           <!-- Options for clients and unregistrated users -->
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
@@ -59,8 +59,11 @@
         </div>
 
         <!-- Fishing instructor options (role 4) -->
-        <div v-if="role == 4">
-
+        <div v-if="role == 4" class="instructor">
+          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">My Adventures</a>
+          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">Reservation History</a>
+          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">My Schedule</a>
+          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==4 }" @click="changeState(4)">Analytics</a>
         </div>
         
       </div>
@@ -153,6 +156,13 @@ div > button {
 .dropdown-item:hover {
   background-color: rgb(231, 227, 226);
   width: 100%;
+}
+
+.instructor {
+  display: flex;
+}
+.instructor a {
+  width: 148px;
 }
 
 </style>
