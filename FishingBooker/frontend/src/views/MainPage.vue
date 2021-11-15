@@ -8,13 +8,13 @@
            <a href="#" class="link-light dropdown-toggle item" 
            role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
            <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
-    <a class="dropdown-item" href="#">As instructor</a>
-    <a class="dropdown-item" href="#">As cottage owner</a>
-  </div>
+             <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
+             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As instructor</a>
+            <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As cottage owner</a>
+           </div>
            <a href="#" class="link-light item" @click="showModal=true">Log in</a>
-        </div>
-      </div>
+          </div>
+       </div>
       <div class="body">
       <div class="body-gap"></div>
       <div class="message">
@@ -61,6 +61,9 @@ export default {
         },
         openSignUp: function(){
             this.$router.push({ path: '/client-registration' })
+        },
+        openSignUpAsAdvertiser: function(){
+            this.$router.push({ path: '/advertiser-registration' })
         }
     },
     components:{
