@@ -40,7 +40,7 @@
   <!-- Cottage owner options (role 2) -->
   <div v-if="role == 2">
     <div v-if="state == 21">
-        <button  type="button" id="add-new-cottage" class="btn btn-success"> Add new cottage &nbsp; <i class="fa-solid fa-circle-plus"></i></button>
+        <button  type="button" id="add-new-cottage" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
         <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 21" class="cottages-wrapper">
@@ -60,9 +60,19 @@
 
   <!-- Fishing instructor options (role 4) -->
   <div v-if="role == 4">
-
+    <div v-if="state == 0">
+        <button  type="button" id="add-new-cottage" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
+        <SearchEntities :searchTitle="''"  @filter-sort="filterSort"/>
+    </div>
+    <div v-if="state == 0" class="cottages-wrapper">
+        <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div> 
   </div>
-  
+  <AdventureReservations v-if="state == 1"/>
+  <MyScheduleInstructor v-if="state == 2"/>
+  <MyProfile v-if="state == 3"/>
 </template>
 
 <script>
@@ -82,6 +92,8 @@ import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
+import AdventureReservations from "@/components/adventure/AdventureReservations.vue"
+import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 
 export default {
     components:{
@@ -99,7 +111,9 @@ export default {
         CottageReservations,
         MyProfile,
         AdminAnalytics,
-        OwnerAnalytics
+        OwnerAnalytics,
+        AdventureReservations,
+        MyScheduleInstructor
     },
     data(){
       return{

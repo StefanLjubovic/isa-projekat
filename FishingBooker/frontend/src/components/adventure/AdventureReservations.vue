@@ -5,7 +5,7 @@
     <table class=" table table-striped table-cottage-reservations">
     <thead>
       <tr>
-        <th scope="col">Cottage</th>
+        <th scope="col">Adventure</th>
         <th scope="col">Client</th>
         <th scope="col">Date and Time</th>
         <th scope="col">Duration</th>
@@ -85,8 +85,10 @@
                     <p>{{ selectedClient.firstName }}</p>
                     <p>{{ selectedClient.lastName }}</p>               
                 </div>
-            </div>            
-            <textarea class="comment-area" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
+            </div>
+            <div class="comment-area">
+               <textarea placeholder="Your comment" cols="50" rows="4"></textarea>
+            </div> <br/>
             <div class="options">
                 <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
                 <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
@@ -103,14 +105,13 @@
 
 <script>
 export default {
-  props:['state'],
-  emits:['open-complaint'],
+    name: "AdventureReservations",
   data(){
     return{
       reservations: [
         {
           id: '1',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'anagavrilovic@gmail.com',
             firstName: 'Ana',
@@ -129,7 +130,7 @@ export default {
         },
         {
           id: '2',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'stefanljubovic@gmail.com',
             firstName: 'Stefan',
@@ -148,7 +149,7 @@ export default {
         },
         {
           id: '3',
-          name: 'Marijina vikendica',
+          name: 'Fishing in the Sunset',
           client: {
             email: 'tamarapantic@gmail.com',
             firstName: 'Tamara',
@@ -225,14 +226,11 @@ export default {
     .comment-area{
       align-self: left;
       margin-left: 5px;
-      background-color: #ffffff;
       border-width: 1px solid #888 ;
       font-size: 18px;
       resize: none;
       outline: none;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 5px;
-      border-radius: 10px;
+
     }
 
     .options{
