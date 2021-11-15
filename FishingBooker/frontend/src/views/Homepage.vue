@@ -50,6 +50,7 @@
     </div>  
     <CottageReservations v-if="state==22"/>
     <MyProfile v-if="state == 3"/>
+    <OwnerAnalytics v-if="state == 24"/>
   </div>
 
   <!-- Ship owner options (role 3) -->
@@ -80,6 +81,7 @@ import Complaints from "@/components/admin/Complaints.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
+import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
 
 export default {
     components:{
@@ -96,7 +98,8 @@ export default {
         RevisionModal,
         CottageReservations,
         MyProfile,
-        AdminAnalytics
+        AdminAnalytics,
+        OwnerAnalytics
     },
     data(){
       return{
