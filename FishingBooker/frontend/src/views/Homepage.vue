@@ -50,6 +50,7 @@
     </div>  
     <CottageReservations v-if="state==22"/>
     <MyProfile v-if="state == 3"/>
+    <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
   </div>
 

@@ -6,11 +6,11 @@
             <div class="left-side">
                 <ImageGallery :images=cottage.images  description="Photos of our cottage"/>
                 <hr/>
-                <div class="btn-wrap">
-                    <button class="btn" @click="toggleSubscribe">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i></button>               
+                  <div class="btn-wrap">
+                    <button class="btn" @click="toggleSubscribe">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView />
-                <p>If you cancel the reservation, the cottage owner retains {{ cottage.cancellationPercentage }} % of the price! </p><hr/>
+                <CalendarView/>
+                <p>If you cancel the reservation, the cottage owner retains {{ cottage.cancellationPercentage }}% of the price! </p><hr/>
                 <PricelistTable :pricelist="cottage.pricelist"/><hr/>
             </div>
             <div class="right-side">
