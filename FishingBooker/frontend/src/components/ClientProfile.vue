@@ -171,7 +171,6 @@ export default {
     methods:{
         submitForm(){
             this.v$.$validate()
-            console.log(this.v$)
         },
         changePassword(){
             this.v$.password.$touch()

@@ -73,7 +73,6 @@
   </div>
   <AdventureReservations v-if="state == 1"/>
   <MyScheduleInstructor v-if="state == 2"/>
-  <MyProfile v-if="state == 3"/>
   <OwnerAnalytics v-if="state == 4"/>
 </template>
 

@@ -53,7 +53,7 @@
                                 </span>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Password*" v-model="state.password.password"/>
+                                <input type="password" class="form-control" placeholder="Password*" v-model="state.password.password"/>
                                 <span v-if="v$.password.password.$error" class="text-danger">
                                     {{v$.password.password.$errors[0].$message}}
                                 </span>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <input type="text" class="form-control" placeholder="Confirm Password *" v-model="state.password.confirm"/>
+                                <input type="password" class="form-control" placeholder="Confirm Password *" v-model="state.password.confirm"/>
                                  <span v-if="v$.password.confirm.$error" class="text-danger">
                                     {{v$.password.confirm.$errors[0].$message}}
                                 </span>
@@ -92,9 +92,9 @@
 import useValidate from '@vuelidate/core'
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
 import {reactive, computed} from 'vue'
-export default {
-    setup(){
-        const state = reactive({
+
+function initialState (){
+ return reactive({
             email: '',
              password: {
                 password: '',
@@ -109,6 +109,11 @@ export default {
             country: '',
             phone: ''
         })
+  }
+
+export default {
+    setup(){
+        const state = initialState();
         const rules = computed(()=>{
             return{
             email: {required,email },
@@ -134,7 +139,9 @@ export default {
     },
     methods:{
         submitForm(){
+            console.log(this.v$)
             this.v$.$validate()
+            if(this.v$.$errors.length == 0){
             const client= {
                 email : this.state.email,
                 name: this.state.name,
@@ -148,7 +155,13 @@ export default {
                 password: this.state.password.password,
                 confirm: this.state.password.confirm
             }
+            this.$swal('Success!',
+            'Client has been registered!',
+            'success');
+            this.v$.$reset();
+             Object.assign(this.state, initialState());
             console.log(client)
+            }
         }
     }
 }
