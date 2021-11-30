@@ -1,50 +1,42 @@
-/***********************************************************************
- * Module:  RegistratedUser.java
- * Author:  Ana Gavrilovic
- * Purpose: Defines the Class RegistratedUser
- ***********************************************************************/
 package com.backend.model;
+
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.util.*;
 
 @Entity
-@Inheritance(strategy= InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-public class RegistratedUser {
+public class RegistrationRequest {
 
    @Id
-   @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeqGen", initialValue = 1, allocationSize = 1)
-   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
-   @Column(name="reg_user_id", unique=true, nullable=false)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name="reg_request_id", unique=true, nullable=false)
    private Integer id;
 
-   @Column(name="first_name", unique=false, nullable=false)
+   @Column(unique=false, nullable=false)
    private String firstName;
 
-   @Column(name="last_name", unique=false, nullable=false)
+   @Column(unique=false, nullable=false)
    private String lastName;
 
-   @Column(name="phone_number", unique=false, nullable=false)
+   @Column(unique=false, nullable=false)
    private String phoneNumber;
 
-   @Column(name="email", unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private String email;
 
-   @Column(name="password", unique=false, nullable=false)
+   @Column(unique=false, nullable=false)
    private String password;
 
-   @Column(name="user_status", unique=false, nullable=false)
-   private UserStatus status;
-
-   @Column(name="role", unique=false, nullable=false)
+   @Column(unique=false, nullable=false)
    private Role role;
 
-   @ManyToOne(fetch = FetchType.EAGER)
+   @Column(unique=false, nullable=false)
+   private String explanation;
+
+   @OneToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "address_id")
    private Address address;
 
-   public RegistratedUser() { }
+   public RegistrationRequest() { }
 
    public Integer getId() {
       return id;
@@ -94,20 +86,20 @@ public class RegistratedUser {
       this.password = password;
    }
 
-   public UserStatus getStatus() {
-      return status;
-   }
-
-   public void setStatus(UserStatus status) {
-      this.status = status;
-   }
-
    public Role getRole() {
       return role;
    }
 
    public void setRole(Role role) {
       this.role = role;
+   }
+
+   public String getExplanation() {
+      return explanation;
+   }
+
+   public void setExplanation(String explanation) {
+      this.explanation = explanation;
    }
 
    public Address getAddress() {

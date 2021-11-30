@@ -1,27 +1,27 @@
 package com.backend.model;
+
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
-public class Complaint {
+public class PricelistItem {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name="complaint_id", unique=true, nullable=false)
+   @Column(name="pricelist_item_id", unique=true, nullable=false)
    private Integer id;
 
    @Column(unique=false, nullable=false)
-   private String content;
+   private String service;
 
-   @ManyToOne(fetch = FetchType.EAGER)
-   @JoinColumn(name = "reg_user_id")
-   private Client client;
+   @Column(unique=false, nullable=false)
+   private double price;
 
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "entity_id")
    private RentingEntity rentingEntity;
 
-   public Complaint() { }
+   public PricelistItem() {}
 
    public Integer getId() {
       return id;
@@ -31,20 +31,20 @@ public class Complaint {
       this.id = id;
    }
 
-   public String getContent() {
-      return content;
+   public String getService() {
+      return service;
    }
 
-   public void setContent(String content) {
-      this.content = content;
+   public void setService(String service) {
+      this.service = service;
    }
 
-   public Client getClient() {
-      return client;
+   public double getPrice() {
+      return price;
    }
 
-   public void setClient(Client client) {
-      this.client = client;
+   public void setPrice(double price) {
+      this.price = price;
    }
 
    public RentingEntity getRentingEntity() {

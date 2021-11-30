@@ -1,24 +1,23 @@
 package com.backend.model;
 
-import java.util.*;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Adventure extends Entity {
-   private String instructorId;
+@Entity
+public class Adventure extends RentingEntity {
+
+   @Column(unique=true, nullable=false)
    private int maxPersons;
-   private CancellationCondition cancellationCondition;
 
-   public Adventure(String name,String description,double averageGrade){
-      super(name,description,averageGrade);
-   }
-   public Adventure(){}
+   @ElementCollection
+   private Set<String> fishingEquipment = new HashSet<String>();
 
-   public String getInstructorId() {
-      return instructorId;
-   }
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "reg_user_id")
+   private FishingInstructor fishingInstructor;
 
-   public void setInstructorId(String instructorId) {
-      this.instructorId = instructorId;
-   }
+   public Adventure() {}
 
    public int getMaxPersons() {
       return maxPersons;
@@ -28,11 +27,19 @@ public class Adventure extends Entity {
       this.maxPersons = maxPersons;
    }
 
-   public CancellationCondition getCancellationCondition() {
-      return cancellationCondition;
+   public Set<String> getFishingEquipment() {
+      return fishingEquipment;
    }
 
-   public void setCancellationCondition(CancellationCondition cancellationCondition) {
-      this.cancellationCondition = cancellationCondition;
+   public void setFishingEquipment(Set<String> fishingEquipment) {
+      this.fishingEquipment = fishingEquipment;
+   }
+
+   public FishingInstructor getFishingInstructor() {
+      return fishingInstructor;
+   }
+
+   public void setFishingInstructor(FishingInstructor fishingInstructor) {
+      this.fishingInstructor = fishingInstructor;
    }
 }

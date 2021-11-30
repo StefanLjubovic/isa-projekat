@@ -4,16 +4,41 @@
  * Purpose: Defines the Class Ship
  ***********************************************************************/
 package com.backend.model;
+import javax.persistence.*;
 import java.util.*;
 
-public class Ship extends Entity {
+@Entity
+public class Ship extends RentingEntity {
+
+   @Column(unique=true, nullable=false)
    private String type;
+
+   @Column(unique=true, nullable=false)
    private double length;
+
+   @Column(unique=true, nullable=false)
    private int engineNumber;
+
+   @Column(unique=true, nullable=false)
    private int enginePower;
+
+   @Column(unique=true, nullable=false)
    private double maxSpeed;
-   private ArrayList<NavigationEquipment> navigationEquipment;
+
+   @ElementCollection
+   private Set<NavigationEquipment> navigationEquipment = new HashSet<NavigationEquipment>();
+
+   @Column(unique=true, nullable=false)
    private int capacity;
+
+   @ElementCollection
+   private Set<String> fishingEquipment = new HashSet<String>();
+
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "reg_user_id")
+   private ShipOwner shipOwner;
+
+   public Ship() {}
 
    public String getType() {
       return type;
@@ -55,14 +80,6 @@ public class Ship extends Entity {
       this.maxSpeed = maxSpeed;
    }
 
-   public ArrayList<NavigationEquipment> getNavigationEquipment() {
-      return navigationEquipment;
-   }
-
-   public void setNavigationEquipment(ArrayList<NavigationEquipment> navigationEquipment) {
-      this.navigationEquipment = navigationEquipment;
-   }
-
    public int getCapacity() {
       return capacity;
    }
@@ -71,17 +88,31 @@ public class Ship extends Entity {
       this.capacity = capacity;
    }
 
-   public CancellationCondition getCancellationCondition() {
-      return cancellationCondition;
+   public Set<NavigationEquipment> getNavigationEquipment() {
+      return navigationEquipment;
    }
 
-   public void setCancellationCondition(CancellationCondition cancellationCondition) {
-      this.cancellationCondition = cancellationCondition;
+   public void setNavigationEquipment(Set<NavigationEquipment> navigationEquipment) {
+      this.navigationEquipment = navigationEquipment;
    }
 
-   private CancellationCondition cancellationCondition;
+   public Set<String> getFishingEquipment() {
+      return fishingEquipment;
+   }
 
-   public Ship(String name,String description,double averageGrade){
+   public void setFishingEquipment(Set<String> fishingEquipment) {
+      this.fishingEquipment = fishingEquipment;
+   }
+
+   public ShipOwner getShipOwner() {
+      return shipOwner;
+   }
+
+   public void setShipOwner(ShipOwner shipOwner) {
+      this.shipOwner = shipOwner;
+   }
+
+   public Ship(String name, String description, double averageGrade){
       super(name,description,averageGrade);
    }
 }
