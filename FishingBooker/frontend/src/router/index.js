@@ -5,6 +5,7 @@ import ClientRegistration from "../views/ClientRegistration.vue"
 import AdvertiserRegistation from "../views/AdvertiserRegistration.vue"
 import AdventureDetails from "../views/AdventureDetails.vue"
 import CottageDetails from "../views/CottageDetails.vue"
+import AddNewCottage from "../views/AddNewCottage.vue"
 
 const routes = [
   { path: "/", name: "MainPage", component: MainPage },
@@ -12,7 +13,8 @@ const routes = [
   { path: "/adventureDetails/:id", name: "AdventureDetails", component: AdventureDetails },
   { path: "/cottageDetails/:id",   name: "CottageDetails",   component: CottageDetails },
   { path: "/client-registration", name: "ClientRegistration", component: ClientRegistration },
-  { path: "/advertiser-registration", name: "AdvertiserRegistration", component: AdvertiserRegistation}
+  { path: "/advertiser-registration", name: "AdvertiserRegistration", component: AdvertiserRegistation},
+  { path: "/addNewCottage", name: "AddNewCottage", component: AddNewCottage}
 ];
 
 const router = createRouter({
