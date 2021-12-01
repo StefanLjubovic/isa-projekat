@@ -36,8 +36,38 @@
         </div>
     </div>
 
+    <div v-if="selectedUser" class="modal fade" id="new-admin-modal">
+        <div class="modal-dialog rounded">
+            <div class="modal-header">
+                <h3>Add new administrator</h3>
+                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <input type="email" class="form-control" placeholder="Email*" v-model="state.user.email" >
+                <input type="text" class="form-control" placeholder="First name*" v-model="state.user.firstName" >
+                <input type="text" class="form-control" placeholder="Last name*" v-model="state.user.lastName" >
+                <input type="text" class="form-control" placeholder="Phone number*" v-model="state.user.phoneNumber" >
+                <input type="text" class="form-control" placeholder="Street name*" v-model="state.user.streetName" >
+                <input type="text" class="form-control" placeholder="Street number*" v-model="state.user.streetNumber" >
+                <input type="text" class="form-control" placeholder="Postal code*" v-model="state.user.postalCode" >
+                <input type="text" class="form-control" placeholder="City*" v-model="state.user.city" >
+                <input type="text" class="form-control" placeholder="Country*" v-model="state.user.country" >
+                <input type="password" class="form-control" placeholder="Password*" v-model="state.user.password"/>
+                <input type="password" class="form-control" placeholder="Confirm password*" v-model="state.user.confirm"/>
+
+                <div class="confirm-buttons">
+                    <button class="btn submit-btn" @click="submitNewAdmin()">Submit</button>
+                    <button class="btn cancel-btn" @click="cancelNewAdmin()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="page">
-        <h1>All Users</h1>
+        <div class="title d-flex justify-content-between">
+            <h1>All Users</h1>
+            <button class="btn new-admin" @click="openModalForNewAdmin()"><i class="fas fa-user-plus"></i>&ensp;New administrator</button>
+        </div>
         <div class="filter-search">
             <div class="dropdown">
                 <button class="btn dropdown-toggle drop-btn" ref="btnToggle" id="dropdownMenuButton" data-toggle="dropdown" 
@@ -102,6 +132,9 @@
 </template>
 
 <script>
+import useValidate from '@vuelidate/core'
+import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
+import {reactive, computed} from 'vue'
 
 export default {
     data() {
@@ -148,6 +181,44 @@ export default {
     mounted() {
         this.users = this.allUsers;
     },
+    setup() {
+        let user = {
+                email : '',
+                firstName: '',
+                lastName: '',
+                streetName: '',
+                streetNumber: undefined,
+                postalCode: undefined,
+                city: '',
+                country: '',
+                phoneNumber: '',
+                password: '',
+                confirm: ''
+        }
+        let state = reactive({
+            user
+        })
+        const rules = computed(()=>{
+            return {
+                email: {required,email },
+                password: {required, minLength: minLength(6) },
+                confirm: {required,sameAs:sameAs(state.user.password)},
+                firstName: {required },
+                lastName: {required },
+                streetName: {required },
+                streetNumber: {required,numeric },
+                postalCode: {required,numeric },
+                city: {required },
+                country: {required },
+                phoneNumber: {required,numeric },
+            }
+        })
+        const v$=useValidate(rules,state.user)
+        return {
+            state,
+            v$
+        }
+    },
     methods: {
         removeUser: function(user) {
             if(confirm("Are you sure you want to delete " + user.email + '\'s account?')){
@@ -160,6 +231,9 @@ export default {
         openModalForUserDetails: function(user) {
             this.selectedUser = user;
             window.$('#user-details-modal').modal('show');
+        },
+        openModalForNewAdmin: function() {
+            window.$('#new-admin-modal').modal('show');
         },
         filterByRole: function(role) {
             if(role == -1) {
@@ -182,6 +256,12 @@ export default {
             else if(role == 3) return "Ship owner";
             else if(role == 4) return "Fishing instructor";
             else return "";
+        },
+        submitNewAdmin: function() {
+            window.$('#new-admin-modal').modal('hide');
+        },
+        cancelNewAdmin: function() {
+            window.$('#new-admin-modal').modal('hide');
         }
     }
 }
@@ -212,6 +292,11 @@ h1 {
     color: #2c3e50;
     background-color: white;
     border-color: #cfd3d8;
+}
+
+.new-admin{
+    height: 40px;
+    margin-top: 5px;
 }
 
 .btn-info {
@@ -259,5 +344,24 @@ h1 {
 .modal-content {
     padding: 30px;
     font-size: 20px;
+}
+
+.modal-content > input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background-color: white;
+    color: #2c3e50;
+    border-color: #cfd3d8;
+    margin-left: 10px;
 }
 </style>

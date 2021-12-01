@@ -2,7 +2,7 @@
     <div class="page">
         <h1>Analytics</h1>
         <div class="money-percentage">
-            <h4>Money percentage from successful reservation</h4>
+            <h5>Money percentage from successful reservation:</h5>
             <div class="input-percentage">
                 <input type="text" class="form-control form-control-money" v-model="moneyPercentageBackup" :disabled="!editMode">
                 <p>%</p>
@@ -111,7 +111,7 @@ h1 {
 .money-percentage {
     display: flex;
     justify-content: space-between;
-    margin-right: 30%;
+    margin-right: 17%;
 }
 
 .form-control-money {

@@ -70,10 +70,11 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div> 
+    <AdventureReservations v-if="state == 1"/>
+    <MyScheduleInstructor v-if="state == 2"/>
+    <OwnerAnalytics v-if="state == 4"/>
   </div>
-  <AdventureReservations v-if="state == 1"/>
-  <MyScheduleInstructor v-if="state == 2"/>
-  <OwnerAnalytics v-if="state == 4"/>
+  
 </template>
 
 <script>
@@ -85,7 +86,7 @@ import ClientHistory from "@/components/ClientHistory.vue"
 import ClientReservations from "@/components/ClientReservations.vue"
 import Complaint from "@/components/Complaint.vue"
 import RevisionModal from "@/components/client/RevisionModal.vue"
-import Server from '../server'
+//import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
@@ -129,9 +130,9 @@ export default {
     methods:{
       changeState: async function(state){
         this.state=state;
-        const resp=await Server.getAllEntities(this.state)
+        /*const resp=await Server.getAllEntities(this.state)
         this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-        this.entities=resp.data;
+        this.entities=resp.data;*/
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
@@ -196,10 +197,10 @@ export default {
     async mounted(){
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
-      const resp=await Server.getAllEntities(this.state)
+      /*const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       console.log(this.entitiesForDisplay)
-      this.entities=resp.data;
+      this.entities=resp.data;*/
       if(this.state==0) this.searchTitle="Adventures we offer";
         else if(this.state==1)this.searchTitle="Ships we offer"
         else if(this.state==2) this.searchTitle="Cottages we offer";
