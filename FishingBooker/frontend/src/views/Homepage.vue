@@ -40,7 +40,7 @@
   <!-- Cottage owner options (role 2) -->
   <div v-if="role == 2">
     <div v-if="state == 21">
-        <button  type="button" id="add-new-cottage" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
+        <button  type="button" id="add-new-cottage" @click="addNewCottage()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
         <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 21" class="cottages-wrapper">
@@ -186,6 +186,10 @@ export default {
         this.showRevision=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
+      },
+
+      addNewCottage: function(){
+         this.$router.push({ path: `/addNewCottage` })
       },
     },
 
