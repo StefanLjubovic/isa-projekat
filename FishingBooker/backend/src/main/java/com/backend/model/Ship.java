@@ -40,6 +40,10 @@ public class Ship extends RentingEntity {
 
    public Ship() {}
 
+   public Ship(int id,String name,String description,Address address,double grade) {
+      super(id,name,description,address,grade);
+   }
+
    public String getType() {
       return type;
    }
@@ -110,9 +114,5 @@ public class Ship extends RentingEntity {
 
    public void setShipOwner(ShipOwner shipOwner) {
       this.shipOwner = shipOwner;
-   }
-
-   public Ship(String name, String description, double averageGrade){
-      super(name,description,averageGrade);
    }
 }

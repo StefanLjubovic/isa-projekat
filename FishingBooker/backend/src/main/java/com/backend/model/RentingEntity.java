@@ -32,7 +32,7 @@ public class RentingEntity {
    @ElementCollection
    private Set<String> unallowedBehavior = new HashSet<String>();
 
-   @OneToOne(fetch = FetchType.EAGER)
+   @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
    @JoinColumn(name = "address_id")
    private Address address;
 
@@ -50,11 +50,20 @@ public class RentingEntity {
 
    public RentingEntity() { }
 
-   public RentingEntity(String name, String description, double averageGrade){
-      id = 1;
+   public RentingEntity(String name, String description, double averageGrade,Address address,Set<String> unallowedBehavior){
       this.name=name;
       this.description=description;
       this.averageGrade=averageGrade;
+      this.address = address;
+      this.unallowedBehavior = unallowedBehavior;
+   }
+
+   public RentingEntity(Integer id, String name, String description,Address address, double averageGrade) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+      this.averageGrade = averageGrade;
+      this.address = address;
    }
 
    public Address getAddress() {

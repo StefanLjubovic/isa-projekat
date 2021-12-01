@@ -17,6 +17,9 @@ public class Adventure extends RentingEntity {
    @JoinColumn(name = "reg_user_id")
    private FishingInstructor fishingInstructor;
 
+   public Adventure(int id,String name,String description,Address address,double grade) {
+      super(id,name,description,address,grade);
+   }
    public Adventure() {}
 
    public int getMaxPersons() {

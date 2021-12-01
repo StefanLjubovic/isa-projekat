@@ -31,6 +31,14 @@ public class Address {
 
    public Address() { }
 
+   public Address(String streetName, String streetNumber, String postalCode, String city, String country) {
+      this.streetName = streetName;
+      this.streetNumber = streetNumber;
+      this.postalCode = postalCode;
+      this.city = city;
+      this.country = country;
+   }
+
    public Integer getId() {
       return id;
    }
