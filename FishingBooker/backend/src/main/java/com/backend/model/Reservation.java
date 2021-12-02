@@ -26,7 +26,9 @@ public class Reservation {
    @Column(unique=true, nullable=false)
    private int maxPersons;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "reservation_additional_services", joinColumns = @JoinColumn(name = "reservation_id"))
+   @Column(name = "additional_services")
    private Set<String> additionalServices = new HashSet<String>();
 
    @Column(unique=true, nullable=false)

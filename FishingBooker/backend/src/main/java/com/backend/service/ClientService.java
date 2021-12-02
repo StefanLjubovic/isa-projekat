@@ -18,6 +18,7 @@ public class ClientService {
 
     @Autowired
     IEntityRepository entityRepository;
+
     public ClientService(){ }
 
     public List<? extends RentingEntity> GetAllEntities(int state){

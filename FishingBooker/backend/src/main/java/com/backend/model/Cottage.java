@@ -20,9 +20,15 @@ public class Cottage extends RentingEntity {
     private CottageOwner cottageOwner;
 
     public Cottage() {}
+
     public Cottage(int id,String name,String description,Address address,double grade) {
         super(id,name,description,address,grade);
     }
+
+    public Cottage(String name, String description, double averageGrade,Address address,Set<String> unallowedBehavior) {
+        super(name, description, averageGrade, address, unallowedBehavior);
+    }
+
     public Set<Room> getRooms() {
         return rooms;
     }
@@ -35,11 +41,10 @@ public class Cottage extends RentingEntity {
         return cottageOwner;
     }
 
-    public void setCottageOwner(CottageOwner cottageOwner) {
-        this.cottageOwner = cottageOwner;
-    }
+    public void setCottageOwner(CottageOwner cottageOwner) { this.cottageOwner = cottageOwner; }
 
-    public Cottage(String name, String description, double averageGrade,Address address,Set<String> unallowedBehavior) {
-        super(name, description, averageGrade, address, unallowedBehavior);
+    @Override
+    public String toString() {
+        return "Cottage{}";
     }
 }
