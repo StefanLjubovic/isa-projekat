@@ -62,7 +62,7 @@
   <!-- Fishing instructor options (role 4) -->
   <div v-if="role == 4">
     <div v-if="state == 0">
-        <button  type="button" id="add-new-cottage" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
+        <button  type="button" id="add-new-cottage" @click="addNewAdventure()" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
         <SearchEntities :searchTitle="''"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 0" class="cottages-wrapper">
@@ -73,6 +73,7 @@
     <AdventureReservations v-if="state == 1"/>
     <MyScheduleInstructor v-if="state == 2"/>
     <OwnerAnalytics v-if="state == 4"/>
+    <MyProfile v-if="state == 3"/>
   </div>
   
 </template>
@@ -189,9 +190,12 @@ export default {
         document.getElementById('appContainer').style.height='100vh';
       },
 
-      addNewCottage: function(){
-         this.$router.push({ path: `/addNewCottage` })
+      addNewCottage: function() {
+        this.$router.push({ path: `/addNewCottage` })
       },
+      addNewAdventure: function() {
+        this.$router.push({ path: `/addNewAdventure` })
+      }
     },
 
     async mounted(){
