@@ -11,13 +11,13 @@ import java.util.*;
 @DiscriminatorValue("CLIENT")
 public class Client extends RegistratedUser {
 
-   @Column(name="points", unique=false, nullable=false)
+   @Column(name="points", unique=false, nullable=true)
    private double points = 0;
 
-   @Column(name="cancellation_number", unique=false, nullable=false)
+   @Column(name="cancellation_number", unique=false, nullable=true)
    private int cancellationNumber = 0;
 
-   @Column(name="client_type", unique=false, nullable=false)
+   @Column(name="client_type", unique=false, nullable=true)
    private ClientType clientType = ClientType.bronze;
 
    @ManyToMany(fetch = FetchType.LAZY)

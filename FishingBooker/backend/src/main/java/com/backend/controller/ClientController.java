@@ -1,6 +1,5 @@
 package com.backend.controller;
 
-import com.backend.dto.BasicEntityInfoDTO;
 import com.backend.model.RentingEntity;
 import com.backend.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;

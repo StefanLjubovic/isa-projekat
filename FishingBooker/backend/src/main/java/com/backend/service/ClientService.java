@@ -1,6 +1,5 @@
 package com.backend.service;
 
-import com.backend.dto.BasicEntityInfoDTO;
 import com.backend.model.Adventure;
 import com.backend.model.Cottage;
 import com.backend.model.RentingEntity;

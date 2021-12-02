@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let server = {};
-const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://localhost:8081';
 
 server.getAllEntities = async (state) =>{
     const options ={

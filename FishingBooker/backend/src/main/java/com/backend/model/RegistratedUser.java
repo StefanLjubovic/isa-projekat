@@ -1,17 +1,15 @@
-/***********************************************************************
- * Module:  RegistratedUser.java
- * Author:  Ana Gavrilovic
- * Purpose: Defines the Class RegistratedUser
- ***********************************************************************/
 package com.backend.model;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.util.*;
-
+import java.sql.Timestamp;
 @Entity
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-public class RegistratedUser {
+public class RegistratedUser implements UserDetails {
 
    @Id
    @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeqGen", initialValue = 1, allocationSize = 1)
@@ -37,10 +35,21 @@ public class RegistratedUser {
    @Column(name="user_status", unique=false, nullable=false)
    private UserStatus status;
 
-   @Column(name="role", unique=false, nullable=false)
-   private Role role;
+   @Column(name = "enabled")
+   private boolean enabled;
 
-   @ManyToOne(fetch = FetchType.EAGER)
+   @Column(name="role", unique=false, nullable=false)
+
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+   @JoinTable(name = "user_role",
+           joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "reg_user_id"),
+           inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+   private List<Role> roles;
+
+   @Column(name = "last_password_reset_date")
+   private Timestamp lastPasswordResetDate;
+
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name = "address_id")
    private Address address;
 
@@ -86,11 +95,9 @@ public class RegistratedUser {
       this.email = email;
    }
 
-   public String getPassword() {
-      return password;
-   }
-
    public void setPassword(String password) {
+      Timestamp now = new Timestamp(new Date().getTime());
+      this.setLastPasswordResetDate(now);
       this.password = password;
    }
 
@@ -102,12 +109,12 @@ public class RegistratedUser {
       this.status = status;
    }
 
-   public Role getRole() {
-      return role;
+   public void setRoles(List<Role> roles) {
+      this.roles = roles;
    }
 
-   public void setRole(Role role) {
-      this.role = role;
+   public List<Role> getRoles() {
+      return roles;
    }
 
    public Address getAddress() {
@@ -116,5 +123,51 @@ public class RegistratedUser {
 
    public void setAddress(Address address) {
       this.address = address;
+   }
+
+   @Override
+   public Collection<? extends GrantedAuthority> getAuthorities() {
+      return this.roles;
+   }
+
+   public String getPassword() {
+      return password;
+   }
+
+   public Timestamp getLastPasswordResetDate() {
+      return lastPasswordResetDate;
+   }
+
+   public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+      this.lastPasswordResetDate = lastPasswordResetDate;
+   }
+
+
+   @Override
+   public String getUsername() {
+      return email;
+   }
+
+   @Override
+   public boolean isAccountNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isAccountNonLocked() {
+      return true;
+   }
+
+   @Override
+   public boolean isCredentialsNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isEnabled() {
+      return enabled;
+   }
+   public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
    }
 }

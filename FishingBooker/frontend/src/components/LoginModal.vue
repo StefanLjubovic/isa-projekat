@@ -4,13 +4,13 @@
    <div class="modal-inner">
      <h1>Log In</h1>
       <div class="form-group input mb-4 mt-2">
-       <input type="text" class="form-control input" placeholder="Email *" value="" />
+       <input type="text" class="form-control input" placeholder="Email *" v-model="email" />
       </div>
       <div class="form-group">
-       <input type="text" class="form-control input" placeholder="Password *" value="" />
+       <input type="text" class="form-control input" placeholder="Password *" v-model="password"/>
       </div>
       <div class="form-group mt-4 button-div">
-        <button type="button" class="btn log-btn p-2">Log in</button>
+        <button type="button" class="btn log-btn p-2" @click="Login">Log in</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
       </div>
 </div>
@@ -18,8 +18,26 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex';
 export default {
   props: ['showModal'],
+  data(){
+    return{
+      email : '',
+      password: ''
+    }
+  },
+  methods:{
+    ...mapActions(['fetchToken']),
+    Login(){
+      this.$emit('close-modal')
+      const loginRequest = {
+        'email' : this.email,
+        'password': this.password
+      }
+      this.fetchToken(loginRequest)
+    }
+  }
 }
 </script>
 

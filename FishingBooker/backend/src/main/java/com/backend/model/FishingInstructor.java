@@ -11,7 +11,7 @@ import java.util.*;
 @DiscriminatorValue("INSTRUCTOR")
 public class FishingInstructor extends RegistratedUser {
 
-   @Column(name="short_biography", unique=false, nullable=false)
+   @Column(name="short_biography", unique=false, nullable=true)
    private String shortBiography;
 
    @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
