@@ -16,7 +16,7 @@ app.use(router);
 app.use(VCalendar, {});
 
 
-app.config.globalProperties.role = 4;
+app.config.globalProperties.role = 2;
 /*  0 - client
     1 - admin
     2 - cottage owner

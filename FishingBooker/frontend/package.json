@@ -18,6 +18,7 @@
     "core-js": "^2.6.12",
     "jquery": "^3.6.0",
     "node-modules": "^1.0.1",
+    "ol": "^6.9.0",
     "v-calendar": "^3.0.0-alpha.6",
     "v-viewer": "^3.0.10",
     "vue": "^3.2.21",
@@ -25,7 +26,8 @@
     "vue-star-rating": "^2.1.0",
     "vue-swal": "^1.0.0",
     "vue-sweet-calendar": "^0.4.1",
-    "vue-sweetalert2": "^5.0.2"
+    "vue-sweetalert2": "^5.0.2",
+    "vue3-openlayers": "^0.1.54"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
