@@ -94,31 +94,7 @@
             </div>
 
             <div class="right-side">
-                <!-- Address input fields-->
-                <div class="map">
-                    <img src="../assets/mapa.jpg"/><br/><hr/>
-                </div>             
-                <input type="text" class="form-control" placeholder="Street name*" v-model="state.streetName"/>
-                <span class="text-danger" v-if="v$.streetName.$error">
-                   {{v$.streetName.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="Street number*" v-model="state.streetNumber"/>
-                <span class="text-danger" v-if="v$.streetNumber.$error">
-                   {{v$.streetNumber.$errors[0].$message}}
-                </span><br/>
-                <input type="number" class="form-control" placeholder="Postalcode*" v-model="state.postalcode"/>
-                <span class="text-danger" v-if="v$.postalcode.$error">
-                   {{v$.postalcode.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="City*" v-model="state.city"/>
-                <span class="text-danger" v-if="v$.city.$error">
-                   {{v$.city.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="Country*" v-model="state.country"/>
-                <span class="text-danger" v-if="v$.country.$error">
-                   {{v$.country.$errors[0].$message}}
-                </span><br/><br/><br/>
-
+                <OpenLayersMap></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>

@@ -1,6 +1,8 @@
 <template>
     <div class="content">
-        <div id="map" class="map-style"></div><br/><hr/>
+        <div class="map-style">
+            <div id="map"></div>
+        </div><br/>
         <div class="fields">
             <input id="streetID"        type="text"   class="form-control"  v-model="streetName"     placeholder="Street name*"><br/>
             <input id="streetNumID"     type="text"   class="form-control"  v-model="streetNumber"   placeholder="Street number*"><br/>
@@ -60,6 +62,7 @@ export default {
 
     },
 }
+    setTimeout(() => { this.map.updateSize(); });
 
     function reverseGeocode (coords) {
         fetch('http://nominatim.openstreetmap.org/reverse?format=json&lon=' + coords[0] + '&lat=' + coords[1])
@@ -123,13 +126,18 @@ export default {
 <style scoped>
 
     .content{
-        display:block;
+        display:flex;
+        flex-direction: column;
     }
 
     .map-style{ 
-        width: 600px;
+        width: 500px;
         height: 400px;
-        float: left;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
     }
 
     .fields{
