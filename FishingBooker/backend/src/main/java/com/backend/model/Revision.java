@@ -25,43 +25,28 @@ public class Revision {
 
    public Revision() { }
 
-   public Integer getId() {
-      return id;
-   }
+   public Integer getId() { return id; }
 
-   public void setId(Integer id) {
-      this.id = id;
-   }
+   public void setId(Integer id) { this.id = id; }
 
-   public String getContent() {
-      return content;
-   }
+   public String getContent() { return content; }
 
-   public void setContent(String content) {
-      this.content = content;
-   }
+   public void setContent(String content) { this.content = content; }
 
-   public int getMark() {
-      return mark;
-   }
+   public int getMark() { return mark; }
 
-   public void setMark(int mark) {
-      this.mark = mark;
-   }
+   public void setMark(int mark) { this.mark = mark; }
 
-   public Boolean getApproved() {
-      return isApproved;
-   }
+   public Boolean getApproved() { return isApproved; }
 
-   public void setApproved(Boolean approved) {
-      isApproved = approved;
-   }
+   public void setApproved(Boolean approved) { isApproved = approved; }
 
-   public Reservation getReservation() {
-      return reservation;
-   }
+   public Reservation getReservation() { return reservation; }
 
-   public void setReservation(Reservation reservation) {
-      this.reservation = reservation;
+   public void setReservation(Reservation reservation) { this.reservation = reservation; }
+
+   @Override
+   public String toString() {
+      return "Revision{}";
    }
 }

@@ -25,13 +25,17 @@ public class Ship extends RentingEntity {
    @Column(unique=true, nullable=false)
    private double maxSpeed;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "ship_navigation_equipment", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "navigation_equipment")
    private Set<NavigationEquipment> navigationEquipment = new HashSet<NavigationEquipment>();
 
    @Column(unique=true, nullable=false)
    private int capacity;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "ship_fishing_equipment", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "fishing_equipment")
    private Set<String> fishingEquipment = new HashSet<String>();
 
    @ManyToOne(fetch = FetchType.EAGER)
@@ -92,13 +96,9 @@ public class Ship extends RentingEntity {
       this.capacity = capacity;
    }
 
-   public Set<NavigationEquipment> getNavigationEquipment() {
-      return navigationEquipment;
-   }
+   public Set<NavigationEquipment> getNavigationEquipment() { return navigationEquipment; }
 
-   public void setNavigationEquipment(Set<NavigationEquipment> navigationEquipment) {
-      this.navigationEquipment = navigationEquipment;
-   }
+   public void setNavigationEquipment(Set<NavigationEquipment> navigationEquipment) { this.navigationEquipment = navigationEquipment; }
 
    public Set<String> getFishingEquipment() {
       return fishingEquipment;
@@ -114,5 +114,10 @@ public class Ship extends RentingEntity {
 
    public void setShipOwner(ShipOwner shipOwner) {
       this.shipOwner = shipOwner;
+   }
+
+   @Override
+   public String toString() {
+      return "Ship{}";
    }
 }

@@ -9,14 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.parser.Entity;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class ClientService {
 
     @Autowired
     IEntityRepository entityRepository;
+
     public ClientService(){ }
 
     public List<? extends RentingEntity> GetAllEntities(int state){

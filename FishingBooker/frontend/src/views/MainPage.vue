@@ -140,6 +140,7 @@ export default {
     }
     .drop{
         margin-top: 2vh;
+        text-shadow: none;
     }
     .body{
         display:flex;

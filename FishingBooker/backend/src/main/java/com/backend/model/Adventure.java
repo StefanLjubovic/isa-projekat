@@ -10,7 +10,9 @@ public class Adventure extends RentingEntity {
    @Column(unique=true, nullable=false)
    private int maxPersons;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "adventure_fishing_equipment", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "fishing_equipment")
    private Set<String> fishingEquipment = new HashSet<String>();
 
    @ManyToOne(fetch = FetchType.EAGER)
@@ -20,6 +22,7 @@ public class Adventure extends RentingEntity {
    public Adventure(int id,String name,String description,Address address,double grade) {
       super(id,name,description,address,grade);
    }
+
    public Adventure() {}
 
    public int getMaxPersons() {

@@ -26,7 +26,9 @@ public class Reservation {
    @Column(unique=true, nullable=false)
    private int maxPersons;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "reservation_additional_services", joinColumns = @JoinColumn(name = "reservation_id"))
+   @Column(name = "additional_services")
    private Set<String> additionalServices = new HashSet<String>();
 
    @Column(unique=true, nullable=false)
@@ -97,9 +99,7 @@ public class Reservation {
       return isCanceled;
    }
 
-   public void setCanceled(Boolean canceled) {
-      isCanceled = canceled;
-   }
+   public void setCanceled(Boolean canceled) { isCanceled = canceled; }
 
    public Client getClient() {
       return client;
@@ -115,5 +115,10 @@ public class Reservation {
 
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
+   }
+
+   @Override
+   public String toString() {
+      return "Reservation{}";
    }
 }

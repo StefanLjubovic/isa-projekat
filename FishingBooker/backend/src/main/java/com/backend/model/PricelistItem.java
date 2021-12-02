@@ -1,5 +1,8 @@
 package com.backend.model;
 
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -53,5 +56,10 @@ public class PricelistItem {
 
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
+   }
+
+   @Override
+   public String toString() {
+      return "PricelistItem{}";
    }
 }

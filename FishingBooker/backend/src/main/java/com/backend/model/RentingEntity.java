@@ -1,4 +1,7 @@
 package com.backend.model;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -23,13 +26,19 @@ public class RentingEntity {
 
    private double cancellationPercentage;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "renting_entity_images", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "images")
    private Set<String> images = new HashSet<String>();
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "renting_entity_allowed_behavior", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "allowed_behaviour")
    private Set<String> allowedBehavior = new HashSet<String>();
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "renting_entity_unallowed_behavior", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "unallowed_behaviour")
    private Set<String> unallowedBehavior = new HashSet<String>();
 
    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
@@ -130,4 +139,8 @@ public class RentingEntity {
       this.allowedBehavior = allowedBehavior;
    }
 
+   @Override
+   public String toString() {
+      return "RentingEntity{}";
+   }
 }

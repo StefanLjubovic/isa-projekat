@@ -11,19 +11,24 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 @Component
+@Transactional
 public class DataLoader implements ApplicationRunner {
+
     @Autowired
     private IEntityRepository entityRepository;
+
     @Autowired
     private ICottageRepository cottageRepository;
-
+    
     @Autowired
     private IRoleRepository roleRepository;
 
     public DataLoader() {}
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Address address = new Address("Bulver oslobodjenja","21","24000","Novi Sad","Srbija");

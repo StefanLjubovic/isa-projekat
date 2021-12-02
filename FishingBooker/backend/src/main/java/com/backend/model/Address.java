@@ -59,9 +59,7 @@ public class Address {
       return streetNumber;
    }
 
-   public void setStreetNumber(String streetNumber) {
-      this.streetNumber = streetNumber;
-   }
+   public void setStreetNumber(String streetNumber) { this.streetNumber = streetNumber; }
 
    public String getPostalCode() {
       return postalCode;

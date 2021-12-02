@@ -23,7 +23,9 @@ public class Sale {
    @Column(unique=false, nullable=false)
    private Date expireDateTime;
 
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
+   @CollectionTable(name = "sale_additional_services", joinColumns = @JoinColumn(name = "entity_id"))
+   @Column(name = "additional_services")
    private Set<String> additionalServices = new HashSet<String>();
 
    @Column(unique=false, nullable=false)
@@ -97,5 +99,10 @@ public class Sale {
 
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
+   }
+
+   @Override
+   public String toString() {
+      return "Sale{}";
    }
 }
