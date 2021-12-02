@@ -13,7 +13,7 @@ const actions = {
     async fetchToken({commit}, loginRequest){
         const options = {
             method: 'POST',
-            url: 'http://localhost:8081/auth/login',
+            url: 'http://localhost:8082/auth/login',
             data: loginRequest,
         };
         const response =await axios(options)

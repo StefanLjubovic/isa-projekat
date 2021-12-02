@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <h1>My Schedule</h1>
-        <div class="unavaliable-period">
+        <div v-if="role == 4" class="unavaliable-period">
             <p>Define unavaliable period: </p>
             <form @submit.prevent>
                 <div class="mb-4">
