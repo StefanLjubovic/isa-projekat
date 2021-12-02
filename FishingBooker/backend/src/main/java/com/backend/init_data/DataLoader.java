@@ -9,9 +9,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 @Component
+@Transactional
 public class DataLoader implements ApplicationRunner {
 
     @Autowired
@@ -30,7 +32,5 @@ public class DataLoader implements ApplicationRunner {
         unallowedBehavior.add("Zabranjeno pravljenje zurki");
         Cottage cottage = new Cottage("Marijina vikendica","Prelepa vikendica uz pogled na jezero",4,address,unallowedBehavior);
         cottageRepository.save(cottage);
-        /*Cottage c = cottageRepository.getById(1);
-        System.out.println(c.getName());*/
     }
 }

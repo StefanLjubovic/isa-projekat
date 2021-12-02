@@ -115,4 +115,9 @@ public class Ship extends RentingEntity {
    public void setShipOwner(ShipOwner shipOwner) {
       this.shipOwner = shipOwner;
    }
+
+   @Override
+   public String toString() {
+      return "Ship{}";
+   }
 }

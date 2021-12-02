@@ -36,11 +36,12 @@ public class Room {
       this.bedNumber = bedNumber;
    }
 
-   public Cottage getCottage() {
-      return cottage;
-   }
+   public Cottage getCottage() { return cottage; }
 
-   public void setCottage(Cottage cottage) {
-      this.cottage = cottage;
+   public void setCottage(Cottage cottage) { this.cottage = cottage; }
+
+   @Override
+   public String toString() {
+      return "Room{}";
    }
 }

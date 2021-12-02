@@ -99,9 +99,7 @@ public class Reservation {
       return isCanceled;
    }
 
-   public void setCanceled(Boolean canceled) {
-      isCanceled = canceled;
-   }
+   public void setCanceled(Boolean canceled) { isCanceled = canceled; }
 
    public Client getClient() {
       return client;
@@ -117,5 +115,10 @@ public class Reservation {
 
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
+   }
+
+   @Override
+   public String toString() {
+      return "Reservation{}";
    }
 }

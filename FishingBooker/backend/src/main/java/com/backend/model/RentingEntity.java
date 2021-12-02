@@ -1,4 +1,7 @@
 package com.backend.model;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 import java.util.*;
 

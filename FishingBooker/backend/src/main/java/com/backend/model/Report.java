@@ -76,4 +76,9 @@ public class Report {
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
    }
+
+   @Override
+   public String toString() {
+      return "Report{}";
+   }
 }

@@ -54,4 +54,9 @@ public class UnavaliablePeriod {
    public void setToDateTime(Date toDateTime) {
       this.toDateTime = toDateTime;
    }
+
+   @Override
+   public String toString() {
+      return "UnavaliablePeriod{}";
+   }
 }

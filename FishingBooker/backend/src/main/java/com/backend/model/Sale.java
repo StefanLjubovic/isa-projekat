@@ -100,4 +100,9 @@ public class Sale {
    public void setRentingEntity(RentingEntity rentingEntity) {
       this.rentingEntity = rentingEntity;
    }
+
+   @Override
+   public String toString() {
+      return "Sale{}";
+   }
 }

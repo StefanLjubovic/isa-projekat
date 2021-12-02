@@ -23,4 +23,9 @@ public class ShipOwner extends RegistratedUser {
     public void setShips(Set<Ship> ships) {
         this.ships = ships;
     }
+
+    @Override
+    public String toString() {
+        return "ShipOwner{}";
+    }
 }
