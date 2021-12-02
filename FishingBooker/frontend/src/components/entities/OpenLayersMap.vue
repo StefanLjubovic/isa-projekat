@@ -33,8 +33,7 @@ export default {
             city: '',
             country: '',
             longitude: '',
-            latitude: ''
-                
+            latitude: ''               
         }
     },
     mounted() {
@@ -45,8 +44,7 @@ export default {
         layers: [
           // adding a background tiled layer
           new TileLayer({
-          source: new OSM() // tiles are served by OpenStreetMap
-        
+          source: new OSM() // tiles are served by OpenStreetMap       
         }),
         ],
 		view : new View({
@@ -59,7 +57,6 @@ export default {
              var coord = toLonLat(evt.coordinate);
               reverseGeocode(coord);
       })
-
     },
 }
     setTimeout(() => { this.map.updateSize(); });
@@ -81,50 +78,49 @@ export default {
                 el.dispatchEvent(new Event('input'));
                 
             //STREET
-                if (json.address.road) {
-                    let el = document.getElementById("streetID");
-                    el.value = json.address.road;
-                    el.dispatchEvent(new Event('input'));
-                } 
+            if (json.address.road) {
+                let el = document.getElementById("streetID");
+                el.value = json.address.road;
+                el.dispatchEvent(new Event('input'));
+            } 
 
             //STREET NUMBER
-                if(json.address.streetNumber){
-                    let el = document.getElementById("streetNumID");
-                    el.value = json.address.streetNumber;
-                    el.dispatchEvent(new Event('input'));
-                }
+            if(json.address.streetNumber){
+                let el = document.getElementById("streetNumID");
+                el.value = json.address.streetNumber;
+                el.dispatchEvent(new Event('input'));
+            }
 
             //CITY
-                if (json.address.city) {
-                    let el = document.getElementById("cityID");
-                    el.value = json.address.city;
-                    el.dispatchEvent(new Event('input'));
-                } else if (json.address.city_district) {
-                    let el = document.getElementById("cityID");
-                    el.value = json.address.city_district;
-                    el.dispatchEvent(new Event('input'));
-                }
+            if (json.address.city) {
+                let el = document.getElementById("cityID");
+                el.value = json.address.city;
+                el.dispatchEvent(new Event('input'));
+             } else if (json.address.city_district) {
+                let el = document.getElementById("cityID");
+                el.value = json.address.city_district;
+                el.dispatchEvent(new Event('input'));
+            }
                 
-                //POSTALCODE
-                if (json.address.postcode) {
-                    let el = document.getElementById("postalcodeID");
-                    el.value = json.address.postcode;
-                    el.dispatchEvent(new Event('input'));
-                } 
+            //POSTALCODE
+            if (json.address.postcode) {
+                let el = document.getElementById("postalcodeID");
+                el.value = json.address.postcode;
+                el.dispatchEvent(new Event('input'));
+            } 
                 
-                //COUNTRY
-                if (json.address.postcode) {
-                    let el = document.getElementById("countryID");
-                    el.value = json.address.country;
-                    el.dispatchEvent(new Event('input'));
-                } 
-            });
+            //COUNTRY
+            if (json.address.postcode) {
+                let el = document.getElementById("countryID");
+                el.value = json.address.country;
+                el.dispatchEvent(new Event('input'));
+             } 
+          });
         }
     
 </script>
 
 <style scoped>
-
     .content{
         display:flex;
         flex-direction: column;
