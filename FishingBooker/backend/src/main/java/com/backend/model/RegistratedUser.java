@@ -38,8 +38,6 @@ public class RegistratedUser implements UserDetails {
    @Column(name = "enabled")
    private boolean enabled;
 
-   @Column(name="role", unique=false, nullable=false)
-
    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinTable(name = "user_role",
            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "reg_user_id"),
@@ -167,9 +165,11 @@ public class RegistratedUser implements UserDetails {
    public boolean isEnabled() {
       return enabled;
    }
+
    public void setEnabled(boolean enabled) {
       this.enabled = enabled;
    }
+
    public String toString() {
       return "RegistratedUser{}";
    }

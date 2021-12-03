@@ -28,8 +28,7 @@ public class Role implements GrantedAuthority {
       this.name=role;
    }
 
-   public Role() {
-   }
+   public Role() {}
 
    @JsonIgnore
    @Override
