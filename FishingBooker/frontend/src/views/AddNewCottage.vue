@@ -90,6 +90,16 @@
             </div>
 
             <div class="right-side">
+                <!--Images upload -->
+                <div class="upload-images">
+                    <p> Upload images of your cottage: </p>
+                    <input type="file" class="file-upload" @change="imageAdded"/>
+                </div> <br/>
+                <div v-if="images" class="images-preview">
+                        <div v-for="image in images" :key="image">
+                            <img :src="image" />
+                        </div>
+                </div>               
                  <OpenLayersMap></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
@@ -127,9 +137,32 @@
                 allowedBehavior: 1,
                 unallowedBehavior: 1,
                 pricelistItems: 1,
-                additionalServices: 1
+                additionalServices: 1,
+                images: [],
+                imagesBackend: []
             }
         },
+
+        methods: {
+
+            imageAdded(e) 
+            {
+                const file = e.target.files[0];
+                this.createBase64Image(file);
+                this.images.push(URL.createObjectURL(file));
+            },
+            createBase64Image(file){
+                const reader= new FileReader();
+            
+                reader.onload = (e) =>{
+                    let img = e.target.result;
+                    this.imagesBackend.push(img);
+                }
+                reader.readAsDataURL(file);
+            },
+
+        },
+
         setup() {
             const state = reactive({
                 name: '',
@@ -257,6 +290,31 @@
         margin-left: 10px;
     }
 
+    .upload-images{
+        margin-right: 200px;
+    }
+
+    .images-preview{
+        display: contents;
+         width: 40%;
+         height: 30%;
+     }
+
+    .images-preview img{
+        width:50%;
+        height: 50%;
+    }
+
+    p{
+        font-size: 20px;
+        color: #1c3146;
+    }
+
+    .file-upload{
+       margin-left: 45%;  
+    }
+
+
     .cancel-button {
       background-color: white;
       border-color: rgb(218, 214, 214);
@@ -270,6 +328,6 @@
       color: white;
       width: 120px;
       margin-right: 10px;
-  }
+     }
 
 </style>

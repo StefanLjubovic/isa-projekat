@@ -37,7 +37,7 @@ export default {
         }
     },
     mounted() {
-      var center = fromLonLat([19.41, 45.82]);
+      var center = fromLonLat([19.41, 44.82]);
 
       var mapSearch = new Map({
         target: 'map',
@@ -49,7 +49,7 @@ export default {
         ],
 		view : new View({
 		center:center,
-		zoom: 6,
+		zoom: 7,
 	}),
       })
 
@@ -67,6 +67,7 @@ export default {
                 return response.json();
             }).then(function (json) {
             
+            //https://stackoverflow.com/questions/56348513/how-to-change-v-model-value-from-js
             //LONGITUDE
             let elem = document.getElementById("longitudeID");
             elem.value = coords[0].toFixed(2);
@@ -138,7 +139,7 @@ export default {
 
     .fields{
         width: 600px;
-        float: left;
+        margin-left: 10%;
     }
 
     .form-control{
@@ -146,5 +147,4 @@ export default {
         width: 400px;
         height: 40px;  
     }
-
 </style>
