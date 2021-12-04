@@ -91,12 +91,29 @@
                                     <div class="text-danger">{{ error.$message }}</div>
                                 </div>
                             </div>
+                            <div class="form-group mb-4">
+                                <select required class="form-control" v-model="form.role">
+                                    <option disabled value=""> Select role*</option>
+                                    <option> Cottage owner</option>
+                                    <option> Ship owner</option>
+                                    <option> Fishing instructor</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-4" style="display:flex">
+                        <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
                                 <textarea class="reason-area" placeholder="Reason for registration*" v-model="form.registrationReason" rows="4" cols="65"></textarea>
                                  <!-- Error Message -->
                                  <div class="input-errors" v-for="(error, index) of v$.form.registrationReason.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
+                            </div>                
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group mb-4" v-if="form.role=='Fishing instructor'">
+                                <textarea class="reason-area" placeholder="Your biography*" v-model="form.biography" rows="4" cols="65"></textarea>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.biography.$errors" :key="index">
                                     <div class="text-danger">{{ error.$message }}</div>
                                 </div>
                             </div>
@@ -142,8 +159,10 @@ export default {
                 country:'',
                 phone: '',
                 password: '',
+                role: '',
                 confirmPassword: '',
-                registrationReason: ''
+                registrationReason: '',
+                biography: ''
             }
         }
     },
@@ -172,28 +191,38 @@ export default {
                 phone: {required, numeric },
                 password: { required, min: minLength(6) },
                 confirmPassword: {required, sameAs:sameAs(this.form.password)},
-                registrationReason: {required}
+                registrationReason: {required},
+                biography: {required}
             },
         }
     },
     methods:{
         submitForm(){
             this.v$.$validate()
-            const client= {
-                email : this.form.email,
-                name: this.form.name,
-                surname: this.form.surname,
-                streetName: this.form.streetName,
-                streetNumber: this.form.streetNumber,
-                postalCode: this.form.postalCode,
-                city: this.form.city,
-                country:this.form.country,
-                phone: this.form.phone,
-                password: this.form.password,
-                confirmPassword: this.form.confirmPassword,
-                registrationReason: this.form.registrationReason
+            if(this.v$.$errors.length == 0){
+                const advertiserRequest= {
+                    firstName: this.form.name,
+                    lastName: this.form.surname,
+                    phoneNumber: this.form.phone,
+                    email : this.form.email,
+                    password: this.form.password,
+                    role: this.form.role,
+                    explanation: this.form.registrationReason,
+                    biography: this.form.biography,
+                    address: {
+                        streetName: this.form.streetName,
+                        streetNumber: this.form.streetNumber,
+                        postalCode: this.form.postalCode,
+                        city: this.form.city,
+                        country:this.form.country
+                    }
+                }
+            this.$swal('Success!',
+            'Your request is successfully sent to administrator!',
+            'success');
+            this.v$.$reset();
+            console.log(advertiserRequest)
             }
-            console.log(client)
         }
     }
 }
