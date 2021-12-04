@@ -13,21 +13,38 @@
                     <div class="inputs">
                         <div class="left">
                             <input type="email" class="form-control" placeholder="Email" v-model="state.user.email" disabled>
+                            <div class="text-danger" v-if="v$.email.$error">{{v$.email.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="First name" v-model="state.user.firstName" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.firstName.$error">{{v$.firstName.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="Last name" v-model="state.user.lastName" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.lastName.$error">{{v$.lastName.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="Phone number" v-model="state.user.phoneNumber" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.phoneNumber.$error">{{v$.phoneNumber.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="Street name" v-model="state.user.streetName" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.streetName.$error">{{v$.streetName.$errors[0].$message}} </div>
                         </div>
                         <div class="right">
                             <input type="text" class="form-control" placeholder="Street number" v-model="state.user.streetNumber" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.streetNumber.$error">{{v$.streetNumber.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="Postal code" v-model="state.user.postalCode" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.postalCode.$error">{{v$.postalCode.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="City" v-model="state.user.city" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.city.$error">{{v$.city.$errors[0].$message}} </div>
+
                             <input type="text" class="form-control" placeholder="Country" v-model="state.user.country" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.country.$error">{{v$.country.$errors[0].$message}} </div>
+
                             <div class="buttons">
                                 <button class="btn change-password" :disabled="!editMode">Change password</button>
                                 <div class="confirm-buttons">
                                     <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode">Save</button>
-                                    <button class="btn cancel-button" @click.prevent="editMode=false" :disabled="!editMode">Cancel</button>
+                                    <button class="btn cancel-button" @click.prevent="cancelEditing()" :disabled="!editMode">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +68,7 @@
             <textarea class="reason-area" cols="40" rows="6"></textarea><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendRequest()" >Submit</button>
-                <button class="btn cancel-button">Cancel</button>
+                <button class="btn cancel-button" @click="cancelRequest()">Cancel</button>
             </div>
        </div>
      </div>
@@ -61,7 +78,7 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
+import {required, email, sameAs, minLength, numeric, alpha} from '@vuelidate/validators' 
 import {reactive, computed} from 'vue'
 
 export default ({
@@ -72,37 +89,37 @@ export default ({
     },
     setup() {
         let user = {
-                email : 'stefan@gmail.com',
-                firstName: 'Stefan',
-                lastName: 'Ljubovic',
-                streetName: 'Mihajla Pupina',
-                streetNumber: 11,
-                postalCode: 24000,
-                city: 'Subotica',
-                country: 'Srbija',
-                phoneNumber: '063103130',
-                password: 'stefan123',
-                confirm: 'stefan123'
+            email : 'stefan@gmail.com',
+            firstName: 'Stefan',
+            lastName: 'Ljubovic',
+            streetName: 'Mihajla Pupina',
+            streetNumber: 11,
+            postalCode: 24000,
+            city: 'Subotica',
+            country: 'Srbija',
+            phoneNumber: '063103130',
+            password: 'stefan123',
+            confirm: 'stefan123'
         }
         let state = reactive({
             user
         })
-        const rules = computed(()=>{
+        const rules = computed(() => {
             return {
-                email: {required,email },
-                password: {required, minLength: minLength(6) },
-                confirm: {required,sameAs:sameAs(state.user.password)},
-                firstName: {required },
-                lastName: {required },
-                streetName: {required },
-                streetNumber: {required,numeric },
-                postalCode: {required,numeric },
-                city: {required },
-                country: {required },
-                phoneNumber: {required,numeric },
+                email: { required, email },
+                password: { required, minLength: minLength(6) },
+                confirm: { required, sameAs: sameAs(state.user.password) },
+                firstName: { required, alpha },
+                lastName: { required, alpha },
+                streetName: { required },
+                streetNumber: { required },
+                postalCode: { required, numeric },
+                city: { required, alpha },
+                country: { required, alpha },
+                phoneNumber: { required, numeric },
             }
         })
-        const v$=useValidate(rules,state.user)
+        const v$ = useValidate(rules, state.user)
         return {
             state,
             v$
@@ -111,8 +128,12 @@ export default ({
     methods: {
         saveChanges() {
             this.v$.$validate()
-            console.log(this.v$)
+            if(this.v$.$error)
+                return
 
+            this.editMode = !this.editMode;
+        },
+        cancelEditing() {
             this.editMode = !this.editMode;
         },
 
@@ -123,12 +144,14 @@ export default ({
         sendRequest(){
             window.$('#delete-account-modal').modal('hide');
         },
+        cancelRequest() {
+            // TODO
+        }
     }
 })
 </script>
 
 <style scoped>
-
 #page {
     margin-left: 15%;
     margin-right: 15%;
@@ -210,21 +233,27 @@ export default ({
     margin-top: 18px;
 }
 
- .reason-area{
-     align-self: left;
-     margin-left: 5px;
-     background-color: #ffffff;
-     border-width: 1px solid #888 ;
-     font-size: 18px;
-     resize: none;
-     outline: none;
-     -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-      border-radius: 10px;
+.reason-area{
+    align-self: left;
+    margin-left: 5px;
+    background-color: #ffffff;
+    border-width: 1px solid #888 ;
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 10px;
 }
 
 .confirm-buttons{
     margin-left: 30%;
 }
 
+.text-danger {
+    margin-top: -25px;
+    margin-bottom: 5px;
+    text-align: left;
+    font-size: 13px;
+}
 </style>

@@ -12,9 +12,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 const app = createApp(App);
 app.use(VueSweetalert2).use(VueViewer).use(router).use(VCalendar, {}).use(store);
 
-
-
-app.config.globalProperties.role = 2;
+app.config.globalProperties.role = 1;
 /*  0 - client
     1 - admin
     2 - cottage owner

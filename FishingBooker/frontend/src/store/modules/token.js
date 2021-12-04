@@ -6,10 +6,11 @@ const state = {
 };
 
 const getters = {
-    token : (state) => state.token
+    getToken : state => state.token,
+    getRole: state => state.role
 };
 
-const actions = {
+const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada je fetchuje neki url
     async fetchToken({commit}, loginRequest){
         const options = {
             method: 'POST',
@@ -28,7 +29,7 @@ const actions = {
     }
 };
 
-const mutations = {
+const mutations = {     // sinhrono, za izmenu stanja promenljivih u state
     setToken : (state, token) => (state.token = token), 
     setRole : (state, role) => (state.role = role), 
     removeToken : (state) => (state.token = {})
