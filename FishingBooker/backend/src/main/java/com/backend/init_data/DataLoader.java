@@ -1,8 +1,6 @@
 package com.backend.init_data;
 
-import com.backend.model.Address;
-import com.backend.model.Cottage;
-import com.backend.model.Role;
+import com.backend.model.*;
 import com.backend.repository.ICottageRepository;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IRoleRepository;
@@ -41,5 +39,7 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(new Role("ROLE_COTTAGE_OWNER"));
         roleRepository.save(new Role("ROLE_INSTRUCTOR"));
         roleRepository.save(new Role("ROLE_SHIP_OWNER"));
+
+
     }
 }

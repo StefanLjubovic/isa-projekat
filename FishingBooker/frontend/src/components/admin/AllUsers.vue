@@ -1,4 +1,5 @@
 <template>
+    <!-- User deatils modal -->
     <div v-if="selectedUser" class="modal fade" id="user-details-modal">
         <div class="modal-dialog rounded">
             <div class="modal-header">
@@ -36,27 +37,49 @@
         </div>
     </div>
 
+    <!-- Add new administrator modal -->
     <div v-if="selectedUser" class="modal fade" id="new-admin-modal">
         <div class="modal-dialog rounded">
-            <div class="modal-header">
+            <div class="modal-header"  @click="cancelNewAdmin()">
                 <h3>Add new administrator</h3>
-                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+                <button class="btn btn-close close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
-                <input type="email" class="form-control" placeholder="Email*" v-model="state.user.email" >
-                <input type="text" class="form-control" placeholder="First name*" v-model="state.user.firstName" >
-                <input type="text" class="form-control" placeholder="Last name*" v-model="state.user.lastName" >
-                <input type="text" class="form-control" placeholder="Phone number*" v-model="state.user.phoneNumber" >
-                <input type="text" class="form-control" placeholder="Street name*" v-model="state.user.streetName" >
-                <input type="text" class="form-control" placeholder="Street number*" v-model="state.user.streetNumber" >
-                <input type="text" class="form-control" placeholder="Postal code*" v-model="state.user.postalCode" >
-                <input type="text" class="form-control" placeholder="City*" v-model="state.user.city" >
-                <input type="text" class="form-control" placeholder="Country*" v-model="state.user.country" >
-                <input type="password" class="form-control" placeholder="Password*" v-model="state.user.password"/>
-                <input type="password" class="form-control" placeholder="Confirm password*" v-model="state.user.confirm"/>
+                <input type="email" class="form-control" placeholder="Email*" v-model="v$.newAdmin.email.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.email.$error">{{v$.newAdmin.email.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="First name*" v-model="v$.newAdmin.firstName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.firstName.$error">{{v$.newAdmin.firstName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Last name*" v-model="v$.newAdmin.lastName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.lastName.$error">{{v$.newAdmin.lastName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Phone number*" v-model="v$.newAdmin.phoneNumber.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.phoneNumber.$error">{{v$.newAdmin.phoneNumber.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Street name*" v-model="v$.newAdmin.address.streetName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.streetName.$error">{{v$.newAdmin.address.streetName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Street number*" v-model="v$.newAdmin.address.streetNumber.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.streetNumber.$error">{{v$.newAdmin.address.streetNumber.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Postal code*" v-model="v$.newAdmin.address.postalCode.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.postalCode.$error">{{v$.newAdmin.address.postalCode.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="City*" v-model="v$.newAdmin.address.city.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.city.$error">{{v$.newAdmin.address.city.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Country*" v-model="v$.newAdmin.address.country.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.country.$error">{{v$.newAdmin.address.country.$errors[0].$message}} </div>
+
+                <input type="password" class="form-control" placeholder="Password*" v-model="v$.newAdmin.password.$model"/>
+                <div class="text-danger" v-if="v$.newAdmin.password.$error">{{v$.newAdmin.password.$errors[0].$message}} </div>
+
+                <input type="password" class="form-control" placeholder="Confirm password*" v-model="v$.newAdmin.confirm.$model"/>
+                <div class="text-danger" v-if="v$.newAdmin.confirm.$error">{{v$.newAdmin.confirm.$errors[0].$message}} </div>
 
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn" @click="submitNewAdmin()">Submit</button>
+                    <button class="btn submit-btn" :disabled="v$.newAdmin.$invalid" @click="submitNewAdmin()">Submit</button>
                     <button class="btn cancel-btn" @click="cancelNewAdmin()">Cancel</button>
                 </div>
             </div>
@@ -133,8 +156,16 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
-import {reactive, computed} from 'vue'
+import {required, email, sameAs, minLength, maxLength, numeric} from '@vuelidate/validators'
+//import server from '../../server/index'
+
+export function validName(name) {
+  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  if (validNamePattern.test(name)){
+    return true;
+  }
+  return false;
+}
 
 export default {
     data() {
@@ -175,48 +206,63 @@ export default {
             ],
             users: [],
             searchParams: "",
-            selectedUser: undefined
+            selectedUser: undefined,
+            newAdmin: {
+                email : '',
+                firstName: '',
+                lastName: '',
+                phoneNumber: '',
+                address: {
+                    streetName: '',
+                    streetNumber: '',
+                    postalCode: '',
+                    city: '',
+                    country: '',
+                },
+                password: '',
+                confirm: ''
+            }
         }
     },
     mounted() {
         this.users = this.allUsers;
     },
     setup() {
-        let user = {
-                email : '',
-                firstName: '',
-                lastName: '',
-                streetName: '',
-                streetNumber: undefined,
-                postalCode: undefined,
-                city: '',
-                country: '',
-                phoneNumber: '',
-                password: '',
-                confirm: ''
-        }
-        let state = reactive({
-            user
-        })
-        const rules = computed(()=>{
-            return {
-                email: {required,email },
-                password: {required, minLength: minLength(6) },
-                confirm: {required,sameAs:sameAs(state.user.password)},
-                firstName: {required },
-                lastName: {required },
-                streetName: {required },
-                streetNumber: {required,numeric },
-                postalCode: {required,numeric },
-                city: {required },
-                country: {required },
-                phoneNumber: {required,numeric },
-            }
-        })
-        const v$=useValidate(rules,state.user)
+        return { v$: useValidate() }
+    },
+    validations() {
         return {
-            state,
-            v$
+            newAdmin: {
+                email: { required, email },
+                firstName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                lastName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                phoneNumber: { required, numeric, minLength: minLength(9), maxLength: maxLength(10) },
+                address: {
+                    streetName: { required },
+                    streetNumber: { required },
+                    postalCode: { required, numeric, minLength: minLength(5), maxLength: maxLength(5) },
+                    city: { required, name_validation: {
+                            $validator: validName,
+                            $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                    country: { required, name_validation: {
+                            $validator: validName,
+                            $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                },
+                password: { required, minLength: minLength(6) },
+                confirm: { required, sameAs:sameAs(this.newAdmin.password) },
+            }
         }
     },
     methods: {
@@ -258,9 +304,14 @@ export default {
             else return "";
         },
         submitNewAdmin: function() {
+
+            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '',
+                city: '', country: '', phoneNumber: '', password: '', confirm: '' }
             window.$('#new-admin-modal').modal('hide');
         },
         cancelNewAdmin: function() {
+            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '',
+                city: '', country: '', phoneNumber: '', password: '', confirm: '' }
             window.$('#new-admin-modal').modal('hide');
         }
     }
@@ -317,6 +368,7 @@ h1 {
 .form-control {
     width: 300px;
     margin-right: 10px;
+    margin-top: 7px;
 }
 
 .users-table {
@@ -363,5 +415,11 @@ h1 {
     color: #2c3e50;
     border-color: #cfd3d8;
     margin-left: 10px;
+}
+
+.text-danger {
+    margin-top: -5px;
+    text-align: left;
+    font-size: 13px;
 }
 </style>

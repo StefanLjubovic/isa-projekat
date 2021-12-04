@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,16 +62,24 @@ public class AuthenticationController {
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
     public ResponseEntity<RegistratedUser> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
-
-        RegistratedUser existUser = this.userService.findByUsername(userRequest.getEmail());
+        RegistratedUser existUser = this.userService.findByEmail(userRequest.getEmail());
 
         if (existUser != null) {
             throw new ResourceConflictException(userRequest.getId(), "Username already exists");
         }
 
         RegistratedUser user = this.userService.save(userRequest);
-
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/registerAdmin")
+    public ResponseEntity<RegistratedUser> registerNewAdmin(@RequestBody RegistratedUser newAdminUser) {
+        if(this.userService.findByEmail(newAdminUser.getEmail()) != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");
+        }
+
+        RegistratedUser addedAdmin = this.userService.saveAdmin(newAdminUser);
+        return new ResponseEntity<>(addedAdmin, HttpStatus.CREATED);
     }
 
 

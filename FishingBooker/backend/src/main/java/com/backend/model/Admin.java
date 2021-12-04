@@ -9,4 +9,8 @@ import java.util.*;
 public class Admin extends RegistratedUser {
 
     public Admin() { }
+
+    public Admin(RegistratedUser user) {
+        super(user);
+    }
 }

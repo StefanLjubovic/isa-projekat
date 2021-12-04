@@ -53,6 +53,33 @@ public class RegistratedUser implements UserDetails {
 
    public RegistratedUser() { }
 
+   public RegistratedUser(String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, List<Role> roles, Timestamp lastPasswordResetDate, Address address) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.phoneNumber = phoneNumber;
+      this.email = email;
+      this.password = password;
+      this.status = status;
+      this.enabled = enabled;
+      this.roles = roles;
+      this.lastPasswordResetDate = lastPasswordResetDate;
+      this.address = address;
+   }
+
+   public RegistratedUser(RegistratedUser user) {
+      this.id = user.getId();
+      this.firstName = user.getFirstName();
+      this.lastName = user.getLastName();
+      this.phoneNumber = user.getPhoneNumber();
+      this.email = user.getEmail();
+      this.password = user.getPassword();
+      this.status = user.getStatus();
+      this.enabled = user.isEnabled();
+      this.roles = user.getRoles();
+      this.lastPasswordResetDate = user.getLastPasswordResetDate();
+      this.address = user.getAddress();
+   }
+
    public Integer getId() {
       return id;
    }

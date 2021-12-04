@@ -1,8 +1,10 @@
 package com.backend.service;
 
 import com.backend.dto.UserRequest;
+import com.backend.model.Admin;
 import com.backend.model.RegistratedUser;
 import com.backend.model.Role;
+import com.backend.model.UserStatus;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -24,7 +27,7 @@ public class UserService {
     @Autowired
     private RoleService roleService;
 
-    public RegistratedUser findByUsername(String username) throws UsernameNotFoundException {
+    public RegistratedUser findByEmail(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
     }
 
@@ -54,4 +57,15 @@ public class UserService {
         return this.userRepository.save(u);
     }
 
+    public RegistratedUser saveAdmin(RegistratedUser newAdminUser) {
+        Admin admin = new Admin(newAdminUser);
+
+        List<Role> roles = roleService.findByName("ROLE_ADMIN");
+        admin.setRoles(roles);
+        admin.setPassword(passwordEncoder.encode(newAdminUser.getPassword()));
+        admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+        admin.setEnabled(true);
+        admin.setStatus(UserStatus.active);
+        return this.userRepository.save(admin);
+    }
 }

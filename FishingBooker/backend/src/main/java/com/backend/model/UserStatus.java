@@ -7,8 +7,6 @@ package com.backend.model;
 import java.util.*;
 
 public enum UserStatus {
-   pending,
    active,
    blocked;
-
 }
