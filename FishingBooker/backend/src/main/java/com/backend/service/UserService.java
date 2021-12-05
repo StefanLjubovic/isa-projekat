@@ -2,7 +2,9 @@ package com.backend.service;
 
 import com.backend.dto.UserRequest;
 import com.backend.model.RegistratedUser;
+import com.backend.model.RegistrationRequest;
 import com.backend.model.Role;
+import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +19,9 @@ public class UserService {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IRegistrationRequestRepository requestRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -52,6 +57,10 @@ public class UserService {
         u.setRoles(roles);
 
         return this.userRepository.save(u);
+    }
+
+    public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        return this.requestRepository.save(request);
     }
 
 }

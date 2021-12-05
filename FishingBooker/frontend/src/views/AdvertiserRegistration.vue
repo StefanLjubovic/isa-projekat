@@ -133,6 +133,8 @@
 <script>
 import useValidate from '@vuelidate/core'
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
+import server from '../server/index'
+import axios from 'axios'
 
 export function validName(name) {
   let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
@@ -199,7 +201,6 @@ export default {
     methods:{
         submitForm(){
             this.v$.$validate()
-            if(this.v$.$errors.length == 0){
                 const advertiserRequest= {
                     firstName: this.form.name,
                     lastName: this.form.surname,
@@ -217,12 +218,21 @@ export default {
                         country:this.form.country
                     }
                 }
-            this.$swal('Success!',
-            'Your request is successfully sent to administrator!',
-            'success');
-            this.v$.$reset();
-            console.log(advertiserRequest)
-            }
+                axios.post(`${server.baseUrl}/auth/registerAdvertiser`, advertiserRequest)
+                .then((response) => {
+
+                this.form= { email : undefined, name: '', surame: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phone: '', password: '', confirmPassword: '', registrationReason: '',biography: '' };
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: response.data,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                })
+                .catch(() => {
+                    this.$swal('There is already an account with this email!');
+                })
         }
     }
 }

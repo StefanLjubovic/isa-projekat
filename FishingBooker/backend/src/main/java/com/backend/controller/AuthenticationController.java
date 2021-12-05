@@ -5,6 +5,7 @@ import com.backend.dto.UserRequest;
 import com.backend.dto.UserTokenState;
 import com.backend.exception.ResourceConflictException;
 import com.backend.model.RegistratedUser;
+import com.backend.model.RegistrationRequest;
 import com.backend.service.UserService;
 import com.backend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -73,5 +71,14 @@ public class AuthenticationController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("/registerAdvertiser")
+    public ResponseEntity<String> registerAdvertiser(@RequestBody RegistrationRequest advertiserRequest) {
+        RegistratedUser existedUser = this.userService.findByUsername(advertiserRequest.getEmail());
 
+        if(existedUser != null)
+            throw  new ResourceConflictException(advertiserRequest.getId(), "Email already exists");
+
+        RegistrationRequest createdRequest = userService.saveRegistrationRequest(advertiserRequest);
+        return new ResponseEntity<>("Registration request successfully sent to administrator", HttpStatus.CREATED);
+    }
 }
