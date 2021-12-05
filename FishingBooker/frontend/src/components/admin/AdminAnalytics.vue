@@ -4,7 +4,7 @@
         <div class="money-percentage">
             <h5>Money percentage from successful reservation:</h5>
             <div class="input-percentage">
-                <input type="text" class="form-control form-control-money" v-model="moneyPercentageBackup" :disabled="!editMode">
+                <input type="text" class="form-control form-control-money" v-model="moneyPercentage" :disabled="!editMode">
                 <p>%</p>
                 <button class="btn" @click="editMode = !editMode" :disabled="editMode"><i class="fas fa-pen"></i></button>
                 <button class="btn" @click="saveMoneyPercentage()" :disabled="!editMode"><i class="fas fa-check"></i></button>
@@ -48,12 +48,13 @@
 </template>
 
 <script>
+import axios from 'axios'
+import server from '../../server/index'
 
 export default ({
     data() {
         return {
-            moneyPercentage: 30,
-            moneyPercentageBackup: undefined,
+            moneyPercentage: undefined,
             editMode: false,
             dateFrom: "",
             dateTo: "",
@@ -78,13 +79,18 @@ export default ({
         }
     },
     mounted() {
-        this.moneyPercentageBackup = this.moneyPercentage;
+        axios.get(`${server.baseUrl}/adminAnalytics/percentage`)
+        .then((response) => {
+            this.moneyPercentage = response.data;
+        })
         this.reservations = this.allReservations;
     },
     methods: {
         saveMoneyPercentage: function() {
-            this.moneyPercentage = this.moneyPercentageBackup;
-            this.editMode = false;
+            axios.put(`${server.baseUrl}/adminAnalytics/percentage/${this.moneyPercentage}`)
+            .then(() => {
+                this.editMode = false;
+            })
         },
         getTotalIncome: function() {
             let sum = 0;

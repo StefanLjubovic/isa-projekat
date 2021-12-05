@@ -1,10 +1,7 @@
 package com.backend.init_data;
 
 import com.backend.model.*;
-import com.backend.repository.ICottageRepository;
-import com.backend.repository.IEntityRepository;
-import com.backend.repository.IRoleRepository;
-import com.backend.repository.IUserRepository;
+import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -29,6 +26,9 @@ public class DataLoader implements ApplicationRunner {
     @Autowired
     private IUserRepository userRepository;
 
+    @Autowired
+    private ISystemPropertyRepository systemPropertyRepository;
+
     public DataLoader() {}
 
     @Override
@@ -50,5 +50,8 @@ public class DataLoader implements ApplicationRunner {
         RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, roles, new Timestamp(System.currentTimeMillis()), address1);
         Admin admin = new Admin(user, false);
         userRepository.save(admin);
+
+        SystemProperty systemProperty = new SystemProperty("INCOME_PERCENTAGE", "0");
+        this.systemPropertyRepository.save(systemProperty);
     }
 }

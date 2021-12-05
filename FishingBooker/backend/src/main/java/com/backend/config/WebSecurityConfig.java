@@ -66,7 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**").permitAll()	// /h2-console/** ako se koristi H2 baza)
                 .antMatchers("/client/**").permitAll()		// /api/foo
                 .antMatchers("/users/**").permitAll()
+                .antMatchers("/adminAnalytics/**").permitAll()
                 .anyRequest().authenticated().and()
+
 
                 .cors().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);

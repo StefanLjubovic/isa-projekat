@@ -245,6 +245,7 @@ export default {
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
+                confirmButtonColor: '#2c3e50'
             }).then((result) => {
                 if(result.isConfirmed) {
                     axios.delete(`${server.baseUrl}/users/deleteUser/${user.id}`)
