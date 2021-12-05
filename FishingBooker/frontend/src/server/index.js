@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let server = {};
-const baseUrl = 'http://localhost:8082';
+server.baseUrl = 'http://localhost:8082';
 
 server.getAllEntities = async (state) =>{
     const options ={
@@ -10,7 +10,7 @@ server.getAllEntities = async (state) =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: `${baseUrl}/client/`+state,
+        url: server.baseUrl+`/client/`+state,
     };
     return axios(options)
     .then(response => handleSuccess(response))

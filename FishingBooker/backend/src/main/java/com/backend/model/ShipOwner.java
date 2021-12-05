@@ -9,7 +9,7 @@ import java.util.*;
 
 @Entity
 @DiscriminatorValue("SHIP_OWNER")
-public class ShipOwner extends RegistratedUser {
+public class ShipOwner extends RegisteredUser {
 
     @OneToMany(mappedBy = "shipOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Ship> ships = new HashSet<Ship>();

@@ -2,15 +2,25 @@ package com.backend.model;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.*;
 
 @Entity
 @DiscriminatorValue("ADMIN")
-public class Admin extends RegistratedUser {
+public class Admin extends RegisteredUser {
+
+    private boolean initialPasswordChanged;
 
     public Admin() { }
 
-    public Admin(RegistratedUser user) {
+    public Admin(RegisteredUser user, boolean initialPasswordChanged) {
         super(user);
+        this.initialPasswordChanged = initialPasswordChanged;
+    }
+
+    public boolean isInitialPasswordChanged() {
+        return initialPasswordChanged;
+    }
+
+    public void setInitialPasswordChanged(boolean initialPasswordChanged) {
+        this.initialPasswordChanged = initialPasswordChanged;
     }
 }

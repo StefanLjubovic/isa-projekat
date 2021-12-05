@@ -4,7 +4,8 @@ import com.backend.dto.JwtAuthenticationRequest;
 import com.backend.dto.UserRequest;
 import com.backend.dto.UserTokenState;
 import com.backend.exception.ResourceConflictException;
-import com.backend.model.RegistratedUser;
+import com.backend.model.Admin;
+import com.backend.model.RegisteredUser;
 import com.backend.service.UserService;
 import com.backend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Kreiraj token za tog korisnika
-        RegistratedUser user = (RegistratedUser) authentication.getPrincipal();
+        RegisteredUser user = (RegisteredUser) authentication.getPrincipal();
         String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
 
@@ -61,24 +62,24 @@ public class AuthenticationController {
 
     // Endpoint za registraciju novog korisnika
     @PostMapping("/signup")
-    public ResponseEntity<RegistratedUser> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
-        RegistratedUser existUser = this.userService.findByEmail(userRequest.getEmail());
+    public ResponseEntity<RegisteredUser> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
+        RegisteredUser existUser = this.userService.findByEmail(userRequest.getEmail());
 
         if (existUser != null) {
             throw new ResourceConflictException(userRequest.getId(), "Username already exists");
         }
 
-        RegistratedUser user = this.userService.save(userRequest);
+        RegisteredUser user = this.userService.save(userRequest);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/registerAdmin")
-    public ResponseEntity<RegistratedUser> registerNewAdmin(@RequestBody RegistratedUser newAdminUser) {
+    public ResponseEntity<Admin> registerNewAdmin(@RequestBody RegisteredUser newAdminUser) {
         if(this.userService.findByEmail(newAdminUser.getEmail()) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");
         }
 
-        RegistratedUser addedAdmin = this.userService.saveAdmin(newAdminUser);
+        Admin addedAdmin = this.userService.saveAdmin(newAdminUser);
         return new ResponseEntity<>(addedAdmin, HttpStatus.CREATED);
     }
 

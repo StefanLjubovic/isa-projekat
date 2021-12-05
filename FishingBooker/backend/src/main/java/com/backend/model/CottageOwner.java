@@ -4,7 +4,7 @@ import java.util.*;
 
 @Entity
 @DiscriminatorValue("COTTAGE_OWNER")
-public class CottageOwner extends RegistratedUser {
+public class CottageOwner extends RegisteredUser {
 
     @OneToMany(mappedBy = "cottageOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Cottage> cottages = new HashSet<Cottage>();

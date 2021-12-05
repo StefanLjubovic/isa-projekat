@@ -1,9 +1,14 @@
 package com.backend.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 
 @Entity
+@SQLDelete(sql = "UPDATE address SET deleted = true WHERE address_id = ?")
+@Where(clause = "deleted = false")
 public class Address {
 
    @Id
@@ -28,6 +33,9 @@ public class Address {
 
    private double longitude;
    private double latitude;
+
+   @Column(name="deleted")
+   private boolean deleted = false;
 
    public Address() { }
 
@@ -100,4 +108,8 @@ public class Address {
    public void setLatitude(double latitude) {
       this.latitude = latitude;
    }
+
+   public boolean isDeleted() { return deleted; }
+
+   public void setDeleted(boolean deleted) { deleted = deleted; }
 }

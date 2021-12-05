@@ -3,7 +3,7 @@ package com.backend.model;
 import javax.persistence.*;
 
 @Entity
-public class SystemProperties {
+public class SystemProperty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +16,9 @@ public class SystemProperties {
     @Column(unique=false, nullable=false)
     private String value;
 
-    public SystemProperties() { }
+    public SystemProperty() { }
 
-    public SystemProperties(String key, String value) {
+    public SystemProperty(String key, String value) {
         this.key = key;
         this.value = value;
     }

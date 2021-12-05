@@ -1,6 +1,6 @@
 package com.backend.util;
 
-import com.backend.model.RegistratedUser;
+import com.backend.model.RegisteredUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -134,7 +134,7 @@ public class TokenUtils {
 
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        RegistratedUser user = (RegistratedUser) userDetails;
+        RegisteredUser user = (RegisteredUser) userDetails;
         final String username = getEmailFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
 

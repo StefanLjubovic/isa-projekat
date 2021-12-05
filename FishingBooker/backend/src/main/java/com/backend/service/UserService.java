@@ -1,10 +1,8 @@
 package com.backend.service;
 
 import com.backend.dto.UserRequest;
-import com.backend.model.Admin;
-import com.backend.model.RegistratedUser;
-import com.backend.model.Role;
-import com.backend.model.UserStatus;
+import com.backend.model.*;
+import com.backend.repository.ISystemPropertyRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,25 +20,28 @@ public class UserService {
     private IUserRepository userRepository;
 
     @Autowired
+    private ISystemPropertyRepository systemPropertyRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RoleService roleService;
 
-    public RegistratedUser findByEmail(String username) throws UsernameNotFoundException {
+    public RegisteredUser findByEmail(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
     }
 
-    public RegistratedUser findById(Integer id) throws AccessDeniedException {
+    public RegisteredUser findById(Integer id) throws AccessDeniedException {
         return userRepository.findById(id).orElseGet(null);
     }
 
-    public List<RegistratedUser> findAll() throws AccessDeniedException {
+    public List<RegisteredUser> findAll() throws AccessDeniedException {
         return userRepository.findAll();
     }
 
-    public RegistratedUser save(UserRequest userRequest) {
-        RegistratedUser u = new RegistratedUser();
+    public RegisteredUser save(UserRequest userRequest) {
+        RegisteredUser u = new RegisteredUser();
         u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         u.setFirstName(userRequest.getFirstname());
@@ -57,8 +58,8 @@ public class UserService {
         return this.userRepository.save(u);
     }
 
-    public RegistratedUser saveAdmin(RegistratedUser newAdminUser) {
-        Admin admin = new Admin(newAdminUser);
+    public Admin saveAdmin(RegisteredUser newAdminUser) {
+        Admin admin = new Admin(newAdminUser, false);
 
         List<Role> roles = roleService.findByName("ROLE_ADMIN");
         admin.setRoles(roles);
@@ -66,6 +67,15 @@ public class UserService {
         admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
         admin.setEnabled(true);
         admin.setStatus(UserStatus.active);
+
         return this.userRepository.save(admin);
+    }
+
+    public List<RegisteredUser> getAllUsers() {
+        return this.userRepository.findAll();
+    }
+
+    public void deleteUser(Integer id) {
+        this.userRepository.delete(this.userRepository.getById(id));
     }
 }

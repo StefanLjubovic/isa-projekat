@@ -4,13 +4,15 @@ import com.backend.model.*;
 import com.backend.repository.ICottageRepository;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IRoleRepository;
+import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Component
 public class DataLoader implements ApplicationRunner {
@@ -23,6 +25,9 @@ public class DataLoader implements ApplicationRunner {
     
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private IUserRepository userRepository;
 
     public DataLoader() {}
 
@@ -40,6 +45,10 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(new Role("ROLE_INSTRUCTOR"));
         roleRepository.save(new Role("ROLE_SHIP_OWNER"));
 
-
+        Address address1 = new Address("Bulver Kralja Petra","11","21000","Novi Sad","Srbija");
+        List<Role> roles = roleRepository.findByName("ROLE_ADMIN");
+        RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, roles, new Timestamp(System.currentTimeMillis()), address1);
+        Admin admin = new Admin(user, false);
+        userRepository.save(admin);
     }
 }

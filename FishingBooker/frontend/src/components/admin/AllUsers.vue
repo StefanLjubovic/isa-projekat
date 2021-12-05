@@ -24,11 +24,11 @@
                         <p>{{ selectedUser.email }}</p>
                         <p>{{ selectedUser.firstName }}</p>
                         <p>{{ selectedUser.lastName }}</p>
-                        <p>{{ selectedUser.streetName }}</p>
-                        <p>{{ selectedUser.streetNumber }}</p>
-                        <p>{{ selectedUser.postalCode }}</p>
-                        <p>{{ selectedUser.city }}</p>
-                        <p>{{ selectedUser.country }}</p>
+                        <p>{{ selectedUser.address.streetName }}</p>
+                        <p>{{ selectedUser.address.streetNumber }}</p>
+                        <p>{{ selectedUser.address.postalCode }}</p>
+                        <p>{{ selectedUser.address.city }}</p>
+                        <p>{{ selectedUser.address.country }}</p>
                         <p>{{ selectedUser.phoneNumber }}</p>
                         <p>{{ roleToString(selectedUser.role) }}</p>
                     </div>
@@ -99,18 +99,18 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByRole(-1)" >All Users</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(0)" >Client</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(1)" >Administrator</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(2)" >Cottage owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(3)" >Ship owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(4)" >Fishing instructor</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_CLIENT')" >Client</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_ADMIN')" >Administrator</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_COTTAGE_OWNER')" >Cottage owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_SHIP_OWNER')" >Ship owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_INSTRUCTOR')" >Fishing instructor</a>
                 </div>
             </div>
             <div class="search">
                 <div class="form-outline">
                     <input v-model="searchParams" type="search" id="search" class="form-control" placeholder="Search users"/>
                 </div>
-                <button type="button" class="btn" @click="search()">
+                <button type="button" class="btn btn-search" @click="search()">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -157,7 +157,8 @@
 <script>
 import useValidate from '@vuelidate/core'
 import {required, email, sameAs, minLength, maxLength, numeric} from '@vuelidate/validators'
-//import server from '../../server/index'
+import server from '../../server/index'
+import axios from 'axios'
 
 export function validName(name) {
   let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
@@ -170,40 +171,7 @@ export function validName(name) {
 export default {
     data() {
         return {
-            allUsers: [
-                {
-                    id: 1,
-                    email: "zdravkocolic@gmail.com",
-                    firstName: "Zdravko",
-                    lastName: "Colic",
-                    phoneNumber: "0645555555",
-                    role: 0
-                },
-                {
-                    id: 2,
-                    email: "anagavrilovic@gmail.com",
-                    firstName: "Ana",
-                    lastName: "Gavrilovic",
-                    phoneNumber: "0645555555",
-                    role: 3
-                },
-                {
-                    id: 3,
-                    email: "marijakljestan@gmail.com",
-                    firstName: "Marija",
-                    lastName: "Kljestan",
-                    phoneNumber: "0645555555",
-                    role: 2
-                },
-                {
-                    id: 4,
-                    email: "stefanljubovic@gmail.com",
-                    firstName: "Stefan",
-                    lastName: "Ljubovic",
-                    phoneNumber: "0645555555",
-                    role: 4
-                },
-            ],
+            allUsers: [],
             users: [],
             searchParams: "",
             selectedUser: undefined,
@@ -221,11 +189,16 @@ export default {
                 },
                 password: '',
                 confirm: ''
-            }
+            },
+            filterRole: -1
         }
     },
     mounted() {
-        this.users = this.allUsers;
+        axios.get(`${server.baseUrl}/users/allUsers`)
+        .then((response) => {
+            this.allUsers = response.data;
+            this.users = this.allUsers;
+        })
     },
     setup() {
         return { v$: useValidate() }
@@ -267,53 +240,82 @@ export default {
     },
     methods: {
         removeUser: function(user) {
-            if(confirm("Are you sure you want to delete " + user.email + '\'s account?')){
-                let index = this.users.indexOf(user);
-                if(index > -1){
-                    this.users.splice(index, 1);
+            this.$swal({
+                title: `Are you sure you want to delete ${user.email}'s account?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    axios.delete(`${server.baseUrl}/users/deleteUser/${user.id}`)
+                    .then(() => {
+                        let index = this.users.indexOf(user);
+                        if(index > -1) this.users.splice(index, 1);
+                    });
                 }
-            }
+            })
         },
+
         openModalForUserDetails: function(user) {
             this.selectedUser = user;
             window.$('#user-details-modal').modal('show');
         },
+
         openModalForNewAdmin: function() {
             window.$('#new-admin-modal').modal('show');
         },
-        filterByRole: function(role) {
-            if(role == -1) {
-                this.users = this.allUsers;
-                return;
-            }
 
-            this.users = this.allUsers.filter((user) => user.role == role);
+        filterByRole: function(role) {
+            this.filterRole = role;
+            this.search();
         },
+
         search: function() {
             this.users = this.allUsers.filter((user) => user.email.includes(this.searchParams.toLowerCase())
                                                || user.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.phoneNumber.includes(this.searchParams));
+            if(this.filterRole != -1) {
+                this.users = this.users.filter((user) => user.role == this.filterRole);
+            }
         },
+
+        submitNewAdmin: function() {
+            axios.post(`${server.baseUrl}/auth/registerAdmin`, this.newAdmin)
+            .then((response) => {
+                this.allUsers.push(response.data);
+                this.search();
+
+                this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phoneNumber: '', password: '', confirm: '' };
+                window.$('#new-admin-modal').modal('hide');
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'New administrator successufully added!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+            .catch(() => {
+                this.$swal('There is already an account with this email!');
+            })
+
+            
+        },
+
+        cancelNewAdmin: function() {
+            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phoneNumber: '', password: '', confirm: '' }
+            window.$('#new-admin-modal').modal('hide');
+        },
+
         roleToString: function(role) {
-            if(role == 0) return "Client";
-            else if(role == 1) return "Administrator";
-            else if(role == 2) return "Cottage owner";
-            else if(role == 3) return "Ship owner";
-            else if(role == 4) return "Fishing instructor";
+            if(role == 'ROLE_CLIENT') return "Client";
+            else if(role == 'ROLE_ADMIN') return "Administrator";
+            else if(role == 'ROLE_COTTAGE_OWNER') return "Cottage owner";
+            else if(role == 'ROLE_SHIP_OWNER') return "Ship owner";
+            else if(role == 'ROLE_INSTRUCTOR') return "Fishing instructor";
             else return "";
         },
-        submitNewAdmin: function() {
-
-            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '',
-                city: '', country: '', phoneNumber: '', password: '', confirm: '' }
-            window.$('#new-admin-modal').modal('hide');
-        },
-        cancelNewAdmin: function() {
-            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '',
-                city: '', country: '', phoneNumber: '', password: '', confirm: '' }
-            window.$('#new-admin-modal').modal('hide');
-        }
     }
 }
 </script>
@@ -339,10 +341,16 @@ h1 {
     background-color: #2c3e50;
     color: white;
 }
+
 .btn-delete {
     color: #2c3e50;
     background-color: white;
     border-color: #cfd3d8;
+}
+
+.btn-search {
+    margin-top: 5px;
+    height: 40px;
 }
 
 .new-admin{

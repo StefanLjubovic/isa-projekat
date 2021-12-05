@@ -9,7 +9,7 @@ import java.util.*;
 
 @Entity
 @DiscriminatorValue("CLIENT")
-public class Client extends RegistratedUser {
+public class Client extends RegisteredUser {
 
    @Column(name="points", unique=false, nullable=true)
    private double points = 0;

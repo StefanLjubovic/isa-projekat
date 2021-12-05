@@ -1,4 +1,6 @@
 package com.backend.model;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,7 +11,9 @@ import java.sql.Timestamp;
 @Entity
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-public class RegistratedUser implements UserDetails {
+@SQLDelete(sql = "UPDATE registered_user SET deleted = true WHERE reg_user_id = ?")
+@Where(clause = "deleted = false")
+public class RegisteredUser implements UserDetails {
 
    @Id
    @SequenceGenerator(name = "userSeqGen", sequenceName = "userSeqGen", initialValue = 1, allocationSize = 1)
@@ -38,6 +42,9 @@ public class RegistratedUser implements UserDetails {
    @Column(name = "enabled")
    private boolean enabled;
 
+   @Column(name = "deleted")
+   private boolean deleted = false;
+
    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinTable(name = "user_role",
            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "reg_user_id"),
@@ -51,9 +58,9 @@ public class RegistratedUser implements UserDetails {
    @JoinColumn(name = "address_id")
    private Address address;
 
-   public RegistratedUser() { }
+   public RegisteredUser() { }
 
-   public RegistratedUser(String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, List<Role> roles, Timestamp lastPasswordResetDate, Address address) {
+   public RegisteredUser(String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, List<Role> roles, Timestamp lastPasswordResetDate, Address address) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.phoneNumber = phoneNumber;
@@ -66,7 +73,7 @@ public class RegistratedUser implements UserDetails {
       this.address = address;
    }
 
-   public RegistratedUser(RegistratedUser user) {
+   public RegisteredUser(RegisteredUser user) {
       this.id = user.getId();
       this.firstName = user.getFirstName();
       this.lastName = user.getLastName();
@@ -145,6 +152,10 @@ public class RegistratedUser implements UserDetails {
    public Address getAddress() {
       return address;
    }
+
+   public boolean isDeleted() { return deleted; }
+
+   public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
    public void setAddress(Address address) {
       this.address = address;
