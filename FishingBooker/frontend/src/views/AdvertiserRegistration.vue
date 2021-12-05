@@ -223,7 +223,6 @@ export default {
 
                 this.form= { email : undefined, name: '', surame: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phone: '', password: '', confirmPassword: '', registrationReason: '',biography: '' };
                 this.$swal({
-                    position: 'top-end',
                     icon: 'success',
                     title: response.data,
                     showConfirmButton: false,
