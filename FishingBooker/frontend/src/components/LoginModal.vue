@@ -7,7 +7,7 @@
        <input type="text" class="form-control input" placeholder="Email *" v-model="email" />
       </div>
       <div class="form-group">
-       <input type="text" class="form-control input" placeholder="Password *" v-model="password"/>
+       <input type="password" class="form-control input" placeholder="Password *" v-model="password"/>
       </div>
       <div class="form-group mt-4 button-div">
         <button type="button" class="btn log-btn p-2" @click="Login">Log in</button>

@@ -4,7 +4,7 @@
           <div class="logo">
               <h2 id="logo">Fishing booker</h2>
           </div>
-          <div class="buttons-div">
+          <div class="buttons-div" v-if="userRole == ''">
            <a href="#" class="link-light dropdown-toggle item" 
            role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
            <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
@@ -14,6 +14,10 @@
            </div>
            <a href="#" class="link-light item" @click="showModal=true">Log in</a>
           </div>
+          <div class="registrated-user-option mt-3"  v-if="userRole !=''">
+              <div class="help"></div>
+                    <a href="#" class="link-light item" @click="logOut">Log Out</a>
+         </div>
        </div>
       <div class="body">
       <div class="body-gap"></div>
@@ -43,6 +47,7 @@
 
 <script>
 import LoginModal from "@/components/LoginModal.vue";
+import {mapActions} from 'vuex';
 export default {
     data(){
         return{
@@ -50,6 +55,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['fetchToken']),
         routeAdventures: function(){
             this.$router.push({ name: 'Homepage', params: {data: 0 } })
         },
@@ -64,6 +70,23 @@ export default {
         },
         openSignUpAsAdvertiser: function(){
             this.$router.push({ path: '/advertiser-registration' })
+        },
+         logOut: function() {
+        // TODO
+         this.$store.dispatch('logout')
+        }
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        }
+    },
+    async mounted(){
+        if(typeof(this.$route.query.id) !="undefined"){
+                    this.$swal('Success!',
+                    'Client has been registered!',
+                    'success');
+                
         }
     },
     components:{
@@ -111,7 +134,13 @@ export default {
         margin-right: 8%;
         margin-top: 15px;
     }
-    
+    .registrated-user-option{
+        flex :1;
+        display:flex;
+        flex-direction: row;
+        justify-content: right;
+        margin-right: 8%;
+    }
     .item{
         text-decoration: none;
         margin-right: 5%;

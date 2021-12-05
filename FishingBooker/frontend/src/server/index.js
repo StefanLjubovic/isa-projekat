@@ -10,13 +10,55 @@ server.getAllEntities = async (state) =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: `${baseUrl}/client/`+state,
+        url: `${baseUrl}/user/`+state,
     };
     return axios(options)
     .then(response => handleSuccess(response))
     .catch((error) => handleError(error));
-}
+};
 
+server.registerClient = async (client) =>{
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+        },
+        data: client,
+        url: `${baseUrl}/auth/signup`,
+    };
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.getUserById = async (id) =>{
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+        },
+        url: `${baseUrl}/user/getById/`+id,
+    };
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.getLoggedUser = async () =>{
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+        },
+        url: `${baseUrl}/user/getLoggedUser/`,
+    };
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
 
 function handleError(error) {
 	console.log('Error');

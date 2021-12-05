@@ -122,8 +122,17 @@
 
 <script>
 import useValidate from '@vuelidate/core'
+import Server from '../server'
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
 import {reactive, computed} from 'vue'
+
+async function setClient(){
+            await Server.getLoggedUser(this.$store.state.token.token).then(resp=>{
+                if(resp.success){
+                    return resp.data;
+                }
+            })
+}
 export default {
     data(){
         return{
@@ -131,19 +140,7 @@ export default {
         }
     },
     setup(){
-          let client= {
-                email : 'stefan@gmail.com',
-                name: 'Stefan',
-                surname: 'Ljubovic',
-                streetName: 'Mihajla Pupina',
-                streetNumber: 11,
-                postalCode: 24000,
-                city: 'Subotica',
-                country: 'Srbija',
-                phone: '063103130',
-                password: 'stefan123',
-                confirm: 'stefan123'
-            }
+          let client= setClient()
         let state = reactive({
             client
         })
@@ -180,7 +177,15 @@ export default {
                 console.log('yey')
             }
         }
-    }
+    },
+    async mounted(){
+            await Server.getUserById(this.$route.query.id).then(resp=>{
+                if(resp.success){
+                    console.log(resp.data)
+                    this.client = resp.data;
+                }
+            })
+    },
 }
 </script>
 

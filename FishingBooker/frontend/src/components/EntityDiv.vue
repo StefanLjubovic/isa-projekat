@@ -6,7 +6,7 @@
       <div class="entity-content">
           <div>
       <h4>🚗{{entity.name}}</h4>
-      <h6>📍{{entity.address}}</h6>
+      <h6>📍{{entity.address.streetName}} {{entity.address.streetNumber}}</h6>
       <p id="desc">📖{{entity.description}}</p>
       </div>
     <div class="grade-div"><p>{{entity.averageGrade}}<i class="fas fa-star star"></i></p></div>

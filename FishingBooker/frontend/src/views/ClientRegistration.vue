@@ -92,7 +92,8 @@
 import useValidate from '@vuelidate/core'
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
 import {reactive, computed} from 'vue'
-
+import Server from '../server'
+import {mapActions} from 'vuex';
 function initialState (){
  return reactive({
             email: '',
@@ -138,29 +139,49 @@ export default {
         }
     },
     methods:{
-        submitForm(){
+        ...mapActions(['fetchToken']),
+       submitForm: async function(){
             console.log(this.v$)
             this.v$.$validate()
             if(this.v$.$errors.length == 0){
             const client= {
-                email : this.state.email,
-                name: this.state.name,
-                surname: this.state.surname,
-                streetName: this.state.streetName,
-                streetNumber: this.state.streetNumber,
-                postalCode: this.state.postalCode,
-                city: this.state.city,
-                country:this.state.country,
-                phone: this.state.phone,
-                password: this.state.password.password,
-                confirm: this.state.password.confirm
+                'email' : this.state.email,
+                'firstname': this.state.name,
+                'lastname': this.state.surname,
+                'address':{
+                    'streetName': this.state.streetName,
+                    'streetNumber': this.state.streetNumber,
+                    'postalCode': this.state.postalCode,
+                    'city': this.state.city,
+                    'country':this.state.country
+                },
+                'phoneNumber': this.state.phone,
+                'roleName': 'ROLE_CLIENT',
+                'password': this.state.password.password
             }
-            this.$swal('Success!',
-            'Client has been registered!',
-            'success');
+                this.$swal({
+             title: 'Waiting response from a server.',
+            html: 'This will take a second.',
+            timerProgressBar: true,
+            didOpen: () => {
+            this.$swal.showLoading()
+            },
+            })
+            await Server.registerClient(client).then(resp =>{
+                this.$swal.close();
+                if(resp.success){
+                     this.$swal('Success!',
+                    'Mail has been sent on your address!',
+                    'success');
+                }
+                else{
+                    this.$swal('Error!',
+                    'Registration failed try again later!',
+                    'error');
+                }
+            })
             this.v$.$reset();
              Object.assign(this.state, initialState());
-            console.log(client)
             }
         }
     }

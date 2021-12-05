@@ -1,4 +1,6 @@
 package com.backend.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +11,8 @@ import java.sql.Timestamp;
 @Entity
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
+@JsonIgnoreProperties(ignoreUnknown = false)
+@Proxy(lazy = false)
 public class RegistratedUser implements UserDetails {
 
    @Id
@@ -49,7 +53,7 @@ public class RegistratedUser implements UserDetails {
    @Column(name = "last_password_reset_date")
    private Timestamp lastPasswordResetDate;
 
-   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "address_id")
    private Address address;
 
@@ -141,7 +145,6 @@ public class RegistratedUser implements UserDetails {
    public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
       this.lastPasswordResetDate = lastPasswordResetDate;
    }
-
 
    @Override
    public String getUsername() {

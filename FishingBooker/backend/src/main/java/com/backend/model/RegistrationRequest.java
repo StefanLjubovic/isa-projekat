@@ -1,7 +1,6 @@
 package com.backend.model;
 
 import javax.persistence.*;
-import java.util.*;
 
 @Entity
 public class RegistrationRequest {
@@ -32,7 +31,7 @@ public class RegistrationRequest {
    @Column(unique=false, nullable=false)
    private String explanation;
 
-   @OneToOne(fetch = FetchType.EAGER)
+   @OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
    @JoinColumn(name = "address_id")
    private Address address;
 

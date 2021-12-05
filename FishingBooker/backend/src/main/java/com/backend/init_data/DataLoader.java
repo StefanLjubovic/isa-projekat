@@ -23,7 +23,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Autowired
     private ICottageRepository cottageRepository;
-    
+
     @Autowired
     private IRoleRepository roleRepository;
 

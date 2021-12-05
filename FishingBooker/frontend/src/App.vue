@@ -36,6 +36,8 @@ export default {
     },
     logOut: function() {
       // TODO
+      this.$store.dispatch('logout')
+       this.$router.push({ name: 'MainPage'})
     }
   }
 }

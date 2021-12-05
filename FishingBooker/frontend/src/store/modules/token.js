@@ -6,7 +6,8 @@ const state = {
 };
 
 const getters = {
-    token : (state) => state.token
+    getToken : (state) => state.token,
+    getRole : (state) => state.role
 };
 
 const actions = {
@@ -17,21 +18,18 @@ const actions = {
             data: loginRequest,
         };
         const response =await axios(options)
-        console.log(response.data)
-        console.log(response.data.accessToken)
-        console.log(response.data.roles)
         commit('setToken', response.data.accessToken);
         commit('setRole', response.data.roles);
     },
     async logout({commit}){
-        commit('removeToken');
+        commit('setToken', {});
+        commit('setRole', '');
     }
 };
 
 const mutations = {
     setToken : (state, token) => (state.token = token), 
-    setRole : (state, role) => (state.role = role), 
-    removeToken : (state) => (state.token = {})
+    setRole : (state, role) => (state.role = role)
 };
 
 export default {

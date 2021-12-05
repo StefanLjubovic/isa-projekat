@@ -15,8 +15,18 @@
                     <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
                 </div>
                 <div v-if="role != 5" class="registrated-user-option">
-                    <a href="#" class="link-light item" @click="$emit('log-out')">Log Out</a>
+                    <a href="#" class="link-light item" @click="$emit('log-out')" v-if="userRole !=''">Log Out</a>
                 </div>
+                <div class="buttons-div"  v-if="userRole ==''">
+           <a href="#" class="link-light dropdown-toggle item" 
+           role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
+           <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
+             <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
+             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As instructor</a>
+            <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As cottage owner</a>
+           </div>
+           <a href="#" class="link-light item" @click="$emit('open-modal')">Log in</a>
+          </div>
             </div>
         </div>
     </div>
@@ -26,16 +36,22 @@
 export default {
     data(){
         return{
-            show:true,
+            show:true
         }
     },
     emits:['open-modal', 'log-out'],
     methods:{
         goToMainPage: function(){
              this.$router.push({ path: '/' })
+             console.log(this.userRole)
         },
         openSignUp: function(){
             this.$router.push({ path: '/client-registration' })
+        }
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
         }
     }
 }

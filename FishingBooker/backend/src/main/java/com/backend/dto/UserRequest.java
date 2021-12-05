@@ -4,15 +4,11 @@ import com.backend.model.Address;
 import com.backend.model.UserStatus;
 
 public class UserRequest {
-    private String password;
+    private String email;
 
     private String firstname;
 
     private String lastname;
-
-    private String email;
-
-    private UserStatus status;
 
     private Address address;
 
@@ -20,15 +16,9 @@ public class UserRequest {
 
     private String roleName;
 
-    private Integer id;
+    private String password;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public UserRequest() {}
 
     public String getRoleName() {
         return roleName;
@@ -52,14 +42,6 @@ public class UserRequest {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
     }
 
     public String getPassword() {
@@ -93,4 +75,5 @@ public class UserRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }
