@@ -23,6 +23,9 @@ public class UserService {
     private ISystemPropertyRepository systemPropertyRepository;
 
     @Autowired
+    private IRegistrationRequestRepository requestRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -77,5 +80,9 @@ public class UserService {
 
     public void deleteUser(Integer id) {
         this.userRepository.delete(this.userRepository.getById(id));
+    }
+
+    public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        return this.requestRepository.save(request);
     }
 }

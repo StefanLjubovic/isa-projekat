@@ -5,88 +5,117 @@
                     <div class="row">
                         <div class="col-md md-6 mb-4 ">
                             <div class="form-group mb-4 form">
-                                <input type="text" class="form-control" placeholder="Name*" v-model="state.name"/>
-                                <span class="text-danger" v-if="v$.name.$error">
-                                    {{v$.name.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Name*" v-model="form.name"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.name.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Surname*" v-model="state.surname"/>
-                                <span v-if="v$.surname.$error" class="text-danger">
-                                    {{v$.surname.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Surname*" v-model="form.surname"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.surname.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <input type="text" class="form-control" placeholder="Street name*" ref="city" v-model="state.streetName"/>
-                                <span v-if="v$.streetName.$error" class="text-danger">
-                                    {{v$.streetName.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Street name*" ref="city" v-model="form.streetName"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.streetName.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Street number*" v-model="state.streetNumber"/>
-                                 <span v-if="v$.streetNumber.$error" class="text-danger">
-                                    {{v$.streetNumber.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Street number*" v-model="form.streetNumber"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.streetNumber.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                         </div>
                          <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <input type="text" class="form-control" placeholder="E-mail*" v-model="state.email"/>
-                                 <span v-if="v$.email.$error" class="text-danger">
-                                    {{v$.email.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="E-mail*" v-model="form.email"/>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.email.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password*" v-model="state.password.password"/>
-                                <span v-if="v$.password.password.$error" class="text-danger">
-                                    {{v$.password.password.$errors[0].$message}}
-                                </span>
+                                <input type="password" class="form-control" placeholder="Password*" v-model="form.password"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.password.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <input type="text" class="form-control" placeholder="City*" v-model="state.city"/>
-                                 <span v-if="v$.city.$error" class="text-danger">
-                                    {{v$.city.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="City*" v-model="form.city"/>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.city.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Postal code*" v-model="state.postalCode"/>
-                                <span v-if="v$.postalCode.$error" class="text-danger">
-                                    {{v$.postalCode.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Postal code*" v-model="form.postalCode"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.postalCode.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-4">
-                                <input type="password" class="form-control"   placeholder="Confirm password*" v-model="state.password.confirm"/>
-                                <span v-if="v$.password.confirm.$error" class="text-danger">
-                                    {{v$.password.confirm.$errors[0].$message}}
-                                </span>
+                                <input type="password" class="form-control"   placeholder="Confirm password*" v-model="form.confirmPassword"/>
+                                <!-- Error Message -->
+                                <div class="input-errors" v-for="(error, index) of v$.form.confirmPassword.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control"  placeholder="Phone number*" v-model="state.phone"/>
-                                 <span v-if="v$.phone.$error" class="text-danger">
-                                    {{v$.phone.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control"  placeholder="Phone number*" v-model="form.phone"/>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.phone.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <input type="text" class="form-control" placeholder="Country*" v-model="state.country"/>
-                                 <span v-if="v$.country.$error" class="text-danger">
-                                    {{v$.country.$errors[0].$message}}
-                                </span>
+                                <input type="text" class="form-control" placeholder="Country*" v-model="form.country"/>
+                                <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.country.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <select required class="form-control" v-model="form.role">
+                                    <option disabled value=""> Select role*</option>
+                                    <option> Cottage owner</option>
+                                    <option> Ship owner</option>
+                                    <option> Fishing instructor</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4" style="display:flex">
+                        <div class="col-md-6 mb-4">
                             <div class="form-group mb-4">
-                                <textarea class="reason-area" placeholder="Reason for registration*" v-model="state.registrationReason" rows="4" cols="65"></textarea>
-                                 <!--span v-if="v$.registrationReason.$error" class="text-danger">
-                                    {{v$.registrationReason.$errors[0].$message}}
-                                </span-->
+                                <textarea class="reason-area" placeholder="Reason for registration*" v-model="form.registrationReason" rows="4" cols="65"></textarea>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.registrationReason.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
+                            </div>                
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group mb-4" v-if="form.role=='Fishing instructor'">
+                                <textarea class="reason-area" placeholder="Your biography*" v-model="form.biography" rows="4" cols="65"></textarea>
+                                 <!-- Error Message -->
+                                 <div class="input-errors" v-for="(error, index) of v$.form.biography.$errors" :key="index">
+                                    <div class="text-danger">{{ error.$message }}</div>
+                                </div>
                             </div>
                             <div class="form-group mb-4 buttons">
                                 <div class="btn-div">
@@ -104,65 +133,106 @@
 <script>
 import useValidate from '@vuelidate/core'
 import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
-import {reactive, computed} from 'vue'
+import server from '../server/index'
+import axios from 'axios'
+
+export function validName(name) {
+  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  if (validNamePattern.test(name))
+    return true;
+  
+  return false;
+}
+
 export default {
     setup(){
-        const state = reactive({
-            email: '',
-             password: {
+        return {v$: useValidate()}
+    },
+    data(){
+        return{
+            form : {
+                email : '',
+                name: '',
+                surname: '',
+                streetName: '',
+                streetNumber: '',
+                postalCode: '',
+                city: '',
+                country:'',
+                phone: '',
                 password: '',
-                confirm: ''
-            },
-            name: '',
-            surname: '',
-            streetName: '',
-            streetNumber: '',
-            postalCode: '',
-            city: '',
-            country: '',
-            phone: '',
-            registrationReason: ''
-        })
-        const rules = computed(()=>{
-            return{
-            email: {required,email },
-            password: {
-                password: {required, minLength: minLength(6) },
-                confirm: {required,sameAs:sameAs(state.password.password)}
-            },
-            name: {required },
-            surname: {required },
-            streetName: {required },
-            streetNumber: {required,numeric },
-            postalCode: {required,numeric },
-            city: {required },
-            country: {required },
-            phone: {required,numeric },
+                role: '',
+                confirmPassword: '',
+                registrationReason: '',
+                biography: ''
+            }
         }
-        })
-        const v$=useValidate(rules,state)
+    },
+
+    validations() {
         return {
-            state,
-            v$
+            form: {
+                email: { required, email },
+                name: { 
+                    required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                surname: { 
+                    required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                streetName: {required },
+                streetNumber: {required },
+                postalCode: {required, numeric },
+                city: {required },
+                country: {required },
+                phone: {required, numeric },
+                password: { required, min: minLength(6) },
+                confirmPassword: {required, sameAs:sameAs(this.form.password)},
+                registrationReason: {required},
+                biography: {required}
+            },
         }
     },
     methods:{
         submitForm(){
             this.v$.$validate()
-            const client= {
-                email : this.state.email,
-                name: this.state.name,
-                surname: this.state.surname,
-                streetName: this.state.streetName,
-                streetNumber: this.state.streetNumber,
-                postalCode: this.state.postalCode,
-                city: this.state.city,
-                country:this.state.country,
-                phone: this.state.phone,
-                password: this.state.password.password,
-                confirm: this.state.password.confirm
-            }
-            console.log(client)
+                const advertiserRequest= {
+                    firstName: this.form.name,
+                    lastName: this.form.surname,
+                    phoneNumber: this.form.phone,
+                    email : this.form.email,
+                    password: this.form.password,
+                    role: this.form.role,
+                    explanation: this.form.registrationReason,
+                    biography: this.form.biography,
+                    address: {
+                        streetName: this.form.streetName,
+                        streetNumber: this.form.streetNumber,
+                        postalCode: this.form.postalCode,
+                        city: this.form.city,
+                        country:this.form.country
+                    }
+                }
+                axios.post(`${server.baseUrl}/auth/registerAdvertiser`, advertiserRequest)
+                .then((response) => {
+
+                this.form= { email : undefined, name: '', surame: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phone: '', password: '', confirmPassword: '', registrationReason: '',biography: '' };
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: response.data,
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                })
+                .catch(() => {
+                    this.$swal('There is already an account with this email!');
+                })
         }
     }
 }
