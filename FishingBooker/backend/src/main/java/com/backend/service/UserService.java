@@ -56,8 +56,8 @@ public class UserService {
         u.setEnabled(true);
         u.setAddress(userRequest.getAddress());
         u.setPhoneNumber(userRequest.getPhoneNumber());
-        List<Role> roles = roleService.findByName(userRequest.getRoleName());
-        u.setRoles(roles);
+        Role role = roleService.findOneByName(userRequest.getRoleName());
+        u.setRole(role);
 
         return this.userRepository.save(u);
     }
@@ -65,8 +65,8 @@ public class UserService {
     public Admin saveAdmin(RegisteredUser newAdminUser) {
         Admin admin = new Admin(newAdminUser, false);
 
-        List<Role> roles = roleService.findByName("ROLE_ADMIN");
-        admin.setRoles(roles);
+        Role role = roleService.findOneByName("ROLE_ADMIN");
+        admin.setRole(role);
         admin.setPassword(passwordEncoder.encode(newAdminUser.getPassword()));
         admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
         admin.setEnabled(true);

@@ -105,7 +105,7 @@ public class RegistrationRequestService {
                 request.getPassword(),
                 UserStatus.active,
                 true,
-                roleService.findByName(request.getRole().getName()),
+                roleService.findOneByName(request.getRole().getName()),
                 new Timestamp(System.currentTimeMillis()),
                 request.getAddress());
     }

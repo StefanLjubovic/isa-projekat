@@ -59,7 +59,7 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         // Vrati token kao odgovor na uspesnu autentifikaciju
-        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn,user.getRoles().get(0).getName()));
+        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn,user.getRole().getName()));
     }
 
     // Endpoint za registraciju novog korisnika
