@@ -12,22 +12,39 @@
                 <form>
                     <div class="inputs">
                         <div class="left">
-                            <input type="email" class="form-control" placeholder="Email" v-model="state.user.email" disabled>
-                            <input type="text" class="form-control" placeholder="First name" v-model="state.user.firstName" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="Last name" v-model="state.user.lastName" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="Phone number" v-model="state.user.phoneNumber" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="Street name" v-model="state.user.streetName" :disabled="!editMode">
+                            <input type="email" class="form-control" placeholder="Email" v-model="v$.user.email.$model" disabled>
+                            <div class="text-danger" v-if="v$.user.email.$error">{{v$.user.email.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="First name" v-model="v$.user.firstName.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.firstName.$error">{{v$.user.firstName.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="Last name" v-model="v$.user.lastName.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.lastName.$error">{{v$.user.lastName.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="Phone number" v-model="v$.user.phoneNumber.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.phoneNumber.$error">{{v$.user.phoneNumber.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="Street name" v-model="v$.user.streetName.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.streetName.$error">{{v$.user.streetName.$errors[0].$message}} </div>
                         </div>
                         <div class="right">
-                            <input type="text" class="form-control" placeholder="Street number" v-model="state.user.streetNumber" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="Postal code" v-model="state.user.postalCode" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="City" v-model="state.user.city" :disabled="!editMode">
-                            <input type="text" class="form-control" placeholder="Country" v-model="state.user.country" :disabled="!editMode">
+                            <input type="text" class="form-control" placeholder="Street number" v-model="v$.user.streetNumber.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.streetNumber.$error">{{v$.user.streetNumber.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="Postal code" v-model="v$.user.postalCode.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.postalCode.$error">{{v$.user.postalCode.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="City" v-model="v$.user.city.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.city.$error">{{v$.user.city.$errors[0].$message}} </div>
+
+                            <input type="text" class="form-control" placeholder="Country" v-model="v$.user.country.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.country.$error">{{v$.user.country.$errors[0].$message}} </div>
+
                             <div class="buttons">
                                 <button class="btn change-password" :disabled="!editMode">Change password</button>
                                 <div class="confirm-buttons">
-                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode">Save</button>
-                                    <button class="btn cancel-button" @click.prevent="editMode=false" :disabled="!editMode">Cancel</button>
+                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode || v$.user.$invalid">Save</button>
+                                    <button class="btn cancel-button" @click.prevent="cancelEditing()" :disabled="!editMode">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +68,7 @@
             <textarea class="reason-area" cols="40" rows="6"></textarea><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendRequest()" >Submit</button>
-                <button class="btn cancel-button">Cancel</button>
+                <button class="btn cancel-button" @click="cancelRequest()">Cancel</button>
             </div>
        </div>
      </div>
@@ -61,17 +78,21 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
-import {reactive, computed} from 'vue'
+import {required, email, sameAs, minLength, maxLength, numeric, alpha} from '@vuelidate/validators'
+
+export function validName(name) {
+  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  if (validNamePattern.test(name)){
+    return true;
+  }
+  return false;
+}
 
 export default ({
     data() {
         return {
-            editMode: false
-        }
-    },
-    setup() {
-        let user = {
+            editMode: false,
+            user: {
                 email : 'stefan@gmail.com',
                 firstName: 'Stefan',
                 lastName: 'Ljubovic',
@@ -83,36 +104,48 @@ export default ({
                 phoneNumber: '063103130',
                 password: 'stefan123',
                 confirm: 'stefan123'
+            },
+            userBackup: undefined
         }
-        let state = reactive({
-            user
-        })
-        const rules = computed(()=>{
-            return {
-                email: {required,email },
-                password: {required, minLength: minLength(6) },
-                confirm: {required,sameAs:sameAs(state.user.password)},
-                firstName: {required },
-                lastName: {required },
-                streetName: {required },
-                streetNumber: {required,numeric },
-                postalCode: {required,numeric },
-                city: {required },
-                country: {required },
-                phoneNumber: {required,numeric },
-            }
-        })
-        const v$=useValidate(rules,state.user)
+    },
+    mounted() {
+        this.userBackup = {...this.user};
+    },
+    setup() {
+        return { v$: useValidate() }
+    },
+    validations() {
         return {
-            state,
-            v$
+            user: {
+                email: { required, email },
+                firstName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                lastName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                streetName: { required },
+                streetNumber: { required },
+                postalCode: { required, numeric, minLength: minLength(5), maxLength: maxLength(5) },
+                city: { required, alpha },
+                country: { required, alpha },
+                phoneNumber: { required, numeric, minLength: minLength(9), maxLength: maxLength(10) },
+                password: { required, minLength: minLength(6) },
+                confirm: { required, sameAs: sameAs(this.user.password) },
+            }
         }
     },
     methods: {
         saveChanges() {
-            this.v$.$validate()
-            console.log(this.v$)
-
+            this.userBackup = this.user;
+            this.editMode = !this.editMode;
+        },
+        cancelEditing() {
+            this.user = {...this.userBackup};
             this.editMode = !this.editMode;
         },
 
@@ -123,12 +156,14 @@ export default ({
         sendRequest(){
             window.$('#delete-account-modal').modal('hide');
         },
+        cancelRequest() {
+            // TODO
+        }
     }
 })
 </script>
 
 <style scoped>
-
 #page {
     margin-left: 15%;
     margin-right: 15%;
@@ -210,21 +245,27 @@ export default ({
     margin-top: 18px;
 }
 
- .reason-area{
-     align-self: left;
-     margin-left: 5px;
-     background-color: #ffffff;
-     border-width: 1px solid #888 ;
-     font-size: 18px;
-     resize: none;
-     outline: none;
-     -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-      border-radius: 10px;
+.reason-area{
+    align-self: left;
+    margin-left: 5px;
+    background-color: #ffffff;
+    border-width: 1px solid #888 ;
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 10px;
 }
 
 .confirm-buttons{
     margin-left: 30%;
 }
 
+.text-danger {
+    margin-top: -24px;
+    margin-bottom: 5px;
+    text-align: left;
+    font-size: 13px;
+}
 </style>

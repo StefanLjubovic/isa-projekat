@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let server = {};
-const baseUrl = 'http://localhost:8081';
+server.baseUrl = 'http://localhost:8082';
 
 server.getAllEntities = async (state) =>{
     const options ={
@@ -10,7 +10,8 @@ server.getAllEntities = async (state) =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: `${baseUrl}/user/`+state,
+        url: server.baseUrl+`/user/`+state,
+
     };
     return axios(options)
     .then(response => handleSuccess(response))
@@ -25,7 +26,7 @@ server.registerClient = async (client) =>{
             Accept: 'application/json',
         },
         data: client,
-        url: `${baseUrl}/auth/signup`,
+        url: server.baseUrl+`/auth/signup`,
     };
     return axios(options)
     .then(response => handleSuccess(response))
@@ -39,7 +40,7 @@ server.getUserById = async (id) =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: `${baseUrl}/user/getById/`+id,
+        url: server.baseUrl+`/user/getById/`+id,
     };
     return axios(options)
     .then(response => handleSuccess(response))
@@ -53,7 +54,7 @@ server.getLoggedUser = async () =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: `${baseUrl}/user/getLoggedUser/`,
+        url: server.baseUrl+`/user/getLoggedUser/`,
     };
     return axios(options)
     .then(response => handleSuccess(response))

@@ -4,8 +4,9 @@ import com.backend.dto.JwtAuthenticationRequest;
 import com.backend.dto.UserRequest;
 import com.backend.dto.UserTokenState;
 import com.backend.exception.ResourceConflictException;
+import com.backend.model.Admin;
 import com.backend.model.VerificationToken;
-import com.backend.model.RegistratedUser;
+import com.backend.model.RegisteredUser;
 import com.backend.model.RegistrationRequest;
 import com.backend.service.MailService;
 import com.backend.service.UserService;
@@ -24,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +69,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Kreiraj token za tog korisnika
-        RegistratedUser user = (RegistratedUser) authentication.getPrincipal();
+        RegisteredUser user = (RegisteredUser) authentication.getPrincipal();
         String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
 
@@ -79,7 +81,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<RegistrationRequest> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
 
-        RegistratedUser existUser = this.userService.findByEmail(userRequest.getEmail());
+        RegisteredUser existUser = this.userService.findByEmail(userRequest.getEmail());
         RegistrationRequest user = null;
         if (existUser != null) {
             throw new ResourceConflictException(userRequest.getEmail(), "Username already exists");
@@ -96,7 +98,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<RegistratedUser> confirmUserAccount(WebRequest request, Model model, @RequestParam("token")String verificationToken) throws Exception {
+    public ResponseEntity<RegisteredUser> confirmUserAccount(WebRequest request, Model model, @RequestParam("token")String verificationToken) throws Exception {
         VerificationToken token = verificationTokenService.findByToken(verificationToken);
         if (verificationToken == null) {
             throw new Exception("auth.message.invalidToken");
@@ -107,10 +109,29 @@ public class AuthenticationController {
         if ((token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new Exception("auth.message.expired");
         }
-        RegistratedUser user=userService.saveClient(requestReg);
+        RegisteredUser user=userService.saveClient(requestReg);
         URI frontend = new URI("http://localhost:8082?id="+user.getId());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(frontend);
         return new ResponseEntity<>(user,httpHeaders, HttpStatus.SEE_OTHER);
+    }
+    @PostMapping("/registerAdvertiser")
+    public ResponseEntity<String> registerAdvertiser(@RequestBody RegistrationRequest advertiserRequest) {
+        RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
+
+        if(existedUser != null)
+            throw  new ResourceConflictException(advertiserRequest.getId().toString(), "Email already exists");
+
+        RegistrationRequest createdRequest = userService.saveRegistrationRequest(advertiserRequest);
+        return new ResponseEntity<>("Registration request successfully sent to administrator", HttpStatus.CREATED);
+    }
+    @PostMapping("/registerAdmin")
+    public ResponseEntity<Admin> registerNewAdmin(@RequestBody RegisteredUser newAdminUser) {
+        if(this.userService.findByEmail(newAdminUser.getEmail()) != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");
+        }
+
+        Admin addedAdmin = this.userService.saveAdmin(newAdminUser);
+        return new ResponseEntity<>(addedAdmin, HttpStatus.CREATED);
     }
 }

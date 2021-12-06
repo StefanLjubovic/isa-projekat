@@ -9,7 +9,7 @@ import java.util.*;
 
 @Entity
 @DiscriminatorValue("INSTRUCTOR")
-public class FishingInstructor extends RegistratedUser {
+public class FishingInstructor extends RegisteredUser {
 
    @Column(name="short_biography", unique=false, nullable=true)
    private String shortBiography;

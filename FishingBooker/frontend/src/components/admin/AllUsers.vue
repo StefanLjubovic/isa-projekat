@@ -1,4 +1,5 @@
 <template>
+    <!-- User deatils modal -->
     <div v-if="selectedUser" class="modal fade" id="user-details-modal">
         <div class="modal-dialog rounded">
             <div class="modal-header">
@@ -23,11 +24,11 @@
                         <p>{{ selectedUser.email }}</p>
                         <p>{{ selectedUser.firstName }}</p>
                         <p>{{ selectedUser.lastName }}</p>
-                        <p>{{ selectedUser.streetName }}</p>
-                        <p>{{ selectedUser.streetNumber }}</p>
-                        <p>{{ selectedUser.postalCode }}</p>
-                        <p>{{ selectedUser.city }}</p>
-                        <p>{{ selectedUser.country }}</p>
+                        <p>{{ selectedUser.address.streetName }}</p>
+                        <p>{{ selectedUser.address.streetNumber }}</p>
+                        <p>{{ selectedUser.address.postalCode }}</p>
+                        <p>{{ selectedUser.address.city }}</p>
+                        <p>{{ selectedUser.address.country }}</p>
                         <p>{{ selectedUser.phoneNumber }}</p>
                         <p>{{ roleToString(selectedUser.role) }}</p>
                     </div>
@@ -36,27 +37,49 @@
         </div>
     </div>
 
+    <!-- Add new administrator modal -->
     <div v-if="selectedUser" class="modal fade" id="new-admin-modal">
         <div class="modal-dialog rounded">
-            <div class="modal-header">
+            <div class="modal-header"  @click="cancelNewAdmin()">
                 <h3>Add new administrator</h3>
-                <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
+                <button class="btn btn-close close"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
-                <input type="email" class="form-control" placeholder="Email*" v-model="state.user.email" >
-                <input type="text" class="form-control" placeholder="First name*" v-model="state.user.firstName" >
-                <input type="text" class="form-control" placeholder="Last name*" v-model="state.user.lastName" >
-                <input type="text" class="form-control" placeholder="Phone number*" v-model="state.user.phoneNumber" >
-                <input type="text" class="form-control" placeholder="Street name*" v-model="state.user.streetName" >
-                <input type="text" class="form-control" placeholder="Street number*" v-model="state.user.streetNumber" >
-                <input type="text" class="form-control" placeholder="Postal code*" v-model="state.user.postalCode" >
-                <input type="text" class="form-control" placeholder="City*" v-model="state.user.city" >
-                <input type="text" class="form-control" placeholder="Country*" v-model="state.user.country" >
-                <input type="password" class="form-control" placeholder="Password*" v-model="state.user.password"/>
-                <input type="password" class="form-control" placeholder="Confirm password*" v-model="state.user.confirm"/>
+                <input type="email" class="form-control" placeholder="Email*" v-model="v$.newAdmin.email.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.email.$error">{{v$.newAdmin.email.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="First name*" v-model="v$.newAdmin.firstName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.firstName.$error">{{v$.newAdmin.firstName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Last name*" v-model="v$.newAdmin.lastName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.lastName.$error">{{v$.newAdmin.lastName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Phone number*" v-model="v$.newAdmin.phoneNumber.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.phoneNumber.$error">{{v$.newAdmin.phoneNumber.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Street name*" v-model="v$.newAdmin.address.streetName.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.streetName.$error">{{v$.newAdmin.address.streetName.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Street number*" v-model="v$.newAdmin.address.streetNumber.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.streetNumber.$error">{{v$.newAdmin.address.streetNumber.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Postal code*" v-model="v$.newAdmin.address.postalCode.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.postalCode.$error">{{v$.newAdmin.address.postalCode.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="City*" v-model="v$.newAdmin.address.city.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.city.$error">{{v$.newAdmin.address.city.$errors[0].$message}} </div>
+
+                <input type="text" class="form-control" placeholder="Country*" v-model="v$.newAdmin.address.country.$model" >
+                <div class="text-danger" v-if="v$.newAdmin.address.country.$error">{{v$.newAdmin.address.country.$errors[0].$message}} </div>
+
+                <input type="password" class="form-control" placeholder="Password*" v-model="v$.newAdmin.password.$model"/>
+                <div class="text-danger" v-if="v$.newAdmin.password.$error">{{v$.newAdmin.password.$errors[0].$message}} </div>
+
+                <input type="password" class="form-control" placeholder="Confirm password*" v-model="v$.newAdmin.confirm.$model"/>
+                <div class="text-danger" v-if="v$.newAdmin.confirm.$error">{{v$.newAdmin.confirm.$errors[0].$message}} </div>
 
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn" @click="submitNewAdmin()">Submit</button>
+                    <button class="btn submit-btn" :disabled="v$.newAdmin.$invalid" @click="submitNewAdmin()">Submit</button>
                     <button class="btn cancel-btn" @click="cancelNewAdmin()">Cancel</button>
                 </div>
             </div>
@@ -76,18 +99,18 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByRole(-1)" >All Users</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(0)" >Client</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(1)" >Administrator</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(2)" >Cottage owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(3)" >Ship owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(4)" >Fishing instructor</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_CLIENT')" >Client</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_ADMIN')" >Administrator</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_COTTAGE_OWNER')" >Cottage owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_SHIP_OWNER')" >Ship owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_INSTRUCTOR')" >Fishing instructor</a>
                 </div>
             </div>
             <div class="search">
                 <div class="form-outline">
                     <input v-model="searchParams" type="search" id="search" class="form-control" placeholder="Search users"/>
                 </div>
-                <button type="button" class="btn" @click="search()">
+                <button type="button" class="btn btn-search" @click="search()">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -133,136 +156,167 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators' 
-import {reactive, computed} from 'vue'
+import {required, email, sameAs, minLength, maxLength, numeric} from '@vuelidate/validators'
+import server from '../../server/index'
+import axios from 'axios'
+
+export function validName(name) {
+  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  if (validNamePattern.test(name)){
+    return true;
+  }
+  return false;
+}
 
 export default {
     data() {
         return {
-            allUsers: [
-                {
-                    id: 1,
-                    email: "zdravkocolic@gmail.com",
-                    firstName: "Zdravko",
-                    lastName: "Colic",
-                    phoneNumber: "0645555555",
-                    role: 0
-                },
-                {
-                    id: 2,
-                    email: "anagavrilovic@gmail.com",
-                    firstName: "Ana",
-                    lastName: "Gavrilovic",
-                    phoneNumber: "0645555555",
-                    role: 3
-                },
-                {
-                    id: 3,
-                    email: "marijakljestan@gmail.com",
-                    firstName: "Marija",
-                    lastName: "Kljestan",
-                    phoneNumber: "0645555555",
-                    role: 2
-                },
-                {
-                    id: 4,
-                    email: "stefanljubovic@gmail.com",
-                    firstName: "Stefan",
-                    lastName: "Ljubovic",
-                    phoneNumber: "0645555555",
-                    role: 4
-                },
-            ],
+            allUsers: [],
             users: [],
             searchParams: "",
-            selectedUser: undefined
-        }
-    },
-    mounted() {
-        this.users = this.allUsers;
-    },
-    setup() {
-        let user = {
+            selectedUser: undefined,
+            newAdmin: {
                 email : '',
                 firstName: '',
                 lastName: '',
-                streetName: '',
-                streetNumber: undefined,
-                postalCode: undefined,
-                city: '',
-                country: '',
                 phoneNumber: '',
+                address: {
+                    streetName: '',
+                    streetNumber: '',
+                    postalCode: '',
+                    city: '',
+                    country: '',
+                },
                 password: '',
                 confirm: ''
+            },
+            filterRole: -1
         }
-        let state = reactive({
-            user
+    },
+    mounted() {
+        axios.get(`${server.baseUrl}/users/allUsers`)
+        .then((response) => {
+            this.allUsers = response.data;
+            this.users = this.allUsers;
         })
-        const rules = computed(()=>{
-            return {
-                email: {required,email },
-                password: {required, minLength: minLength(6) },
-                confirm: {required,sameAs:sameAs(state.user.password)},
-                firstName: {required },
-                lastName: {required },
-                streetName: {required },
-                streetNumber: {required,numeric },
-                postalCode: {required,numeric },
-                city: {required },
-                country: {required },
-                phoneNumber: {required,numeric },
-            }
-        })
-        const v$=useValidate(rules,state.user)
+    },
+    setup() {
+        return { v$: useValidate() }
+    },
+    validations() {
         return {
-            state,
-            v$
+            newAdmin: {
+                email: { required, email },
+                firstName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                lastName: { required, name_validation: {
+                        $validator: validName,
+                        $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                    } 
+                },
+                phoneNumber: { required, numeric, minLength: minLength(9), maxLength: maxLength(10) },
+                address: {
+                    streetName: { required },
+                    streetNumber: { required },
+                    postalCode: { required, numeric, minLength: minLength(5), maxLength: maxLength(5) },
+                    city: { required, name_validation: {
+                            $validator: validName,
+                            $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                    country: { required, name_validation: {
+                            $validator: validName,
+                            $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                },
+                password: { required, minLength: minLength(6) },
+                confirm: { required, sameAs:sameAs(this.newAdmin.password) },
+            }
         }
     },
     methods: {
         removeUser: function(user) {
-            if(confirm("Are you sure you want to delete " + user.email + '\'s account?')){
-                let index = this.users.indexOf(user);
-                if(index > -1){
-                    this.users.splice(index, 1);
+            this.$swal({
+                title: `Are you sure you want to delete ${user.email}'s account?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                confirmButtonColor: '#2c3e50'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    axios.delete(`${server.baseUrl}/users/deleteUser/${user.id}`)
+                    .then(() => {
+                        let index = this.users.indexOf(user);
+                        if(index > -1) this.users.splice(index, 1);
+                    });
                 }
-            }
+            })
         },
+
         openModalForUserDetails: function(user) {
             this.selectedUser = user;
             window.$('#user-details-modal').modal('show');
         },
+
         openModalForNewAdmin: function() {
             window.$('#new-admin-modal').modal('show');
         },
-        filterByRole: function(role) {
-            if(role == -1) {
-                this.users = this.allUsers;
-                return;
-            }
 
-            this.users = this.allUsers.filter((user) => user.role == role);
+        filterByRole: function(role) {
+            this.filterRole = role;
+            this.search();
         },
+
         search: function() {
             this.users = this.allUsers.filter((user) => user.email.includes(this.searchParams.toLowerCase())
                                                || user.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.phoneNumber.includes(this.searchParams));
+            if(this.filterRole != -1) {
+                this.users = this.users.filter((user) => user.role == this.filterRole);
+            }
         },
+
+        submitNewAdmin: function() {
+            axios.post(`${server.baseUrl}/auth/registerAdmin`, this.newAdmin)
+            .then((response) => {
+                this.allUsers.push(response.data);
+                this.search();
+
+                this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phoneNumber: '', password: '', confirm: '' };
+                window.$('#new-admin-modal').modal('hide');
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'New administrator successufully added!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+            .catch(() => {
+                this.$swal('There is already an account with this email!');
+            })
+
+            
+        },
+
+        cancelNewAdmin: function() {
+            this.newAdmin = { email : undefined, firstName: '', lastName: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phoneNumber: '', password: '', confirm: '' }
+            window.$('#new-admin-modal').modal('hide');
+        },
+
         roleToString: function(role) {
-            if(role == 0) return "Client";
-            else if(role == 1) return "Administrator";
-            else if(role == 2) return "Cottage owner";
-            else if(role == 3) return "Ship owner";
-            else if(role == 4) return "Fishing instructor";
+            if(role == 'ROLE_CLIENT') return "Client";
+            else if(role == 'ROLE_ADMIN') return "Administrator";
+            else if(role == 'ROLE_COTTAGE_OWNER') return "Cottage owner";
+            else if(role == 'ROLE_SHIP_OWNER') return "Ship owner";
+            else if(role == 'ROLE_INSTRUCTOR') return "Fishing instructor";
             else return "";
         },
-        submitNewAdmin: function() {
-            window.$('#new-admin-modal').modal('hide');
-        },
-        cancelNewAdmin: function() {
-            window.$('#new-admin-modal').modal('hide');
-        }
     }
 }
 </script>
@@ -288,10 +342,16 @@ h1 {
     background-color: #2c3e50;
     color: white;
 }
+
 .btn-delete {
     color: #2c3e50;
     background-color: white;
     border-color: #cfd3d8;
+}
+
+.btn-search {
+    margin-top: 5px;
+    height: 40px;
 }
 
 .new-admin{
@@ -317,6 +377,7 @@ h1 {
 .form-control {
     width: 300px;
     margin-right: 10px;
+    margin-top: 7px;
 }
 
 .users-table {
@@ -363,5 +424,11 @@ h1 {
     color: #2c3e50;
     border-color: #cfd3d8;
     margin-left: 10px;
+}
+
+.text-danger {
+    margin-top: -5px;
+    text-align: left;
+    font-size: 13px;
 }
 </style>

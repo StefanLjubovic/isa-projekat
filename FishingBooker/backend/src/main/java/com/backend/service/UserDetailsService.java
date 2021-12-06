@@ -1,6 +1,6 @@
 package com.backend.service;
 
-import com.backend.model.RegistratedUser;
+import com.backend.model.RegisteredUser;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        RegistratedUser user = userRepository.findByEmail(username);
+        RegisteredUser user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         } else {

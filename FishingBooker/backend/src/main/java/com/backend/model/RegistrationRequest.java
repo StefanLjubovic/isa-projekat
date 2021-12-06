@@ -25,13 +25,17 @@ public class RegistrationRequest {
    @Column(unique=false, nullable=false)
    private String password;
 
-   @Column(unique=false, nullable=false)
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "role_id")
    private Role role;
 
    @Column(unique=false, nullable=false)
    private String explanation;
 
-   @OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+   @Column(unique = false, nullable = true)
+   private String biography;
+
+   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name = "address_id")
    private Address address;
 
@@ -100,6 +104,10 @@ public class RegistrationRequest {
    public void setExplanation(String explanation) {
       this.explanation = explanation;
    }
+
+   public String getBiography() { return biography; }
+
+   public void setBiography(String biography) { this.biography = biography; }
 
    public Address getAddress() {
       return address;

@@ -9,8 +9,7 @@
            role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
            <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
              <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
-             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As instructor</a>
-            <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As cottage owner</a>
+             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As advertiser</a>
            </div>
            <a href="#" class="link-light item" @click="showModal=true">Log in</a>
           </div>

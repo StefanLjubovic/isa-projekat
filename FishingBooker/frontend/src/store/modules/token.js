@@ -10,11 +10,11 @@ const getters = {
     getRole : (state) => state.role
 };
 
-const actions = {
+const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada je fetchuje neki url
     async fetchToken({commit}, loginRequest){
         const options = {
             method: 'POST',
-            url: 'http://localhost:8081/auth/login',
+            url: 'http://localhost:8082/auth/login',
             data: loginRequest,
         };
         const response =await axios(options)
@@ -27,7 +27,7 @@ const actions = {
     }
 };
 
-const mutations = {
+const mutations = {     // sinhrono, za izmenu stanja promenljivih u state
     setToken : (state, token) => (state.token = token), 
     setRole : (state, role) => (state.role = role)
 };

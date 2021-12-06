@@ -90,31 +90,17 @@
             </div>
 
             <div class="right-side">
-                <!-- Address input fields-->
-                <div class="map">
-                    <img src="../assets/mapa.jpg"/><br/><hr/>
-                </div>             
-                <input type="text" class="form-control" placeholder="Street name*" v-model="state.streetName"/>
-                <span class="text-danger" v-if="v$.streetName.$error">
-                   {{v$.streetName.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="Street number*" v-model="state.streetNumber"/>
-                <span class="text-danger" v-if="v$.streetNumber.$error">
-                   {{v$.streetNumber.$errors[0].$message}}
-                </span><br/>
-                <input type="number" class="form-control" placeholder="Postalcode*" v-model="state.postalcode"/>
-                <span class="text-danger" v-if="v$.postalcode.$error">
-                   {{v$.postalcode.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="City*" v-model="state.city"/>
-                <span class="text-danger" v-if="v$.city.$error">
-                   {{v$.city.$errors[0].$message}}
-                </span><br/>
-                <input type="text" class="form-control" placeholder="Country*" v-model="state.country"/>
-                <span class="text-danger" v-if="v$.country.$error">
-                   {{v$.country.$errors[0].$message}}
-                </span><br/><br/><br/>
-
+                <!--Images upload -->
+                <div class="upload-images">
+                    <p> Upload images of your cottage: </p>
+                    <input type="file" class="file-upload" @change="imageAdded"/>
+                </div> <br/>
+                <div v-if="images" class="images-preview">
+                        <div v-for="image in images" :key="image">
+                            <img :src="image" />
+                        </div>
+                </div>               
+                 <OpenLayersMap></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -129,10 +115,12 @@
     import useValidate from '@vuelidate/core'
     import {required,numeric} from '@vuelidate/validators' 
     import {reactive, computed} from 'vue'
+    import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
 
     export default ({
         components: {
                 NavBar,
+                OpenLayersMap,
         },
         data() {
             return{
@@ -149,9 +137,32 @@
                 allowedBehavior: 1,
                 unallowedBehavior: 1,
                 pricelistItems: 1,
-                additionalServices: 1
+                additionalServices: 1,
+                images: [],
+                imagesBackend: []
             }
         },
+
+        methods: {
+
+            imageAdded(e) 
+            {
+                const file = e.target.files[0];
+                this.createBase64Image(file);
+                this.images.push(URL.createObjectURL(file));
+            },
+            createBase64Image(file){
+                const reader= new FileReader();
+            
+                reader.onload = (e) =>{
+                    let img = e.target.result;
+                    this.imagesBackend.push(img);
+                }
+                reader.readAsDataURL(file);
+            },
+
+        },
+
         setup() {
             const state = reactive({
                 name: '',
@@ -215,8 +226,7 @@
     .form-control{
         border-radius:1.5rem;
         width: 90%;
-        height: 40px;
-   
+        height: 40px;  
     }
 
     .room-type .form-control{
@@ -280,6 +290,31 @@
         margin-left: 10px;
     }
 
+    .upload-images{
+        margin-right: 200px;
+    }
+
+    .images-preview{
+        display: contents;
+         width: 40%;
+         height: 30%;
+     }
+
+    .images-preview img{
+        width:50%;
+        height: 50%;
+    }
+
+    p{
+        font-size: 20px;
+        color: #1c3146;
+    }
+
+    .file-upload{
+       margin-left: 45%;  
+    }
+
+
     .cancel-button {
       background-color: white;
       border-color: rgb(218, 214, 214);
@@ -293,6 +328,6 @@
       color: white;
       width: 120px;
       margin-right: 10px;
-  }
+     }
 
 </style>

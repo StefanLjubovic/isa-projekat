@@ -2,7 +2,6 @@ package com.backend.service;
 
 import com.backend.dto.UserRequest;
 import com.backend.model.*;
-import com.backend.repository.IVerificationTokenRepository;
 import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -30,15 +30,15 @@ public class UserService {
     @Autowired
     private IRegistrationRequestRepository registrationRequestRepository;
 
-    public RegistratedUser findByEmail(String username) throws UsernameNotFoundException {
+    public RegisteredUser findByEmail(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username);
     }
 
-    public RegistratedUser findById(Integer id) throws AccessDeniedException {
+    public RegisteredUser findById(Integer id) throws AccessDeniedException {
         return userRepository.findById(id).orElseGet(null);
     }
 
-    public List<RegistratedUser> findAll() throws AccessDeniedException {
+    public List<RegisteredUser> findAll() throws AccessDeniedException {
         return userRepository.findAll();
     }
 
@@ -57,8 +57,8 @@ public class UserService {
         return registrationRequestRepository.save(u);
     }
 
-    public RegistratedUser saveClient(RegistrationRequest userRequest) {
-        RegistratedUser u = new RegistratedUser();
+    public RegisteredUser saveClient(RegistrationRequest userRequest) {
+        RegisteredUser u = new RegisteredUser();
         u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         u.setFirstName(userRequest.getFirstName());
@@ -78,10 +78,32 @@ public class UserService {
     public RegistrationRequest findRequestByEmail(String email) {
         return registrationRequestRepository.findByEmail(email);
     }
+    public Admin saveAdmin(RegisteredUser newAdminUser) {
+        Admin admin = new Admin(newAdminUser, false);
 
+        List<Role> roles = roleService.findByName("ROLE_ADMIN");
+        admin.setRoles(roles);
+        admin.setPassword(passwordEncoder.encode(newAdminUser.getPassword()));
+        admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+        admin.setEnabled(true);
+        admin.setStatus(UserStatus.active);
 
-    public RegistratedUser GetById(int id) {
-        return userRepository.getById(id);
+        return this.userRepository.save(admin);
     }
 
+    public RegisteredUser GetById(int id) {
+        return userRepository.getById(id);
+
+    }
+    public List<RegisteredUser> getAllUsers() {
+        return this.userRepository.findAll();
+    }
+
+    public void deleteUser(Integer id) {
+        this.userRepository.delete(this.userRepository.getById(id));
+    }
+
+    public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        return this.registrationRequestRepository.save(request);
+    }
 }

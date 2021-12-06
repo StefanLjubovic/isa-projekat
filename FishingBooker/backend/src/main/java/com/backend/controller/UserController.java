@@ -1,6 +1,6 @@
 package com.backend.controller;
 
-import com.backend.model.RegistratedUser;
+import com.backend.model.RegisteredUser;
 import com.backend.model.RentingEntity;
 import com.backend.service.ClientService;
 import com.backend.service.UserService;
@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -34,13 +31,24 @@ public class UserController {
     }
 
     @GetMapping(value="/getById/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegistratedUser> GetById(@PathVariable String id){
-        RegistratedUser user=userService.GetById(1);
+    public ResponseEntity<RegisteredUser> GetById(@PathVariable String id){
+        RegisteredUser user=userService.GetById(1);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegistratedUser> GetLoggedUser(Principal principal){
-        RegistratedUser user=userService.findByEmail(principal.getName());
+    public ResponseEntity<RegisteredUser> GetLoggedUser(Principal principal){
+        RegisteredUser user=userService.findByEmail(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @GetMapping("/allUsers")
+    public ResponseEntity<List<RegisteredUser>> getAllUsers() {
+        List<RegisteredUser> users = this.userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }
