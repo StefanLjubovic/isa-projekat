@@ -2,6 +2,7 @@ package com.backend.service;
 
 import com.backend.dto.UserRequest;
 import com.backend.model.*;
+import com.backend.repository.IAddressRepository;
 import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,13 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-@Transactional
 public class UserService {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IAddressRepository addressRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -58,19 +61,11 @@ public class UserService {
     }
 
     public RegisteredUser saveClient(RegistrationRequest userRequest) {
-        RegisteredUser u = new RegisteredUser();
+        Client u = new Client(userRequest);
         u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
-        u.setFirstName(userRequest.getFirstName());
-        u.setLastName(userRequest.getLastName());
-        u.setEnabled(true);
-        u.setEmail(userRequest.getEmail());
-        u.setStatus(UserStatus.active);
-        u.setEnabled(true);
-        u.setAddress(userRequest.getAddress());
-        u.setPhoneNumber(userRequest.getPhoneNumber());
         Role role = roleService.findOneByName(userRequest.getRole().getName());
         u.setRole(role);
+        addressRepository.save(userRequest.getAddress());
         return this.userRepository.save(u);
     }
 

@@ -78,6 +78,18 @@ public class RegisteredUser implements UserDetails {
         this.address = user.getAddress();
     }
 
+    public RegisteredUser(RegistrationRequest user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.status = UserStatus.active;
+        this.enabled = true;
+        this.address = user.getAddress();
+    }
+
     public Integer getId() {
         return id;
     }

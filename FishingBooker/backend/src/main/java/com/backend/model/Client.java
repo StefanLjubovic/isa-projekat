@@ -26,7 +26,11 @@ public class Client extends RegisteredUser {
 
    public Client() { }
 
-   public double getPoints() {
+    public Client(RegistrationRequest userRequest) {
+      super(userRequest);
+    }
+
+    public double getPoints() {
       return points;
    }
 

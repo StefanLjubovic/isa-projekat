@@ -26,7 +26,7 @@ public class MailService{
         mail.setMailTo(email);
         mail.setMailSubject("Confirm your account");
         mail.setMailContent("To confirm your account, please click here : "
-                +"http://localhost:8081/auth/confirm-account?token="+verificationToken.getToken());
+                +"http://localhost:8082/auth/confirm-account?token="+verificationToken.getToken());
         try {
 
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
