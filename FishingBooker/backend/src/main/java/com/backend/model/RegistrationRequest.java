@@ -26,7 +26,8 @@ public class RegistrationRequest {
    @Column(unique=false, nullable=false)
    private String password;
 
-   @Column(unique=false, nullable=false)
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "role_id")
    private Role role;
 
    @Column(unique=false, nullable=false)

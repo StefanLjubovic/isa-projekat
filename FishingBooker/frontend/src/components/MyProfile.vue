@@ -81,7 +81,7 @@ import useValidate from '@vuelidate/core'
 import {required, email, sameAs, minLength, maxLength, numeric, alpha} from '@vuelidate/validators'
 
 export function validName(name) {
-  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  let validNamePattern = new RegExp("^[a-zA-ZšđžčćŠĐŽČĆ]+(?:[-'\\s][a-zA-ZšđžčćŠĐŽČĆ]+)*$");
   if (validNamePattern.test(name)){
     return true;
   }

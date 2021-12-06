@@ -84,6 +84,8 @@ public class UserService {
     }
 
     public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        request.setRole(this.roleService.findOneByName(request.getRole().getName()));
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         return this.requestRepository.save(request);
     }
 }
