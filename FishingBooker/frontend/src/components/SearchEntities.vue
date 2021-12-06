@@ -4,7 +4,7 @@
       <h1>
           {{searchTitle}}
       </h1>
-      <button type="button" class="btn btn-success" v-if="!searchTitle.includes('History') && role!=2 && role != 3 && role != 4">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
+      <button type="button" class="btn btn-success" v-if="!searchTitle.includes('History') && userRole!='ROLE_COTTAGE_OWNER' && userRole != 'ROLE_SHIP_OWNER' && userRole != 'ROLE_INSTRUCTOR'">Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i></button>
 
     </div>
     <div class="filter-div" v-if="!searchTitle.includes('History')">
@@ -57,6 +57,11 @@ data(){
 },
 props:['searchTitle']
 ,
+computed:{
+    userRole(){
+        return this.$store.getters.getRole;
+    }
+},
 methods:{
     changeButtonState: function(state){
         this.sort=state;

@@ -2,15 +2,15 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="navbar-nav navigation">
       <div class="options">
-        <div v-if="role!=2 && role != 3 && role != 4" class="all-users">
+        <div v-if="userRole!= 'ROLE_COTTAGE_OWNER' && userRole != 'ROLE_SHIP_OWNER' && userRole != 'ROLE_INSTRUCTOR'" class="all-users">
           <!-- Options for clients and unregistrated users -->
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">All Adventures<span class="sr-only">(current)</span></a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">All Ships</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">All Cottages</a>
         </div>
 
-        <!-- Client options (role 0) -->
-        <div v-if="role == 0" class="client">
+        <!-- Client options (userRole 'ROLE_CLIENT') -->
+        <div v-if="userRole == 'ROLE_CLIENT'" class="client">
           <div class="dropdown">
             <button class="nav-item nav-link active dropdown-toggle drop-btn" v-bind:class="{ 'active-link text-light': state==4 || state==5 || state==6}"
               ref="btnToggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -26,8 +26,8 @@
           <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==8 }" @click="changeState(8)">Subscriptions</a>
         </div>
           
-        <!-- Admin options (role 1) -->
-        <div v-if="role == 1" class="admin">
+        <!-- Admin options (userRole 'ROLE_ADMIN') -->
+        <div v-if="userRole == 'ROLE_ADMIN'" class="admin">
           <a class="nav-item nav-link active" href="#a" v-bind:class="{ 'active-link text-light': state==4 }" @click="changeState(4)">All Users</a>
           <div class="dropdown">
             <button class="nav-item nav-link active dropdown-toggle drop-btn" v-bind:class="{ 'active-link text-light': state==5 || state==6 || state==7 || state == 8}"
@@ -45,21 +45,21 @@
           <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==10 }" @click="changeState(10)">Complaints</a>
         </div>
 
-        <!-- Cottage owner options (role 2) -->
-        <div v-if="role == 2" class="cottage-owner">
+        <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
+        <div v-if="userRole == 'ROLE_COTTAGE_OWNER'" class="cottage-owner">
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==21 }" @click="changeState(21)">My Cottages</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==22 }" @click="changeState(22)">Reservation History</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==23 }" @click="changeState(23)">My Schedule</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==24 }" @click="changeState(24)">Analytics</a>
         </div>
 
-        <!-- Ship owner options (role 3) -->
-        <div v-if="role == 3">
+        <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
+        <div v-if="userRole == 'ROLE_SHIP_OWNER'">
 
         </div>
 
-        <!-- Fishing instructor options (role 4) -->
-        <div v-if="role == 4" class="instructor">
+        <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
+        <div v-if="userRole == 'ROLE_INSTRUCTOR'" class="instructor">
           <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==0 }" @click="changeState(0)">My Adventures</a>
           <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==1 }" @click="changeState(1)">Reservation History</a>
           <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">My Schedule</a>
@@ -79,6 +79,11 @@
 <script>
 export default {
   props:['state'],
+  computed:{
+      userRole(){
+          return this.$store.getters.getRole;
+      }
+  },
   methods:{
     changeState: function(state){
       this.$emit('change-state',state);

@@ -1,11 +1,11 @@
 <template>
-    <div :class="'background-img'+role" class="background-img">
+    <div :class="'background-img'+userRole" class="background-img">
         <div class="headerr">
             <div class="logo">
                 <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
             </div>
             <div class="buttons-div">
-                <div v-if="role == 5" class="unregistrated-user-options" >
+                <div v-if="userRole == ''" class="unregistrated-user-options" >
                     <a href="#" class="link-light dropdown-toggle item" role="button" id="dropdownMenuButton" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign Up</a>
                     <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
@@ -14,7 +14,7 @@
                     </div>
                     <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
                 </div>
-                <div v-if="role != 5" class="registrated-user-option">
+                <div v-if="userRole != ''" class="registrated-user-option">
                     <a href="#" class="link-light item" @click="$emit('log-out')" v-if="userRole !=''">Log Out</a>
                 </div>
                 <div class="buttons-div"  v-if="userRole ==''">
@@ -43,7 +43,6 @@ export default {
     methods:{
         goToMainPage: function(){
              this.$router.push({ path: '/' })
-             console.log(this.userRole)
         },
         openSignUp: function(){
             this.$router.push({ path: '/client-registration' })
@@ -66,19 +65,19 @@ export default {
     height: 50vh;
 }
 
-.background-img0, .background-img5 {
+.background-imgROLE_CLIENT, .background-img5 {
     background-image: url(../assets/fish.jpg);
 }
-.background-img1 {
+.background-imgROLE_ADMIN {
     background-image: url(../assets/admin.jpg);
 }
-.background-img2 {
+.background-imgROLE_COTTAGE_OWNER {
     background-image: url(../assets/cottage.jpg);
 }
-.background-img3 {
+.background-imgROLE_SHIP_OWNER {
     background-image: url(../assets/ship-owner.jpg);
 }
-.background-img4 {
+.background-imgROLE_INSTRUCTOR {
     background-image: url(../assets/instructor.jpg);
 }
 

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -51,13 +52,16 @@ public class UserController {
         RegisteredUser user=userService.findByEmail(currentPrincipalName);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping("/allUsers")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RegisteredUser>> getAllUsers() {
         List<RegisteredUser> users = this.userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

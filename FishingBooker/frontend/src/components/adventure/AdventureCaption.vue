@@ -3,12 +3,12 @@
         <div class="caption">
             <h1>{{adventureName}}</h1>
         </div>
-        <div class="options" v-if="role == 0 || role==5">
+        <div class="options" v-if="userRole == 'ROLE_CLIENT' || userRole==''">
             <button class="btn" @click="toggleSubscribe" v-if="!subscribed">Subscribe to this adventure&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
             <button class="btn" @click="toggleSubscribe" v-else>Unsubscribe from this adventure&nbsp;&ensp;<i class="fas fa-bell-slash"></i> </button>
         </div>
 
-        <div class="options" v-if="role != 0 && role!=5">
+        <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
             <button class="btn" >Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
             <button class="btn"><i class="fas fa-solid fa-pen"></i> </button>
             <button class="btn" @click="deleteEntity()"><i class="fas fa-solid fa-trash"></i></button>
@@ -43,6 +43,11 @@ export default ({
     data() {
         return {
             subscribed: false,
+        }
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
         }
     },
     methods: {

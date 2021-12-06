@@ -1,8 +1,8 @@
 <template>
   <NavBar @change-state="changeState" :state="state"></NavBar>
   
-  <!-- Client and unregistrated user options (role 0 && 5) -->
-  <div v-if="role == 0 || role == 5">
+  <!-- Client and unregistrated user options (userRole 0 && 5) -->
+  <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
     <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -22,8 +22,8 @@
     </div>
   </div>
 
-  <!-- Admin options (role 1) -->
-  <div v-if="role == 1">
+  <!-- Admin options (userRole "ROLE_ADMIN") -->
+  <div v-if="userRole == 'ROLE_ADMIN'">
     <SearchEntities v-if="state == 0 || state == 1 || state == 2" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     <div v-if="state == 0 || state == 1 || state == 2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -37,8 +37,8 @@
     <AdminAnalytics v-if="state == 9"/>
   </div>
 
-  <!-- Cottage owner options (role 2) -->
-  <div v-if="role == 2">
+  <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
+  <div v-if="userRole == 'ROLE_COTTAGE_OWNER'">
     <div v-if="state == 21">
         <button  type="button" id="add-new-cottage" @click="addNewCottage()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
         <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
@@ -54,13 +54,13 @@
     <OwnerAnalytics v-if="state == 24"/>
   </div>
 
-  <!-- Ship owner options (role 3) -->
-  <div v-if="role == 3">
+  <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
+  <div v-if="userRole == 'ROLE_SHIP_OWNER'">
 
   </div>
 
-  <!-- Fishing instructor options (role 4) -->
-  <div v-if="role == 4">
+  <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
+  <div v-if="userRole == 'ROLE_INSTRUCTOR'">
     <div v-if="state == 0">
         <button  type="button" id="add-new-cottage" @click="addNewAdventure()" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
         <SearchEntities :searchTitle="''"  @filter-sort="filterSort"/>
@@ -97,7 +97,7 @@ import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
 import AdventureReservations from "@/components/adventure/AdventureReservations.vue"
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
-import { mapGetters } from 'vuex';
+
 export default {
     components:{
         NavBar,
@@ -120,7 +120,6 @@ export default {
     },
     data(){
       return{
-        userRole: '', 
         state: 0,
         searchTitle: 'All adventures',
         showComplaint: false,
@@ -128,6 +127,11 @@ export default {
         entities: [],
         entitiesForDisplay: []
       }
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        }
     },
     methods:{
 
@@ -177,7 +181,6 @@ export default {
         document.getElementById('appContainer').style.height='unset';
       },
       openComplaint: function(){
-                console.log(this.userRole)
         this.showComplaint=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
@@ -200,11 +203,7 @@ export default {
         this.$router.push({ path: `/addNewAdventure` })
       }
     },
-    computed: {
-  ...mapGetters({userRole: 'getRole'})
-    },
     async mounted(){
-      this.userRole= this.$store.state.token.role
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
       const resp=await Server.getAllEntities(this.state)

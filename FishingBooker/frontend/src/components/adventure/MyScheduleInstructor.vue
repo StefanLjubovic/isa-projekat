@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <h1>My Schedule</h1>
-        <div v-if="role == 4" class="unavaliable-period">
+        <div v-if="userRole == 'ROLE_INSTRUCTOR'" class="unavaliable-period">
             <p>Define unavaliable period: </p>
             <form @submit.prevent>
                 <div class="mb-4">
@@ -41,6 +41,11 @@ import CalendarView from "@/components/CalendarView.vue"
 export default {
     components: {
         CalendarView
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        }
     },
     data() {
         return {
