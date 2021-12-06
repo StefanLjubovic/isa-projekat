@@ -57,7 +57,7 @@ public class RegistrationRequestService {
     private void sendRejectionEmail(RegistrationRequest request, String rejectionReason) {
         StringBuilder sb = new StringBuilder("");
         sb.append("Hello, ").append(request.getFirstName()).append(" ").append(request.getLastName())
-                .append("! We are sorry to inform you that your registration request on FishingBooker has been rejected.\n")
+                .append("!\n We are sorry to inform you that your registration request on FishingBooker has been rejected.\n")
                 .append("Reason for rejection: \n")
                 .append(rejectionReason);
         emailService.sendSimpleMessage(request.getEmail(), "Registration request rejected!", sb.toString());
@@ -66,7 +66,7 @@ public class RegistrationRequestService {
     private void sendApprovalEmail(RegistrationRequest request) {
         StringBuilder sb = new StringBuilder("");
         sb.append("Hello there, ").append(request.getFirstName()).append(" ").append(request.getLastName())
-                .append("! Your registration request on FishingBooker has been approved. We are happy to have you here!");
+                .append("!\n Your registration request on FishingBooker has been approved. We are happy to have you here!");
         emailService.sendSimpleMessage(request.getEmail(), "Registration request approved!", sb.toString());
     }
 
