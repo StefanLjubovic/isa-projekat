@@ -2,7 +2,7 @@ package com.backend.controller;
 
 import com.backend.model.RegisteredUser;
 import com.backend.model.RentingEntity;
-import com.backend.service.ClientService;
+import com.backend.service.EntityService;
 import com.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,16 +22,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    ClientService clientService;
-
-    @Autowired
     UserService userService;
-
-    @GetMapping(value="{state}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<? extends RentingEntity>> GetAllEntities(@PathVariable int state){
-        Collection<? extends RentingEntity> entities=clientService.GetAllEntities(state);
-        return new ResponseEntity<>(entities, HttpStatus.OK);
-    }
 
     @GetMapping(value="/getById/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisteredUser> GetById(@PathVariable String id){

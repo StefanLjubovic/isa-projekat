@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ClientService {
+public class EntityService {
 
     @Autowired
     IEntityRepository entityRepository;
 
-    public ClientService(){ }
+    public EntityService(){ }
 
     public List<? extends RentingEntity> GetAllEntities(int state){
         List<? extends RentingEntity> entities=null;

@@ -10,7 +10,7 @@ server.getAllEntities = async (state) =>{
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
         },
-        url: server.baseUrl+`/user/`+state,
+        url: server.baseUrl+`/entity/`+state,
 
     };
     return axios(options)
