@@ -90,7 +90,7 @@ public class AuthenticationController {
         RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
 
         if(existedUser != null)
-            throw  new ResourceConflictException(advertiserRequest.getId(), "Email already exists");
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");
 
         RegistrationRequest createdRequest = userService.saveRegistrationRequest(advertiserRequest);
         return new ResponseEntity<>("Registration request successfully sent to administrator", HttpStatus.CREATED);
