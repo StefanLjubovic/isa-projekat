@@ -194,7 +194,11 @@ export default {
         }
     },
     mounted() {
-        axios.get(`${server.baseUrl}/users/allUsers`)
+        axios.get(`${server.baseUrl}/user/allUsers`, {
+            headers: {
+                'Authorization': `Bearer ${this.$store.getters.getToken}`
+            }
+        })
         .then((response) => {
             this.allUsers = response.data;
             this.users = this.allUsers.slice();
@@ -258,7 +262,11 @@ export default {
                 confirmButtonColor: '#2c3e50'
             }).then((result) => {
                 if(result.isConfirmed) {
-                    axios.delete(`${server.baseUrl}/users/deleteUser/${user.id}`)
+                    axios.delete(`${server.baseUrl}/user/deleteUser/${user.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.$store.getters.getToken}`
+                        }
+                    })
                     .then(() => {
                         let index = this.users.indexOf(user);
                         if(index > -1) this.users.splice(index, 1);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -40,13 +41,16 @@ public class UserController {
         RegisteredUser user=userService.findByEmail(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping("/allUsers")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RegisteredUser>> getAllUsers() {
         List<RegisteredUser> users = this.userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
