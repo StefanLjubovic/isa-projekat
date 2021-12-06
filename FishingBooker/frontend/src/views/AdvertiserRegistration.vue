@@ -94,9 +94,9 @@
                             <div class="form-group mb-4">
                                 <select required class="form-control" v-model="form.role">
                                     <option disabled value=""> Select role*</option>
-                                    <option> Cottage owner</option>
-                                    <option> Ship owner</option>
-                                    <option> Fishing instructor</option>
+                                    <option> COTTAGE_OWNER</option>
+                                    <option> SHIP_OWNER</option>
+                                    <option> INSTRUCTOR</option>
                                 </select>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                             </div>                
                         </div>
                         <div class="col-md-6 mb-4">
-                            <div class="form-group mb-4" v-if="form.role=='Fishing instructor'">
+                            <div class="form-group mb-4" v-if="form.role=='INSTRUCTOR'">
                                 <textarea class="reason-area" placeholder="Your biography*" v-model="form.biography" rows="4" cols="65"></textarea>
                                  <!-- Error Message -->
                                  <div class="input-errors" v-for="(error, index) of v$.form.biography.$errors" :key="index">
@@ -207,7 +207,9 @@ export default {
                     phoneNumber: this.form.phone,
                     email : this.form.email,
                     password: this.form.password,
-                    role: this.form.role,
+                    role: {                        
+                        name: `ROLE_${this.form.role}`
+                    },
                     explanation: this.form.registrationReason,
                     biography: this.form.biography,
                     address: {
