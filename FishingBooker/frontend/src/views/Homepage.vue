@@ -3,7 +3,7 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -11,10 +11,17 @@
     </div>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
-    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision"/>
-    <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
+    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
+    <transition name="fade" appear>
+    <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle"/>
+    </transition>
+    <transition name="fade" appear>
     <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
-    <ClientReservations v-if="state==7"/>
+    </transition>
+    <transition name="fade" appear>
+        <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation"/>
+    </transition>
+    <ClientReservations v-if="state==7" @open-cancelation="openCancelation"/>
     <MyProfile v-if="state == 3"/>
     <h1 class="mt-4 subscription-title container" v-if="state==8" >My Subscriptions</h1>
     <div v-if="state==8" class="adventures-wrapper">
@@ -98,7 +105,7 @@ import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
 import AdventureReservations from "@/components/adventure/AdventureReservations.vue"
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
-
+import ConfirmModal from "@/components/client/ConfirmModal"
 export default {
     components:{
         NavBar,
@@ -116,16 +123,21 @@ export default {
         AdminAnalytics,
         OwnerAnalytics,
         AdventureReservations,
-        MyScheduleInstructor
+        MyScheduleInstructor,
+        ConfirmModal
+
     },
     data(){
       return{
+        confirmTitle: 'Are you sure you want to cancel reservation?',
         state: 0,
         searchTitle: 'All adventures',
         showComplaint: false,
         showRevision: false,
+        showCancelation: false,
         entities: [],
-        entitiesForDisplay: []
+        entitiesForDisplay: [],
+        historySort : ''
       }
     },
     computed:{
@@ -180,7 +192,8 @@ export default {
         document.getElementById('appContainer').style.overflow = 'unset';
         document.getElementById('appContainer').style.height='unset';
       },
-      openComplaint: function(){
+      openComplaint: function(entity){
+        console.log(entity)
         this.showComplaint=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
@@ -190,17 +203,31 @@ export default {
         document.getElementById('appContainer').style.overflow = 'unset';
         document.getElementById('appContainer').style.height='unset';
       },
-      openRevision: function(){
+      openRevision: function(entity){
+        console.log(entity)
         this.showRevision=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
       },
-
+      closeCancelation: function(){
+        this.showCancelation=false;
+         document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+      },
+       openCancelation: function(entity){
+         console.log(entity)
+        this.showCancelation=true;
+        document.getElementById('appContainer').style.overflow ='hidden';
+        document.getElementById('appContainer').style.height='100vh';
+      },
       addNewCottage: function() {
         this.$router.push({ path: `/addNewCottage` })
       },
       addNewAdventure: function() {
         this.$router.push({ path: `/addNewAdventure` })
+      },
+      sortHistory: function(value){
+        this.historySort = value
       }
     },
     async mounted(){
@@ -208,7 +235,6 @@ export default {
       else this.state = this.$route.params.data
       const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-      console.log(this.entitiesForDisplay)
       this.entities=resp.data;
       if(this.state==0) this.searchTitle="Adventures we offer";
         else if(this.state==1)this.searchTitle="Ships we offer"
@@ -251,5 +277,12 @@ export default {
 #add-new-cottage{
   margin-left: 58%;
   margin-top: 3%;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
 }
 </style>

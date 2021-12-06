@@ -53,9 +53,9 @@ server.getLoggedUser = async (token) =>{
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
-            Authorization: 'Bearer '+ token,
+            Authorization: 'Bearer ',
         },
-        url: server.baseUrl+`/user/getLoggedUser/`,
+        url: server.baseUrl+`/user/getLoggedUser/`+token,
     }; 
     return axios(options)
     .then(response => handleSuccess(response))

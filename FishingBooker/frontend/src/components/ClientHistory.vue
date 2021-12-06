@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th scope="col">{{entityName}}</th>
-      <th scope="col">Date from</th>
+      <th scope="col">Reserved for</th>
       <th scope="col">Duration</th>
       <th scope="col">Price</th>
       <th scope="col">Complaint</th>
@@ -13,7 +13,7 @@
   <tbody>
     <tr v-for="entity in entities" :key="entity.name">
       <td>{{entity.name}}</td>
-      <td>{{entity.date}}</td>
+      <td>{{setDateFormat(entity.date)}}</td>
       <td>{{entity.duration}} days</td>
       <td>{{entity.price}}</td>
       <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint')"></i></td>
@@ -25,9 +25,13 @@
 
 <script>
 export default {
-  props:['state'],
+  props:['state','sort'],
   emits:['open-complaint','open-revision'],
   updated(){
+    console.log(this.$props)
+    if(this.$props.sort == 'Price')this.entities.sort(function(a, b){return a.price-b.price});
+    if(this.$props.sort == 'Duration')this.entities.sort(function(a, b){return a.duration-b.duration});
+    if(this.$props.sort == 'Date')this.entities.sort(function(a, b){ return new Date(b.date) - new Date(a.date);});
     if(this.state==4) this.entityName='Cottage';
     else if(this.state==5) this.entityName='Ship';
     else if(this.state==6) this.entityName='Adventure';
@@ -38,21 +42,21 @@ export default {
       entities: [
         {
           name: 'Marijina vikendica',
-          date: '5.10.2021',
-          duration: 5,
-          price: 50000
+          date: new Date(2021, 9, 9),
+          duration: 7,
+          price: 10000
         },
         {
           name: 'Marijina vikendica',
-          date: '5.10.2021',
-          duration: 5,
-          price: 50000
+          date: new Date(2021, 10, 11),
+          duration: 4,
+          price: 30000
         },
         {
           name: 'Marijina vikendica',
-          date: '5.10.2021',
-          duration: 5,
-          price: 50000
+          date: new Date(2021, 6, 5),
+          duration: 11,
+          price: 20000
         }
       ]
     }
@@ -61,6 +65,11 @@ export default {
     if(this.state==4) this.entityName='Cottage';
     else if(this.state==5) this.entityName='Ship';
     else if(this.state==6) this.entityName='Adventure';
+  },
+  methods:{
+    setDateFormat(date){
+        return date.toLocaleDateString("sr-RS")
+    }
   }
 }
 </script>

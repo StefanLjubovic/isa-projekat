@@ -6,7 +6,7 @@
       <div class="entity-content">
           <div>
       <h4>🚗{{entity.name}}</h4>
-      <h6>📍{{entity.address.streetName}} {{entity.address.streetNumber}}</h6>
+      <h6>📍{{getRestaurantInfo(entity)}}</h6>
       <p id="desc">📖{{entity.description}}</p>
       </div>
     <div class="grade-div"><p>{{entity.averageGrade}}<i class="fas fa-star star"></i></p></div>
@@ -21,7 +21,9 @@ export default {
 
     },
     methods:{
-
+        getRestaurantInfo(entity){
+            if(entity.address != 'undefined' && entity.address !=null) return entity.address.streetName+ ' '+  entity.address.streetNumber
+        }
     },
     emits: ['entity-details']
 }
@@ -53,6 +55,8 @@ export default {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    justify-content: center;
+    padding: 10px;
     color: #5a5a73;
     font-weight: 400;
     word-wrap:break-word;
@@ -74,10 +78,12 @@ export default {
    margin-left:5px;
    bottom:15px;
    position: absolute;
-   bottom: 17px;
+   bottom: 22px;
    right:10px;
 
 }
+
+
 .entity-content{
     display: flex;
     justify-content: space-between;

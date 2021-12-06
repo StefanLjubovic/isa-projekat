@@ -22,7 +22,7 @@ public class MailService{
     public void sendEmail(VerificationToken verificationToken, String email) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         Mail mail=new Mail();
-        mail.setMailFrom("ljubovicstefan@gmail.com");
+        mail.setMailFrom("fishingbooker.isa@gmail.com");
         mail.setMailTo(email);
         mail.setMailSubject("Confirm your account");
         mail.setMailContent("To confirm your account, please click here : "
@@ -32,7 +32,7 @@ public class MailService{
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
             mimeMessageHelper.setSubject(mail.getMailSubject());
-            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), "technicalkeeda.com"));
+            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), "Fishing booker"));
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent());
 

@@ -71,6 +71,7 @@ methods:{
         this.$emit('filter-sort',this.sort,this.name,this.address,this.mark);
     },
     sortHistory: function(value){
+        console.log(value)
         this.sort=value;
         this.$refs.btnSort.innerText = value
         if(value == '') this.$refs.btnSort.innerText = 'Sort by'

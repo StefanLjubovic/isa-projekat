@@ -17,13 +17,13 @@
               History
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#a" @click="changeState(4)" >Cottages</a>
-              <a class="dropdown-item" href="#a" @click="changeState(5)" >Ships</a>
-              <a class="dropdown-item" href="#a" @click="changeState(6)" >Adventures</a>
+              <a class="dropdown-item" href="#" @click="changeState(4)" >Cottages</a>
+              <a class="dropdown-item" href="#" @click="changeState(5)" >Ships</a>
+              <a class="dropdown-item" href="#" @click="changeState(6)" >Adventures</a>
             </div>
           </div>
-          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==7 }" @click="changeState(7)">Reservations</a>
-          <a class="nav-item nav-link active" href="#a"  v-bind:class="{ 'active-link text-light': state==8 }" @click="changeState(8)">Subscriptions</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==7 }" @click="changeState(7)">Reservations</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==8 }" @click="changeState(8)">Subscriptions</a>
         </div>
           
         <!-- Admin options (userRole 'ROLE_ADMIN') -->

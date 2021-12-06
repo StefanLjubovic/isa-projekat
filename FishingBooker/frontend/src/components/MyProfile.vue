@@ -39,7 +39,9 @@
 
                             <input type="text" class="form-control" placeholder="Country" v-model="v$.user.country.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.country.$error">{{v$.user.country.$errors[0].$message}} </div>
-
+                            <div v-if="userRole=='ROLE_CLIENT'" class="mb-4 penalty-div">
+                             <h4 class="cancelation-label">Number of penalties: {{getPenealties()}}</h4><i class="fas fa-info-circle fa-2x info" @click="penaltyInfo()"></i>
+                            </div>
                             <div class="buttons">
                                 <button class="btn change-password" :disabled="!editMode">Change password</button>
                                 <div class="confirm-buttons">
@@ -92,6 +94,7 @@ export default ({
     data() {
         return {
             editMode: false,
+            penalty : 1,
             user: {
                 email : 'stefan@gmail.com',
                 firstName: 'Stefan',
@@ -110,6 +113,11 @@ export default ({
     },
     mounted() {
         this.userBackup = {...this.user};
+    },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        }
     },
     setup() {
         return { v$: useValidate() }
@@ -158,6 +166,21 @@ export default ({
         },
         cancelRequest() {
             // TODO
+        },
+        getPenealties(){
+            if(this.penalty == 0)
+                return 'None 👍'
+            else if(this.penalty == 1)
+                return 'One ❌'
+            else if(this.penalty == 2)
+                return 'Two ❌❌'
+        },
+        penaltyInfo(){
+            this.$swal.fire(
+            'Penalty info',
+            'For every canceled reservation client gets penalty.If client gets three penalties in a mounth he is banned.',
+            'question'
+)
         }
     }
 })
@@ -169,6 +192,12 @@ export default ({
     margin-right: 15%;
     margin-top: 50px;
     padding-bottom: 100px;
+}
+
+.penalty-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .caption {
@@ -184,6 +213,10 @@ export default ({
     width: 55px;
 }
 
+.cancelation-label{
+    display: flex;
+    justify-content: flex-start;
+}
 .card {
     margin-top: 20px;
     padding: 40px;
@@ -243,6 +276,10 @@ export default ({
  h3 {
     margin-left: 7%;
     margin-top: 18px;
+}
+
+.info{
+    cursor: pointer;
 }
 
 .reason-area{
