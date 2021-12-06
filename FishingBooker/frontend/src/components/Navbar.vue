@@ -68,7 +68,7 @@
         
       </div>
       
-      <div class="my-profile">
+      <div class="my-profile" v-if="userRole != ''">
         <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==3 }" @click="changeState(3)">My profile</a>
       </div>
 

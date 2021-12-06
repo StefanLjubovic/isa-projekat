@@ -9,18 +9,20 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
-    <ClientProfile v-if="state==3"/>
+  </div>
+    <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision"/>
     <Complaint v-if="showComplaint" @close-modal="closeComplaint"/>
     <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
     <ClientReservations v-if="state==7"/>
+    <MyProfile v-if="state == 3"/>
     <h1 class="mt-4 subscription-title container" v-if="state==8" >My Subscriptions</h1>
     <div v-if="state==8" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
-  </div>
+    </div>
 
   <!-- Admin options (userRole "ROLE_ADMIN") -->
   <div v-if="userRole == 'ROLE_ADMIN'">
@@ -82,7 +84,6 @@
 import NavBar from "@/components/Navbar.vue"
 import Entity from "@/components/EntityDiv.vue"
 import SearchEntities from "@/components/SearchEntities.vue"
-import ClientProfile from "@/components/ClientProfile.vue"
 import ClientHistory from "@/components/ClientHistory.vue"
 import ClientReservations from "@/components/ClientReservations.vue"
 import Complaint from "@/components/Complaint.vue"
@@ -103,7 +104,6 @@ export default {
         NavBar,
         SearchEntities,
         Entity,
-        ClientProfile,
         ClientHistory,
         Complaint,
         ClientReservations,

@@ -69,8 +69,8 @@ public class UserService {
         Role role = roleService.findOneByName(userRequest.getRole().getName());
         u.setRole(role);
         addressRepository.save(userRequest.getAddress());
-        this.registrationRequestRepository.delete(userRequest);
         this.verificationTokenService.DeleteTokenByUser(userRequest);
+        this.registrationRequestRepository.delete(userRequest);
         return this.userRepository.save(u);
     }
 

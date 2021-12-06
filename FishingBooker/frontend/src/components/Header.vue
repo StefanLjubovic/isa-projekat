@@ -5,15 +5,6 @@
                 <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
             </div>
             <div class="buttons-div">
-                <div v-if="userRole == ''" class="unregistrated-user-options" >
-                    <a href="#" class="link-light dropdown-toggle item" role="button" id="dropdownMenuButton" 
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign Up</a>
-                    <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
-                            <a class="dropdown-item" href="#">As advertiser</a>
-                    </div>
-                    <a href="#" class="link-light item" @click="$emit('open-modal')">Log In</a>
-                </div>
                 <div v-if="userRole != ''" class="registrated-user-option">
                     <a href="#" class="link-light item" @click="$emit('log-out')" v-if="userRole !=''">Log Out</a>
                 </div>
@@ -79,6 +70,9 @@ export default {
 }
 .background-imgROLE_INSTRUCTOR {
     background-image: url(../assets/instructor.jpg);
+}
+.background-img {
+    background-image: url(../assets/fish.jpg);
 }
 
 .headerr{
