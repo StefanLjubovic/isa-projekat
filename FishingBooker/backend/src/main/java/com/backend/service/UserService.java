@@ -28,6 +28,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private VerificationTokenService verificationTokenService;
+
+    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -66,6 +69,8 @@ public class UserService {
         Role role = roleService.findOneByName(userRequest.getRole().getName());
         u.setRole(role);
         addressRepository.save(userRequest.getAddress());
+        this.registrationRequestRepository.delete(userRequest);
+        this.verificationTokenService.DeleteTokenByUser(userRequest);
         return this.userRepository.save(u);
     }
 
@@ -94,6 +99,7 @@ public class UserService {
     }
 
     public void deleteUser(Integer id) {
+        this.verificationTokenService.DeleteTokenByUser(registrationRequestRepository.getById(id));
         this.userRepository.delete(this.userRepository.getById(id));
     }
 

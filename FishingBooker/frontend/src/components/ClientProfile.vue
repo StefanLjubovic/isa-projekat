@@ -127,7 +127,7 @@ import {required,email,sameAs,minLength,numeric} from '@vuelidate/validators'
 import {reactive, computed} from 'vue'
 
 async function setClient(){
-            await Server.getLoggedUser(this.$store.state.token.token).then(resp=>{
+            await Server.getLoggedUser().then(resp=>{
                 if(resp.success){
                     return resp.data;
                 }

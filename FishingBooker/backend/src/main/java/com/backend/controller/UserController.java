@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -36,8 +39,16 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisteredUser> GetLoggedUser(Principal principal){
-        RegisteredUser user=userService.findByEmail(principal.getName());
+    public ResponseEntity<RegisteredUser> GetLoggedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+        } else {
+            String username = principal.toString();
+        }
+        RegisteredUser user=userService.findByEmail(currentPrincipalName);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @GetMapping("/allUsers")

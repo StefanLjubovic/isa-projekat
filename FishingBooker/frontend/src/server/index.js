@@ -47,15 +47,16 @@ server.getUserById = async (id) =>{
     .catch((error) => handleError(error));
 };
 
-server.getLoggedUser = async () =>{
+server.getLoggedUser = async (token) =>{
     const options ={
         method: 'GET',
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
+            Authorization: 'Bearer '+ token,
         },
         url: server.baseUrl+`/user/getLoggedUser/`,
-    };
+    }; 
     return axios(options)
     .then(response => handleSuccess(response))
     .catch((error) => handleError(error));

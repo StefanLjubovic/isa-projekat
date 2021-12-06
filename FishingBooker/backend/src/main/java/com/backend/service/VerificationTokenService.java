@@ -17,7 +17,9 @@ public class VerificationTokenService {
         VerificationToken myToken = new VerificationToken(token, user);
         verificationTokenRepository.save(myToken);
     }
-
+    public void DeleteTokenByUser(RegistrationRequest user){
+        verificationTokenRepository.delete(verificationTokenRepository.findByUser(user));
+    }
     public VerificationToken findByToken(String name){
         return verificationTokenRepository.findByToken(name);
     }

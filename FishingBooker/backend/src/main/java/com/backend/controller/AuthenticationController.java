@@ -88,9 +88,11 @@ public class AuthenticationController {
         }
         try {
             user = this.userService.saveRequest(userRequest);
-            VerificationToken verificationToken = new VerificationToken(String.valueOf(UUID.randomUUID()),user);
-            mailService.sendEmail(verificationToken,userRequest.getEmail());
-            verificationTokenService.save(verificationToken);
+            if(userRequest.getRoleName().equals("ROLE_CLIENT")) {
+                VerificationToken verificationToken = new VerificationToken(String.valueOf(UUID.randomUUID()), user);
+                mailService.sendEmail(verificationToken, userRequest.getEmail());
+                verificationTokenService.save(verificationToken);
+            }
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
