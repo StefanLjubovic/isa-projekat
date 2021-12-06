@@ -2,6 +2,7 @@ package com.backend.service;
 
 import com.backend.dto.UserRequest;
 import com.backend.model.*;
+import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.ISystemPropertyRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,8 @@ public class UserService {
     }
 
     public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        request.setRole(this.roleService.findOneByName(request.getRole().getName()));
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         return this.requestRepository.save(request);
     }
 }

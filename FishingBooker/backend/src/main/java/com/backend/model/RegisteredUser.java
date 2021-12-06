@@ -11,8 +11,6 @@ import java.sql.Timestamp;
 @Entity
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-@SQLDelete(sql = "UPDATE registered_user SET deleted = true WHERE reg_user_id = ?")
-@Where(clause = "deleted = false")
 public class RegisteredUser implements UserDetails {
 
    @Id
@@ -41,9 +39,6 @@ public class RegisteredUser implements UserDetails {
 
    @Column(name = "enabled")
    private boolean enabled;
-
-   @Column(name = "deleted")
-   private boolean deleted = false;
 
    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinTable(name = "user_role",
@@ -152,10 +147,6 @@ public class RegisteredUser implements UserDetails {
    public Address getAddress() {
       return address;
    }
-
-   public boolean isDeleted() { return deleted; }
-
-   public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
    public void setAddress(Address address) {
       this.address = address;

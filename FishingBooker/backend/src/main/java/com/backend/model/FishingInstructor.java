@@ -19,6 +19,11 @@ public class FishingInstructor extends RegisteredUser {
 
    public FishingInstructor() { }
 
+   public FishingInstructor(RegisteredUser user, String shortBiography) {
+      super(user);
+      this.shortBiography = shortBiography;
+   }
+
    public String getShortBiography() {
       return shortBiography;
    }

@@ -87,7 +87,7 @@ public class AuthenticationController {
 
     @PostMapping("/registerAdvertiser")
     public ResponseEntity<String> registerAdvertiser(@RequestBody RegistrationRequest advertiserRequest) {
-        RegistratedUser existedUser = this.userService.findByUsername(advertiserRequest.getEmail());
+        RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
 
         if(existedUser != null)
             throw  new ResourceConflictException(advertiserRequest.getId(), "Email already exists");

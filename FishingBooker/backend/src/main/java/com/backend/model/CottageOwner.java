@@ -11,6 +11,10 @@ public class CottageOwner extends RegisteredUser {
 
     public CottageOwner() { }
 
+    public CottageOwner(RegisteredUser user) {
+        super(user);
+    }
+
     public Set<Cottage> getCottages() {
         return cottages;
     }

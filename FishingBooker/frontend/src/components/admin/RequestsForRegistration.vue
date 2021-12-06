@@ -1,4 +1,5 @@
 <template>
+    <!-- Response to rejection modal -->
     <div v-if="selectedRequest" class="modal fade" id="response-to-rejection-modal">
         <div class="modal-dialog rounded">
             <div class="modal-header">
@@ -6,15 +7,18 @@
                 <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
-                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."></textarea>
+                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."
+                v-model="v$.responseToRejection.$model"></textarea>
+                <div class="text-danger" v-if="v$.responseToRejection.$error">{{v$.responseToRejection.$errors[0].$message}} </div>
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn" @click="sumbitRejection()">Submit</button>
-                    <button class="btn cancel-btn">Cancel</button>
+                    <button class="btn submit-btn" :disabled="v$.responseToRejection.$invalid" @click="sumbitRejection()">Submit</button>
+                    <button class="btn cancel-btn" @click="cancelRejection()">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Page -->
     <div id="page">
         <h1>Requests for Registration</h1>
         <div class="filter-search">
@@ -25,10 +29,9 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByRole(-1)" >All users</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(0)" >Client</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(2)" >Cottage owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(3)" >Ship owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(4)" >Fishing instructor</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_COTTAGE_OWNER')" >Cottage owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_SHIP_OWNER')" >Ship owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_INSTRUCTOR')" >Fishing instructor</a>
                 </div>
             </div>
             <div class="search">
@@ -63,11 +66,9 @@
                         <td>{{ request.lastName }}</td>
                         <td>{{ request.phoneNumber }}</td>
 
-                        <td v-if="request.role == 0">Client</td>
-                        <td v-else-if="request.role == 1">Administrator</td>
-                        <td v-else-if="request.role == 2">Cottage owner</td>
-                        <td v-else-if="request.role == 3">Ship owner</td>
-                        <td v-else-if="request.role == 4">Fishing instructor</td>
+                        <td v-if="request.role == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
+                        <td v-else-if="request.role == 'ROLE_SHIP_OWNER'">Ship owner</td>
+                        <td v-else-if="request.role == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
                         <td v-else></td>
 
                         <td>
@@ -86,77 +87,103 @@
 </template>
 
 <script>
+import useValidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import axios from 'axios'
+import server from '../../server'
 
 export default ({
     data() {
         return {
-            allRequests: [
-                {
-                    id: 1,
-                    email: "zdravkocolic@gmail.com",
-                    firstName: "Zdravko",
-                    lastName: "Colic",
-                    phoneNumber: "0645555555",
-                    role: 0,
-                    explanation: " "
-                },
-                {
-                    id: 2,
-                    email: "anagavrilovic@gmail.com",
-                    firstName: "Ana",
-                    lastName: "Gavrilovic",
-                    phoneNumber: "0645555555",
-                    role: 3,
-                    explanation: "Veniam laborum cupidatat laboris eiusmod veniam duis incididunt excepteur minim."
-                },
-                {
-                    id: 3,
-                    email: "marijakljestan@gmail.com",
-                    firstName: "Marija",
-                    lastName: "Kljestan",
-                    phoneNumber: "0645555555",
-                    role: 2,
-                    explanation: "Veniam laborum cupidatat laboris eiusmod veniam duis incididunt excepteur minim."
-                },
-                {
-                    id: 4,
-                    email: "stefanljubovic@gmail.com",
-                    firstName: "Stefan",
-                    lastName: "Ljubovic",
-                    phoneNumber: "0645555555",
-                    role: 4,
-                    explanation: "Veniam laborum cupidatat laboris eiusmod veniam duis incididunt excepteur minim."
-                },
-            ],
+            allRequests: [],
             requests: [],
             searchParams: "",
-            selectedRequest: undefined
+            selectedRequest: undefined,
+            responseToRejection: '',
+            filterRole: -1
+        }
+    },
+    setup() {
+        return { v$: useValidate() }
+    },
+    validations() {
+        return {
+           responseToRejection: { required }
         }
     },
     mounted() {
-        this.requests = this.allRequests;
+        axios.get(`${server.baseUrl}/regRequest`)
+        .then((response) => {
+            this.allRequests = response.data;
+            this.requests = this.allRequests.slice();
+        })
+        
     },
     methods: {
+        approveRequest: function(request) {
+            axios.get(`${server.baseUrl}/regRequest/approve/${request.id}`)
+            .then(() => {
+                let index = this.requests.indexOf(request);
+                if(index > -1) this.requests.splice(index, 1);
+                let indexAll = this.allRequests.indexOf(request);
+                if(indexAll > -1) this.allRequests.splice(indexAll, 1);
+
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Request approved successfully!',
+                    showConfirmButton: false,
+                    timer: 2000
+                }); 
+            })
+            .catch((error) => {
+                this.$swal(error.response.data); 
+            })
+
+                       
+        },
+
         rejectRequest: function(request) {
             this.selectedRequest = request;
             window.$('#response-to-rejection-modal').modal('show');
         },
-        sumbitRejection: function() {
-            console.log(this.selectedRequest);
-        },
-        filterByRole: function(role) {
-            if(role == -1) {
-                this.requests = this.allRequests;
-                return;
-            }
 
-            this.requests = this.allRequests.filter((request) => request.role == role);
+        sumbitRejection: function() {
+            let rejection = {
+                id: this.selectedRequest.id,
+                rejectionReason: this.responseToRejection
+            }
+            
+            axios.put(`${server.baseUrl}/regRequest/reject`, rejection)
+            .then(() => {
+                let index = this.requests.indexOf(this.selectedRequest);
+                if(index > -1) this.requests.splice(index, 1);
+                let indexAll = this.allRequests.indexOf(this.selectedRequest);
+                if(indexAll > -1) this.allRequests.splice(indexAll, 1);
+                
+                this.responseToRejection = '';
+                window.$('#response-to-rejection-modal').modal('hide');
+            })
         },
+
+        cancelRejection: function() {
+            this.responseToRejection = '';
+            window.$('#response-to-rejection-modal').modal('hide');
+        },
+
+        filterByRole: function(role) {
+            this.filterRole = role;
+            this.search();
+        },
+
         search: function() {
             this.requests = this.allRequests.filter((request) => request.email.includes(this.searchParams.toLowerCase())
                                                || request.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || request.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || request.phoneNumber.includes(this.searchParams));
+            if(this.filterRole != -1) {
+                this.requests = this.requests.filter((request) => request.role == this.filterRole);
+            }
         }
     }
 })
@@ -253,7 +280,15 @@ h1 {
     height: auto;
     border-color: #2c3e50;
 }
+
 #to-hover:hover > #to-show {
     display: block; 
+}
+
+.text-danger {
+    margin-top: -15px;
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 13px;
 }
 </style>
