@@ -56,7 +56,7 @@ public class DataLoader implements ApplicationRunner {
 
         Address address2 = new Address("Bulver Despota Stefana","5a","21000","Novi Sad","Srbija");
         Role roleCottageOwner = roleRepository.findOneByName("ROLE_COTTAGE_OWNER");
-        RegisteredUser userCottageOwner = new RegisteredUser("Mika", "Mikic", "0641234567", "mikamikic@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, role, new Timestamp(System.currentTimeMillis()), address2);
+        RegisteredUser userCottageOwner = new RegisteredUser("Mika", "Mikic", "0641234567", "mikamikic@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, roleCottageOwner, new Timestamp(System.currentTimeMillis()), address2);
         CottageOwner cottageOwner = new CottageOwner(userCottageOwner);
         userRepository.save(cottageOwner);
 

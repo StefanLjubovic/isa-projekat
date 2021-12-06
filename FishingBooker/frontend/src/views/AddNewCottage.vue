@@ -5,19 +5,23 @@
         <div class="content">
 
             <div class="left-side">
-                <input type="text" class="form-control" placeholder="Name*" v-model="state.name"/>
-                <span class="text-danger" v-if="v$.name.$error">
-                   {{v$.name.$errors[0].$message}}
-                </span><br/>
-                <textarea class="reason-area" placeholder="Description*" v-model="state.registrationReason" rows="4" cols="65"></textarea>
+                <input type="text" class="form-control" placeholder="Name*" v-model="newCottage.name"/>
+                <!-- Error Message -->
+                <div class="input-errors" v-for="(error, index) of v$.newCottage.name.$errors" :key="index">
+                    <div class="text-danger">{{ error.$message }}</div>
+                </div>
+
+                <textarea class="reason-area" placeholder="Description*" v-model="newCottage.description" rows="4" cols="65"></textarea>
+                <!-- Error Message -->
+                <div class="input-errors" v-for="(error, index) of v$.newCottage.description.$errors" :key="index">
+                     <div class="text-danger">{{ error.$message }}</div>
+                </div>
                 <br/> <br/><hr/>
+
                 <!-- Number of rooms and beds per room -->
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="state.roomsNumber"/>
-                <span class="text-danger" v-if="v$.roomsNumber.$error">
-                   {{v$.roomsNumber.$errors[0].$message}}
-                </span><br/>
-                <ol v-if="state.roomsNumber">
-                    <li v-for="index in state.roomsNumber" :key="index">
+                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum"/>
+                <ol v-if="roomsNum">
+                    <li v-for="index in roomsNum" :key="index">
                         <div class="room-type">
                             <input type="number" class="form-control"/>
                             <label>bed room</label>
@@ -29,12 +33,12 @@
                 <div class="allowed-behavior">
                     <h6> Allowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon" @click="allowedBehavior += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehavior -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon" @click="allowedBehaviorNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehaviorNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="allowedBehavior">
-                    <li v-for="index in allowedBehavior" :key="index">
+                <ul v-if="allowedBehaviorNum">
+                    <li v-for="index in allowedBehaviorNum" :key="index">
                         <input type="text" class="form-control"/>
                     </li>
                 </ul><hr/>
@@ -43,12 +47,12 @@
                 <div class="allowed-behavior">
                     <h6> Unallowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehavior += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehavior -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehaviorNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehaviorNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="unallowedBehavior">
-                    <li v-for="index in unallowedBehavior" :key="index">
+                <ul v-if="unallowedBehaviorNum">
+                    <li v-for="index in unallowedBehaviorNum" :key="index">
                         <input type="text" class="form-control"/>
                     </li>
                 </ul><hr/>
@@ -57,12 +61,12 @@
                 <div class="allowed-behavior">
                     <h6> Pricelist: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="pricelistItems += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="pricelistItems -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="pricelistItemsNum += 1"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="pricelistItemsNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="pricelistItems">
-                    <li v-for="index in pricelistItems" :key="index">
+                <ul v-if="pricelistItemsNum">
+                    <li v-for="index in pricelistItemsNum" :key="index">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" placeholder="Service*"/>
                             <input type="number" class="form-control" placeholder="Price*"/>
@@ -74,12 +78,12 @@
                 <div class="allowed-behavior">
                     <h6> Additional services: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServices += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServices -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServicesNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="additionalServices">
-                    <li v-for="index in additionalServices" :key="index">
+                <ul v-if="additionalServicesNum">
+                    <li v-for="index in additionalServicesNum" :key="index">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" placeholder="Service*"/>
                             <input type="number" class="form-control" placeholder="Price*"/>
@@ -113,37 +117,75 @@
 <script>
     import NavBar from "@/components/Navbar.vue"
     import useValidate from '@vuelidate/core'
-    import {required,numeric} from '@vuelidate/validators' 
-    import {reactive, computed} from 'vue'
+    import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
+
+    export function validName(name) {
+        let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+        if (validNamePattern.test(name))
+            return true;
+        
+        return false;
+    }
 
     export default ({
         components: {
                 NavBar,
                 OpenLayersMap,
         },
+        setup() {
+            return {v$: useValidate()}
+        },
         data() {
             return{
-                address: {
-                    streetName: 'Kralja Dragutina',
-                    streetNumber: '61',
-                    postalcode: '21000',
-                    city: 'Novi Sad',
-                    country: 'Serbia',
-                    longitude: '45.25937354724934',
-                    latitude: '19.82703412668896'
+                newCottage: {
+                    name: '',
+                    description: '',
+                    averageGrade: 0,
+                    cancellationPercentage: 0,
+                    images: [],
+                    allowedBehavior: [],
+                    unallowedBehavior: [],
+                    address: {
+                        streetName: '',
+                        streetNumber: '',
+                        postalcode: '',
+                        city: '',
+                        country:  '',
+                        longitude: '',
+                        latitude: ''
+                    },
+                    unvaliablePeriod: [],
+                    pricelistItem: [],
+                    sale: [],
+                    subcribedClients: []
                 },
                 roomsNum: undefined,
-                allowedBehavior: 1,
-                unallowedBehavior: 1,
-                pricelistItems: 1,
-                additionalServices: 1,
+                allowedBehaviorNum: 1,
+                unallowedBehaviorNum: 1,
+                pricelistItemsNum: 1,
+                additionalServicesNum: 1,
                 images: [],
                 imagesBackend: []
             }
         },
-
+        validations() {
+            return {
+                newCottage: {
+                    name: { 
+                        required, name_validation: {
+                            $validator: validName,
+                             $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                    description: {required}
+                },
+            }
+        },
         methods: {
+                submitForm(){
+                this.v$.$validate()                
+            },
 
             imageAdded(e) 
             {
@@ -161,35 +203,6 @@
                 reader.readAsDataURL(file);
             },
 
-        },
-
-        setup() {
-            const state = reactive({
-                name: '',
-                streetName: '',
-                streetNumber: '',
-                postalcode: '',
-                city: '',
-                country: '',
-                description: ''
-               
-            })
-            const rules = computed(()=>{
-                return{
-                name: {required},
-                streetName: {required},
-                streetNumber: {required},
-                postalcode: {required, numeric},
-                city: {required},
-                country: {required},
-                roomsNumber: {required, numeric}
-            }
-            })
-            const v$=useValidate(rules,state)
-            return {
-                state,
-                v$
-            }
         },
     })
 </script>
