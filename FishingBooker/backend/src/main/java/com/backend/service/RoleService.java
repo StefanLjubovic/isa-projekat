@@ -21,4 +21,9 @@ public class RoleService {
         List<Role> roles = this.roleRepository.findByName(name);
         return roles;
     }
+
+    public Role findOneByName(String name) {
+        Role roles = this.roleRepository.findOneByName(name);
+        return roles;
+    }
 }

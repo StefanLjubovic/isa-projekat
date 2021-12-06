@@ -69,9 +69,8 @@ public class UserService {
         u.setEnabled(true);
         u.setAddress(userRequest.getAddress());
         u.setPhoneNumber(userRequest.getPhoneNumber());
-        List<Role> roles = roleService.findByName(userRequest.getRole().getName());
-        u.setRoles(roles);
-
+        Role role = roleService.findOneByName(userRequest.getRole().getName());
+        u.setRole(role);
         return this.userRepository.save(u);
     }
 
@@ -81,8 +80,8 @@ public class UserService {
     public Admin saveAdmin(RegisteredUser newAdminUser) {
         Admin admin = new Admin(newAdminUser, false);
 
-        List<Role> roles = roleService.findByName("ROLE_ADMIN");
-        admin.setRoles(roles);
+        Role role = roleService.findOneByName("ROLE_ADMIN");
+        admin.setRole(role);
         admin.setPassword(passwordEncoder.encode(newAdminUser.getPassword()));
         admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
         admin.setEnabled(true);
@@ -104,6 +103,8 @@ public class UserService {
     }
 
     public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
+        request.setRole(this.roleService.findOneByName(request.getRole().getName()));
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         return this.registrationRequestRepository.save(request);
     }
 }

@@ -16,6 +16,10 @@ public class ShipOwner extends RegisteredUser {
 
     public ShipOwner() { }
 
+    public ShipOwner(RegisteredUser user) {
+        super(user);
+    }
+
     public Set<Ship> getShips() {
         return ships;
     }

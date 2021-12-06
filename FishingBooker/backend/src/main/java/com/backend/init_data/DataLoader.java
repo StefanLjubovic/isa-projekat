@@ -46,8 +46,8 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(new Role("ROLE_SHIP_OWNER"));
 
         Address address1 = new Address("Bulver Kralja Petra","11","21000","Novi Sad","Srbija");
-        List<Role> roles = roleRepository.findByName("ROLE_ADMIN");
-        RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, roles, new Timestamp(System.currentTimeMillis()), address1);
+        Role role = roleRepository.findOneByName("ROLE_ADMIN");
+        RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, role, new Timestamp(System.currentTimeMillis()), address1);
         Admin admin = new Admin(user, false);
         userRepository.save(admin);
 

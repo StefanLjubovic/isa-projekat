@@ -1,6 +1,4 @@
 package com.backend.model;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Proxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,8 +9,6 @@ import java.sql.Timestamp;
 @Entity
 @Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-@JsonIgnoreProperties(ignoreUnknown = false)
-@Proxy(lazy = false)
 public class RegisteredUser implements UserDetails {
 
     @Id
@@ -42,13 +38,9 @@ public class RegisteredUser implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @Column(name="role", unique=false, nullable=false)
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "reg_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;
@@ -59,7 +51,7 @@ public class RegisteredUser implements UserDetails {
 
     public RegisteredUser() { }
 
-    public RegisteredUser(String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, List<Role> roles, Timestamp lastPasswordResetDate, Address address) {
+    public RegisteredUser(String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, Role role, Timestamp lastPasswordResetDate, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -67,7 +59,7 @@ public class RegisteredUser implements UserDetails {
         this.password = password;
         this.status = status;
         this.enabled = enabled;
-        this.roles = roles;
+        this.role = role;
         this.lastPasswordResetDate = lastPasswordResetDate;
         this.address = address;
     }
@@ -81,7 +73,7 @@ public class RegisteredUser implements UserDetails {
         this.password = user.getPassword();
         this.status = user.getStatus();
         this.enabled = user.isEnabled();
-        this.roles = user.getRoles();
+        this.role = user.getRole();
         this.lastPasswordResetDate = user.getLastPasswordResetDate();
         this.address = user.getAddress();
     }
@@ -140,12 +132,12 @@ public class RegisteredUser implements UserDetails {
         this.status = status;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
     public Address getAddress() {
@@ -158,7 +150,9 @@ public class RegisteredUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        List<Role> collection = new ArrayList<Role>();
+        collection.add(this.role);
+        return collection;
     }
 
     public String getPassword() {
@@ -172,6 +166,7 @@ public class RegisteredUser implements UserDetails {
     public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
         this.lastPasswordResetDate = lastPasswordResetDate;
     }
+
 
     @Override
     public String getUsername() {
@@ -197,9 +192,11 @@ public class RegisteredUser implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
     public String toString() {
         return "RegistratedUser{}";
     }

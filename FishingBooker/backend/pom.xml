@@ -63,6 +63,7 @@
 			<version>0.6.0</version>
 		</dependency>
 		<dependency>
+<<<<<<< HEAD
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
@@ -73,6 +74,12 @@
 			<version>2.0.1.Final</version>
 		</dependency>
 
+=======
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+			<version>2.5.6</version>
+		</dependency>
+>>>>>>> 47b8f758f94dd5cedc8b617a72286e60a5ffe258
 	</dependencies>
 
 	<build>

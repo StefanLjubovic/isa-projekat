@@ -137,11 +137,11 @@
                         <td>{{ user.lastName }}</td>
                         <td>{{ user.phoneNumber }}</td>
 
-                        <td v-if="user.role == 0">Client</td>
-                        <td v-else-if="user.role == 1">Administrator</td>
-                        <td v-else-if="user.role == 2">Cottage owner</td>
-                        <td v-else-if="user.role == 3">Ship owner</td>
-                        <td v-else-if="user.role == 4">Fishing instructor</td>
+                        <td v-if="user.role == 'ROLE_CLIENT'">Client</td>
+                        <td v-else-if="user.role == 'ROLE_ADMIN'">Administrator</td>
+                        <td v-else-if="user.role == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
+                        <td v-else-if="user.role == 'ROLE_SHIP_OWNER'">Ship owner</td>
+                        <td v-else-if="user.role == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
                         <td v-else></td>
 
                         <td><button class="btn btn-info" @click="openModalForUserDetails(user)"><i class="fas fa-info"></i></button></td>
@@ -161,7 +161,7 @@ import server from '../../server/index'
 import axios from 'axios'
 
 export function validName(name) {
-  let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+  let validNamePattern = new RegExp("^[a-zA-ZšđžčćŠĐŽČĆ]+(?:[-'\\s][a-zA-ZšđžčćŠĐŽČĆ]+)*$");
   if (validNamePattern.test(name)){
     return true;
   }
@@ -197,7 +197,7 @@ export default {
         axios.get(`${server.baseUrl}/users/allUsers`)
         .then((response) => {
             this.allUsers = response.data;
-            this.users = this.allUsers;
+            this.users = this.allUsers.slice();
         })
     },
     setup() {
@@ -240,6 +240,16 @@ export default {
     },
     methods: {
         removeUser: function(user) {
+            if(user.email == 'mainadmin@gmail.com') {
+                this.$swal({
+                    icon: 'error',
+                    title: 'Ooops...',
+                    text: 'This account can\'t be deleted!',
+                    confirmButtonColor: '#2c3e50'
+                })
+                return;
+            }
+
             this.$swal({
                 title: `Are you sure you want to delete ${user.email}'s account?`,
                 icon: 'question',
@@ -252,6 +262,8 @@ export default {
                     .then(() => {
                         let index = this.users.indexOf(user);
                         if(index > -1) this.users.splice(index, 1);
+                        let indexAll = this.allUsers.indexOf(user);
+                        if(indexAll > -1) this.allUsers.splice(indexAll, 1);
                     });
                 }
             })
@@ -300,8 +312,6 @@ export default {
             .catch(() => {
                 this.$swal('There is already an account with this email!');
             })
-
-            
         },
 
         cancelNewAdmin: function() {

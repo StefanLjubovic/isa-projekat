@@ -74,7 +74,7 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         // Vrati token kao odgovor na uspesnu autentifikaciju
-        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn,user.getRoles().get(0).getName()));
+        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn,user.getRole().getName()));
     }
 
     // Endpoint za registraciju novog korisnika
@@ -120,8 +120,7 @@ public class AuthenticationController {
         RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
 
         if(existedUser != null)
-            throw  new ResourceConflictException(advertiserRequest.getId().toString(), "Email already exists");
-
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");
         RegistrationRequest createdRequest = userService.saveRegistrationRequest(advertiserRequest);
         return new ResponseEntity<>("Registration request successfully sent to administrator", HttpStatus.CREATED);
     }
