@@ -35,7 +35,7 @@ VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE'
 
 -- cottage
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name, address_id)
-VALUES (nextval('entity_seq_gen'), 0, 0, 'Prelepa vikendica uz pogled na jezero', 'Marijina vikendica', 2);
+VALUES (nextval('entity_seq_gen'), 4.8, 15, 'Prelepa vikendica uz pogled na jezero', 'Marijina vikendica', 2);
 INSERT INTO cottage(entity_id, reg_user_id)
 VALUES (1, 3);
 INSERT INTO room(room_id, bed_number, entity_id)
