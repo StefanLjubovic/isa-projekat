@@ -17,9 +17,10 @@ const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada
             url: 'http://localhost:8082/auth/login',
             data: loginRequest,
         };
-        const response =await axios(options)
+        const response = await axios(options)
         commit('setToken', response.data.accessToken);
         commit('setRole', response.data.roles);
+        console.log(response.data.accessToken)
     },
     async logout({commit}){
         commit('setToken', {});

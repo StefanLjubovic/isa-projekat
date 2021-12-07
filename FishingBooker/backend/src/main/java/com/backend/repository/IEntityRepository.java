@@ -1,6 +1,6 @@
 package com.backend.repository;
-
 import com.backend.model.RegisteredUser;
+import com.backend.model.Adventure;
 import com.backend.model.RentingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

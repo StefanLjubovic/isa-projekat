@@ -15,12 +15,18 @@ public class Adventure extends RentingEntity {
    @Column(name = "fishing_equipment")
    private Set<String> fishingEquipment = new HashSet<String>();
 
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    @JoinColumn(name = "reg_user_id")
    private FishingInstructor fishingInstructor;
 
-   public Adventure(int id,String name,String description,Address address,double grade) {
-      super(id,name,description,address,grade);
+   public Adventure(Integer id, String name, String description, Address address, double grade) {
+      super(id, name, description, address, grade);
+   }
+
+   public Adventure(String name, String description, double averageGrade, Address address, double cancellationPercentage, Set<String> allowedBehaviour, Set<String> unallowedBehavior, int maxPersons, FishingInstructor instructor) {
+      super(name, description, averageGrade, cancellationPercentage, allowedBehaviour,unallowedBehavior, address);
+      this.maxPersons = maxPersons;
+      this.fishingInstructor = instructor;
    }
 
    public Adventure() {}

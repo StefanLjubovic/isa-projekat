@@ -1,6 +1,4 @@
 package com.backend.model;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 import java.util.*;
@@ -18,10 +16,10 @@ public class RentingEntity {
    @Column(unique=true, nullable=false)
    private String name;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private String description;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private double averageGrade = 0;
 
    private double cancellationPercentage;
@@ -45,17 +43,14 @@ public class RentingEntity {
    @JoinColumn(name = "address_id")
    private Address address;
 
-   @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   private Set<UnavaliablePeriod> unvaliablePeriod = new HashSet<UnavaliablePeriod>();
+   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   private Set<UnavailablePeriod> unavailablePeriod = new HashSet<UnavailablePeriod>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    private Set<PricelistItem> pricelistItem = new HashSet<PricelistItem>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    private Set<Sale> sale = new HashSet<Sale>();
-
-   @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY)
-   private Set<Client> subcribedClients = new HashSet<Client>();
 
    public RentingEntity() { }
 
@@ -67,7 +62,17 @@ public class RentingEntity {
       this.unallowedBehavior = unallowedBehavior;
    }
 
-   public RentingEntity(Integer id, String name, String description,Address address, double averageGrade) {
+   public RentingEntity(String name, String description, double averageGrade, double cancellationPercentage, Set<String> allowedBehavior, Set<String> unallowedBehavior, Address address) {
+      this.name = name;
+      this.description = description;
+      this.averageGrade = averageGrade;
+      this.cancellationPercentage = cancellationPercentage;
+      this.allowedBehavior = allowedBehavior;
+      this.unallowedBehavior = unallowedBehavior;
+      this.address = address;
+   }
+
+   public RentingEntity(Integer id, String name, String description, Address address, double averageGrade) {
       this.id = id;
       this.name = name;
       this.description = description;

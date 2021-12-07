@@ -11,21 +11,10 @@ import java.util.*;
 @DiscriminatorValue("SHIP_OWNER")
 public class ShipOwner extends RegisteredUser {
 
-    @OneToMany(mappedBy = "shipOwner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Ship> ships = new HashSet<Ship>();
-
     public ShipOwner() { }
 
     public ShipOwner(RegisteredUser user) {
         super(user);
-    }
-
-    public Set<Ship> getShips() {
-        return ships;
-    }
-
-    public void setShips(Set<Ship> ships) {
-        this.ships = ships;
     }
 
     @Override

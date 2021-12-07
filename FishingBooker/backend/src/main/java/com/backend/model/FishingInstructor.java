@@ -4,6 +4,8 @@
  * Purpose: Defines the Class FishingInstructor
  ***********************************************************************/
 package com.backend.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -14,8 +16,9 @@ public class FishingInstructor extends RegisteredUser {
    @Column(name="short_biography", unique=false, nullable=true)
    private String shortBiography;
 
-   @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   private Set<Adventure> adventures = new HashSet<Adventure>();
+   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnore
+   private Set<UnavailablePeriod> unavailablePeriod = new HashSet<UnavailablePeriod>();
 
    public FishingInstructor() { }
 
@@ -32,11 +35,11 @@ public class FishingInstructor extends RegisteredUser {
       this.shortBiography = shortBiography;
    }
 
-   public Set<Adventure> getAdventures() {
-      return adventures;
+   public Set<UnavailablePeriod> getUnavailablePeriod() {
+      return unavailablePeriod;
    }
 
-   public void setAdventures(Set<Adventure> adventures) {
-      this.adventures = adventures;
+   public void setUnavailablePeriod(Set<UnavailablePeriod> unavailablePeriod) {
+      this.unavailablePeriod = unavailablePeriod;
    }
 }
