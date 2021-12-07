@@ -103,7 +103,7 @@
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap></OpenLayersMap>
+                 <OpenLayersMap @change-address="changeAddress"></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -194,8 +194,15 @@
         },
         methods: {
             submitForm(){
-                this.v$.$validate()      
-                console.log(this.newCottage)          
+                this.v$.$validate();
+                const util = require('util')    
+                console.log(util.inspect(this.newCottage, false, null, true))          
+            },
+
+            changeAddress(data){
+                const util = require('util')    
+                console.log(util.inspect(data.address, false, null, true)) 
+                this.newCottage.address = data.address
             },
 
             changeRoomsNumber(){

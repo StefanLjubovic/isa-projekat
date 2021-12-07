@@ -86,7 +86,7 @@ export default {
   },
   methods:{
     changeState: function(state){
-      this.$emit('change-state',state);
+      this.$emit('change-state', state);
     }
   }
 }

@@ -27,7 +27,8 @@ import useValidate from '@vuelidate/core'
 //import {required} from '@vuelidate/validators' 
 
 export default {
-    //props: ['address'],
+    props:['data'],
+    emits: ['change-address'],
     setup() {
             return {v$: useValidate()}
     },
@@ -41,7 +42,7 @@ export default {
                 country: '',
                 longitude: '',
                 latitude: ''  
-            }             
+            }       
         }
     },/*
     validations() {
@@ -58,7 +59,7 @@ export default {
     mounted() {
       var center = fromLonLat([19.41, 44.82]);
 
-      var mapSearch = new Map({
+        var mapSearch = new Map({
         target: 'map',
         layers: [
           // adding a background tiled layer
@@ -72,12 +73,12 @@ export default {
 	}),
       })
 
-      mapSearch.on('click', function (evt) {          
-             var coord = toLonLat(evt.coordinate);
-              reverseGeocode(coord);
+        mapSearch.on('click', function (evt) {          
+            var coord = toLonLat(evt.coordinate);
+            reverseGeocode(coord);
+            this.$emit('change-address', this.data.address);
       })
     }
- 
 }
     setTimeout(() => { this.map.updateSize(); });
 
@@ -131,6 +132,9 @@ export default {
                 el.dispatchEvent(new Event('input'));
              } 
           });
+
+           const util = require('util')
+           console.log(util.inspect(this.address, false, null, true)) 
         }
     
 </script>
