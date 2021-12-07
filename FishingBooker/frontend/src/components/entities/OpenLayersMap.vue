@@ -27,6 +27,7 @@ import useValidate from '@vuelidate/core'
 //import {required} from '@vuelidate/validators' 
 
 export default {
+    //props: ['address'],
     setup() {
             return {v$: useValidate()}
     },

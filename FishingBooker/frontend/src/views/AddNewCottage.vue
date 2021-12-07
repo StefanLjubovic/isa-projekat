@@ -3,7 +3,6 @@
     <div id="add-entity-form"> 
         <div class="title"><h1>New Cottage</h1></div> 
         <div class="content">
-
             <div class="left-side">
                 <input type="text" class="form-control" placeholder="Name*" v-model="newCottage.name"/>
                 <!-- Error Message -->
@@ -19,11 +18,11 @@
                 <br/> <br/><hr/>
 
                 <!-- Number of rooms and beds per room -->
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum"/><br/>
+                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum" @input="changeRoomsNumber()"/><br/>
                 <ol v-if="roomsNum">
-                    <li v-for="rn in roomsNum" :key="rn">
+                    <li v-for="room in newCottage.rooms" :key="room.id">
                         <div class="room-type">
-                            <input type="number" class="form-control"/>
+                            <input type="number" class="form-control" v-model="room.bedNumber"/>
                             <label>bed room</label>
                         </div>
                     </li>
@@ -61,15 +60,15 @@
                 <div class="multiple-inputs">
                     <h6> Pricelist: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="pricelistItemsNum += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="pricelistItemsNum -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="addPricelistItem()"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="pricelistItemsNum">
-                    <li v-for="(pli,index) in pricelistItemsNum" :key="pli">
+                <ul v-if="newCottage.pricelistItem">
+                    <li v-for="item in newCottage.pricelistItem" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="newCottage.pricelistItem[index].service" placeholder="Service*"/>
-                            <input type="number" class="form-control" v-model="newCottage.pricelistItem[index].price"   placeholder="Price*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
                 </ul><hr/>
@@ -166,7 +165,7 @@
                     sale: [],
                     rooms: [
                         {
-                            bedNumber: 0,
+                            bedNumber: undefined,
                             cottage: this.newCottage
                         },
                     ],
@@ -199,8 +198,31 @@
                 console.log(this.newCottage)          
             },
 
-            imageAdded(e) 
-            {
+            changeRoomsNumber(){
+                this.newCottage.rooms = []
+                for(let i = 0; i < this.roomsNum; i++){
+                     this.newCottage.rooms.push({
+                            bedNumber: undefined,
+                            cottage: this.newCottage
+                     });
+                }
+            },
+
+            addPricelistItem() {
+                this.pricelistItem += 1;
+                this.newCottage.pricelistItem.push({
+                    service: '',
+                    price: undefined,
+                    rentingEntity: this.newCottage
+                })
+            },
+
+            removePricelistItem(){
+                this.pricelistItem -= 1;
+                this.newCottage.pricelistItem.pop()
+            },
+
+            imageAdded(e) {
                 const file = e.target.files[0];
                 this.createBase64Image(file);
                 this.imagesFrontend.push(URL.createObjectURL(file));
