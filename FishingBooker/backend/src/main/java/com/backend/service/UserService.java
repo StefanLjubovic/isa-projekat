@@ -73,6 +73,7 @@ public class UserService {
     public RegistrationRequest findRequestByEmail(String email) {
         return registrationRequestRepository.findByEmail(email);
     }
+
     public Admin saveAdmin(RegisteredUser newAdminUser) {
         Admin admin = new Admin(newAdminUser, false);
 

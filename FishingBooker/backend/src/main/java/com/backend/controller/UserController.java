@@ -29,6 +29,7 @@ public class UserController {
         RegisteredUser user=userService.GetById(1);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisteredUser> GetLoggedUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

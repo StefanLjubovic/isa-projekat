@@ -1,5 +1,5 @@
 <template>
-    <div :class="`background-img${userRole}`" class="background-img">
+    <div :class="[`${userRole}` ? `img${userRole}` : 'img']" class="background-img">
         <div class="headerr">
             <div class="logo">
                 <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
@@ -31,6 +31,9 @@ export default {
         }
     },
     emits:['open-modal', 'log-out'],
+    mounted() {
+        console.log(this.userRole);
+    },
     methods:{
         goToMainPage: function(){
              this.$router.push({ path: '/' })
@@ -56,23 +59,20 @@ export default {
     height: 50vh;
 }
 
-.background-imgROLE_CLIENT, .background-img {
+.imgROLE_CLIENT, .img {
     background-image: url(../assets/fish.jpg);
 }
-.background-imgROLE_ADMIN {
+.imgROLE_ADMIN {
     background-image: url(../assets/admin.jpg);
 }
-.background-imgROLE_COTTAGE_OWNER {
+.imgROLE_COTTAGE_OWNER {
     background-image: url(../assets/cottage.jpg);
 }
-.background-imgROLE_SHIP_OWNER {
+.imgROLE_SHIP_OWNER {
     background-image: url(../assets/ship-owner.jpg);
 }
-.background-imgROLE_INSTRUCTOR {
+.imgROLE_INSTRUCTOR {
     background-image: url(../assets/instructor.jpg);
-}
-.background-img {
-    background-image: url(../assets/fish.jpg);
 }
 
 .headerr{
