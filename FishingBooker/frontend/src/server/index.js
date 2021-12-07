@@ -53,9 +53,9 @@ server.getLoggedUser = async (token) =>{
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
-            Authorization: 'Bearer ',
+            'Authorization': `Bearer ${token}`
         },
-        url: server.baseUrl+`/user/getLoggedUser/`+token,
+        url: server.baseUrl+`/user/getLoggedUser/`,
     }; 
     return axios(options)
     .then(response => handleSuccess(response))
@@ -76,6 +76,24 @@ server.getSubscriptions= async (token) =>{
     .then(response => handleSuccess(response))
     .catch((error) => handleError(error));
 };
+
+
+server.updateUser = async(data,token)=>{
+    const options ={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/user/update/`,
+        data : data
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 
 function handleError(error) {
 	console.log('Error');

@@ -24,21 +24,21 @@
                             <input type="text" class="form-control" placeholder="Phone number" v-model="v$.user.phoneNumber.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.phoneNumber.$error">{{v$.user.phoneNumber.$errors[0].$message}} </div>
 
-                            <input type="text" class="form-control" placeholder="Street name" v-model="v$.user.streetName.$model" :disabled="!editMode">
-                            <div class="text-danger" v-if="v$.user.streetName.$error">{{v$.user.streetName.$errors[0].$message}} </div>
+                            <input type="text" class="form-control" placeholder="Street name" v-model="v$.user.address.streetName.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.address.streetName.$error">{{v$.user.address.streetName.$errors[0].$message}} </div>
                         </div>
                         <div class="right">
-                            <input type="text" class="form-control" placeholder="Street number" v-model="v$.user.streetNumber.$model" :disabled="!editMode">
-                            <div class="text-danger" v-if="v$.user.streetNumber.$error">{{v$.user.streetNumber.$errors[0].$message}} </div>
+                            <input type="text" class="form-control" placeholder="Street number" v-model="v$.user.address.streetNumber.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.address.streetNumber.$error">{{v$.user.address.streetNumber.$errors[0].$message}} </div>
 
-                            <input type="text" class="form-control" placeholder="Postal code" v-model="v$.user.postalCode.$model" :disabled="!editMode">
-                            <div class="text-danger" v-if="v$.user.postalCode.$error">{{v$.user.postalCode.$errors[0].$message}} </div>
+                            <input type="text" class="form-control" placeholder="Postal code" v-model="v$.user.address.postalCode.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.address.postalCode.$error">{{v$.user.address.postalCode.$errors[0].$message}} </div>
 
-                            <input type="text" class="form-control" placeholder="City" v-model="v$.user.city.$model" :disabled="!editMode">
-                            <div class="text-danger" v-if="v$.user.city.$error">{{v$.user.city.$errors[0].$message}} </div>
+                            <input type="text" class="form-control" placeholder="City" v-model="v$.user.address.city.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.address.city.$error">{{v$.user.address.city.$errors[0].$message}} </div>
 
-                            <input type="text" class="form-control" placeholder="Country" v-model="v$.user.country.$model" :disabled="!editMode">
-                            <div class="text-danger" v-if="v$.user.country.$error">{{v$.user.country.$errors[0].$message}} </div>
+                            <input type="text" class="form-control" placeholder="Country" v-model="v$.user.address.country.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.user.address.country.$error">{{v$.user.address.country.$errors[0].$message}} </div>
                             <div v-if="userRole=='ROLE_CLIENT'" class="mb-4 penalty-div">
                              <h4 class="cancelation-label">Number of penalties: {{getPenealties()}}</h4><i class="fas fa-info-circle fa-2x info" @click="penaltyInfo()"></i>
                             </div>
@@ -81,7 +81,7 @@
 <script>
 import useValidate from '@vuelidate/core'
 import {required, email, sameAs, minLength, maxLength, numeric, alpha} from '@vuelidate/validators'
-
+import Server from '../server';
 export function validName(name) {
   let validNamePattern = new RegExp("^[a-zA-ZšđžčćŠĐŽČĆ]+(?:[-'\\s][a-zA-ZšđžčćŠĐŽČĆ]+)*$");
   if (validNamePattern.test(name)){
@@ -95,23 +95,13 @@ export default ({
         return {
             editMode: false,
             penalty : 1,
-            user: {
-                email : 'stefan@gmail.com',
-                firstName: 'Stefan',
-                lastName: 'Ljubovic',
-                streetName: 'Mihajla Pupina',
-                streetNumber: 11,
-                postalCode: 24000,
-                city: 'Subotica',
-                country: 'Srbija',
-                phoneNumber: '063103130',
-                password: 'stefan123',
-                confirm: 'stefan123'
-            },
+            user: {},
             userBackup: undefined
         }
     },
-    mounted() {
+    async mounted() {
+        const resp=await Server.getLoggedUser(this.$store.getters.getToken)
+        this.user = resp.data
         this.userBackup = {...this.user};
     },
     computed:{
@@ -136,11 +126,13 @@ export default ({
                         $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
                     } 
                 },
+                address:{
                 streetName: { required },
                 streetNumber: { required },
                 postalCode: { required, numeric, minLength: minLength(5), maxLength: maxLength(5) },
                 city: { required, alpha },
                 country: { required, alpha },
+                },
                 phoneNumber: { required, numeric, minLength: minLength(9), maxLength: maxLength(10) },
                 password: { required, minLength: minLength(6) },
                 confirm: { required, sameAs: sameAs(this.user.password) },
@@ -148,9 +140,25 @@ export default ({
         }
     },
     methods: {
-        saveChanges() {
+        async saveChanges() {
             this.userBackup = this.user;
             this.editMode = !this.editMode;
+            const dto = {
+                id : this.user.id,
+                firstname : this.user.firstName,
+                lastname : this.user.lastName,
+                address : this.user.address,
+                phoneNumber : this.user.phoneNumber
+            }
+            await Server.updateUser(dto,this.$store.getters.getToken)
+            .then(resp=> {
+                if(resp.success){
+                    this.$swal.fire(
+                        'Success',
+                        'Profile updates successfully.',
+                        'success')
+                }
+            })
         },
         cancelEditing() {
             this.user = {...this.userBackup};
@@ -165,7 +173,8 @@ export default ({
             window.$('#delete-account-modal').modal('hide');
         },
         cancelRequest() {
-            // TODO
+            this.user = {...this.userBackup}
+            this.editMode = !this.editMode
         },
         getPenealties(){
             if(this.penalty == 0)
