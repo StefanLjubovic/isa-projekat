@@ -44,10 +44,6 @@ public class UserService {
         return userRepository.findById(id).orElseGet(null);
     }
 
-    public List<RegisteredUser> findAll() throws AccessDeniedException {
-        return userRepository.findAll();
-    }
-
     public RegistrationRequest saveRequest(UserRequest userRequest){
         RegistrationRequest u = new RegistrationRequest();
         u.setPassword(userRequest.getPassword());
@@ -94,6 +90,7 @@ public class UserService {
         return userRepository.getById(id);
 
     }
+
     public List<RegisteredUser> getAllUsers() {
         return this.userRepository.findAll();
     }

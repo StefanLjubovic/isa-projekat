@@ -50,8 +50,8 @@ export default {
     data() {
         return {
             range: {
-                start: new Date(2020, 0, 6),
-                end: new Date(2020, 0, 23),
+                start: new Date(),
+                end: new Date(),
             },
             masks: {
                 input: 'YYYY-MM-DD h:mm A',

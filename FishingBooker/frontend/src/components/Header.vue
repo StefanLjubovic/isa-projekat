@@ -1,5 +1,5 @@
 <template>
-    <div :class="'background-img'+userRole" class="background-img">
+    <div :class="`background-img${userRole}`" class="background-img">
         <div class="headerr">
             <div class="logo">
                 <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
@@ -56,7 +56,7 @@ export default {
     height: 50vh;
 }
 
-.background-imgROLE_CLIENT, .background-img5 {
+.background-imgROLE_CLIENT, .background-img {
     background-image: url(../assets/fish.jpg);
 }
 .background-imgROLE_ADMIN {

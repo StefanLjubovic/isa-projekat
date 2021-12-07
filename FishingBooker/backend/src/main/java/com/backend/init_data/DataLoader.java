@@ -21,6 +21,9 @@ public class DataLoader implements ApplicationRunner {
     private ICottageRepository cottageRepository;
 
     @Autowired
+    private IAdventureRepository adventureRepository;
+
+    @Autowired
     private IRoleRepository roleRepository;
 
     @Autowired
@@ -33,25 +36,22 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Address address = new Address("Bulver oslobodjenja","21","24000","Novi Sad","Srbija");
+        /*
         Set<String> unallowedBehavior= new HashSet<>();
         unallowedBehavior.add("Zabranjena muzika");
         unallowedBehavior.add("Zabranjeno pravljenje zurki");
         Cottage cottage = new Cottage("Marijina vikendica","Prelepa vikendica uz pogled na jezero",4,address,unallowedBehavior);
-        cottageRepository.save(cottage);
-        roleRepository.save(new Role("ROLE_ADMIN"));
-        roleRepository.save(new Role("ROLE_CLIENT"));
-        roleRepository.save(new Role("ROLE_COTTAGE_OWNER"));
-        roleRepository.save(new Role("ROLE_INSTRUCTOR"));
-        roleRepository.save(new Role("ROLE_SHIP_OWNER"));
+        cottageRepository.save(cottage);*/
 
-        Address address1 = new Address("Bulver Kralja Petra","11","21000","Novi Sad","Srbija");
-        Role role = roleRepository.findOneByName("ROLE_ADMIN");
-        RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, role, new Timestamp(System.currentTimeMillis()), address1);
-        Admin admin = new Admin(user, false);
-        userRepository.save(admin);
+        /*
 
-        SystemProperty systemProperty = new SystemProperty("INCOME_PERCENTAGE", "0");
-        this.systemPropertyRepository.save(systemProperty);
+
+        /*
+        Set<String> allowedBehavior= new HashSet<>();
+        allowedBehavior.add("Bringing pets to the adventure.");
+        allowedBehavior.add("Alcohol is allowed");
+        Adventure adventure = new Adventure("Fishing in the sunset", "Beautiful moments with beautiful nature and sun", 0, address3, 0, allowedBehavior, unallowedBehavior, 5, fishingInstructor);
+        adventureRepository.save(adventure);*/
+
     }
 }
