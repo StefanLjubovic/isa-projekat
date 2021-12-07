@@ -41,17 +41,26 @@ public class DataLoader implements ApplicationRunner {
         unallowedBehavior.add("Zabranjena muzika");
         unallowedBehavior.add("Zabranjeno pravljenje zurki");
         Cottage cottage = new Cottage("Marijina vikendica","Prelepa vikendica uz pogled na jezero",4,address,unallowedBehavior);
-        cottageRepository.save(cottage);*/
+        cottageRepository.save(cottage);
+        roleRepository.save(new Role("ROLE_ADMIN"));
+        roleRepository.save(new Role("ROLE_CLIENT"));
+        roleRepository.save(new Role("ROLE_COTTAGE_OWNER"));
+        roleRepository.save(new Role("ROLE_INSTRUCTOR"));
+        roleRepository.save(new Role("ROLE_SHIP_OWNER"));
 
-        /*
+        Address address1 = new Address("Bulver Kralja Petra","11","21000","Novi Sad","Srbija");
+        Role role = roleRepository.findOneByName("ROLE_ADMIN");
+        RegisteredUser user = new RegisteredUser("Adam", "Adamovic", "064656565", "mainadmin@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, role, new Timestamp(System.currentTimeMillis()), address1);
+        Admin admin = new Admin(user, false);
+        userRepository.save(admin);
 
+        Address address2 = new Address("Bulver Despota Stefana","5a","21000","Novi Sad","Srbija");
+        Role roleCottageOwner = roleRepository.findOneByName("ROLE_COTTAGE_OWNER");
+        RegisteredUser userCottageOwner = new RegisteredUser("Mika", "Mikic", "0641234567", "mikamikic@gmail.com", "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", UserStatus.active, true, roleCottageOwner, new Timestamp(System.currentTimeMillis()), address2);
+        CottageOwner cottageOwner = new CottageOwner(userCottageOwner);
+        userRepository.save(cottageOwner);
 
-        /*
-        Set<String> allowedBehavior= new HashSet<>();
-        allowedBehavior.add("Bringing pets to the adventure.");
-        allowedBehavior.add("Alcohol is allowed");
-        Adventure adventure = new Adventure("Fishing in the sunset", "Beautiful moments with beautiful nature and sun", 0, address3, 0, allowedBehavior, unallowedBehavior, 5, fishingInstructor);
-        adventureRepository.save(adventure);*/
-
+        SystemProperty systemProperty = new SystemProperty("INCOME_PERCENTAGE", "0");
+        this.systemPropertyRepository.save(systemProperty);*/
     }
 }

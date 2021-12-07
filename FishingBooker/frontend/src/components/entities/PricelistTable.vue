@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in pricelist" :key="item">
+                <tr v-for="item in pricelistItem" :key="item">
                     <td>{{ item.service }}</td>
                     <td>{{ item.price }}</td>
                 </tr>
@@ -21,7 +21,7 @@
 <script>
 export default {
     props: {
-        pricelist: Array
+        pricelistItem: Array
     }
 }
 </script>

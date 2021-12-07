@@ -3,90 +3,94 @@
     <div id="add-entity-form"> 
         <div class="title"><h1>New Cottage</h1></div> 
         <div class="content">
-
             <div class="left-side">
-                <input type="text" class="form-control" placeholder="Name*" v-model="state.name"/>
-                <span class="text-danger" v-if="v$.name.$error">
-                   {{v$.name.$errors[0].$message}}
-                </span><br/>
-                <textarea class="reason-area" placeholder="Description*" v-model="state.registrationReason" rows="4" cols="65"></textarea>
+                <input type="text" class="form-control" placeholder="Name*" v-model="newCottage.name"/>
+                <!-- Error Message -->
+                <div class="input-errors" v-for="(error, index) of v$.newCottage.name.$errors" :key="index">
+                    <div class="text-danger">{{ error.$message }}</div>
+                </div>
+
+                <textarea class="reason-area" placeholder="Description*" v-model="newCottage.description" rows="4" cols="65"></textarea>
+                <!-- Error Message -->
+                <div class="input-errors" v-for="(error, index) of v$.newCottage.description.$errors" :key="index">
+                     <div class="text-danger">{{ error.$message }}</div>
+                </div>
                 <br/> <br/><hr/>
+
                 <!-- Number of rooms and beds per room -->
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="state.roomsNumber"/>
-                <span class="text-danger" v-if="v$.roomsNumber.$error">
-                   {{v$.roomsNumber.$errors[0].$message}}
-                </span><br/>
-                <ol v-if="state.roomsNumber">
-                    <li v-for="index in state.roomsNumber" :key="index">
+                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum" @input="changeRoomsNumber()"/><br/>
+                <ol v-if="roomsNum">
+                    <li v-for="room in newCottage.rooms" :key="room.id">
                         <div class="room-type">
-                            <input type="number" class="form-control"/>
+                            <input type="number" class="form-control" v-model="room.bedNumber"/>
                             <label>bed room</label>
                         </div>
                     </li>
                 </ol>
                 <hr/>
                 <!-- Allowed behavior -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Allowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon" @click="allowedBehavior += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehavior -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="allowedBehaviorNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehaviorNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="allowedBehavior">
-                    <li v-for="index in allowedBehavior" :key="index">
-                        <input type="text" class="form-control"/>
+                <ul v-if="allowedBehaviorNum">
+                    <li v-for="ab in allowedBehaviorNum" :key="ab">
+                        <input type="text" class="form-control" v-model="newCottage.allowedBehavior[ab-1]"/>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!-- Unallowed behavior -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Unallowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehavior += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehavior -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehaviorNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehaviorNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="unallowedBehavior">
-                    <li v-for="index in unallowedBehavior" :key="index">
-                        <input type="text" class="form-control"/>
+                <ul v-if="unallowedBehaviorNum">
+                    <li v-for="(ub,index) in unallowedBehaviorNum" :key="ub">
+                        <input type="text" class="form-control" v-model="newCottage.unallowedBehavior[index]"/>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!--Pricelist -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Pricelist: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="pricelistItems += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="pricelistItems -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="addPricelistItem()"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="pricelistItems">
-                    <li v-for="index in pricelistItems" :key="index">
+                <ul v-if="newCottage.pricelistItem">
+                    <li v-for="item in newCottage.pricelistItem" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" placeholder="Service*"/>
-                            <input type="number" class="form-control" placeholder="Price*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!--Additional services -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Additional services: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServices += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServices -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServicesNum -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="additionalServices">
-                    <li v-for="index in additionalServices" :key="index">
+                <ul v-if="additionalServicesNum">
+                    <li v-for="ads in additionalServicesNum" :key="ads">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" placeholder="Service*"/>
                             <input type="number" class="form-control" placeholder="Price*"/>
                         </div>
                     </li>
-                </ul><hr/>
-                <br/>
+                </ul><hr/><br/>
+                 <!--Cancellation percentage -->
+                <input type="number" class="form-control" v-model="newCottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
 
             <div class="right-side">
@@ -95,12 +99,12 @@
                     <p> Upload images of your cottage: </p>
                     <input type="file" class="file-upload" @change="imageAdded"/>
                 </div> <br/>
-                <div v-if="images" class="images-preview">
-                        <div v-for="image in images" :key="image">
+                <div v-if="imagesFrontend" class="images-preview">
+                        <div v-for="image in imagesFrontend" :key="image">
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap></OpenLayersMap>
+                 <OpenLayersMap @change-address="changeAddress"></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -113,83 +117,145 @@
 <script>
     import NavBar from "@/components/Navbar.vue"
     import useValidate from '@vuelidate/core'
-    import {required,numeric} from '@vuelidate/validators' 
-    import {reactive, computed} from 'vue'
+    import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
+    import server from '../server/index'
+    import axios from 'axios'
+
+    export function validName(name) {
+        let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
+        if (validNamePattern.test(name))
+            return true;
+        
+        return false;
+    }
 
     export default ({
         components: {
-                NavBar,
-                OpenLayersMap,
+            NavBar,
+            OpenLayersMap,
+        },
+        setup() {
+            return {v$: useValidate()}
         },
         data() {
             return{
-                address: {
-                    streetName: 'Kralja Dragutina',
-                    streetNumber: '61',
-                    postalcode: '21000',
-                    city: 'Novi Sad',
-                    country: 'Serbia',
-                    longitude: '45.25937354724934',
-                    latitude: '19.82703412668896'
+                newCottage: {
+                    name: '',
+                    description: '',
+                    cancellationPercentage: undefined,
+                    images: [],
+                    allowedBehavior: [],
+                    unallowedBehavior: [],
+                    address: {
+                        streetName: '',
+                        streetNumber: '',
+                        postalcode: '',
+                        city: '',
+                        country:  '',
+                        longitude: '',
+                        latitude: ''
+                    },
+                    pricelistItem: [
+                        {
+                            service:'',
+                            price: undefined
+                        },
+                    ],
+                    rooms: [
+                        {
+                            bedNumber: undefined
+                        },
+                    ],
+                    cottageOwner:{}
                 },
                 roomsNum: undefined,
-                allowedBehavior: 1,
-                unallowedBehavior: 1,
-                pricelistItems: 1,
-                additionalServices: 1,
-                images: [],
-                imagesBackend: []
+                allowedBehaviorNum: 1,
+                unallowedBehaviorNum: 1,
+                pricelistItemsNum: 1,
+                additionalServicesNum: 1,
+                imagesFrontend: []
             }
         },
-
+        validations() {
+            return {
+                newCottage: {
+                    name: { 
+                        required, name_validation: {
+                            $validator: validName,
+                             $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
+                        } 
+                    },
+                    description: {required}
+                },
+            }
+        },
         methods: {
+            submitForm(){
+                this.v$.$validate();
+                const util = require('util')    
+                console.log(util.inspect(this.newCottage, false, null, true))   
+                
+                axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
+                .then((response) => {
+                    this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
+                    address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
+                    pricelistItem: [ { service:'', price: null }, ], rooms: [ { bedNumber: undefined },], cottageOwner:{}};
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                })
+                })
+                .catch(() => {
+                    this.$swal('There is already cottage with this name!');
+                })
+            },
 
-            imageAdded(e) 
-            {
+            changeAddress(data){
+                const util = require('util')    
+                console.log(util.inspect(data.address, false, null, true)) 
+                this.newCottage.address = data.address
+            },
+
+            changeRoomsNumber(){
+                this.newCottage.rooms = []
+                for(let i = 0; i < this.roomsNum; i++){
+                     this.newCottage.rooms.push({
+                            bedNumber: undefined
+                     });
+                }
+            },
+
+            addPricelistItem() {
+                this.pricelistItem += 1;
+                this.newCottage.pricelistItem.push({
+                    service: '',
+                    price: undefined
+                })
+            },
+
+            removePricelistItem(){
+                this.pricelistItem -= 1;
+                this.newCottage.pricelistItem.pop()
+            },
+
+            imageAdded(e) {
                 const file = e.target.files[0];
                 this.createBase64Image(file);
-                this.images.push(URL.createObjectURL(file));
+                this.imagesFrontend.push(URL.createObjectURL(file));
             },
             createBase64Image(file){
                 const reader= new FileReader();
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
-                    this.imagesBackend.push(img);
+                    this.newCottage.images.push(img);
                 }
                 reader.readAsDataURL(file);
             },
 
-        },
-
-        setup() {
-            const state = reactive({
-                name: '',
-                streetName: '',
-                streetNumber: '',
-                postalcode: '',
-                city: '',
-                country: '',
-                description: ''
-               
-            })
-            const rules = computed(()=>{
-                return{
-                name: {required},
-                streetName: {required},
-                streetNumber: {required},
-                postalcode: {required, numeric},
-                city: {required},
-                country: {required},
-                roomsNumber: {required, numeric}
-            }
-            })
-            const v$=useValidate(rules,state)
-            return {
-                state,
-                v$
-            }
         },
     })
 </script>
@@ -274,7 +340,7 @@
         align-items: center;
     }
 
-    .allowed-behavior{
+    .multiple-inputs{
         display: flex;
         align-items: center;
         margin-bottom: 10px;
@@ -313,7 +379,6 @@
     .file-upload{
        margin-left: 45%;  
     }
-
 
     .cancel-button {
       background-color: white;

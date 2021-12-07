@@ -11,17 +11,17 @@
         </ul>
         <br/>
 
-        <p class="ul-caption"><i class="fas fa-check-circle"></i>&nbsp; Allowed behaviour: </p>
+        <p class="ul-caption"><i class="fas fa-check-circle"></i>&nbsp; Allowed behavior: </p>
         <ul>
-            <div v-for="ab in cottage.allowedBehaviour" :key="ab">
+            <div v-for="ab in cottage.allowedBehavior" :key="ab">
                 <li>{{ ab }}</li>
             </div>
         </ul>
         <br/>
 
-        <p class="ul-caption"><i class="fas fa-times-circle"></i>&nbsp; Unallowed behaviour: </p>
+        <p class="ul-caption"><i class="fas fa-times-circle"></i>&nbsp; Unallowed behavior: </p>
         <ul>
-            <div v-for="uab in cottage.unallowedBehaviour" :key="uab">
+            <div v-for="uab in cottage.unallowedBehavior" :key="uab">
                 <li>{{ uab }}</li>
             </div>
         </ul>

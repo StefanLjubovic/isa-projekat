@@ -128,6 +128,10 @@ public class RentingEntity {
       this.averageGrade = averageGrade;
    }
 
+   public double getCancellationPercentage() { return cancellationPercentage; }
+
+   public void setCancellationPercentage(double cancellationPercentage) { this.cancellationPercentage = cancellationPercentage; }
+
    public Set<String> getImages() {
       return images;
    }

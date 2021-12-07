@@ -13,8 +13,7 @@
            role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sign up</a>
            <div class="dropdown-menu drop" aria-labelledby="dropdownMenuButton">
              <a class="dropdown-item" href="#" @click="openSignUp">As client</a>
-             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As instructor</a>
-            <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As cottage owner</a>
+             <a class="dropdown-item" href="#" @click="openSignUpAsAdvertiser">As advertiser</a>
            </div>
            <a href="#" class="link-light item" @click="$emit('open-modal')">Log in</a>
           </div>
@@ -40,6 +39,9 @@ export default {
         },
         openSignUp: function(){
             this.$router.push({ path: '/client-registration' })
+        },
+        openSignUpAsAdvertiser: function(){
+            this.$router.push({ path: '/advertiser-registration' })
         }
     },
     computed:{
