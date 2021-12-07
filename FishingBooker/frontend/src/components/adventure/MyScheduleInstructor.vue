@@ -29,14 +29,16 @@
                     </v-date-picker>
                 </div>
             </form>
-            <button class="btn"><i class="fas fa-check"></i></button>
+            <button class="btn" @click="defineUnavaliablePeriod()"><i class="fas fa-check"></i></button>
         </div>
-        <CalendarView />
+        <CalendarView :unavailablePeriods="unavailablePeriods"/>
     </div>
 </template>
 
 <script>
 import CalendarView from "@/components/CalendarView.vue"
+import axios from 'axios';
+import server from '../../server';
 
 export default {
     components: {
@@ -56,8 +58,56 @@ export default {
             masks: {
                 input: 'YYYY-MM-DD h:mm A',
             },
+            unavailablePeriods: [],
+            reservations: []
         };
     },
+    mounted() {
+        axios.get(`${server.baseUrl}/instructor/unavailablePeriods`, {
+            headers: {
+                'Authorization': `Bearer ${this.$store.getters.getToken}`
+            }
+        })
+        .then((response) => {
+            for(let period of response.data) {
+                this.unavailablePeriods.push({
+                    id : period.id,
+                    dates : { start : new Date(period.fromDateTime), end : new Date(period.toDateTime) },
+                    customData : { title : period.message, isUnavailable : true }
+                })
+            }
+        })
+    },
+    methods: {
+        defineUnavaliablePeriod: function() {
+            let period = {
+                fromDateTime : this.range.start,
+                toDateTime : this.range.end
+            }
+            axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {
+                headers: {
+                    'Authorization': `Bearer ${this.$store.getters.getToken}`
+                }
+            })
+            .then((response) => {
+                this.unavailablePeriods.push({
+                    id : response.data.id,
+                    dates : { start : new Date(response.data.fromDateTime), end : new Date(response.data.toDateTime) },
+                    customData : { title : response.data.message, isUnavailable : true }
+                });
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Unavaliable period saved!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+            .catch(() => {
+                this.$swal("There is already defined unavailable period in this range!");
+            })
+        }
+    }
 }
 </script>
 
