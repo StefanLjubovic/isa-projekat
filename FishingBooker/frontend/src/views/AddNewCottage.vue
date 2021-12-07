@@ -19,9 +19,9 @@
                 <br/> <br/><hr/>
 
                 <!-- Number of rooms and beds per room -->
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum"/>
+                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum"/><br/>
                 <ol v-if="roomsNum">
-                    <li v-for="index in roomsNum" :key="index">
+                    <li v-for="rn in roomsNum" :key="rn">
                         <div class="room-type">
                             <input type="number" class="form-control"/>
                             <label>bed room</label>
@@ -30,21 +30,21 @@
                 </ol>
                 <hr/>
                 <!-- Allowed behavior -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Allowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon" @click="allowedBehaviorNum += 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="allowedBehaviorNum += 1"></i></span>
                     <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehaviorNum -= 1"></i></span>
                     </div>
                 </div>
                 <ul v-if="allowedBehaviorNum">
-                    <li v-for="index in allowedBehaviorNum" :key="index">
-                        <input type="text" class="form-control"/>
+                    <li v-for="ab in allowedBehaviorNum" :key="ab">
+                        <input type="text" class="form-control" v-model="newCottage.allowedBehavior[ab-1]"/>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!-- Unallowed behavior -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Unallowed behavior: </h6>
                     <div class="icons">
                     <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehaviorNum += 1"></i></span>
@@ -52,13 +52,13 @@
                     </div>
                 </div>
                 <ul v-if="unallowedBehaviorNum">
-                    <li v-for="index in unallowedBehaviorNum" :key="index">
-                        <input type="text" class="form-control"/>
+                    <li v-for="(ub,index) in unallowedBehaviorNum" :key="ub">
+                        <input type="text" class="form-control" v-model="newCottage.unallowedBehavior[index]"/>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!--Pricelist -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Pricelist: </h6>
                     <div class="icons">
                         <span><i class="fas fa-plus-square fa-2x icon"  @click="pricelistItemsNum += 1"></i></span>
@@ -66,16 +66,16 @@
                     </div>
                 </div>
                 <ul v-if="pricelistItemsNum">
-                    <li v-for="index in pricelistItemsNum" :key="index">
+                    <li v-for="(pli,index) in pricelistItemsNum" :key="pli">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" placeholder="Service*"/>
-                            <input type="number" class="form-control" placeholder="Price*"/>
+                            <input type="text"   class="form-control" v-model="newCottage.pricelistItem[index].service" placeholder="Service*"/>
+                            <input type="number" class="form-control" v-model="newCottage.pricelistItem[index].price"   placeholder="Price*"/>
                         </div>
                     </li>
                 </ul><hr/>
                 <br/>
                 <!--Additional services -->
-                <div class="allowed-behavior">
+                <div class="multiple-inputs">
                     <h6> Additional services: </h6>
                     <div class="icons">
                         <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <ul v-if="additionalServicesNum">
-                    <li v-for="index in additionalServicesNum" :key="index">
+                    <li v-for="ads in additionalServicesNum" :key="ads">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" placeholder="Service*"/>
                             <input type="number" class="form-control" placeholder="Price*"/>
@@ -130,8 +130,8 @@
 
     export default ({
         components: {
-                NavBar,
-                OpenLayersMap,
+            NavBar,
+            OpenLayersMap,
         },
         setup() {
             return {v$: useValidate()}
@@ -156,17 +156,29 @@
                         latitude: ''
                     },
                     unvaliablePeriod: [],
-                    pricelistItem: [],
+                    pricelistItem: [
+                        {
+                            service:'',
+                            price: '',
+                            rentingEntity: this.newCottage
+                        },
+                    ],
                     sale: [],
-                    subcribedClients: []
+                    subcribedClients: [],
+                    rooms: [
+                        {
+                            bedNumber: 0,
+                            cottage: this.newCottage
+                        },
+                    ],
+                    cottageOwner:{}
                 },
                 roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
                 pricelistItemsNum: 1,
                 additionalServicesNum: 1,
-                images: [],
-                imagesBackend: []
+                imagesFrontend: []
             }
         },
         validations() {
@@ -183,22 +195,23 @@
             }
         },
         methods: {
-                submitForm(){
-                this.v$.$validate()                
+            submitForm(){
+                this.v$.$validate()      
+                console.log(this.newCottage)          
             },
 
             imageAdded(e) 
             {
                 const file = e.target.files[0];
                 this.createBase64Image(file);
-                this.images.push(URL.createObjectURL(file));
+                this.imagesFrontend.push(URL.createObjectURL(file));
             },
             createBase64Image(file){
                 const reader= new FileReader();
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
-                    this.imagesBackend.push(img);
+                    this.newCottage.images.push(img);
                 }
                 reader.readAsDataURL(file);
             },
@@ -287,7 +300,7 @@
         align-items: center;
     }
 
-    .allowed-behavior{
+    .multiple-inputs{
         display: flex;
         align-items: center;
         margin-bottom: 10px;
@@ -326,7 +339,6 @@
     .file-upload{
        margin-left: 45%;  
     }
-
 
     .cancel-button {
       background-color: white;
