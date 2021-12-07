@@ -28,4 +28,8 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClass(Cottage.class);
         return entities;
     }
+
+    public List<? extends RentingEntity> GetByUsersSubscriptions(String email){
+        return entityRepository.findByRegisterUsers_Email(email);
+    }
 }
