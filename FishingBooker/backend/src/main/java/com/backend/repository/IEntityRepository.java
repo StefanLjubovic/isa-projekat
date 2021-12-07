@@ -15,5 +15,7 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
     @Query("SELECT e  FROM RentingEntity e where type(e) = ?1")
     <T extends RentingEntity> List<T> getEntityByClass(Class<?> type);
 
-    <T extends RentingEntity> List<T> findByRegisterUsers_Email(String email);
+    @Query("Select entity from RentingEntity entity,Client client where client.email = ?1 and entity in (" +
+            "select e from client.subscriptions e)")
+    <T extends RentingEntity> List<T> findSubscriptions(String email);
 }

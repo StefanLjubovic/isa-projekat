@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.Collection;
 
 @Controller
@@ -23,6 +24,12 @@ public class EntityController {
     @GetMapping(value="{state}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<? extends RentingEntity>> GetAllEntities(@PathVariable int state){
         Collection<? extends RentingEntity> entities= entityService.GetAllEntities(state);
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<? extends RentingEntity>> GetSubscriptions(Principal principal){
+        Collection<? extends RentingEntity> entities= entityService.GetByUsersSubscriptions(principal.getName());
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 }

@@ -70,7 +70,7 @@ export default {
       ]
     }
   },
-  mounted(){
+  async mounted(){
     if(this.state==4) this.entityName='Cottage';
     else if(this.state==5) this.entityName='Ship';
     else if(this.state==6) this.entityName='Adventure';

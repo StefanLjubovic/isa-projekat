@@ -30,6 +30,6 @@ public class EntityService {
     }
 
     public List<? extends RentingEntity> GetByUsersSubscriptions(String email){
-        return entityRepository.findByRegisterUsers_Email(email);
+        return entityRepository.findSubscriptions(email);
     }
 }

@@ -62,6 +62,21 @@ server.getLoggedUser = async (token) =>{
     .catch((error) => handleError(error));
 };
 
+server.getSubscriptions= async (token) =>{
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/entity/subscriptions/`,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 function handleError(error) {
 	console.log('Error');
 	return { success: false, data: error.response.data };

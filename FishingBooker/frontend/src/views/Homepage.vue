@@ -155,7 +155,11 @@ export default {
           this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
           this.entities=resp.data;
         }
-        
+        if (state==8){
+          const resp=await Server.getSubscriptions(this.$store.getters.getToken)
+          this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+          this.entities=resp.data;
+        }
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";

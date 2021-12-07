@@ -70,3 +70,7 @@ INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (2, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
 VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure', 2);
+
+INSERT INTO subscriptions(client_id,entity_id)
+VALUES (4,1),
+(4,2);

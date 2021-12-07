@@ -100,7 +100,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<RegisteredUser> confirmUserAccount(WebRequest request, Model model, @RequestParam("token")String verificationToken) throws Exception {
+    public ResponseEntity<RegisteredUser> confirmUserAccount(@RequestParam("token")String verificationToken) throws Exception {
         VerificationToken token = verificationTokenService.findByToken(verificationToken);
         if (verificationToken == null) {
             throw new Exception("auth.message.invalidToken");
