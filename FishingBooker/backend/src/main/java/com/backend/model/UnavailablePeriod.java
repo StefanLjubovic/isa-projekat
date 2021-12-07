@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-public class UnavaliablePeriod {
+public class UnavailablePeriod {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,7 @@ public class UnavaliablePeriod {
    @Column(unique=false, nullable=false)
    private Date toDateTime;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "entity_id")
-   private RentingEntity rentingEntity;
-
-   public UnavaliablePeriod() {}
+   public UnavailablePeriod() {}
 
    public Integer getId() {
       return id;
@@ -29,14 +25,6 @@ public class UnavaliablePeriod {
 
    public void setId(Integer id) {
       this.id = id;
-   }
-
-   public RentingEntity getRentingEntity() {
-      return rentingEntity;
-   }
-
-   public void setRentingEntity(RentingEntity rentingEntity) {
-      this.rentingEntity = rentingEntity;
    }
 
    public Date getFromDateTime() {

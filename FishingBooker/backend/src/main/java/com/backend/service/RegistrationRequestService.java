@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-@Transactional
 public class RegistrationRequestService {
 
     @Autowired
@@ -38,7 +37,7 @@ public class RegistrationRequestService {
     }
 
     public void approveRegistrationRequest(Integer id) {
-        RegistrationRequest request = registrationRequestRepository.getById(id);
+        RegistrationRequest request = registrationRequestRepository.findById(id).get();
         if(request == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no such request!");
 
         registrationRequestRepository.delete(request);
@@ -47,7 +46,7 @@ public class RegistrationRequestService {
     }
 
     public void rejectRegistrationRequest(RejectRegistrationDTO rejectRegistrationDTO) {
-        RegistrationRequest request = registrationRequestRepository.getById(rejectRegistrationDTO.getId());
+        RegistrationRequest request = registrationRequestRepository.findById(rejectRegistrationDTO.getId()).get();
         if(request == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no such request!");
 
         registrationRequestRepository.delete(request);
@@ -98,6 +97,9 @@ public class RegistrationRequestService {
     }
 
     private RegisteredUser createUserFromRegistrationRequest(RegistrationRequest request) {
+        Address address = request.getAddress();
+        address.setId(null);
+
         return new RegisteredUser(request.getFirstName(),
                 request.getLastName(),
                 request.getPhoneNumber(),
@@ -107,6 +109,6 @@ public class RegistrationRequestService {
                 true,
                 roleService.findOneByName(request.getRole().getName()),
                 new Timestamp(System.currentTimeMillis()),
-                request.getAddress());
+                address);
     }
 }

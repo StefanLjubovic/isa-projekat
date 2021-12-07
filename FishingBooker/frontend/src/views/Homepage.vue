@@ -48,11 +48,11 @@
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
   <div v-if="userRole == 'ROLE_COTTAGE_OWNER'">
-    <div v-if="state == 21">
+    <div v-if="state == 2">
         <button  type="button" id="add-new-cottage" @click="addNewCottage()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
         <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     </div>
-    <div v-if="state == 21" class="cottages-wrapper">
+    <div v-if="state == 2" class="cottages-wrapper">
         <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
@@ -149,9 +149,13 @@ export default {
 
       changeState: async function(state){
         this.state=state;
-        const resp=await Server.getAllEntities(this.state)
-        this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-        this.entities=resp.data;
+        console.log(state);
+        if(state == 0 || state == 1 || state == 2) {
+          const resp=await Server.getAllEntities(this.state)
+          this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+          this.entities=resp.data;
+        }
+        
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
@@ -233,12 +237,14 @@ export default {
     async mounted(){
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
+
       const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       this.entities=resp.data;
+
       if(this.state==0) this.searchTitle="Adventures we offer";
-        else if(this.state==1)this.searchTitle="Ships we offer"
-        else if(this.state==2) this.searchTitle="Cottages we offer";
+      else if(this.state==1)this.searchTitle="Ships we offer"
+      else if(this.state==2) this.searchTitle="Cottages we offer";
     }
 }
 </script>

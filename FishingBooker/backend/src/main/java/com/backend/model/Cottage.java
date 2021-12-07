@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 public class Cottage extends RentingEntity {
 
-    @OneToMany(mappedBy = "cottage", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Room> rooms = new HashSet<Room>();
 
     @ManyToOne(fetch = FetchType.EAGER)

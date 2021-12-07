@@ -12,17 +12,19 @@ public class VerificationTokenService {
     @Autowired
     private IVerificationTokenRepository verificationTokenRepository;
 
-
     public void createVerificationToken(RegistrationRequest user, String token) {
         VerificationToken myToken = new VerificationToken(token, user);
         verificationTokenRepository.save(myToken);
     }
+
     public void DeleteTokenByUser(RegistrationRequest user){
         verificationTokenRepository.delete(verificationTokenRepository.findByUser(user));
     }
+
     public VerificationToken findByToken(String name){
         return verificationTokenRepository.findByToken(name);
     }
+
     public void save(VerificationToken verificationToken) {
         verificationTokenRepository.save(verificationToken);
     }

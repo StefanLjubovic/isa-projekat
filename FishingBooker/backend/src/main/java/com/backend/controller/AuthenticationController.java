@@ -117,6 +117,7 @@ public class AuthenticationController {
         httpHeaders.setLocation(frontend);
         return new ResponseEntity<>(user,httpHeaders, HttpStatus.SEE_OTHER);
     }
+
     @PostMapping("/registerAdvertiser")
     public ResponseEntity<String> registerAdvertiser(@RequestBody RegistrationRequest advertiserRequest) {
         RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
@@ -126,6 +127,7 @@ public class AuthenticationController {
         RegistrationRequest createdRequest = userService.saveRegistrationRequest(advertiserRequest);
         return new ResponseEntity<>("Registration request successfully sent to administrator", HttpStatus.CREATED);
     }
+
     @PostMapping("/registerAdmin")
     public ResponseEntity<Admin> registerNewAdmin(@RequestBody RegisteredUser newAdminUser) {
         if(this.userService.findByEmail(newAdminUser.getEmail()) != null) {

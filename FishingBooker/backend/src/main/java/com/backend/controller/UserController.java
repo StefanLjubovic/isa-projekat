@@ -29,6 +29,7 @@ public class UserController {
         RegisteredUser user=userService.GetById(1);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisteredUser> GetLoggedUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -44,14 +45,14 @@ public class UserController {
     }
 
     @GetMapping("/allUsers")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RegisteredUser>> getAllUsers() {
         List<RegisteredUser> users = this.userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
