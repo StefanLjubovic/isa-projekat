@@ -121,8 +121,6 @@ public class AuthenticationController {
     @PostMapping("/registerAdvertiser")
     public ResponseEntity<String> registerAdvertiser(@RequestBody RegistrationRequest advertiserRequest) {
         RegisteredUser existedUser = this.userService.findByEmail(advertiserRequest.getEmail());
-        //System.out.println(advertiserRequest.getEmail());
-        //System.out.println(existedUser.getEmail());
 
         if(existedUser != null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists!");

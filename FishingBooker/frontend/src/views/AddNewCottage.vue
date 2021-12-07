@@ -88,8 +88,9 @@
                             <input type="number" class="form-control" placeholder="Price*"/>
                         </div>
                     </li>
-                </ul><hr/>
-                <br/>
+                </ul><hr/><br/>
+                 <!--Cancellation percentage -->
+                <input type="number" class="form-control" v-model="newCottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
 
             <div class="right-side">
@@ -118,6 +119,8 @@
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
+    import server from '../server/index'
+    import axios from 'axios'
 
     export function validName(name) {
         let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
@@ -140,8 +143,7 @@
                 newCottage: {
                     name: '',
                     description: '',
-                    averageGrade: 0,
-                    cancellationPercentage: 0,
+                    cancellationPercentage: undefined,
                     images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
@@ -154,19 +156,15 @@
                         longitude: '',
                         latitude: ''
                     },
-                    unvaliablePeriod: [],
                     pricelistItem: [
                         {
                             service:'',
-                            price: null,
-                            rentingEntity: this.newCottage
+                            price: undefined
                         },
                     ],
-                    sale: [],
                     rooms: [
                         {
-                            bedNumber: undefined,
-                            cottage: this.newCottage
+                            bedNumber: undefined
                         },
                     ],
                     cottageOwner:{}
@@ -196,7 +194,23 @@
             submitForm(){
                 this.v$.$validate();
                 const util = require('util')    
-                console.log(util.inspect(this.newCottage, false, null, true))          
+                console.log(util.inspect(this.newCottage, false, null, true))   
+                
+                axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
+                .then((response) => {
+                    this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
+                    address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
+                    pricelistItem: [ { service:'', price: null }, ], rooms: [ { bedNumber: undefined },], cottageOwner:{}};
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                })
+                })
+                .catch(() => {
+                    this.$swal('There is already cottage with this name!');
+                })
             },
 
             changeAddress(data){
@@ -209,8 +223,7 @@
                 this.newCottage.rooms = []
                 for(let i = 0; i < this.roomsNum; i++){
                      this.newCottage.rooms.push({
-                            bedNumber: undefined,
-                            cottage: this.newCottage
+                            bedNumber: undefined
                      });
                 }
             },
@@ -219,8 +232,7 @@
                 this.pricelistItem += 1;
                 this.newCottage.pricelistItem.push({
                     service: '',
-                    price: undefined,
-                    rentingEntity: this.newCottage
+                    price: undefined
                 })
             },
 

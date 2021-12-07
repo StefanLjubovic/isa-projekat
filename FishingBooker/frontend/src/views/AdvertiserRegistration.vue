@@ -222,13 +222,12 @@ export default {
                 }
                 axios.post(`${server.baseUrl}/auth/registerAdvertiser`, advertiserRequest)
                 .then((response) => {
-
-                this.form= { email : undefined, name: '', surame: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phone: '', password: '', confirmPassword: '', registrationReason: '',biography: '' };
-                this.$swal({
-                    icon: 'success',
-                    title: response.data,
-                    showConfirmButton: false,
-                    timer: 2000
+                    this.form= { email : undefined, name: '', surame: '', streetName: '', streetNumber: '', postalCode: '', city: '', country: '', phone: '', password: '', confirmPassword: '', registrationReason: '',biography: '' };
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
                 })
                 })
                 .catch(() => {
