@@ -18,7 +18,7 @@ public class FishingInstructor extends RegisteredUser {
 
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JsonIgnore
-   private Set<UnavailablePeriod> unavailablePeriod = new HashSet<UnavailablePeriod>();
+   private Set<UnavailablePeriod> unavailablePeriods = new HashSet<UnavailablePeriod>();
 
    public FishingInstructor() { }
 
@@ -35,11 +35,11 @@ public class FishingInstructor extends RegisteredUser {
       this.shortBiography = shortBiography;
    }
 
-   public Set<UnavailablePeriod> getUnavailablePeriod() {
-      return unavailablePeriod;
+   public Set<UnavailablePeriod> getUnavailablePeriods() {
+      return unavailablePeriods;
    }
 
-   public void setUnavailablePeriod(Set<UnavailablePeriod> unavailablePeriod) {
-      this.unavailablePeriod = unavailablePeriod;
+   public void setUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriod) {
+      this.unavailablePeriods = unavailablePeriod;
    }
 }

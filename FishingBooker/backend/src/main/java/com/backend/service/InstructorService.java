@@ -1,16 +1,12 @@
 package com.backend.service;
 
-import com.backend.model.Adventure;
 import com.backend.model.FishingInstructor;
-import com.backend.model.RegisteredUser;
 import com.backend.model.UnavailablePeriod;
 import com.backend.repository.IAdventureRepository;
 import com.backend.repository.IUnavailablePeriodRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class InstructorService {
@@ -26,10 +22,10 @@ public class InstructorService {
 
     // ne radi!
     public void defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
-        FishingInstructor fishingInstructor = (FishingInstructor) userRepository.findByEmail(instructorEmail);
+        FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
 
-        unavailablePeriodRepository.save(unavailablePeriod);
-        fishingInstructor.getUnavailablePeriod().add(unavailablePeriod);
+        UnavailablePeriod savedPeriod = unavailablePeriodRepository.save(unavailablePeriod);
+        fishingInstructor.getUnavailablePeriods().add(savedPeriod);
         userRepository.save(fishingInstructor);
     }
 }
