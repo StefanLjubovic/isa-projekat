@@ -99,8 +99,8 @@
                     <p> Upload images of your cottage: </p>
                     <input type="file" class="file-upload" @change="imageAdded"/>
                 </div> <br/>
-                <div v-if="images" class="images-preview">
-                        <div v-for="image in images" :key="image">
+                <div v-if="imagesFrontend" class="images-preview">
+                        <div v-for="image in imagesFrontend" :key="image">
                             <img :src="image" />
                         </div>
                 </div>               
@@ -159,12 +159,11 @@
                     pricelistItem: [
                         {
                             service:'',
-                            price: '',
+                            price: null,
                             rentingEntity: this.newCottage
                         },
                     ],
                     sale: [],
-                    subcribedClients: [],
                     rooms: [
                         {
                             bedNumber: 0,
