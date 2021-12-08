@@ -29,7 +29,7 @@ public class RentingEntity {
 
    @ElementCollection(fetch = FetchType.EAGER)
    @CollectionTable(name = "renting_entity_images", joinColumns = @JoinColumn(name = "entity_id"))
-   @Column(name = "images")
+   @Column(name = "images", length = 10485760)
    private Set<String> images = new HashSet<String>();
 
    @ElementCollection(fetch = FetchType.EAGER)

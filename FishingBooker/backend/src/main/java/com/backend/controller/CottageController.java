@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,7 @@ public class CottageController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addNewCottage(@RequestBody CottageDTO cottageDTO){
+    public ResponseEntity<String> addNewCottage(@RequestBody CottageDTO cottageDTO) throws IOException {
 
         Cottage cottage = modelMapper.map(cottageDTO, Cottage.class);
         if(cottageService.findByName(cottage.getName()) != null)
