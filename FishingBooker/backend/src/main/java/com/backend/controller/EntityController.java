@@ -31,18 +31,25 @@ public class EntityController {
     public ResponseEntity<Collection<EntityDTO>> getAllEntities(@PathVariable int state){
         Collection<? extends RentingEntity> entities= entityService.GetAllEntities(state);
 
+        Collection<EntityDTO> dto = getEntityDTOS(entities);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<EntityDTO>> getSubscriptions(Principal principal){
+        Collection<? extends RentingEntity> entities= entityService.GetByUsersSubscriptions(principal.getName());
+
+        Collection<EntityDTO> dto = getEntityDTOS(entities);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    private Collection<EntityDTO> getEntityDTOS(Collection<? extends RentingEntity> entities) {
         Collection<EntityDTO> dto = new ArrayList<>();
         for (RentingEntity e : entities) {
             EntityDTO entityDTO = new EntityDTO(e.getId(), e.getName(), e.getDescription(), e.getAverageGrade(), e.getImages(), e.getAddress());
             dto.add(entityDTO);
         }
-        return new ResponseEntity<>(dto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<? extends RentingEntity>> getSubscriptions(Principal principal){
-        Collection<? extends RentingEntity> entities= entityService.GetByUsersSubscriptions(principal.getName());
-        return new ResponseEntity<>(entities, HttpStatus.OK);
+        return dto;
     }
 
     @DeleteMapping ("/delete/{id}")
@@ -53,6 +60,7 @@ public class EntityController {
     }
 
     @PostMapping("/sale/{id}")
+    //@PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
     public ResponseEntity<List<SaleDTO>> createSaleForEntity(@RequestBody Sale sale, @PathVariable("id") Integer entityId) {
         Set<Sale> sales = entityService.createSaleForEntity(sale, entityId);
 

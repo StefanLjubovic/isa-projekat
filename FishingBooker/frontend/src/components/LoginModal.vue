@@ -27,6 +27,11 @@ export default {
       password: ''
     }
   },
+  computed:{
+      userRole(){
+          return this.$store.getters.getRole;
+      }
+  },
   methods:{
     ...mapActions(['fetchToken']),
     Login(){
@@ -36,6 +41,12 @@ export default {
         'password': this.password
       }
       this.fetchToken(loginRequest)
+      /*.then(() => {
+        if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR') {
+          this.$router.push({ name: 'Homepage', params: {data: 0 } })
+        }
+      })*/
+      
     }
   }
 }

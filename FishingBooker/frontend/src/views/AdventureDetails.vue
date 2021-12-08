@@ -52,11 +52,13 @@
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
+                <Sales :sales="adventure.sales"/><br/>
+
                 <div class="btn-placeholder">
                     <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()" v-if="userRole != 'ROLE_ADMIN'">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView :unavailablePeriods="adventure.fishingInstructor.unavailablePeriods"/>
+                <CalendarView :unavailablePeriods="adventure.unavailablePeriods"/>
                 
                 <p>If you cancel the reservation, the instructor retains {{ adventure.cancellationPercentage }}% 
                     of the price!
@@ -76,6 +78,7 @@
 import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
 import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
 import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue"
+import Sales from "@/components/adventure/Sales.vue"
 import Map from "@/components/Map.vue"
 import ImageGallery from "@/components/ImageGallery.vue"
 import CalendarView from "@/components/CalendarView.vue"
@@ -93,7 +96,8 @@ export default {
         Map,
         ImageGallery,
         CalendarView,
-        PricelistTable
+        PricelistTable,
+        Sales
     },
     props: [
         'entityId'
@@ -153,7 +157,8 @@ export default {
             axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`)
             .then((res) => {
                 for(let period of res.data) {
-                    this.adventure.fishingInstructor.unavailablePeriods.push({
+                    console.log(res.data)
+                    this.adventure.unavailablePeriods.push({
                         id : period.id,
                         dates : { start : new Date(period.fromDateTime), end : new Date(period.toDateTime) },
                         customData : { title : period.message, isUnavailable : true }
@@ -175,9 +180,10 @@ export default {
             axios.post(`${server.baseUrl}/entity/sale/${this.adventure.id}`, this.sale)
             .then((response) => {
                 this.adventure.sales = response.data;
-                this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 window.$('#new-sale-modal').modal('hide');
+                this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
 
+                console.log(this.adventure.sales);
                 this.$swal({
                     position: 'top-end',
                     icon: 'success',
