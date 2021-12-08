@@ -75,9 +75,8 @@ public class CottageService {
         Set<String> convertedImages = new HashSet<String>();
         int i = 1;
         for (String s : cottage.getImages()) {
-            //URL url = getClass().get;
-            String basePath = new File("src/main/java/com/backend/").getAbsolutePath();
-            String path = basePath + "/images/cottages/" + cottage.getName() + i + ".jpg";
+            String basePath = new File("images/").getAbsolutePath();
+            String path = basePath + "/cottages/" + cottage.getName() + i + ".jpg";
             System.out.println(path);
             decoder.Base64DecodeAndSave(s, path);
             String pathDB = "/backend/src/main/java/com/backend/" + "/images/cottages/" + cottage.getName() + i + ".jpg";
@@ -85,7 +84,6 @@ public class CottageService {
             convertedImages.add(pathDB);
             ++i;
         }
-
         return convertedImages;
     }
 }

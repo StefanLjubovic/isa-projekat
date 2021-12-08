@@ -103,7 +103,7 @@
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap @change-address="changeAddress"></OpenLayersMap>
+                 <OpenLayersMap @change-address="changeAddress" :address ="newCottage.address" ></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -233,9 +233,9 @@
             },
 
             changeAddress(data){
-                const util = require('util')    
-                console.log(util.inspect(data.address, false, null, true)) 
-                this.newCottage.address = data.address
+                //const util = require('util')    
+                //console.log(util.inspect(data.address, false, null, true)) 
+                this.newCottage.address = data
             },
 
             changeRoomsNumber(){
@@ -261,7 +261,7 @@
             },
 
             imageAdded(e) {
-                const file = e.target.files[0];
+                const file = e.target.files[0];           
                 this.createBase64Image(file);
                 this.imagesFrontend.push(URL.createObjectURL(file));
             },

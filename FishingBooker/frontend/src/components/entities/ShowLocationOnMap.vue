@@ -51,12 +51,45 @@ export default {
     },
 
     created(){
-        console.log('Bla')
-        console.log(this.entityId)
-        /*axios.get(`${server.baseUrl}/cottage/getOne/${this.cottageId}`)
-        .then((response) => (this.address = response.data.address))
-        .catch((error) => console.log(error));*/
-    },
+        this.positionFeature.setStyle(this.circle)
+
+      let vm = this;      
+
+        vm.$nextTick(function () {      
+           console.log(vm.cottage.address);
+        });
+
+      var center = fromLonLat([19.84, 45.2]);
+
+     // console.log(this.address)
+      
+        this.mapSearch = new Map({
+        target: 'map',
+        layers: [
+          new TileLayer({
+          source: new OSM()      
+        }),
+        ],
+		view : new View({
+		center:center,
+		zoom: 7,
+	}),
+      })
+
+        var vectorLayer = new VectorLayer({
+        map: this.mapSearch,
+        source: new VectorSource({
+            features: [this.positionFeature],
+        })
+        })
+
+        const point = new Point(center);
+        this.positionFeature.setGeometry(              
+        center ? point : null                   
+        );                                           
+        const source = vectorLayer.getSource()    
+        source.addFeatures(this.positionFeature)  
+    }/*,
 
     mounted() {
         
@@ -98,7 +131,7 @@ export default {
         );                                           
         const source = vectorLayer.getSource()    
         source.addFeatures(this.positionFeature)  
-    }
+    }*/
 
 }
   
