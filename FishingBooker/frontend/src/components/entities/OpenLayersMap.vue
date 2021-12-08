@@ -6,7 +6,7 @@
         <div class="fields">
             <input id="streetID"        type="text"   class="form-control"  v-model="address.streetName"     placeholder="Street name*">  <br/>
             <input id="streetNumID"     type="text"   class="form-control"  v-model="address.streetNumber"   placeholder="Street number*"><br/>
-            <input id="postalcodeID"    type="number" class="form-control"  v-model="address.postalcode"     placeholder="Postalcode*">   <br/>
+            <input id="postalcodeID"    type="text"   class="form-control"  v-model="address.postalCode"     placeholder="Postalcode*">   <br/>
             <input id="cityID" 	        type="text"   class="form-control"  v-model="address.city"           placeholder="City*">         <br/>
             <input id="countryID" 	    type="text"   class="form-control"  v-model="address.country"        placeholder="Country*">      <br/>
             <input id="latitudeID"      type="number" class="form-control"  v-model="address.latitude"       placeholder="Latitude*">     <br/>

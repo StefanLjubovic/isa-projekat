@@ -135,6 +135,11 @@
         setup() {
             return {v$: useValidate()}
         },
+        computed:{
+             state(){
+                return this.$store.getters.getState;
+            }
+        },
         data() {
             return{
                 newCottage: {
@@ -145,24 +150,24 @@
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
-                        streetName: '',
-                        streetNumber: '',
-                        postalcode: '',
-                        city: '',
-                        country:  '',
-                        longitude: '',
-                        latitude: ''
+                        streetName: "Bulevar Cara Lazara",
+                        streetNumber: "171",
+                        postalCode: "21000",
+                        city: "Novi Sad",
+                        country:  "Serbia",
+                        longitude: 19,
+                        latitude: 45
                     },
                     pricelistItem: [
                         {
                             service:'',
                             price: undefined
-                        },
+                        }
                     ],
                     rooms: [
                         {
                             bedNumber: undefined
-                        },
+                        }
                     ],
                     cottageOwner:{}
                 },
@@ -193,6 +198,7 @@
                 const util = require('util')    
                 console.log(util.inspect(this.newCottage, false, null, true))   
                 
+                this.getCottageOwnerFromLoggedUser();
                 axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
                 .then((response) => {
                     this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
@@ -207,6 +213,22 @@
                 })
                 .catch(() => {
                     this.$swal('There is already cottage with this name!');
+                })
+            },
+
+            getCottageOwnerFromLoggedUser(){
+
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.state}`
+                }
+
+                axios
+                .get(`${server.baseUrl}/user/getLoggedUser/`, {headers: headers})
+                .then(response => {
+                    this.cottageOwner = response.data;
+                    console.log(response.data);
                 })
             },
 

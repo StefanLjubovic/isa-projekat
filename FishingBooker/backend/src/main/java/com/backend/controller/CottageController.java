@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -40,11 +41,10 @@ public class CottageController {
     public ResponseEntity<String> addNewCottage(@RequestBody CottageDTO cottageDTO){
 
         Cottage cottage = modelMapper.map(cottageDTO, Cottage.class);
-        System.out.println(cottageDTO.getRooms());
-        //if(cottageService.findById(cottage.getId()) != null)
-        //    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage already exists!");
+        if(cottageService.findByName(cottage.getName()) != null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage already exists!");
 
-        //Cottage newCottage = cottageService.Save(cottage);
+        Cottage newCottage = cottageService.Save(cottage);
         return new ResponseEntity<>("Successfully added cottage!", HttpStatus.CREATED);
     }
 }
