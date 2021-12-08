@@ -62,6 +62,7 @@
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
     <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
+    <AddNewCottage v-if="state == 26" />
   </div>
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
@@ -102,6 +103,7 @@ import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
+import AddNewCottage from "@/views/AddNewCottage.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
@@ -122,6 +124,7 @@ export default {
         RevisionModal,
         CottageReservations,
         CottageDetails,
+        AddNewCottage,
         MyProfile,
         AdminAnalytics,
         OwnerAnalytics,
@@ -234,7 +237,7 @@ export default {
         document.getElementById('appContainer').style.height='100vh';
       },
       addNewCottage: function() {
-        this.$router.push({ path: `/addNewCottage` })
+        this.state = 26;
       },
       addNewAdventure: function() {
         this.$router.push({ path: `/addNewAdventure` })

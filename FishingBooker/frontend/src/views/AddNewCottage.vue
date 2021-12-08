@@ -1,5 +1,4 @@
 <template>
-    <NavBar @change-state = "changeState"></NavBar>
     <div id="add-entity-form"> 
         <div class="title"><h1>New Cottage</h1></div> 
         <div class="content">
@@ -115,7 +114,6 @@
 </template>
 
 <script>
-    import NavBar from "@/components/Navbar.vue"
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
@@ -132,7 +130,6 @@
 
     export default ({
         components: {
-            NavBar,
             OpenLayersMap,
         },
         setup() {
