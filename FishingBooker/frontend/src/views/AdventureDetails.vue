@@ -1,21 +1,20 @@
 <template>
-    <NavBar @change-state="changeState"></NavBar>
     <div id="page">
-        <AdventureCaption :adventureName="adventure.name"/>
+        <AdventureCaption :adventureName="adventure.name" @create-sale="createSale()" @edit-entity="editEntity()"/>
         <div class="content">
             <div class="left">
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
                 <div class="btn-placeholder">
-                    <button class="btn" @click="toggleSubscribe">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
+                    <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView/>
+                <CalendarView :unavailablePeriods="adventure.fishingInstructor.unavailablePeriods"/>
                 
                 <p>If you cancel the reservation, the instructor retains {{ adventure.cancellationPercentage }}
                     % of the price!
                 </p><hr/>
-                <PricelistTable :pricelist="adventure.pricelist"/><hr/>
+                <PricelistTable :pricelistItem="adventure.pricelistItem"/><hr/>
             </div>
             <div class="right">
                 <AdventureTextDescription :adventure="adventure"/><hr/>
@@ -27,7 +26,6 @@
 </template>
 
 <script>
-import NavBar from "@/components/Navbar.vue"
 import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
 import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
 import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue"
@@ -35,10 +33,11 @@ import Map from "@/components/Map.vue"
 import ImageGallery from "@/components/ImageGallery.vue"
 import CalendarView from "@/components/CalendarView.vue"
 import PricelistTable from "@/components/entities/PricelistTable.vue"
+import axios from 'axios'
+import server from '../server'
 
 export default {
     components: {
-        NavBar,
         AdventureCaption,
         InstructorDetails,
         AdventureTextDescription,
@@ -47,63 +46,39 @@ export default {
         CalendarView,
         PricelistTable
     },
+    props: [
+        'entityId'
+    ],
     data() {
         return {
-            adventure: {
-                id: '1',
-                name: 'Fishing in the Sunset',
-                address: {
-                    streetName: 'Bulevar kralja Petra I',
-                    streetNumber: '61',
-                    postalCode: '21000',
-                    city: 'Novi Sad',
-                    country: 'Serbia',
-                    longitude: '45.25937354724934',
-                    latitude: '19.82703412668896'
-                },
-                description: 'Non ea in sint mollit. Ullamco culpa incididunt nisi enim culpa aliquip nisi veniam elit consectetur officia nulla minim. Velit ea dolor eiusmod ex id mollit veniam aliqua pariatur eiusmod excepteur duis sint.',
-                averageGrade: 4.5,
-                images: [
-                    '1.jpg',
-                    '2.jpg',
-                    '3.jpg',
-                    '4.jpg',
-                    '5.jpg',
-                    '6.jpg'
-                ],
-                allowedBehaviour: [
-                    'Alcochol',
-                    'Pets',
-                    'Fish feeding'
-                ],
-                unallowedBehaviour: [
-                    'Smoking',
-                    'Noise'
-                ],
-                fishingInstructor: {
-                    firstName: 'Stefan',
-                    lastName: 'Ljubovic',
-                    shortBiography: 'Sint eu minim est minim dolore reprehenderit dolore irure veniam cillum in aute sunt incididunt. Nulla officia pariatur et fugiat eiusmod ex fugiat cillum.'
-                },
-                maxPersons: 5,
-                cancellationPercentage: 20,
-                fishingEquipment: [
-                    'Stick',
-                    'Hook'
-                ],
-                pricelist: [
-                    { service: "Basic adventure", price: 2000 },
-                    { service: "Boat ride", price: 1000 },
-                    { service: "Additional equpment", price: 3000 },
-                    { service: "Professional photographer", price: 2000 },
-                ]
-            }
+            adventureId: this.entityId,
+            adventure: undefined
         }
     },
+    created() {
+        axios.get(`${server.baseUrl}/adventure/${this.adventureId}`)
+        .then((response) => {
+            this.adventure = response.data;
+
+            axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`)
+            .then((res) => {
+                for(let period of res.data) {
+                    this.adventure.fishingInstructor.unavailablePeriods.push({
+                        id : period.id,
+                        dates : { start : new Date(period.fromDateTime), end : new Date(period.toDateTime) },
+                        customData : { title : period.message, isUnavailable : true }
+                    })
+                }
+            })
+
+            console.log(this.adventure)
+        })
+        .catch((error) => (console.log(error)))
+    },
     methods: {
-        changeState: function(state){
-            console.log(state);
-        },
+        createSale: function() {},
+        editEntity: function() {},
+        makeReservation: function() {}
     }
 }
 </script>

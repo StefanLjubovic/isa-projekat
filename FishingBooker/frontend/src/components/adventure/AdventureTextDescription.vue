@@ -16,7 +16,7 @@
 
         <p class="ul-caption"><i class="fas fa-check-circle"></i>&nbsp; Allowed behaviour: </p>
         <ul>
-            <div v-for="ab in adventure.allowedBehaviour" :key="ab">
+            <div v-for="ab in adventure.allowedBehavior" :key="ab">
                 <li>{{ ab }}</li>
             </div>
         </ul>
@@ -24,7 +24,7 @@
 
         <p class="ul-caption"><i class="fas fa-times-circle"></i>&nbsp; Unallowed behaviour: </p>
         <ul>
-            <div v-for="uab in adventure.unallowedBehaviour" :key="uab">
+            <div v-for="uab in adventure.unallowedBehavior" :key="uab">
                 <li>{{ uab }}</li>
             </div>
         </ul>

@@ -1,5 +1,8 @@
 package com.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -44,13 +47,15 @@ public class RentingEntity {
    private Address address;
 
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   private Set<UnavailablePeriod> unavailablePeriod = new HashSet<UnavailablePeriod>();
+   private Set<UnavailablePeriod> unavailablePeriods = new HashSet<UnavailablePeriod>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   private Set<PricelistItem> pricelistItem = new HashSet<PricelistItem>();
+   @JsonIgnoreProperties("rentingEntity")
+   private Set<PricelistItem> pricelistItems = new HashSet<PricelistItem>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   private Set<Sale> sale = new HashSet<Sale>();
+   @JsonIgnoreProperties("rentingEntity")
+   private Set<Sale> sales = new HashSet<Sale>();
 
    public RentingEntity() { }
 
@@ -146,6 +151,30 @@ public class RentingEntity {
 
    public void setAllowedBehavior(Set<String> allowedBehavior) {
       this.allowedBehavior = allowedBehavior;
+   }
+
+   public Set<UnavailablePeriod> getUnavailablePeriods() {
+      return unavailablePeriods;
+   }
+
+   public void setUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriod) {
+      this.unavailablePeriods = unavailablePeriod;
+   }
+
+   public Set<PricelistItem> getPricelistItems() {
+      return pricelistItems;
+   }
+
+   public void setPricelistItems(Set<PricelistItem> pricelistItem) {
+      this.pricelistItems = pricelistItem;
+   }
+
+   public Set<Sale> getSales() {
+      return sales;
+   }
+
+   public void setSales(Set<Sale> sale) {
+      this.sales = sale;
    }
 
    @Override

@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -40,11 +37,25 @@ public class InstructorController {
         if(user.getName() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no logged user!");
 
         Set<UnavailablePeriod> periods = instructorService.getAllUnavailablePeriodsForInstructor(user.getName());
+        Set<UnavailablePeriodDTO> dto = getUnavailablePeriodDTOS(periods);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/unavailablePeriods/{id}")
+    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Set<UnavailablePeriodDTO>> getAllUnavailablePeriodsForInstructorById(@PathVariable("id") Integer id) {
+        Set<UnavailablePeriod> periods = instructorService.getAllUnavailablePeriodsForInstructorById(id);
+
+        Set<UnavailablePeriodDTO> dto = getUnavailablePeriodDTOS(periods);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    private Set<UnavailablePeriodDTO> getUnavailablePeriodDTOS(Set<UnavailablePeriod> periods) {
         Set<UnavailablePeriodDTO> dto = new HashSet<>();
         for (UnavailablePeriod p : periods) {
             dto.add(new UnavailablePeriodDTO(p.getId(), p.getFromDateTime(), p.getToDateTime(), "Instructor unavailable."));
         }
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return dto;
     }
 }

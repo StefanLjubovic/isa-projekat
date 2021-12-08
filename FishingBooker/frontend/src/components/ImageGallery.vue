@@ -1,10 +1,13 @@
 <template>
   <div>
     <h2>{{ description }}</h2>
-    <div class="images" v-viewer>
+    <div class="images" v-viewer v-if="images.length > 0">
       <span class="gallery" v-for="src in images" :key="src">
           <img :src="require('../assets/' + src)" v-if="images.indexOf(src) < 6">
       </span>
+    </div>
+    <div v-else>
+      <p>There are no images to show...</p>
     </div>
   </div>
 </template>
@@ -34,6 +37,10 @@ h2 {
   font-size: 20px;
   text-align: left;
   margin-bottom: 15px;
+}
+
+p {
+  text-align: left;
 }
 
 </style>

@@ -72,7 +72,7 @@
   <div v-if="userRole == 'ROLE_INSTRUCTOR'">
     <div v-if="state == 0">
         <button  type="button" id="add-new-cottage" @click="addNewAdventure()" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
-        <SearchEntities :searchTitle="''"  @filter-sort="filterSort"/>
+        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 0" class="cottages-wrapper">
         <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -83,6 +83,7 @@
     <MyScheduleInstructor v-if="state == 2"/>
     <OwnerAnalytics v-if="state == 4"/>
     <MyProfile v-if="state == 3"/>
+    <AdventureDetails v-if="state == 5" :entityId="selectedEntityId"/>
   </div>
   
 </template>
@@ -106,6 +107,9 @@ import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
 import AdventureReservations from "@/components/adventure/AdventureReservations.vue"
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 import ConfirmModal from "@/components/client/ConfirmModal"
+import AdventureDetails from "@/views/AdventureDetails.vue"
+
+
 export default {
     components:{
         NavBar,
@@ -124,8 +128,8 @@ export default {
         OwnerAnalytics,
         AdventureReservations,
         MyScheduleInstructor,
-        ConfirmModal
-
+        ConfirmModal,
+        AdventureDetails
     },
     data(){
       return{
@@ -137,7 +141,8 @@ export default {
         showCancelation: false,
         entities: [],
         entitiesForDisplay: [],
-        historySort : ''
+        historySort : '',
+        selectedEntityId: undefined
       }
     },
     computed:{
@@ -188,7 +193,8 @@ export default {
       },
       openEntityDetails: function(entity) {
         if(this.state == 0){
-          this.$router.push({ path: `/adventureDetails/${entity.id}` })
+          this.selectedEntityId = entity.id;
+          this.state = 5;
         } else if (this.state == 1) {
           // navigacija za detalje o brodu
         } else if (this.state == 2 || this.state == 21) {

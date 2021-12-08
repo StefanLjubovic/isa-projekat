@@ -14,4 +14,7 @@ public interface IUserRepository extends JpaRepository<RegisteredUser, Integer> 
 
     @Query(value = "select fi from FishingInstructor fi left join fetch fi.unavailablePeriods where fi.email = :email")
     FishingInstructor fetchByEmail(@Param("email") String email);
+
+    @Query(value = "select fi from FishingInstructor fi left join fetch fi.unavailablePeriods where fi.id = :id")
+    FishingInstructor fetchById(@Param("id") Integer id);
 }

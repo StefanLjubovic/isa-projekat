@@ -26,6 +26,7 @@ public class EntityService {
         if(state==0)entities=entityRepository.getEntityByClass(Adventure.class);
         else if(state==1)entities=entityRepository.getEntityByClass(Ship.class);
         else if(state==2) entities=entityRepository.getEntityByClass(Cottage.class);
+        System.out.println(entities.toString());
         return entities;
     }
 

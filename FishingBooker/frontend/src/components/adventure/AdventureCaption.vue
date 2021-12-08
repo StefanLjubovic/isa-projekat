@@ -9,26 +9,9 @@
         </div>
 
         <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
-            <button class="btn" >Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn"><i class="fas fa-solid fa-pen"></i> </button>
+            <button class="btn" @click="$emit('create-sale')">Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
+            <button class="btn" @click="$emit('edit-entity')"><i class="fas fa-solid fa-pen"></i> </button>
             <button class="btn" @click="deleteEntity()"><i class="fas fa-solid fa-trash"></i></button>
-        </div>
-    </div>
-
-    <!--Delete entity modal -->
-
-    <div class="modal fade" id="delete-modal">
-        <div class="modal-dialog rounded">
-            <div class="modal-header">
-            <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <p>Are you sure you want to delete '{{adventureName}}'? </p>
-                <div class="btn-div">
-                     <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
-                     <button class="btn cancel-button">Cancel</button>
-                </div>
-            </div>
         </div>
     </div>
     
@@ -43,6 +26,7 @@ export default ({
     data() {
         return {
             subscribed: false,
+            name: this.adventureName
         }
     },
     computed:{
@@ -55,8 +39,19 @@ export default ({
             this.subscribed = !this.subscribed;
         },
         deleteEntity : function() {
-        window.$('#delete-modal').modal('show');
-      },
+            this.$swal({
+                title: `Are you sure you want to delete adventure '${this.name}'?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#2c3e50'
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    console.log('no:(');
+                } 
+            })
+        }
     }
 })
 </script>

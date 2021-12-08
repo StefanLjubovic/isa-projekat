@@ -31,7 +31,6 @@ public class InstructorService {
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
 
-        // (StartA <= EndB)  and  (EndA >= StartB)
         for (UnavailablePeriod period : fishingInstructor.getUnavailablePeriods()) {
             if(period.getFromDateTime().before(unavailablePeriod.getToDateTime()) && period.getToDateTime().after(unavailablePeriod.getFromDateTime())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this range!");
@@ -47,6 +46,11 @@ public class InstructorService {
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForInstructor(String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
+        return fishingInstructor.getUnavailablePeriods();
+    }
+
+    public Set<UnavailablePeriod> getAllUnavailablePeriodsForInstructorById(Integer id) {
+        FishingInstructor fishingInstructor = userRepository.fetchById(id);
         return fishingInstructor.getUnavailablePeriods();
     }
 }

@@ -1,5 +1,7 @@
 package com.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
 
@@ -22,6 +24,7 @@ public class PricelistItem {
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "entity_id")
+   @JsonIgnoreProperties("pricelistItems")
    private RentingEntity rentingEntity;
 
    public PricelistItem() {}
