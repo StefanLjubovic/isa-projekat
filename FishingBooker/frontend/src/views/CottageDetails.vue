@@ -1,5 +1,4 @@
 <template>
-    <NavBar @change-state = "changeState"></NavBar>
     <div id="profile">
         <AdventureCaption :adventureName="cottage.name"/>
         <div class="content">
@@ -15,26 +14,25 @@
             </div>
             <div class="right-side">
                 <CottageTextDescription :cottage="cottage" /><hr/>
-                <Map :address="cottage.address"/><br/><hr/>
+                <Map :cottage="cottage"/><br/><hr/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import NavBar from "@/components/Navbar.vue"
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
     import CalendarView from "@/components/CalendarView.vue"
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import CottageTextDescription from "@/components/cottage/CottageTextDescription.vue"
-    import Map from "@/components/Map.vue"
+    import Map from "@/components/entities/ShowLocationOnMap.vue"
     import axios from 'axios'
     import server from '../server/index'
 
     export default {
+        props:['entityId'],
         components: {
-            NavBar,
             AdventureCaption,
             ImageGallery,
             CalendarView,
@@ -44,6 +42,7 @@
         },
         data() {
             return {
+                id: this.entityId,
                 cottage: {
                     name: '',
                     address: {
@@ -76,7 +75,7 @@
 
             fetchData: function(){
                 axios
-                .get(`${server.baseUrl}/cottage/getOne/` + this.$route.params.id)
+                .get(`${server.baseUrl}/cottage/getOne/` + this.entityId)
                 .then(response => {
                     this.cottage = response.data;
                     console.log(response.data);

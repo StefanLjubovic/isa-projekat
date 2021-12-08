@@ -61,6 +61,7 @@
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
   </div>
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
@@ -100,6 +101,7 @@ import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
+import CottageDetails from "@/views/CottageDetails.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
@@ -119,6 +121,7 @@ export default {
         Complaints,
         RevisionModal,
         CottageReservations,
+        CottageDetails,
         MyProfile,
         AdminAnalytics,
         OwnerAnalytics,
@@ -137,7 +140,8 @@ export default {
         showCancelation: false,
         entities: [],
         entitiesForDisplay: [],
-        historySort : ''
+        historySort : '',
+        selectedEntityId: undefined
       }
     },
     computed:{
@@ -192,7 +196,8 @@ export default {
         } else if (this.state == 1) {
           // navigacija za detalje o brodu
         } else if (this.state == 2 || this.state == 21) {
-          this.$router.push({ path: `/cottageDetails/${entity.id}` })
+          this.selectedEntityId = entity.id;
+          this.state = 25;
         }
       },
       closeComplaint: function(){
