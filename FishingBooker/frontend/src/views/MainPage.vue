@@ -2,7 +2,7 @@
   <div class="page">
       <div class="header">
           <div class="logo">
-              <h2 id="logo">Fishing booker</h2>
+              <h2 id="logo">Fishing Booker</h2>
           </div>
           <div class="buttons-div" v-if="userRole == ''">
            <a href="#" class="link-light dropdown-toggle item" 
@@ -131,7 +131,7 @@ export default {
         flex: 1;
         justify-content: flex-end;
         margin-right: 8%;
-        margin-top: 15px;
+        margin-top: 20px;
     }
     .registrated-user-option{
         flex :1;

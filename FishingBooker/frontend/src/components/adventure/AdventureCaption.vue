@@ -3,14 +3,14 @@
         <div class="caption">
             <h1>{{adventureName}}</h1>
         </div>
-        <div class="options" v-if="userRole == 'ROLE_CLIENT' || userRole==''">
-            <button class="btn" @click="toggleSubscribe" v-if="!subscribed">Subscribe to this adventure&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn" @click="toggleSubscribe" v-else>Unsubscribe from this adventure&nbsp;&ensp;<i class="fas fa-bell-slash"></i> </button>
+        <div class="options" v-if="userRole == 'ROLE_CLIENT'">
+            <button class="btn" @click="toggleSubscribe" v-if="!subscribed">Subscribe to this {{this.entityName}}&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
+            <button class="btn" @click="toggleSubscribe" v-else>Unsubscribe from this {{this.entityName}}&nbsp;&ensp;<i class="fas fa-bell-slash"></i> </button>
         </div>
 
         <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
-            <button class="btn" @click="$emit('create-sale')">Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn" @click="$emit('edit-entity')"><i class="fas fa-solid fa-pen"></i> </button>
+            <button class="btn" @click="this.$emit('create-sale')" v-if="userRole != 'ROLE_ADMIN'">Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
+            <button class="btn" @click="this.$emit('edit-entity')" v-if="userRole != 'ROLE_ADMIN'"><i class="fas fa-solid fa-pen"></i> </button>
             <button class="btn" @click="deleteEntity()"><i class="fas fa-solid fa-trash"></i></button>
         </div>
     </div>
@@ -18,15 +18,21 @@
 </template>
 
 <script>
+import axios from "axios";
+import server from "../../server";
+
 
 export default ({
     props: {
         adventureName: String,
+        adventureId: Number,
+        entityName: String
     },
     data() {
         return {
             subscribed: false,
-            name: this.adventureName
+            name: this.adventureName,
+            advID: this.adventureId
         }
     },
     computed:{
@@ -48,7 +54,18 @@ export default ({
                 confirmButtonColor: '#2c3e50'
             }).then((result) => {
                 if(result.isConfirmed) {
-                    console.log('no:(');
+                    console.log(this.advID)
+                    axios.delete(`${server.baseUrl}/entity/delete/${this.advID}`)
+                    .then(() => {
+                        this.$swal({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Adventure deleted!',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                        .then(() => this.$emit('entity-deleted'))
+                    })
                 } 
             })
         }

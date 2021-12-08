@@ -66,9 +66,9 @@
                         <td>{{ request.lastName }}</td>
                         <td>{{ request.phoneNumber }}</td>
 
-                        <td v-if="request.role == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
-                        <td v-else-if="request.role == 'ROLE_SHIP_OWNER'">Ship owner</td>
-                        <td v-else-if="request.role == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
+                        <td v-if="request.role.name == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
+                        <td v-else-if="request.role.name == 'ROLE_SHIP_OWNER'">Ship owner</td>
+                        <td v-else-if="request.role.name == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
                         <td v-else></td>
 
                         <td>
@@ -182,7 +182,7 @@ export default ({
                                                || request.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || request.phoneNumber.includes(this.searchParams));
             if(this.filterRole != -1) {
-                this.requests = this.requests.filter((request) => request.role == this.filterRole);
+                this.requests = this.requests.filter((request) => request.role.name == this.filterRole);
             }
         }
     }

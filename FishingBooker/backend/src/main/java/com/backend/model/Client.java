@@ -4,6 +4,9 @@
  * Purpose: Defines the Class Client
  ***********************************************************************/
 package com.backend.model;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -20,7 +23,7 @@ public class Client extends RegisteredUser {
    @Column(name="client_type", unique=false, nullable=true)
    private ClientType clientType = ClientType.bronze;
 
-   @ManyToMany(fetch = FetchType.LAZY)
+   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinTable(name = "subscriptions", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "reg_user_id"), inverseJoinColumns = @JoinColumn(name = "entity_id", referencedColumnName = "entity_id"))
    private Set<RentingEntity> subscriptions = new HashSet<RentingEntity>();
 
@@ -55,4 +58,12 @@ public class Client extends RegisteredUser {
    public void setClientType(ClientType clientType) {
       this.clientType = clientType;
    }
+
+    public Set<RentingEntity> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<RentingEntity> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
 }

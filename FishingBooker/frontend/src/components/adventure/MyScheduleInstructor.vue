@@ -5,7 +5,7 @@
             <p>Define unavaliable period: </p>
             <form @submit.prevent>
                 <div class="mb-4">
-                    <v-date-picker v-model="range" mode="dateTime" :masks="masks" is-range >
+                    <v-date-picker v-model="range" mode="dateTime" :masks="masks" is-range>
                         <template v-slot="{ inputValue, inputEvents, isDragging }">
                             <div class="date-picker">
                                 <div class="date-input">

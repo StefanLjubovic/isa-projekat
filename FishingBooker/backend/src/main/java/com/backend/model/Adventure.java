@@ -15,7 +15,7 @@ public class Adventure extends RentingEntity {
    @Column(name = "fishing_equipment")
    private Set<String> fishingEquipment = new HashSet<String>();
 
-   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "reg_user_id")
    private FishingInstructor fishingInstructor;
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class AdventureService {
@@ -17,5 +18,9 @@ public class AdventureService {
         Adventure adventure = adventureRepository.fetchById(id);
         adventure.setUnavailablePeriods(new HashSet<>());
         return adventure;
+    }
+
+    public List<Adventure> getAllAdventuresFromInstructor(String email) {
+        return adventureRepository.getAdventuresByFishingInstructor_Email(email);
     }
 }

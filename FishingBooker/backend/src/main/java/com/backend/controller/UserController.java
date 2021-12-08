@@ -1,5 +1,6 @@
 package com.backend.controller;
 
+import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
 import com.backend.model.RegisteredUser;
 import com.backend.model.RentingEntity;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,9 +29,10 @@ public class UserController {
     UserService userService;
 
     @GetMapping(value="/getById/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisteredUser> GetById(@PathVariable String id){
-        RegisteredUser user=userService.GetById(1);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<RegisteredUserDTO> GetById(@PathVariable Integer id){
+        RegisteredUser user = userService.GetById(id);
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getStatus(), user.isEnabled(), user.getRole(), user.getLastPasswordResetDate(), user.getAddress());
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,9 +49,16 @@ public class UserController {
 
     @GetMapping("/allUsers")
     //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RegisteredUser>> getAllUsers() {
+    public ResponseEntity<List<RegisteredUserDTO>> getAllUsers() {
         List<RegisteredUser> users = this.userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+
+        List<RegisteredUserDTO> dto = new ArrayList<>();
+        for(RegisteredUser u : users) {
+            RegisteredUserDTO userDTO = new RegisteredUserDTO(u.getId(),u.getFirstName(), u.getLastName(), u.getPhoneNumber(), u.getEmail(), u.getPassword(), u.getStatus(), u.isEnabled(), u.getRole(), u.getLastPasswordResetDate(), u.getAddress());
+            dto.add(userDTO);
+        }
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{id}")

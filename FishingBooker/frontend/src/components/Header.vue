@@ -2,7 +2,7 @@
     <div :class="[`${userRole}` ? `img${userRole}` : 'img']" class="background-img">
         <div class="headerr">
             <div class="logo">
-                <h1 id="logo" @click="goToMainPage">Fishing booker</h1>
+                <h1 id="logo" @click="goToMainPage">Fishing Booker</h1>
             </div>
             <div class="buttons-div">
                 <div v-if="userRole != ''" class="registrated-user-option">

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface IAdventureRepository extends JpaRepository<Adventure, Integer> {
 
-    List<Adventure> getAdventuresByFishingInstructorId(Integer id);
+    List<Adventure> getAdventuresByFishingInstructor_Email(String id);
 
     @Query(value = "select a from Adventure a left join fetch a.pricelistItems left join fetch a.sales where a.id = :id")
     Adventure fetchById(@Param("id") Integer id);

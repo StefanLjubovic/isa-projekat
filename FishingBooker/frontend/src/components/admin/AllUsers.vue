@@ -30,7 +30,7 @@
                         <p>{{ selectedUser.address.city }}</p>
                         <p>{{ selectedUser.address.country }}</p>
                         <p>{{ selectedUser.phoneNumber }}</p>
-                        <p>{{ roleToString(selectedUser.role) }}</p>
+                        <p>{{ roleToString(selectedUser.role.name) }}</p>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Add new administrator modal -->
-    <div v-if="selectedUser" class="modal fade" id="new-admin-modal">
+    <div class="modal fade" id="new-admin-modal">
         <div class="modal-dialog rounded">
             <div class="modal-header"  @click="cancelNewAdmin()">
                 <h3>Add new administrator</h3>
@@ -137,11 +137,11 @@
                         <td>{{ user.lastName }}</td>
                         <td>{{ user.phoneNumber }}</td>
 
-                        <td v-if="user.role == 'ROLE_CLIENT'">Client</td>
-                        <td v-else-if="user.role == 'ROLE_ADMIN'">Administrator</td>
-                        <td v-else-if="user.role == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
-                        <td v-else-if="user.role == 'ROLE_SHIP_OWNER'">Ship owner</td>
-                        <td v-else-if="user.role == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
+                        <td v-if="user.role.name == 'ROLE_CLIENT'">Client</td>
+                        <td v-else-if="user.role.name == 'ROLE_ADMIN'">Administrator</td>
+                        <td v-else-if="user.role.name == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
+                        <td v-else-if="user.role.name == 'ROLE_SHIP_OWNER'">Ship owner</td>
+                        <td v-else-if="user.role.name == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
                         <td v-else></td>
 
                         <td><button class="btn btn-info" @click="openModalForUserDetails(user)"><i class="fas fa-info"></i></button></td>
@@ -297,7 +297,7 @@ export default {
                                                || user.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
                                                || user.phoneNumber.includes(this.searchParams));
             if(this.filterRole != -1) {
-                this.users = this.users.filter((user) => user.role == this.filterRole);
+                this.users = this.users.filter((user) => user.role.name == this.filterRole);
             }
         },
 

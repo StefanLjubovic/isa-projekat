@@ -3,12 +3,13 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=30" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
@@ -19,7 +20,7 @@
     <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
     </transition>
     <transition name="fade" appear>
-        <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation"/>
+      <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation"/>
     </transition>
     <ClientReservations v-if="state==7" @open-cancelation="openCancelation"/>
     <MyProfile v-if="state == 3"/>
@@ -44,6 +45,7 @@
     <Complaints v-if="state == 10"/>
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
@@ -72,7 +74,7 @@
   <div v-if="userRole == 'ROLE_INSTRUCTOR'">
     <div v-if="state == 0">
         <button  type="button" id="add-new-cottage" @click="addNewAdventure()" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;  Add new adventure </button>
-        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+        <SearchEntities :searchTitle="'My Adventures'"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 0" class="cottages-wrapper">
         <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -83,7 +85,7 @@
     <MyScheduleInstructor v-if="state == 2"/>
     <OwnerAnalytics v-if="state == 4"/>
     <MyProfile v-if="state == 3"/>
-    <AdventureDetails v-if="state == 5" :entityId="selectedEntityId"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
   </div>
   
 </template>
@@ -108,6 +110,8 @@ import AdventureReservations from "@/components/adventure/AdventureReservations.
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 import ConfirmModal from "@/components/client/ConfirmModal"
 import AdventureDetails from "@/views/AdventureDetails.vue"
+import server from '../server'
+import axios from 'axios'
 
 
 export default {
@@ -156,15 +160,27 @@ export default {
         this.state=state;
         console.log(state);
         if(state == 0 || state == 1 || state == 2) {
-          const resp=await Server.getAllEntities(this.state)
-          this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
-          this.entities=resp.data;
+          if(this.userRole == 'ROLE_INSTRUCTOR') {
+            axios.get(`${server.baseUrl}/instructor/adventures`, {
+              headers: {
+                'Authorization' : `Bearer ${this.$store.getters.getToken}`
+              }
+            }).then((response) => {
+              this.entities = response.data;
+            })
+          } else {
+            const resp=await Server.getAllEntities(this.state)
+            this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+            this.entities=resp.data;
+          }
+
         }
         if (state==8){
           const resp=await Server.getSubscriptions(this.$store.getters.getToken)
           this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
           this.entities=resp.data;
         }
+
         if(state==0)this.searchTitle="Adventures we offer";
         else if(state==1) this.searchTitle="Ships we offer";
         else if(state==2) this.searchTitle="Cottages we offer";
@@ -194,7 +210,7 @@ export default {
       openEntityDetails: function(entity) {
         if(this.state == 0){
           this.selectedEntityId = entity.id;
-          this.state = 5;
+          this.state = 30;
         } else if (this.state == 1) {
           // navigacija za detalje o brodu
         } else if (this.state == 2 || this.state == 21) {
