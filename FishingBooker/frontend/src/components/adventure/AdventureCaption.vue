@@ -10,7 +10,7 @@
 
         <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
             <button class="btn" @click="this.$emit('create-sale')" v-if="userRole != 'ROLE_ADMIN'">Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn" @click="this.$emit('edit-entity')" v-if="userRole != 'ROLE_ADMIN'"><i class="fas fa-solid fa-pen"></i> </button>
+            <button class="btn" @click="this.$emit('edit-entity', this.adventureId)" v-if="userRole != 'ROLE_ADMIN'"><i class="fas fa-solid fa-pen"></i> </button>
             <button class="btn" @click="deleteEntity()"><i class="fas fa-solid fa-trash"></i></button>
         </div>
     </div>

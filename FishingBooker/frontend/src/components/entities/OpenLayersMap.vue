@@ -26,25 +26,37 @@ import 'ol/ol.css'
 import useValidate from '@vuelidate/core'
 
 export default {
-    props:['location'],
+    props:['location', 'existedAddress'],
     setup() {
             return {v$: useValidate()}
     },
     data() {
-        return{    
-            address: {     
-                streetName: '',
-                streetNumber: '',
-                postalcode: '',
-                city: '',
-                country: '',
-                longitude: '',
-                latitude: ''  
-            }       
+        if(!this.existedAddress)
+            return{    
+                address: {     
+                    streetName: '',
+                    streetNumber: '',
+                    postalcode: '',
+                    city: '',
+                    country: '',
+                    longitude: '',
+                    latitude: ''  
+                }       
+            }
+        else{
+            return{
+                address: this.existedAddress
+            }
         }
+    },
+    created() {
+        this.address = this.existedAddress
     },
     mounted() {
       var center = fromLonLat([19.41, 44.82]);
+
+        if(this.existedAddress)
+            this.address = this.existedAddress;
 
         var mapSearch = new Map({
         target: 'map',

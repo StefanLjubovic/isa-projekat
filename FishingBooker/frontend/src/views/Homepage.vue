@@ -63,9 +63,9 @@
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @edit-cottage="editCottage()"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @edit-cottage="editCottage"/>
     <AddNewCottage  v-if="state == 26" />
-    <EditCottage    v-if="state == 27"/>
+    <EditCottage    v-if="state == 27" :cottageId="selectedCottageId"/>
   </div>
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
@@ -155,7 +155,8 @@ export default {
         entities: [],
         entitiesForDisplay: [],
         historySort : '',
-        selectedEntityId: undefined
+        selectedEntityId: undefined,
+        selectedCottageId: undefined
       }
     },
     computed:{
@@ -260,7 +261,8 @@ export default {
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
       },
-      editCottage: function(){
+      editCottage(id){
+        this.selectedCottageId = id;
         this.state = 27;
       },
       addNewCottage: function() {

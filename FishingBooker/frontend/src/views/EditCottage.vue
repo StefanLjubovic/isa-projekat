@@ -1,6 +1,6 @@
 <template>
         <div id="add-entity-form"> 
-        <div class="title"><h1>Edit Cottage</h1></div> 
+        <div class="title"><h1>Edit '{{cottage.name}}' </h1></div> 
         <div class="content">
             <div class="left-side">
                 <input type="text" class="form-control" placeholder="Name*" v-model="cottage.name"/>
@@ -63,8 +63,8 @@
                         <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="cottage.pricelistItem">
-                    <li v-for="item in cottage.pricelistItem" :key="item.id">
+                <ul v-if="cottage.pricelistItems">
+                    <li v-for="item in cottage.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
@@ -89,6 +89,7 @@
                     </li>
                 </ul><hr/><br/>
                  <!--Cancellation percentage -->
+                 <label class="percentage-label">Percentage of price we keep in case of reservation cancellation:</label>
                 <input type="number" class="form-control" v-model="cottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
 
@@ -103,7 +104,7 @@
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap @change-address="changeAddress" :address ="cottage.address" ></OpenLayersMap>
+                 <OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -117,8 +118,8 @@
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
-    //import server from '../server/index'
-    //import axios from 'axios'
+    import server from '../server/index'
+    import axios from 'axios'
 
     export function validName(name) {
         let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
@@ -132,6 +133,7 @@
         components: {
             OpenLayersMap,
         },
+        props:['cottageId'],
         setup() {
             return {v$: useValidate()}
         },
@@ -139,10 +141,17 @@
              state(){
                 return this.$store.getters.getState;
             }
+
         },
 
-        mounted(){
+        watch: {
+            address : function () {
+                this.initAddress();
+            }
+        },
 
+        created(){
+            this.getData();
         },
     
         data() {
@@ -155,15 +164,15 @@
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
-                        streetName: "Bulevar Cara Lazara",
-                        streetNumber: "171",
-                        postalCode: "21000",
-                        city: "Novi Sad",
-                        country:  "Serbia",
-                        longitude: 19,
-                        latitude: 45
+                        streetName: "",
+                        streetNumber: "",
+                        postalCode: "",
+                        city: "",
+                        country:  "",
+                        longitude: undefined,
+                        latitude: undefined
                     },
-                    pricelistItem: [
+                    pricelistItems: [
                         {
                             service:'',
                             price: undefined
@@ -199,13 +208,33 @@
         methods: {
             submitForm(){
                 this.v$.$validate();  
-                
-               
+                              
             },
 
-        
-            changeAddress(data){ 
-                this.cottage.address = data
+            getData() {
+                axios
+                .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
+                .then(response => {
+                    this.cottage = response.data;
+                    //this.roomsNum = this.cottage.rooms.length;
+                    this.allowedBehaviorNum = this.cottage.allowedBehavior.length;
+                    this.unallowedBehaviorNum = this.cottage.unallowedBehavior.length;
+                    this.pricelistItemNum = this.cottage.pricelistItems.length;
+                    console.log(this.cottage);
+                })
+            },
+
+            initAddress(){
+                 axios
+                .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
+                .then(response => {
+                    this.cottage.address = response.data.address;
+                })
+            },
+
+            changeAddress(data){
+                if(data)
+                    this.cottage.address = data
             },
 
             changeRoomsNumber(){
@@ -218,7 +247,7 @@
             },
 
             addPricelistItem() {
-                this.pricelistItem += 1;
+                this.pricelistItemsNum += 1;
                 this.cottage.pricelistItem.push({
                     service: '',
                     price: undefined
@@ -226,7 +255,7 @@
             },
 
             removePricelistItem(){
-                this.pricelistItem -= 1;
+                this.pricelistItemsNum -= 1;
                 this.cottage.pricelistItem.pop()
             },
         },
@@ -249,6 +278,12 @@
         padding-bottom: 50px;
         margin-left: 15%;
         margin-right: 15%;
+    }
+
+    .percentage-label{
+        text-align: left;
+        margin-right: 100px;
+        margin-bottom: 10px;
     }
 
      .content {
