@@ -194,15 +194,13 @@ export default ({
 
         async sendRequest(){
             window.$('#delete-account-modal').modal('hide');
-            const data ={
-                content : this.content
-            }
+            const data = this.content
             await Server.saveDeleteRequest(data,this.$store.getters.getToken)
             .then(resp=> {
                 if(resp.success){
                     this.$swal.fire(
                         'Success',
-                        'Profile updates successfully.',
+                        'Request for deleting sent to admin.',
                         'success')
                 }else{
                     this.$swal.fire(
