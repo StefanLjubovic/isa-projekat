@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 @DiscriminatorValue("ADMIN")
 public class Admin extends RegisteredUser {
 
-    private boolean initialPasswordChanged;
+    private boolean initialPasswordChanged = false;
 
     public Admin() { }
 

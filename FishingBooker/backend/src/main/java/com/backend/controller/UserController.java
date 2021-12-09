@@ -3,27 +3,21 @@ package com.backend.controller;
 import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
 import com.backend.model.RegisteredUser;
-import com.backend.model.RentingEntity;
 import com.backend.service.DeleteRequestService;
-import com.backend.service.EntityService;
 import com.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
@@ -32,27 +26,28 @@ public class UserController {
     @Autowired
     DeleteRequestService deleteRequestService;
 
-    @GetMapping(value="/getById/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisteredUserDTO> GetById(@PathVariable Integer id){
+    @GetMapping(value="/getById/{id}")
+    public ResponseEntity<RegisteredUserDTO> getById(@PathVariable Integer id){
         RegisteredUser user = userService.GetById(id);
         RegisteredUserDTO userDTO = new RegisteredUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getStatus(), user.isEnabled(), user.getRole(), user.getLastPasswordResetDate(), user.getAddress());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisteredUserDTO> GetLoggedUser(Principal principal){
+    @GetMapping(value="/getLoggedUser")
+    public ResponseEntity<RegisteredUserDTO> getLoggedUser(Principal principal){
         RegisteredUserDTO user=userService.fetchMyProfileInfo(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping(value="/update",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> UpdateUser(@RequestBody UpdateProfileDTO user){
+    @PutMapping(value="/update")
+    public ResponseEntity<Void> updateUser(@RequestBody UpdateProfileDTO user){
         userService.update(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @PutMapping (value="/changePassword/{password}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> ChangePassword(@PathVariable String password, Principal principal){
-        userService.updatePasswod(principal.getName(),password);
+
+    @PutMapping (value="/changePassword/{password}")
+    public ResponseEntity<Void> changePassword(@PathVariable String password, Principal principal){
+        userService.updatePasswod(principal.getName(), password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -78,8 +73,15 @@ public class UserController {
     }
 
     @PostMapping("/deleteRequest")
-    public ResponseEntity<Void> saveDeleteRequest(@RequestBody String content,Principal principal) {
+    public ResponseEntity<Void> saveDeleteRequest(@RequestBody String content, Principal principal) {
         deleteRequestService.save(principal.getName(),content);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/passwordChanged")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Boolean> hasAdminChangedInitialPassword(Principal admin) {
+        Boolean initialPasswordChanged = userService.hasAdminChangedInitialPassword(admin.getName());
+        return new ResponseEntity<>(initialPasswordChanged, HttpStatus.OK);
     }
 }

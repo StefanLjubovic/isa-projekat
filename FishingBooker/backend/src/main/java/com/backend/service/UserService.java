@@ -85,6 +85,7 @@ public class UserService {
         admin.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
         admin.setEnabled(true);
         admin.setStatus(UserStatus.active);
+        admin.setInitialPasswordChanged(false);
 
         return this.userRepository.save(admin);
     }
@@ -126,5 +127,10 @@ public class UserService {
         RegisteredUser user=userRepository.findByEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
+    }
+
+    public Boolean hasAdminChangedInitialPassword(String email) {
+        Admin admin = (Admin) userRepository.findByEmail(email);
+        return admin.isInitialPasswordChanged();
     }
 }
