@@ -4,7 +4,7 @@
             <div class="btn btn-sale" @click="displaySaleInfo(sale)">
                 <div>
                     <h3><i class="fas fa-money-bill-wave"></i> SALE </h3>
-                    <p>Date&amp;Time: {{sale.dateTimeFrom}}</p>
+                    <p>Date&amp;Time: {{this.dateFormat(sale.dateTimeFrom)}}</p>
                     <p>Duration: {{sale.durationInHours}} hours</p>
                     <h3>ONLY FOR {{sale.price}} RSD </h3>
                 </div>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default ({
     props: {
@@ -36,12 +37,12 @@ export default ({
                     title: '<h2>SALE INFO</h2>',
                     icon: 'info',
                     html:
-                        `<p style="font-size: 14px">Date&amp;Time: ${sale.dateTimeFrom}</p> ` +
+                        `<p style="font-size: 14px">Date&amp;Time: ${this.dateFormat(sale.dateTimeFrom)}</p> ` +
                         `<p style="font-size: 14px">Duration: ${sale.durationInHours} hours</p> ` +
                         `<p style="font-size: 14px">Maximum persons: ${sale.maximumPersons} </p> ` + 
                         `<p style="font-size: 14px">Additional services: ${sale.additionalServices} </p> ` +
                         `<p style="font-size: 14px">ONLY FOR: ${sale.price} RSD</p> ` + 
-                        `<p style="color: #a0a0a0; font-size: 14px">Sale expires on ${sale.expireDateTime}</p> ` ,
+                        `<p style="color: #a0a0a0; font-size: 14px">Sale expires on ${this.dateFormat(sale.expireDateTime)}</p> ` ,
                         confirmButtonColor: '#2c3e50'
                 })
             } else {
@@ -49,12 +50,12 @@ export default ({
                     title: '<h2>SALE INFO</h2>',
                     icon: 'info',
                     html:
-                        `<p style="font-size: 14px">Date&amp;Time: ${sale.dateTimeFrom}</p> ` +
+                        `<p style="font-size: 14px">Date&amp;Time: ${this.dateFormat(sale.dateTimeFrom)}</p> ` +
                         `<p style="font-size: 14px">Duration: ${sale.durationInHours} hours</p> ` +
                         `<p style="font-size: 14px">Maximum persons: ${sale.maximumPersons} </p> ` + 
                         `<p style="font-size: 14px">Additional services: ${sale.additionalServices} </p> ` +
                         `<p style="font-size: 14px">ONLY FOR: ${sale.price} RSD</p> ` + 
-                        `<p style="color: #a0a0a0; font-size: 14px">Sale expires on ${sale.expireDateTime}</p> ` +
+                        `<p style="color: #a0a0a0; font-size: 14px">Sale expires on ${this.dateFormat(sale.expireDateTime)}</p> ` +
                         `<h3>Do you want to book this adventure?</h3>`,
                     showCloseButton: true,
                     showCancelButton: true,
@@ -63,8 +64,10 @@ export default ({
                     confirmButtonColor: '#2c3e50'
                 })
             }
-            
-        }
+        },
+        dateFormat(value) {
+            return moment(value).format("DD.MM.YYYY.");
+        },
     }
 })
 </script>
