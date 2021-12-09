@@ -74,7 +74,7 @@
       </div>
           <div class="modal-content">
               <br/>
-            <textarea class="reason-area" cols="40" rows="6"></textarea><br/>
+            <textarea class="reason-area" cols="40" rows="6" v-model="content"></textarea><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendRequest()" >Submit</button>
                 <button class="btn cancel-button" @click="cancelRequest()">Cancel</button>
@@ -107,7 +107,8 @@ export default ({
                 password : '',
                 confirm : ''
             },
-            userBackup: undefined
+            userBackup: undefined,
+            content : ''
         }
     },
     async mounted() {
@@ -187,8 +188,25 @@ export default ({
             window.$('#delete-account-modal').modal('show');
         },
 
-        sendRequest(){
+        async sendRequest(){
             window.$('#delete-account-modal').modal('hide');
+            const data ={
+                content : this.content
+            }
+            await Server.saveDeleteRequest(data,this.$store.getters.getToken)
+            .then(resp=> {
+                if(resp.success){
+                    this.$swal.fire(
+                        'Success',
+                        'Profile updates successfully.',
+                        'success')
+                }else{
+                    this.$swal.fire(
+                        'Oops...',
+                        'Something went wrong!',
+                        'error')
+                }
+            })
         },
         cancelRequest() {
             this.user = {...this.userBackup}

@@ -4,6 +4,7 @@ import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
 import com.backend.model.RegisteredUser;
 import com.backend.model.RentingEntity;
+import com.backend.service.DeleteRequestService;
 import com.backend.service.EntityService;
 import com.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    DeleteRequestService deleteRequestService;
 
     @GetMapping(value="/getById/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisteredUserDTO> GetById(@PathVariable Integer id){
@@ -71,5 +75,11 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/deleteRequest")
+    public ResponseEntity<Void> saveDeleteRequest(@RequestBody String content,Principal principal) {
+        deleteRequestService.save(principal.getName(),content);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

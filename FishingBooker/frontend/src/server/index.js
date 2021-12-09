@@ -77,6 +77,21 @@ server.getSubscriptions= async (token) =>{
     .catch((error) => handleError(error));
 };
 
+server.saveDeleteRequest= async (content,token) =>{
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/user/deleteRequest/`,
+        data : content
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
 
 server.updateUser = async(data,token)=>{
     const options ={

@@ -15,9 +15,14 @@ public class DeleteRequest {
 
    @OneToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "reg_user_id")
-   private Client client;
+   private RegisteredUser user;
 
    public DeleteRequest() { }
+
+   public DeleteRequest(RegisteredUser user,String content) {
+      this.content = content;
+      this.user = user;
+   }
 
    public Integer getId() {
       return id;
@@ -35,11 +40,11 @@ public class DeleteRequest {
       this.content = content;
    }
 
-   public Client getClient() {
-      return client;
+   public RegisteredUser getRegisteredUser() {
+      return user;
    }
 
-   public void setClient(Client client) {
-      this.client = client;
+   public void setRegisteredUser(RegisteredUser user) {
+      this.user = user;
    }
 }

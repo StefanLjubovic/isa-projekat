@@ -9,6 +9,7 @@
       <div class="form-group">
        <input type="password" class="form-control input" placeholder="Password *" v-model="password"/>
       </div>
+      <p class="text-light mt-2" v-if="error">Couldnt log user bad credentials!</p>
       <div class="form-group mt-4 button-div">
         <button type="button" class="btn log-btn p-2" @click="Login">Log in</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
@@ -24,7 +25,8 @@ export default {
   data(){
     return{
       email : '',
-      password: ''
+      password: '',
+      error : false
     }
   },
   computed:{
@@ -34,13 +36,17 @@ export default {
   },
   methods:{
     ...mapActions(['fetchToken']),
-    Login(){
-      this.$emit('close-modal')
+    async Login(){
       const loginRequest = {
         'email' : this.email,
         'password': this.password
       }
-      this.fetchToken(loginRequest)
+      await this.fetchToken(loginRequest)
+      .catch(()=>{
+         this.error=true
+      })
+      if(this.$store.getters.getRole != '')this.$emit('close-modal')
+
       /*.then(() => {
         if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR') {
           this.$router.push({ name: 'Homepage', params: {data: 0 } })
@@ -72,7 +78,6 @@ export default {
  overflow-x: hidden;
 }
 
-
 .modal-overlay {
  position: absolute;
  top: 0;
@@ -85,8 +90,8 @@ export default {
 .modal-inner{
   flex-direction: column;
   justify-content: space-around;
-  width: 400px;
-  height: 300px;
+  width: 40vh;
+  height: 35vh;
    background-color: #8495e8;
   z-index: 1000;
    position: fixed;
