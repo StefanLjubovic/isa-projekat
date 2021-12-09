@@ -19,6 +19,8 @@ public class CottageService {
     private IRoomRepository roomRepostirory;
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IPricelistItemRepository pricelistItemRepostory;
     private Base64ToImage imageConverter = new Base64ToImage();
 
     public CottageService() {}
@@ -28,8 +30,9 @@ public class CottageService {
     public Cottage findById(int id) throws IOException {
         Cottage cottage = cottageRepository.findById(id).get();
         cottage.setImages(loadImages(cottage.getImages()));
-        cottage.setUnavailablePeriods(new HashSet<UnavailablePeriod>());
-        cottage.setPricelistItems(new HashSet<PricelistItem>());
+        cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
+        cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
+        cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
         cottage.setSales(new HashSet<Sale>());
         return cottage;
     }
@@ -50,7 +53,28 @@ public class CottageService {
             room.setCottage(newCottage);
             this.roomRepostirory.save(room);
         }
+
+        Set<PricelistItem> items = cottage.getPricelistItems();
+        for(PricelistItem item: items){
+            item.setRentingEntity(newCottage);
+            this.pricelistItemRepostory.save(item);
+        }
         return newCottage;
+    }
+
+    public Set<Room> getAllRoomsForCottage(String cottageName) {
+        Cottage cottage = this.cottageRepository.fetchRoomsByName(cottageName);
+        return cottage.getRooms();
+    }
+
+    public Set<UnavailablePeriod> getAllUnavailablePeriodsForCottage(String cottageName) {
+        Cottage cottage = this.cottageRepository.fetchUnavailablePeriodsByName(cottageName);
+        return cottage.getUnavailablePeriods();
+    }
+
+    public Set<PricelistItem> getAllPricelistItemsForCottage(String cottageName) {
+        Cottage cottage = this.cottageRepository.fetchPricelistItemsByName(cottageName);
+        return cottage.getPricelistItems();
     }
 
     private RentingEntity createEntityFromCottage(Cottage cottage) throws IOException {
