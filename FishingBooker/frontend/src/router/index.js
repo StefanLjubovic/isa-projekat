@@ -6,6 +6,7 @@ import AdvertiserRegistation from "../views/AdvertiserRegistration.vue"
 import AdventureDetails from "../views/AdventureDetails.vue"
 import CottageDetails from "../views/CottageDetails.vue"
 import AddNewCottage from "../views/AddNewCottage.vue"
+import EditCottage from "../views/EditCottage.vue"
 import AddNewAdventure from "../views/AddNewAdventure.vue"
 
 const routes = [
@@ -16,6 +17,7 @@ const routes = [
   { path: "/client-registration", name: "ClientRegistration", component: ClientRegistration },
   { path: "/advertiser-registration", name: "AdvertiserRegistration", component: AdvertiserRegistation},
   { path: "/addNewCottage", name: "AddNewCottage", component: AddNewCottage},
+  { path: "/editCottage/:id", name:"EditCotage", component: EditCottage},
   { path: "/addNewAdventure", name: "AddNewAdventure", component: AddNewAdventure}
 ];
 

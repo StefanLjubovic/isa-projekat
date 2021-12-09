@@ -63,8 +63,9 @@
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
-    <AddNewCottage v-if="state == 26" />
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @edit-cottage="editCottage()"/>
+    <AddNewCottage  v-if="state == 26" />
+    <EditCottage    v-if="state == 27"/>
   </div>
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
@@ -107,6 +108,7 @@ import Complaints from "@/components/admin/Complaints.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
+import EditCottage from "@/views/EditCottage.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
@@ -133,6 +135,7 @@ export default {
         CottageReservations,
         CottageDetails,
         AddNewCottage,
+        EditCottage,
         MyProfile,
         AdminAnalytics,
         OwnerAnalytics,
@@ -256,6 +259,9 @@ export default {
         this.showCancelation=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
+      },
+      editCottage: function(){
+        this.state = 27;
       },
       addNewCottage: function() {
         this.state = 26;

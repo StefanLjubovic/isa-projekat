@@ -34,6 +34,7 @@
 
     export default {
         props:['entityId'],
+
         components: {
             AdventureCaption,
             ImageGallery,
@@ -79,8 +80,13 @@
                     console.log(this.cottage);
                 })
             },
+
             createSale: function() {},
-            editEntity: function() {},
+            editEntity: function() {
+                this.state = 27;
+                console.log(this.state)
+                this.$.emit('edit-cottage')
+            },
             makeReservation: function() {},  
         }
     }
