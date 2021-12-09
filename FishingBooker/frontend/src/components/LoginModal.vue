@@ -1,34 +1,61 @@
 <template>
   <div id="app">
-  <div class="modal-overlay" @click="$emit('close-modal')"></div>
-   <div class="modal-inner">
-     <h1>Log In</h1>
-      <div class="form-group input mb-4 mt-2">
-       <input type="text" class="form-control input" placeholder="Email *" v-model="email" />
+    <div class="modal-overlay"></div>
+    <div class="modal-inner">
+      <div class="login" v-if="!this.changePassword">
+        <h1>Log In</h1>
+        <div class="form-group input mb-4 mt-2">
+            <input type="text" class="form-control input" placeholder="Email *" v-model="email" />
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control input" placeholder="Password *" v-model="password"/>
+        </div>
+        <p class="error-text" v-if="error">Invalid email or password!</p>
+        <div class="form-group button-div confirm-buttons">
+          <button type="button" class="btn log-btn p-2" @click="Login">Log in</button>
+          <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
+        </div>
       </div>
-      <div class="form-group">
-       <input type="password" class="form-control input" placeholder="Password *" v-model="password"/>
+
+      <div class="passwordChange" v-else>
+        <h1>Change Password</h1>
+        <div class="form-group input mb-4 mt-2">
+            <input type="password" class="form-control input" placeholder="New password *" v-model="v$.newPassword.password1.$model" />
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control input" placeholder="Repeat password *" v-model="v$.newPassword.password2.$model"/>
+        </div>
+        <p class="error-text" v-if="v$.newPassword.password1.$error">Password should have at least 6 characters!</p>
+        <p class="error-text" v-else-if="v$.newPassword.password2.$error">Passwords do not match!</p>
+        <div class="form-group button-div confirm-buttons">
+          <button type="button" class="btn log-btn change-btn p-2" :disabled="v$.newPassword.$invalid" @click="submitChangePassword()">Change</button>
+        </div>
       </div>
-      <p class="error-text" v-if="error">Invalid email or password!</p>
-      <div class="form-group button-div confirm-buttons">
-        <button type="button" class="btn log-btn p-2" @click="Login">Log in</button>
-       <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
-      </div>
-</div>
-</div>
+      
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import {mapActions} from 'vuex';
 import server from '../server';
+import useValidate from '@vuelidate/core'
+import {required, sameAs, minLength} from '@vuelidate/validators'
+
 export default {
   props: ['showModal'],
   data(){
     return{
       email : '',
       password: '',
-      error : false
+      error : false,
+      errorPassword: false,
+      changePassword: false,
+      newPassword: {
+        password1: '',
+        password2: ''
+      }
     }
   },
   computed:{
@@ -36,6 +63,17 @@ export default {
           return this.$store.getters.getRole;
       }
   },
+  setup() {
+        return { v$: useValidate() }
+    },
+    validations() {
+        return {
+          newPassword: {
+            password1: { required, minLength: minLength(6)},
+            password2: { required, sameAs:sameAs(this.newPassword.password1)}
+          }
+        }
+    },
   methods:{
     ...mapActions(['fetchToken']),
     async Login(){
@@ -47,34 +85,52 @@ export default {
       await this.fetchToken(loginRequest)
       .then(() => {
         if(this.userRole == 'ROLE_ADMIN') {
-          console.log('evoo me')
-          axios.get(`${server.baseUrl}/user/passwordChanged`, {
-            headers: {
-              'Authorization' : `Bearer ${this.$store.getters.getToken}`
-            }
-          })
+          axios.get(`${server.baseUrl}/user/passwordChanged`, { headers: { 'Authorization' : `Bearer ${this.$store.getters.getToken}` }})
           .then((response) => {
             if(!response.data) {
-              console.log('evoo me2')
-              this.$swal('Promenite lozinku!')
-              return;
+              this.changePassword = true;
+            } else {
+              this.$emit('close-modal')
             }
           })
+        } else {
+          if(this.userRole == 'ROLE_COTTAGE_OWNER') {
+            this.$router.push({ name: 'Homepage', params: {data: 2 } });
+          } else if (this.userRole == 'ROLE_SHIP_OWNER') {
+            this.$router.push({ name: 'Homepage', params: {data: 1 } });
+          } else if (this.userRole == 'ROLE_INSTRUCTOR') {
+            this.$router.push({ name: 'Homepage', params: {data: 0 } });
+          }
+          this.$emit('close-modal')
         }
-
-        if(this.userRole == 'ROLE_COTTAGE_OWNER') {
-          this.$router.push({ name: 'Homepage', params: {data: 2 } });
-        } else if (this.userRole == 'ROLE_SHIP_OWNER') {
-          this.$router.push({ name: 'Homepage', params: {data: 1 } });
-        } else if (this.userRole == 'ROLE_INSTRUCTOR') {
-          this.$router.push({ name: 'Homepage', params: {data: 0 } });
-        }
-        this.$emit('close-modal')
       })
       .catch(()=>{
          this.error=true
+      })  
+    },
+    async submitChangePassword() {
+      await server.changePassword(this.newPassword.password1, this.$store.getters.getToken)
+      .then((response) => {
+        if(response.success){
+          this.$emit('close-modal')
+          this.changePassword = false;
+
+          this.$swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Password changed!',
+            showConfirmButton: false,
+            timer: 1500
+          })
+        }else{
+          this.$swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+            confirmButtonColor: '#2c3e50'
+          })
+        }
       })
-      
     }
   }
 }
@@ -118,6 +174,7 @@ h1 {
  bottom: 0;
  z-index: 98;
  background-color: rgba(0, 0, 0, 0.3);
+
 }
 .modal-inner{
   flex-direction: column;
@@ -148,6 +205,10 @@ h1 {
   color: #2c3e50;
   width: 30%;
   margin-right: 50px;
+}
+
+.change-btn {
+  margin-left: -15px;
 }
 .input{
   height: 50px;

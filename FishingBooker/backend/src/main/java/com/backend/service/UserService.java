@@ -126,7 +126,14 @@ public class UserService {
     public void updatePasswod(String email, String password) {
         RegisteredUser user=userRepository.findByEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
+
+        if(user.getRole().getName().equals("ROLE_ADMIN")) {
+            Admin admin = (Admin) user;
+            admin.setInitialPasswordChanged(true);
+            userRepository.save(admin);
+        } else {
+            userRepository.save(user);
+        }
     }
 
     public Boolean hasAdminChangedInitialPassword(String email) {
