@@ -31,8 +31,10 @@ INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, de
 VALUES (nextval('entity_seq_gen'), 4.8, 15, 'Prelepa vikendica uz pogled na jezero', 'Marijina vikendica', 2);
 INSERT INTO cottage(entity_id, reg_user_id)
 VALUES (1, 3);
-INSERT INTO room(room_id, bed_number, entity_id)
-VALUES (nextval('room_room_id_seq'), 2, 1), (nextval('room_room_id_seq'), 3, 1);
+INSERT INTO room(room_id, bed_number)
+VALUES (nextval('room_room_id_seq'), 2), (nextval('room_room_id_seq'), 3);
+INSERT INTO cottage_rooms(cottage_entity_id, rooms_room_id)
+VALUES (1, 1), (1, 2);
 INSERT INTO renting_entity_allowed_behavior(entity_id, allowed_behaviour)
 VALUES (1, 'Bringing pets'), (1, 'Music');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)

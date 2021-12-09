@@ -167,15 +167,19 @@ export default ({
             await Server.updateUser(dto,this.$store.getters.getToken)
             .then(resp=> {
                 if(resp.success){
-                    this.$swal.fire(
-                        'Success',
-                        'Profile updates successfully.',
-                        'success')
+                    this.$swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Profile updated successfully!',
+                        confirmButtonColor: '#2c3e50'
+                    })
                 }else{
-                    this.$swal.fire(
-                        'Oops...',
-                        'Something went wrong!',
-                        'error')
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong.',
+                        confirmButtonColor: '#2c3e50'
+                    })
                 }
             })
         },
@@ -216,15 +220,19 @@ export default ({
               await Server.changePassword(this.password.password,this.$store.getters.getToken)
             .then(resp=> {
                 if(resp.success){
-                    this.$swal.fire(
-                        'Success',
-                        'Profile updates successfully.',
-                        'success')
+                    this.$swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Password updated successfully!',
+                        confirmButtonColor: '#2c3e50'
+                    })
                 }else{
-                    this.$swal.fire(
-                        'Oops...',
-                        'Something went wrong!',
-                        'error')
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong.',
+                        confirmButtonColor: '#2c3e50'
+                    })
                 }
              this.userBackup = {...this.user};
             this.editMode = !this.editMode;

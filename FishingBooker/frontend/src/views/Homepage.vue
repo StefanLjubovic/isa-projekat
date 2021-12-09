@@ -45,7 +45,7 @@
     <Complaints v-if="state == 10"/>
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
-    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
@@ -63,7 +63,7 @@
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @entity-deleted="changeState"/>
     <AddNewCottage v-if="state == 26" />
   </div>
 

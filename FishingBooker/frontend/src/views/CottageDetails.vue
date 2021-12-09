@@ -45,29 +45,10 @@
         data() {
             return {
                 id: this.entityId,
-                cottage: {
-                    name: '',
-                    address: {
-                        streetName: '',
-                        streetNumber: '',
-                        postalCode: '',
-                        city: '',
-                        country: '',
-                        longitude: undefined,
-                        latitude: undefined
-                    },
-                    description: '',
-                    averageGrade: undefined,
-                    images: [],
-                    allowedBehaviour: [],
-                    unallowedBehaviour: [],
-                    cancellationPercentage: undefined,
-                    pricelistItem: [],
-                    rooms: []
-               }
+                cottage: undefined
             } 
         },
-        mounted() {
+        created() {
             this.fetchData()
         },
         methods: {

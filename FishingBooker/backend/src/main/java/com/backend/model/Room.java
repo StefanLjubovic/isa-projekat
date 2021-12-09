@@ -14,10 +14,6 @@ public class Room {
    @Column(unique=false, nullable=false)
    private int bedNumber;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "entity_id")
-   private Cottage cottage;
-
    public Room() {}
 
    public Integer getId() {
@@ -35,10 +31,6 @@ public class Room {
    public void setBedNumber(int bedNumber) {
       this.bedNumber = bedNumber;
    }
-
-   public Cottage getCottage() { return cottage; }
-
-   public void setCottage(Cottage cottage) { this.cottage = cottage; }
 
    @Override
    public String toString() {
