@@ -76,7 +76,7 @@
                 .get(`${server.baseUrl}/cottage/getOne/` + this.entityId)
                 .then(response => {
                     this.cottage = response.data;
-                    console.log(response.data);
+                    console.log(this.cottage);
                 })
             },
             createSale: function() {},

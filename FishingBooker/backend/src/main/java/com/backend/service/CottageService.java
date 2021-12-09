@@ -34,7 +34,9 @@ public class CottageService {
     public Cottage findById(int id) throws IOException {
         Cottage cottage = cottageRepository.findById(id).get();
         cottage.setImages(sendImageAsByteArray(cottage.getImages()));
-        System.out.println(cottage.getImages());
+        cottage.setUnavailablePeriods(new HashSet<UnavailablePeriod>());
+        cottage.setPricelistItems(new HashSet<PricelistItem>());
+        cottage.setSales(new HashSet<Sale>());
         return cottage;
     }
 
@@ -80,7 +82,6 @@ public class CottageService {
         for (String s : cottage.getImages()) {
             String basePath = new File("images/").getAbsolutePath();
             String path = basePath + "/cottages/" + cottage.getName() + i + ".jpg";
-            System.out.println(path);
             decoder.Base64DecodeAndSave(s, path);
             String pathDB = "/images/cottages/" + cottage.getName() + i + ".jpg";
             System.out.println(path.length());
