@@ -194,9 +194,7 @@
         },
         methods: {
             submitForm(){
-                this.v$.$validate();
-                const util = require('util')    
-                console.log(util.inspect(this.newCottage, false, null, true))   
+                this.v$.$validate();  
                 
                 this.getCottageOwnerFromLoggedUser();
                 axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
@@ -212,7 +210,7 @@
                 })
                 })
                 .catch(() => {
-                    this.$swal('There is already cottage with this name!');
+                    this.$swal('Internal server error!');
                 })
             },
 
@@ -232,9 +230,7 @@
                 })
             },
 
-            changeAddress(data){
-                //const util = require('util')    
-                //console.log(util.inspect(data.address, false, null, true)) 
+            changeAddress(data){ 
                 this.newCottage.address = data
             },
 
@@ -261,7 +257,8 @@
             },
 
             imageAdded(e) {
-                const file = e.target.files[0];           
+                const file = e.target.files[0];  
+                console.log(file)        
                 this.createBase64Image(file);
                 this.imagesFrontend.push(URL.createObjectURL(file));
             },
@@ -270,6 +267,7 @@
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
+                     console.log(img)  
                     this.newCottage.images.push(img);
                 }
                 reader.readAsDataURL(file);

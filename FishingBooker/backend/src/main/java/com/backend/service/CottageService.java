@@ -31,8 +31,11 @@ public class CottageService {
         return cottageRepository.findAll();
     }
 
-    public Cottage findById(int id) {
-        return cottageRepository.findById(id).get();
+    public Cottage findById(int id) throws IOException {
+        Cottage cottage = cottageRepository.findById(id).get();
+        cottage.setImages(sendImageAsByteArray(cottage.getImages()));
+        System.out.println(cottage.getImages());
+        return cottage;
     }
 
     public Cottage findByName(String name) {
@@ -79,11 +82,21 @@ public class CottageService {
             String path = basePath + "/cottages/" + cottage.getName() + i + ".jpg";
             System.out.println(path);
             decoder.Base64DecodeAndSave(s, path);
-            String pathDB = "/backend/src/main/java/com/backend/" + "/images/cottages/" + cottage.getName() + i + ".jpg";
+            String pathDB = "/images/cottages/" + cottage.getName() + i + ".jpg";
             System.out.println(path.length());
             convertedImages.add(pathDB);
             ++i;
         }
         return convertedImages;
+    }
+
+    private Set<String> sendImageAsByteArray(Set<String> images) throws IOException {
+
+        Set<String> imagesFrontend = new HashSet<String>();
+        for (String image: images) {
+            String imageAsString = decoder.readImagesFromPath(image);
+            imagesFrontend.add(imageAsString);
+        }
+        return  imagesFrontend;
     }
 }

@@ -33,8 +33,7 @@ public class CottageController {
     }
 
     @GetMapping("/getOne/{id}")
-    public Cottage getOne (@PathVariable("id") Integer id){
-        System.out.println(id.toString());
+    public Cottage getOne (@PathVariable("id") Integer id) throws IOException {
         return cottageService.findById(id);
     }
 

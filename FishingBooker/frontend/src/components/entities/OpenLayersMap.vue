@@ -24,7 +24,6 @@ import {toLonLat} from 'ol/proj';
 import {fromLonLat} from 'ol/proj';
 import 'ol/ol.css'
 import useValidate from '@vuelidate/core'
-//import {required} from '@vuelidate/validators' 
 
 export default {
     props:['location'],
@@ -43,18 +42,7 @@ export default {
                 latitude: ''  
             }       
         }
-    },/*
-    validations() {
-            return {
-                address: {
-                    streetName: {required},
-                    streetNumber: {required},
-                    postalcode: {required},
-                    city: {required},
-                    country: {required}
-                },
-            }
-    },*/
+    },
     mounted() {
       var center = fromLonLat([19.41, 44.82]);
 
