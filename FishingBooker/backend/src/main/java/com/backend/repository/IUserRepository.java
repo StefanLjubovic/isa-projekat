@@ -1,5 +1,6 @@
 package com.backend.repository;
 
+import com.backend.dto.RegisteredUserDTO;
 import com.backend.model.Client;
 import com.backend.model.FishingInstructor;
 import com.backend.model.RegisteredUser;
@@ -14,6 +15,9 @@ import java.util.List;
 public interface IUserRepository extends JpaRepository<RegisteredUser, Integer> {
 
     RegisteredUser findByEmail(String email);
+
+    @Query("select new com.backend.dto.RegisteredUserDTO(u) from RegisteredUser u where u.email = ?1")
+    RegisteredUserDTO myProfileInformation(String email);
 
     @Query(value = "select fi from FishingInstructor fi left join fetch fi.unavailablePeriods where fi.email = :email")
     FishingInstructor fetchByEmail(@Param("email") String email);

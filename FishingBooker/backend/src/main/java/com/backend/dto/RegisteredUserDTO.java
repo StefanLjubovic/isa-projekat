@@ -1,6 +1,7 @@
 package com.backend.dto;
 
 import com.backend.model.Address;
+import com.backend.model.RegisteredUser;
 import com.backend.model.Role;
 import com.backend.model.UserStatus;
 
@@ -22,6 +23,19 @@ public class RegisteredUserDTO {
 
     public RegisteredUserDTO() {
     }
+    public RegisteredUserDTO(RegisteredUser user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.status = getStatus();
+        this.enabled = user.isEnabled();
+        this.role = user.getRole();
+        this.lastPasswordResetDate = user.getLastPasswordResetDate();
+        this.address = user.getAddress();
+    }
 
     public RegisteredUserDTO(Integer id, String firstName, String lastName, String phoneNumber, String email, String password, UserStatus status, boolean enabled, Role role, Timestamp lastPasswordResetDate, Address address) {
         this.id = id;
@@ -36,6 +50,8 @@ public class RegisteredUserDTO {
         this.lastPasswordResetDate = lastPasswordResetDate;
         this.address = address;
     }
+
+
 
     public Integer getId() {
         return id;

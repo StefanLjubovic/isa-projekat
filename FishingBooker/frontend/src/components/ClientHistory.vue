@@ -16,8 +16,8 @@
       <td>{{setDateFormat(entity.date)}}</td>
       <td>{{entity.duration}} days</td>
       <td>{{entity.price}}</td>
-      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint')"></i></td>
-      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-revision')"></i></td>
+      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint',entity)"></i></td>
+      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-revision',entity)"></i></td>
     </tr>
   </tbody>
 </table>

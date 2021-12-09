@@ -2,7 +2,7 @@
   <div id="app">
   <div class="modal-overlay" @click="$emit('close-cancelation')"></div>
    <div class="modal-inner">
-     <h1>Are you sure you want to cancel reservation?</h1>
+     <h1>{{title}}</h1>
       <div class="form-group mt-4 button-div">
         <button type="button" class="btn log-btn p-2">Yes</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-cancelation')">No</button>
@@ -13,6 +13,7 @@
 
 <script>
 export default {
+  props: ['title'],
   data(){
       return{
           rating: ''

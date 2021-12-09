@@ -202,6 +202,7 @@ export default {
         this.entitiesForDisplay=this.entities.filter(
           (entity) => 
                     entity.name.toLowerCase().includes(name.toLowerCase()) &&
+                    entity.address.streetName.toLowerCase().concat(' ').concat( entity.address.streetNumber).includes(address.toLowerCase()) &&
                     entity.averageGrade
                                       .toString() 
                                       .toLowerCase()

@@ -26,11 +26,11 @@
 
                             <input type="text" class="form-control" placeholder="Street name" v-model="v$.user.address.streetName.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.address.streetName.$error">{{v$.user.address.streetName.$errors[0].$message}} </div>
-                        </div>
-                        <div class="right">
+
                             <input type="text" class="form-control" placeholder="Street number" v-model="v$.user.address.streetNumber.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.address.streetNumber.$error">{{v$.user.address.streetNumber.$errors[0].$message}} </div>
-
+                        </div>
+                        <div class="right">
                             <input type="text" class="form-control" placeholder="Postal code" v-model="v$.user.address.postalCode.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.address.postalCode.$error">{{v$.user.address.postalCode.$errors[0].$message}} </div>
 
@@ -39,13 +39,20 @@
 
                             <input type="text" class="form-control" placeholder="Country" v-model="v$.user.address.country.$model" :disabled="!editMode">
                             <div class="text-danger" v-if="v$.user.address.country.$error">{{v$.user.address.country.$errors[0].$message}} </div>
+
+                             <input type="password" class="form-control" placeholder="Password" v-model="v$.password.password.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.password.password.$error">{{v$.password.password.$errors[0].$message}} </div>
+
+                             <input type="password" class="form-control" placeholder="Confirm password" v-model="v$.password.confirm.$model" :disabled="!editMode">
+                            <div class="text-danger" v-if="v$.password.confirm.$error">{{v$.password.confirm.$errors[0].$message}} </div>
+
                             <div v-if="userRole=='ROLE_CLIENT'" class="mb-4 penalty-div">
                              <h4 class="cancelation-label">Number of penalties: {{getPenealties()}}</h4><i class="fas fa-info-circle fa-2x info" @click="penaltyInfo()"></i>
                             </div>
                             <div class="buttons">
-                                <button class="btn change-password" :disabled="!editMode">Change password</button>
+                                <button class="btn cancel-button" @click.prevent="changePassword()" :disabled="!editMode || v$.password.$invalid">changePassword</button>
                                 <div class="confirm-buttons">
-                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode || v$.user.$invalid">Save</button>
+                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode">Save</button>
                                     <button class="btn cancel-button" @click.prevent="cancelEditing()" :disabled="!editMode">Cancel</button>
                                 </div>
                             </div>
@@ -96,6 +103,10 @@ export default ({
             editMode: false,
             penalty : 1,
             user: {},
+            password : {
+                password : '',
+                confirm : ''
+            },
             userBackup: undefined
         }
     },
@@ -134,8 +145,10 @@ export default ({
                 country: { required, alpha },
                 },
                 phoneNumber: { required, numeric, minLength: minLength(9), maxLength: maxLength(10) },
+            },
+            password : {
                 password: { required, minLength: minLength(6) },
-                confirm: { required, sameAs: sameAs(this.user.password) },
+                confirm: { required, sameAs: sameAs(this.password.password) },
             }
         }
     },
@@ -157,6 +170,11 @@ export default ({
                         'Success',
                         'Profile updates successfully.',
                         'success')
+                }else{
+                    this.$swal.fire(
+                        'Oops...',
+                        'Something went wrong!',
+                        'error')
                 }
             })
         },
@@ -175,6 +193,24 @@ export default ({
         cancelRequest() {
             this.user = {...this.userBackup}
             this.editMode = !this.editMode
+        },
+        async changePassword(){
+              await Server.changePassword(this.password.password,this.$store.getters.getToken)
+            .then(resp=> {
+                if(resp.success){
+                    this.$swal.fire(
+                        'Success',
+                        'Profile updates successfully.',
+                        'success')
+                }else{
+                    this.$swal.fire(
+                        'Oops...',
+                        'Something went wrong!',
+                        'error')
+                }
+             this.userBackup = {...this.user};
+            this.editMode = !this.editMode;
+            })
         },
         getPenealties(){
             if(this.penalty == 0)

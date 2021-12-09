@@ -94,6 +94,21 @@ server.updateUser = async(data,token)=>{
     .catch((error) => handleError(error));
 };
 
+server.changePassword = async(password,token)=>{
+    const options ={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/user/changePassword/` + password,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 
 function handleError(error) {
 	console.log('Error');

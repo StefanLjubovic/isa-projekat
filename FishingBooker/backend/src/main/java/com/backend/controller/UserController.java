@@ -36,14 +36,19 @@ public class UserController {
     }
 
     @GetMapping(value="/getLoggedUser",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RegisteredUser> GetLoggedUser(Principal principal){
-        RegisteredUser user=userService.findByEmail(principal.getName());
+    public ResponseEntity<RegisteredUserDTO> GetLoggedUser(Principal principal){
+        RegisteredUserDTO user=userService.fetchMyProfileInfo(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping(value="/update",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> UpdateUser(@RequestBody UpdateProfileDTO user){
         userService.update(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping (value="/changePassword/{password}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> ChangePassword(@PathVariable String password, Principal principal){
+        userService.updatePasswod(principal.getName(),password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

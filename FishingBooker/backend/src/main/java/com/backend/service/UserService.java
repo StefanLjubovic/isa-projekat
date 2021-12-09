@@ -1,5 +1,6 @@
 package com.backend.service;
 
+import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
 import com.backend.dto.UserRequest;
 import com.backend.model.*;
@@ -108,6 +109,10 @@ public class UserService {
         return this.registrationRequestRepository.save(request);
     }
 
+    public RegisteredUserDTO fetchMyProfileInfo(String email){
+        return userRepository.myProfileInformation(email);
+    }
+
     public void update(UpdateProfileDTO user) {
        RegisteredUser userToUpdate = userRepository.findById(user.getId()).get();
        userToUpdate.setAddress(user.getAddress());
@@ -115,5 +120,11 @@ public class UserService {
        userToUpdate.setLastName(user.getLastname());
        userToUpdate.setPhoneNumber(user.getPhoneNumber());
        userRepository.save(userToUpdate);
+    }
+
+    public void updatePasswod(String email, String password) {
+        RegisteredUser user=userRepository.findByEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
     }
 }
