@@ -35,17 +35,21 @@ export default {
   methods:{
     ...mapActions(['fetchToken']),
     Login(){
-      this.$emit('close-modal')
       const loginRequest = {
         'email' : this.email,
         'password': this.password
       }
       this.fetchToken(loginRequest)
-      /*.then(() => {
-        if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR') {
-          this.$router.push({ name: 'Homepage', params: {data: 0 } })
+      .then(() => {
+        if(this.userRole == 'ROLE_COTTAGE_OWNER') {
+          this.$router.push({ name: 'Homepage', params: {data: 2 } });
+        } else if (this.userRole == 'ROLE_SHIP_OWNER') {
+          this.$router.push({ name: 'Homepage', params: {data: 1 } });
+        } else if (this.userRole == 'ROLE_INSTRUCTOR') {
+          this.$router.push({ name: 'Homepage', params: {data: 0 } });
         }
-      })*/
+        this.$emit('close-modal')
+      })
       
     }
   }

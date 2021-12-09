@@ -53,7 +53,7 @@ public class CottageService {
 
         Set<Room> rooms = cottage.getRooms();
         for (Room room: rooms) {
-            room.setCottage(newCottage);
+            //room.setCottage(newCottage);
             this.roomRepostirory.save(room);
         }
         return newCottage;
