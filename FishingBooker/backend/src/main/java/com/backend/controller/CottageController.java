@@ -23,8 +23,7 @@ public class CottageController {
 
     private ModelMapper modelMapper = new ModelMapper();
 
-    public CottageController() {
-    }
+    public CottageController() {}
 
     @GetMapping
     public List<Cottage> getAllCottages(){

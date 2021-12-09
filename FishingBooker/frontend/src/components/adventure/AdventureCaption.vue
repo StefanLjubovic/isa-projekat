@@ -46,7 +46,7 @@ export default ({
         },
         deleteEntity : function() {
             this.$swal({
-                title: `Are you sure you want to delete '${this.name}'?`,
+                title: `Are you sure you want to delete '${this.adventureName}'?`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
