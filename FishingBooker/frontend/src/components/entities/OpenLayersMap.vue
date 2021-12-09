@@ -26,12 +26,11 @@ import 'ol/ol.css'
 import useValidate from '@vuelidate/core'
 
 export default {
-    props:['location', 'existedAddress'],
+    props:['location'],
     setup() {
             return {v$: useValidate()}
     },
     data() {
-        if(!this.existedAddress)
             return{    
                 address: {     
                     streetName: '',
@@ -43,14 +42,6 @@ export default {
                     latitude: ''  
                 }       
             }
-        else{
-            return{
-                address: this.existedAddress
-            }
-        }
-    },
-    created() {
-        this.address = this.existedAddress
     },
     mounted() {
       var center = fromLonLat([19.41, 44.82]);

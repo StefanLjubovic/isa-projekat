@@ -104,7 +104,7 @@
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap>
+                 <!--OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap-->
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -117,7 +117,7 @@
 <script>
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
-    import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
+    //import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
     import server from '../server/index'
     import axios from 'axios'
 
@@ -131,7 +131,7 @@
 
     export default ({
         components: {
-            OpenLayersMap,
+            //OpenLayersMap,
         },
         props:['cottageId'],
         setup() {
