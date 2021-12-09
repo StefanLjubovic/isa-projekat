@@ -16,7 +16,7 @@
             </div>
             <div class="right-side">
                 <CottageTextDescription :cottage="cottage" /><hr/>
-                <Map :address="cottage.address"/><br/><hr/>
+                <Map :cottage="cottage"/><br/><hr/>
             </div>
         </div>
     </div>
@@ -28,11 +28,12 @@
     import CalendarView from "@/components/CalendarView.vue"
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import CottageTextDescription from "@/components/cottage/CottageTextDescription.vue"
-    import Map from "@/components/Map.vue"
+    import Map from "@/components/entities/ShowLocationOnMap.vue"
     import axios from 'axios'
     import server from '../server/index'
 
     export default {
+        props:['entityId'],
         components: {
             AdventureCaption,
             ImageGallery,
@@ -43,6 +44,7 @@
         },
         data() {
             return {
+                id: this.entityId,
                 cottage: {
                     name: '',
                     address: {
@@ -71,7 +73,7 @@
         methods: {
             fetchData: function(){
                 axios
-                .get(`${server.baseUrl}/cottage/getOne/` + this.$route.params.id)
+                .get(`${server.baseUrl}/cottage/getOne/` + this.entityId)
                 .then(response => {
                     this.cottage = response.data;
                     console.log(response.data);

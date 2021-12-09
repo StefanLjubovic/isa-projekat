@@ -4,13 +4,13 @@
             <div id="map"></div>
         </div><br/>
         <div class="fields">
-            <input id="streetID"        type="text"   class="form-control"  v-model="address.streetName"     placeholder="Street name*">  <br/>
-            <input id="streetNumID"     type="text"   class="form-control"  v-model="address.streetNumber"   placeholder="Street number*"><br/>
-            <input id="postalcodeID"    type="number" class="form-control"  v-model="address.postalcode"     placeholder="Postalcode*">   <br/>
-            <input id="cityID" 	        type="text"   class="form-control"  v-model="address.city"           placeholder="City*">         <br/>
-            <input id="countryID" 	    type="text"   class="form-control"  v-model="address.country"        placeholder="Country*">      <br/>
-            <input id="latitudeID"      type="number" class="form-control"  v-model="address.latitude"       placeholder="Latitude*">     <br/>
-            <input id="longitudeID"     type="number" class="form-control"  v-model="address.longitude"      placeholder="Longitude*">    <br/>
+            <input id="streetID"        type="text"   class="form-control"  v-model="address.streetName"    @change="changeAddress()"  placeholder="Street name*">  <br/>
+            <input id="streetNumID"     type="text"   class="form-control"  v-model="address.streetNumber"  @change="changeAddress()"  placeholder="Street number*"><br/>
+            <input id="postalcodeID"    type="text"   class="form-control"  v-model="address.postalCode"    @change="changeaddress()"  placeholder="Postalcode*">   <br/>
+            <input id="cityID" 	        type="text"   class="form-control"  v-model="address.city"          @change="changeAddress()"  placeholder="City*">         <br/>
+            <input id="countryID" 	    type="text"   class="form-control"  v-model="address.country"       @change="changeAddress()"  placeholder="Country*">      <br/>
+            <input id="latitudeID"      type="number" class="form-control"  v-model="address.latitude"      @change="changeAddress()"  placeholder="Latitude*">     <br/>
+            <input id="longitudeID"     type="number" class="form-control"  v-model="address.longitude"     @change="changeAddress()"  placeholder="Longitude*">    <br/>
         </div>  
     </div>
 </template>
@@ -24,11 +24,9 @@ import {toLonLat} from 'ol/proj';
 import {fromLonLat} from 'ol/proj';
 import 'ol/ol.css'
 import useValidate from '@vuelidate/core'
-//import {required} from '@vuelidate/validators' 
 
 export default {
-    props:['data'],
-    emits: ['change-address'],
+    props:['location'],
     setup() {
             return {v$: useValidate()}
     },
@@ -44,18 +42,7 @@ export default {
                 latitude: ''  
             }       
         }
-    },/*
-    validations() {
-            return {
-                address: {
-                    streetName: {required},
-                    streetNumber: {required},
-                    postalcode: {required},
-                    city: {required},
-                    country: {required}
-                },
-            }
-    },*/
+    },
     mounted() {
       var center = fromLonLat([19.41, 44.82]);
 
@@ -76,8 +63,13 @@ export default {
         mapSearch.on('click', function (evt) {          
             var coord = toLonLat(evt.coordinate);
             reverseGeocode(coord);
-            this.$emit('change-address', this.data.address);
+            this.$emit('change-address', this.address);
       })
+    },
+    methods: {
+        changeAddress(){
+            this.$emit('change-address', this.address)
+        }
     }
 }
     setTimeout(() => { this.map.updateSize(); });

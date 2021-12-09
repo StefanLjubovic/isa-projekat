@@ -2,6 +2,7 @@ package com.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.repository.history.support.RevisionEntityInformation;
 
 import javax.persistence.*;
 import java.util.*;
@@ -29,7 +30,7 @@ public class RentingEntity {
 
    @ElementCollection(fetch = FetchType.EAGER)
    @CollectionTable(name = "renting_entity_images", joinColumns = @JoinColumn(name = "entity_id"))
-   @Column(name = "images")
+   @Column(name = "images", length = 10485760)
    private Set<String> images = new HashSet<String>();
 
    @ElementCollection(fetch = FetchType.EAGER)
@@ -67,6 +68,14 @@ public class RentingEntity {
       this.unallowedBehavior = unallowedBehavior;
    }
 
+   public RentingEntity(Integer id, String name, String description, Address address, double averageGrade) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+      this.address = address;
+      this.averageGrade = averageGrade;
+   }
+
    public RentingEntity(String name, String description, double averageGrade, double cancellationPercentage, Set<String> allowedBehavior, Set<String> unallowedBehavior, Address address) {
       this.name = name;
       this.description = description;
@@ -77,12 +86,27 @@ public class RentingEntity {
       this.address = address;
    }
 
-   public RentingEntity(Integer id, String name, String description, Address address, double averageGrade) {
-      this.id = id;
+   public RentingEntity(String name, String description, double averageGrade, double cancellationPercentage, Set<String> images, Set<String> allowedBehavior, Set<String> unallowedBehavior, Address address) {
       this.name = name;
       this.description = description;
       this.averageGrade = averageGrade;
+      this.cancellationPercentage = cancellationPercentage;
+      this.images = images;
+      this.allowedBehavior = allowedBehavior;
+      this.unallowedBehavior = unallowedBehavior;
       this.address = address;
+   }
+
+   public RentingEntity(RentingEntity entity){
+      this.id = entity.id;
+      this.name = entity.name;
+      this.description = entity.description;
+      this.averageGrade = entity.averageGrade;
+      this.cancellationPercentage = entity.cancellationPercentage;
+      this.allowedBehavior = entity.allowedBehavior;
+      this.unallowedBehavior = entity.unallowedBehavior;
+      this.images = entity.images;
+      this.address = entity.address;
    }
 
    public Address getAddress() {

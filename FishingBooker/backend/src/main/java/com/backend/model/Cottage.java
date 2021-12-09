@@ -29,6 +29,11 @@ public class Cottage extends RentingEntity {
         super(name, description, averageGrade, address, unallowedBehavior);
     }
 
+    public Cottage (RentingEntity rentingEntity, CottageOwner cottageOwner){
+        super(rentingEntity);
+        this.cottageOwner = cottageOwner;
+    }
+
     public Set<Room> getRooms() {
         return rooms;
     }

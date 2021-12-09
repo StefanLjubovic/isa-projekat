@@ -1,5 +1,4 @@
 <template>
-    <NavBar @change-state = "changeState"></NavBar>
     <div id="add-entity-form"> 
         <div class="title"><h1>New Cottage</h1></div> 
         <div class="content">
@@ -104,7 +103,7 @@
                             <img :src="image" />
                         </div>
                 </div>               
-                 <OpenLayersMap @change-address="changeAddress"></OpenLayersMap>
+                 <OpenLayersMap @change-address="changeAddress" :address ="newCottage.address" ></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -115,7 +114,6 @@
 </template>
 
 <script>
-    import NavBar from "@/components/Navbar.vue"
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
@@ -132,11 +130,15 @@
 
     export default ({
         components: {
-            NavBar,
             OpenLayersMap,
         },
         setup() {
             return {v$: useValidate()}
+        },
+        computed:{
+             state(){
+                return this.$store.getters.getState;
+            }
         },
         data() {
             return{
@@ -148,24 +150,24 @@
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
-                        streetName: '',
-                        streetNumber: '',
-                        postalcode: '',
-                        city: '',
-                        country:  '',
-                        longitude: '',
-                        latitude: ''
+                        streetName: "Bulevar Cara Lazara",
+                        streetNumber: "171",
+                        postalCode: "21000",
+                        city: "Novi Sad",
+                        country:  "Serbia",
+                        longitude: 19,
+                        latitude: 45
                     },
                     pricelistItem: [
                         {
                             service:'',
                             price: undefined
-                        },
+                        }
                     ],
                     rooms: [
                         {
                             bedNumber: undefined
-                        },
+                        }
                     ],
                     cottageOwner:{}
                 },
@@ -192,10 +194,9 @@
         },
         methods: {
             submitForm(){
-                this.v$.$validate();
-                const util = require('util')    
-                console.log(util.inspect(this.newCottage, false, null, true))   
+                this.v$.$validate();  
                 
+                this.getCottageOwnerFromLoggedUser();
                 axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
                 .then((response) => {
                     this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
@@ -209,14 +210,28 @@
                 })
                 })
                 .catch(() => {
-                    this.$swal('There is already cottage with this name!');
+                    this.$swal('Internal server error!');
                 })
             },
 
-            changeAddress(data){
-                const util = require('util')    
-                console.log(util.inspect(data.address, false, null, true)) 
-                this.newCottage.address = data.address
+            getCottageOwnerFromLoggedUser(){
+
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.state}`
+                }
+
+                axios
+                .get(`${server.baseUrl}/user/getLoggedUser/`, {headers: headers})
+                .then(response => {
+                    this.cottageOwner = response.data;
+                    console.log(response.data);
+                })
+            },
+
+            changeAddress(data){ 
+                this.newCottage.address = data
             },
 
             changeRoomsNumber(){
@@ -242,7 +257,8 @@
             },
 
             imageAdded(e) {
-                const file = e.target.files[0];
+                const file = e.target.files[0];  
+                console.log(file)        
                 this.createBase64Image(file);
                 this.imagesFrontend.push(URL.createObjectURL(file));
             },
@@ -251,6 +267,7 @@
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
+                     console.log(img)  
                     this.newCottage.images.push(img);
                 }
                 reader.readAsDataURL(file);
