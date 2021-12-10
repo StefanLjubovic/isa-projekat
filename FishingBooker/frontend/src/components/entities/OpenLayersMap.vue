@@ -31,20 +31,23 @@ export default {
             return {v$: useValidate()}
     },
     data() {
-        return{    
-            address: {     
-                streetName: '',
-                streetNumber: '',
-                postalcode: '',
-                city: '',
-                country: '',
-                longitude: '',
-                latitude: ''  
-            }       
-        }
+            return{    
+                address: {     
+                    streetName: '',
+                    streetNumber: '',
+                    postalcode: '',
+                    city: '',
+                    country: '',
+                    longitude: '',
+                    latitude: ''  
+                }       
+            }
     },
     mounted() {
       var center = fromLonLat([19.41, 44.82]);
+
+        if(this.existedAddress)
+            this.address = this.existedAddress;
 
         var mapSearch = new Map({
         target: 'map',

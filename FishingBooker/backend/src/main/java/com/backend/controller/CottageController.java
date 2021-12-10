@@ -20,11 +20,9 @@ public class CottageController {
 
     @Autowired
     private CottageService cottageService;
-
     private ModelMapper modelMapper = new ModelMapper();
 
-    public CottageController() {
-    }
+    public CottageController() {}
 
     @GetMapping
     public List<Cottage> getAllCottages(){
@@ -38,9 +36,11 @@ public class CottageController {
     }
 
     @PostMapping("/add")
+    //@PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<String> addNewCottage(@RequestBody CottageDTO cottageDTO) throws IOException {
 
         Cottage cottage = modelMapper.map(cottageDTO, Cottage.class);
+        cottage.setPricelistItems(cottageDTO.getPricelistItem());
         if(cottageService.findByName(cottage.getName()) != null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage already exists!");
 
