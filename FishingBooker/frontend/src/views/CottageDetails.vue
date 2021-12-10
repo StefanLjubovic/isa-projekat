@@ -1,7 +1,7 @@
 <template>
     <div id="profile">
         <AdventureCaption :adventureName="cottage.name" :adventureId="cottage.id" :entityName="'cottage'"
-            @create-sale="createSale()" @edit-entity="editEntity()" @entity-deleted="this.$emit('entity-deleted', 2)"/>
+            @create-sale="createSale()" @edit-entity="this.$emit('edit-cottage', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
         <div class="content">
             <div class="left-side">
                 <ImageGallery :images="cottage.images"  description="Photos of our cottage"/>
@@ -34,6 +34,7 @@
 
     export default {
         props:['entityId'],
+        emits:['edit-cottage'],
         components: {
             AdventureCaption,
             ImageGallery,
@@ -45,7 +46,7 @@
         data() {
             return {
                 id: this.entityId,
-                           cottage: {
+                 cottage: {
                     name: '',
                     address: {
                         streetName: '',

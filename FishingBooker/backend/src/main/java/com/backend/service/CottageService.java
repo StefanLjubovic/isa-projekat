@@ -50,10 +50,8 @@ public class CottageService {
         this.cottageRepository.save(newCottage);
 
         Set<Room> rooms = cottage.getRooms();
-        for (Room room: rooms) {
-            //room.setCottage(newCottage);
+        for (Room room: rooms)
             this.roomRepostirory.save(room);
-        }
 
         Set<PricelistItem> items = cottage.getPricelistItems();
         for(PricelistItem item: items){
@@ -61,6 +59,23 @@ public class CottageService {
             this.pricelistItemRepostory.save(item);
         }
         return newCottage;
+    }
+
+    public Cottage update (Cottage cottage){
+        Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
+        cottageToUpdate.setName(cottage.getName());
+        cottageToUpdate.setDescription(cottage.getDescription());
+        cottageToUpdate.setCancellationPercentage(cottage.getCancellationPercentage());
+        cottageToUpdate.setRooms(cottage.getRooms());
+        cottageToUpdate.setAllowedBehavior(cottage.getAllowedBehavior());
+        cottageToUpdate.setUnallowedBehavior(cottage.getUnallowedBehavior());
+        cottageToUpdate.setPricelistItems(cottage.getPricelistItems());
+        for (PricelistItem item : cottageToUpdate.getPricelistItems())
+            item.setRentingEntity(cottage);
+
+        cottageToUpdate.setAddress(cottage.getAddress());
+
+        return this.cottageRepository.save(cottageToUpdate);
     }
 
     public Set<Room> getAllRoomsForCottage(String cottageName) {

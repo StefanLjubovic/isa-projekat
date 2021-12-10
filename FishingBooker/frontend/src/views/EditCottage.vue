@@ -1,22 +1,24 @@
 <template>
         <div id="add-entity-form"> 
-        <div class="title"><h1>Edit '{{cottage.name}}' </h1></div> 
+        <div class="title"><h1>Edit '{{backupCottage.name}}' </h1></div> 
         <div class="content">
             <div class="left-side">
                 <input type="text" class="form-control" placeholder="Name*" v-model="cottage.name"/>
                 <!-- Error Message -->
                 <div class="input-errors" v-for="(error, index) of v$.cottage.name.$errors" :key="index">
                     <div class="text-danger">{{ error.$message }}</div>
-                </div>
+                </div><br/>
 
+                <h6> Description: </h6>
                 <textarea class="reason-area" placeholder="Description*" v-model="cottage.description" rows="4" cols="65"></textarea>
                 <!-- Error Message -->
                 <div class="input-errors" v-for="(error, index) of v$.cottage.description.$errors" :key="index">
                      <div class="text-danger">{{ error.$message }}</div>
                 </div>
-                <br/> <br/><hr/>
+                <br/><hr/>
 
                 <!-- Number of rooms and beds per room -->
+                <h6> Rooms: </h6>
                 <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum" @input="changeRoomsNumber()"/><br/>
                 <ol v-if="roomsNum">
                     <li v-for="room in cottage.rooms" :key="room.id">
@@ -72,22 +74,6 @@
                     </li>
                 </ul><hr/>
                 <br/>
-                <!--Additional services -->
-                <div class="multiple-inputs">
-                    <h6> Additional services: </h6>
-                    <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServicesNum -= 1"></i></span>
-                    </div>
-                </div>
-                <ul v-if="additionalServicesNum">
-                    <li v-for="ads in additionalServicesNum" :key="ads">
-                        <div class="pricelistItem">
-                            <input type="text"   class="form-control" placeholder="Service*"/>
-                            <input type="number" class="form-control" placeholder="Price*"/>
-                        </div>
-                    </li>
-                </ul><hr/><br/>
                  <!--Cancellation percentage -->
                  <label class="percentage-label">Percentage of price we keep in case of reservation cancellation:</label>
                 <input type="number" class="form-control" v-model="cottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
@@ -103,7 +89,18 @@
                         <div v-for="image in imagesFrontend" :key="image">
                             <img :src="image" />
                         </div>
-                </div>               
+                </div>   
+                <!-- Address -->
+                 <div class="fields">
+                     <h6> Address: </h6>
+                    <input id="streetID"        type="text"   class="form-control"  v-model="cottage.address.streetName"     placeholder="Street name*">  <br/>
+                    <input id="streetNumID"     type="text"   class="form-control"  v-model="cottage.address.streetNumber"   placeholder="Street number*"><br/>
+                    <input id="postalcodeID"    type="text"   class="form-control"  v-model="cottage.address.postalCode"     placeholder="Postalcode*">   <br/>
+                    <input id="cityID" 	        type="text"   class="form-control"  v-model="cottage.address.city"           placeholder="City*">         <br/>
+                    <input id="countryID" 	    type="text"   class="form-control"  v-model="cottage.address.country"        placeholder="Country*">      <br/>
+                    <input id="latitudeID"      type="number" class="form-control"  v-model="cottage.address.latitude"       placeholder="Latitude*">     <br/>
+                    <input id="longitudeID"     type="number" class="form-control"  v-model="cottage.address.longitude"      placeholder="Longitude*">    <br/>
+                </div>              
                  <!--OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap-->
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
@@ -140,14 +137,10 @@
         computed:{
              state(){
                 return this.$store.getters.getState;
-            }
-
-        },
-
-        watch: {
-            address : function () {
-                this.initAddress();
-            }
+            },
+             token(){
+                 return this.$store.getters.getToken;
+             }
         },
 
         created(){
@@ -160,7 +153,6 @@
                     name: '',
                     description: '',
                     cancellationPercentage: undefined,
-                    images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
@@ -175,16 +167,17 @@
                     pricelistItems: [
                         {
                             service:'',
-                            price: undefined
+                            price: undefined,
+                            rentingEntity: {}
                         }
                     ],
                     rooms: [
                         {
                             bedNumber: undefined
                         }
-                    ],
-                    cottageOwner:{}
+                    ]
                 },
+                backupCottage: {},
                 roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
@@ -208,7 +201,40 @@
         methods: {
             submitForm(){
                 this.v$.$validate();  
-                              
+
+                const editedCottage = {
+                    id: this.cottage.id,
+                    name: this.cottage.name,
+                    description: this.cottage.description,
+                    cancellationPercentage: this.cottage.cancellationPercentage,
+                    allowedBehavior: this.cottage.allowedBehavior,
+                    unallowedBehavior: this.cottage.unallowedBehavior,
+                    address: this.cottage.address,
+                    pricelistItems: this.cottage.pricelistItems,
+                    rooms: this.cottage.rooms                 
+                }
+
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+
+                console.log(JSON.stringify(editedCottage))
+                
+                axios.put(`${server.baseUrl}/cottage/update/`, editedCottage, {headers: headers})
+                .then((response) => {
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
+                .catch(() => {
+                  this.$swal('Internal server error!');
+                })
+                 
             },
 
             getData() {
@@ -216,25 +242,12 @@
                 .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
                 .then(response => {
                     this.cottage = response.data;
-                    //this.roomsNum = this.cottage.rooms.length;
                     this.allowedBehaviorNum = this.cottage.allowedBehavior.length;
                     this.unallowedBehaviorNum = this.cottage.unallowedBehavior.length;
                     this.pricelistItemNum = this.cottage.pricelistItems.length;
-                    console.log(this.cottage);
+                    this.roomsNum = this.cottage.rooms.length;
+                    this.backupCottage = {...this.cottage}
                 })
-            },
-
-            initAddress(){
-                 axios
-                .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
-                .then(response => {
-                    this.cottage.address = response.data.address;
-                })
-            },
-
-            changeAddress(data){
-                if(data)
-                    this.cottage.address = data
             },
 
             changeRoomsNumber(){
@@ -248,7 +261,7 @@
 
             addPricelistItem() {
                 this.pricelistItemsNum += 1;
-                this.cottage.pricelistItem.push({
+                this.cottage.pricelistItems.push({
                     service: '',
                     price: undefined
                 })
@@ -256,7 +269,7 @@
 
             removePricelistItem(){
                 this.pricelistItemsNum -= 1;
-                this.cottage.pricelistItem.pop()
+                this.cottage.pricelistItems.pop()
             },
         },
     })
@@ -271,6 +284,10 @@
     h1{
         margin-top: 10px;
         margin-left: 10px;
+    }
+
+    h6{
+        text-align: left;
     }
 
     #add-entity-form{
@@ -319,7 +336,7 @@
       width: 90%;
       align-self: left;
       margin-right: 30%;
-      margin-top: 25px;
+      margin-top: 15px;
       background-color: #ffffff;
       border-width: 0.5px solid rgb(248, 244, 244) ;
       font-size: 16px;

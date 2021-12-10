@@ -63,8 +63,8 @@
                         <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="newCottage.pricelistItem">
-                    <li v-for="item in newCottage.pricelistItem" :key="item.id">
+                <ul v-if="newCottage.pricelistItems">
+                    <li v-for="item in newCottage.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
@@ -72,22 +72,6 @@
                     </li>
                 </ul><hr/>
                 <br/>
-                <!--Additional services -->
-                <div class="multiple-inputs">
-                    <h6> Additional services: </h6>
-                    <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServicesNum -= 1"></i></span>
-                    </div>
-                </div>
-                <ul v-if="additionalServicesNum">
-                    <li v-for="ads in additionalServicesNum" :key="ads">
-                        <div class="pricelistItem">
-                            <input type="text"   class="form-control" placeholder="Service*"/>
-                            <input type="number" class="form-control" placeholder="Price*"/>
-                        </div>
-                    </li>
-                </ul><hr/><br/>
                  <!--Cancellation percentage -->
                 <input type="number" class="form-control" v-model="newCottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
@@ -158,7 +142,7 @@
                         longitude: 19,
                         latitude: 45
                     },
-                    pricelistItem: [
+                    pricelistItems: [
                         {
                             service:'',
                             price: undefined
@@ -174,8 +158,6 @@
                 roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
-                pricelistItemsNum: 1,
-                additionalServicesNum: 1,
                 imagesFrontend: []
             }
         },
@@ -201,7 +183,7 @@
                 .then((response) => {
                     this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
                     address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
-                    pricelistItem: [ { service:'', price: null }, ], rooms: [ { bedNumber: undefined },], cottageOwner:{}};
+                    pricelistItems: [ { service:'', price: null }, ], rooms: [ { bedNumber: undefined },], cottageOwner:{}};
                     this.$swal({
                         icon: 'success',
                         title: response.data,
@@ -226,7 +208,6 @@
                 .get(`${server.baseUrl}/user/getLoggedUser/`, {headers: headers})
                 .then(response => {
                     this.cottageOwner = response.data;
-                    console.log(response.data);
                 })
             },
 
@@ -244,16 +225,14 @@
             },
 
             addPricelistItem() {
-                this.pricelistItem += 1;
-                this.newCottage.pricelistItem.push({
+                this.newCottage.pricelistItems.push({
                     service: '',
                     price: undefined
                 })
             },
 
             removePricelistItem(){
-                this.pricelistItem -= 1;
-                this.newCottage.pricelistItem.pop()
+                this.newCottage.pricelistItems.pop()
             },
 
             imageAdded(e) {
