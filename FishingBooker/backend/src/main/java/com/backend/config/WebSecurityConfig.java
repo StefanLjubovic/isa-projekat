@@ -67,12 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()		// /api/foo
                 .antMatchers("/client/**").permitAll()		// /api/foo
                 .antMatchers("/users/**").permitAll()
-                .antMatchers("/adminAnalytics/**").permitAll()
-                .antMatchers("/regRequest/**").permitAll()
                 .antMatchers("/entity/**").permitAll()
-                .antMatchers("/instructor/**").permitAll()
                 .antMatchers("/cottage/**").permitAll()
                 .antMatchers("/adventure/{id}").permitAll()
+                .antMatchers("/instructor/unavailablePeriods/{id}").permitAll()
+                .antMatchers("/entity/{state}").permitAll()
                 .anyRequest().authenticated().and()
 
 

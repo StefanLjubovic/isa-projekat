@@ -78,8 +78,19 @@ export default ({
             reservations: []
         }
     },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
+        }
+    },
     mounted() {
-        axios.get(`${server.baseUrl}/adminAnalytics/percentage`)
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+
+        axios.get(`${server.baseUrl}/adminAnalytics/percentage`, {headers: headers})
         .then((response) => {
             this.moneyPercentage = response.data;
         })
@@ -87,7 +98,13 @@ export default ({
     },
     methods: {
         saveMoneyPercentage: function() {
-            axios.put(`${server.baseUrl}/adminAnalytics/percentage/${this.moneyPercentage}`)
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.put(`${server.baseUrl}/adminAnalytics/percentage/${this.moneyPercentage}`, {headers: headers})
             .then(() => {
                 this.editMode = false;
             })

@@ -32,7 +32,6 @@ public class EntityController {
 
     private Base64ToImage base64ToImage = new Base64ToImage();
 
-    //@PreAuthorize("hasRole('CLIENT')")
     @GetMapping(value="{state}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<EntityDTO>> getAllEntities(@PathVariable int state) throws IOException {
         Collection<? extends RentingEntity> entities= entityService.GetAllEntities(state);
@@ -40,6 +39,7 @@ public class EntityController {
         Collection<EntityDTO> dto = getEntityDTOS(entities);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
     //@PreAuthorize("hasRole('CLIENT')")
     @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<EntityDTO>> getSubscriptions(Principal principal) throws IOException {
@@ -70,14 +70,14 @@ public class EntityController {
     }
 
     @DeleteMapping ("/delete/{id}")
-    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
     public ResponseEntity<?> deleteEntityById(@PathVariable("id") Integer id) {
         entityService.deleteEntity(id);
         return new ResponseEntity<>("Entity deleted!", HttpStatus.OK);
     }
 
     @PostMapping("/sale/{id}")
-    //@PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
     public ResponseEntity<List<SaleDTO>> createSaleForEntity(@RequestBody Sale sale, @PathVariable("id") Integer entityId) {
         Set<Sale> sales = entityService.createSaleForEntity(sale, entityId);
 
