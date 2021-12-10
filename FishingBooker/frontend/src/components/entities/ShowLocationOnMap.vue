@@ -2,7 +2,6 @@
     <div class="content">
         <p>{{ cottage.address.streetName }} {{ cottage.address.streetNumber }}, {{ cottage.address.postalCode }}</p>
         <p>{{ cottage.address.city }}, {{ cottage.address.country }}</p>
-        <p id="coordinates">{{cottage.address.longitude}}, {{cottage.address.latitude}}</p>
         <br/>
         <div class="map-style">
             <div id="map"></div>
@@ -115,7 +114,7 @@ export default {
     }
 
     .map-style{ 
-        width: 400px;
+        width: 320px;
         height: 400px;
     }
 

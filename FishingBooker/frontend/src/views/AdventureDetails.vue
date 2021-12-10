@@ -67,7 +67,7 @@
             </div>
             <div class="right">
                 <AdventureTextDescription :adventure="adventure"/><hr/>
-                <Map :address="adventure.address"/><br/><hr/>
+                <Map :cottage="adventure"/><br/><hr/>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@ import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
 import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
 import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue"
 import Sales from "@/components/adventure/Sales.vue"
-import Map from "@/components/Map.vue"
+import Map from "@/components/entities/ShowLocationOnMap.vue"
 import ImageGallery from "@/components/ImageGallery.vue"
 import CalendarView from "@/components/CalendarView.vue"
 import PricelistTable from "@/components/entities/PricelistTable.vue"

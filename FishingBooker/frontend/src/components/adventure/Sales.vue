@@ -1,5 +1,5 @@
 <template>
-    <div class="sales-placeholder">
+    <div class="sales-placeholder" v-if="sales.length != 0">
         <div v-for="sale in sales" :key="sale.id" class="sale-for">
             <div class="btn btn-sale" @click="displaySaleInfo(sale)">
                 <div>
@@ -12,10 +12,9 @@
                     <i class="fas fa-info-circle info-icon"></i>
                 </div>
             </div>
-        </div>
-        
+        </div> 
     </div>
-    <hr/>
+    <hr v-if="sales.length != 0"/>
 </template>
 
 <script>
@@ -66,7 +65,7 @@ export default ({
             }
         },
         dateFormat(value) {
-            return moment(value).format("DD.MM.YYYY.");
+            return moment(value).format("DD.MM.YYYY. HH:mm");
         },
     }
 })
