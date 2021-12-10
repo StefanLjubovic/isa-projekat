@@ -27,25 +27,28 @@ public class UserController {
     DeleteRequestService deleteRequestService;
 
     @GetMapping(value="/getById/{id}")
+    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<RegisteredUserDTO> getById(@PathVariable Integer id){
         RegisteredUser user = userService.GetById(id);
         RegisteredUserDTO userDTO = new RegisteredUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getStatus(), user.isEnabled(), user.getRole(), user.getLastPasswordResetDate(), user.getAddress());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
-
     @GetMapping(value="/getLoggedUser")
+    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<RegisteredUserDTO> getLoggedUser(Principal principal){
         RegisteredUserDTO user=userService.fetchMyProfileInfo(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping(value="/update")
+    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<Void> updateUser(@RequestBody UpdateProfileDTO user){
         userService.update(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping (value="/changePassword/{password}")
+    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<Void> changePassword(@PathVariable String password, Principal principal){
         userService.updatePasswod(principal.getName(), password);
         return new ResponseEntity<>(HttpStatus.OK);

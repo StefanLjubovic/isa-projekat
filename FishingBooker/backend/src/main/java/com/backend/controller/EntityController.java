@@ -26,7 +26,7 @@ public class EntityController {
 
     @Autowired
     EntityService entityService;
-
+    //@PreAuthorize("hasRole('CLIENT')")
     @GetMapping(value="{state}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<EntityDTO>> getAllEntities(@PathVariable int state){
         Collection<? extends RentingEntity> entities= entityService.GetAllEntities(state);
@@ -34,7 +34,7 @@ public class EntityController {
         Collection<EntityDTO> dto = getEntityDTOS(entities);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-
+    //@PreAuthorize("hasRole('CLIENT')")
     @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<EntityDTO>> getSubscriptions(Principal principal){
         Collection<? extends RentingEntity> entities= entityService.GetByUsersSubscriptions(principal.getName());

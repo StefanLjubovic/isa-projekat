@@ -51,19 +51,19 @@ export default {
       entities: [
         {
           name: 'Marijina vikendica',
-          date: new Date(2021, 11, 7) ,
-          duration: 5,
-          price: 50000
-        },
-        {
-          name: 'Marijina vikendica',
           date: new Date(2021, 11, 12) ,
           duration: 5,
           price: 50000
         },
         {
           name: 'Marijina vikendica',
-          date: new Date(2021, 11, 11) ,
+          date: new Date(2021, 11, 15) ,
+          duration: 5,
+          price: 50000
+        },
+        {
+          name: 'Marijina vikendica',
+          date: new Date(2021, 11, 16) ,
           duration: 5,
           price: 50000
         }
