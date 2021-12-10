@@ -43,7 +43,7 @@ public class CottageService {
 
     public Cottage Save(Cottage cottage) throws IOException {
         RentingEntity entity = createEntityFromCottage(cottage);
-        RegisteredUser user = this.userRepository.findByEmail("marijakljestan@gmail.com");
+        RegisteredUser user = this.userRepository.findByEmail(cottage.getCottageOwner().getEmail());
         CottageOwner owner = new CottageOwner(user);
         Cottage newCottage = new Cottage(entity, owner);
         newCottage.setRooms(cottage.getRooms());

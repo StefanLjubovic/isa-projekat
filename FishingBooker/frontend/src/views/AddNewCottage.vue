@@ -122,6 +122,9 @@
         computed:{
              state(){
                 return this.$store.getters.getState;
+            },
+             token(){
+                 return this.$store.getters.getToken;
             }
         },
         data() {
@@ -153,8 +156,11 @@
                             bedNumber: undefined
                         }
                     ],
-                    cottageOwner:{}
+                    cottageOwner:{
+                        email: ''
+                    }
                 },
+                ownerId: '',
                 roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
@@ -178,8 +184,13 @@
             submitForm(){
                 this.v$.$validate();  
                 
-                this.getCottageOwnerFromLoggedUser();
-                axios.post(`${server.baseUrl}/cottage/add`, this.newCottage)
+                 const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+               
+                axios.post(`${server.baseUrl}/cottage/add`, this.newCottage, {headers: headers})
                 .then((response) => {
                     this.newCottage= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
                     address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
@@ -193,21 +204,6 @@
                 })
                 .catch(() => {
                     this.$swal('Internal server error!');
-                })
-            },
-
-            getCottageOwnerFromLoggedUser(){
-
-                const headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                     Accept: 'application/json',
-                    'Authorization': `Bearer ${this.state}`
-                }
-
-                axios
-                .get(`${server.baseUrl}/user/getLoggedUser/`, {headers: headers})
-                .then(response => {
-                    this.cottageOwner = response.data;
                 })
             },
 
