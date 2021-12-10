@@ -46,6 +46,7 @@ public class CottageService {
         RegisteredUser user = this.userRepository.findByEmail("marijakljestan@gmail.com");
         CottageOwner owner = new CottageOwner(user);
         Cottage newCottage = new Cottage(entity, owner);
+        newCottage.setRooms(cottage.getRooms());
         this.cottageRepository.save(newCottage);
 
         Set<Room> rooms = cottage.getRooms();
