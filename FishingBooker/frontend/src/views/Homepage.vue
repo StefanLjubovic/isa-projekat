@@ -182,6 +182,7 @@ export default {
       changeState: async function(state){
         this.state=state;
         console.log(state);
+
         if(state == 0 || state == 1 || state == 2) {
           if(this.userRole == 'ROLE_INSTRUCTOR') {
             const headers = {
@@ -193,6 +194,7 @@ export default {
             axios.get(`${server.baseUrl}/instructor/adventures`, {headers: headers})
             .then((response) => {
               this.entities = response.data;
+              this.entitiesForDisplay = response.data;
             })
           } else {
             const resp=await Server.getAllEntities(this.state)
