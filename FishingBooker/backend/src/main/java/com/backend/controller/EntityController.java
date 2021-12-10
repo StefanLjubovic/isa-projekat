@@ -40,7 +40,7 @@ public class EntityController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(value = "/subscriptions",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<EntityDTO>> getSubscriptions(Principal principal) throws IOException {
         Collection<? extends RentingEntity> entities= entityService.GetByUsersSubscriptions(principal.getName());

@@ -1,16 +1,14 @@
 import axios from 'axios';
-
+import localStorage from '../store';
 let server = {};
 server.baseUrl = 'http://localhost:8082';
 
 server.getAllEntities = async (state) =>{
-    const token = localStorage.getItem('token')
     const options ={
         method: 'GET',
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             Accept: 'application/json',
-            'Authorization': `Bearer ${token}`
         },
         url: server.baseUrl+`/entity/`+state,
 
@@ -36,7 +34,7 @@ server.registerClient = async (client) =>{
 };
 
 server.getUserById = async (id) =>{
-    const token = localStorage.getItem('token')
+    const token = localStorage.getters.token
     const options ={
         method: 'GET',
         headers: {
