@@ -7,7 +7,7 @@ import java.util.Set;
 @Entity
 public class Adventure extends RentingEntity {
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private int maxPersons;
 
    @ElementCollection(fetch = FetchType.EAGER)
@@ -15,7 +15,7 @@ public class Adventure extends RentingEntity {
    @Column(name = "fishing_equipment")
    private Set<String> fishingEquipment = new HashSet<String>();
 
-   @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
    @JoinColumn(name = "reg_user_id")
    private FishingInstructor fishingInstructor;
 

@@ -15,4 +15,6 @@ public interface IAdventureRepository extends JpaRepository<Adventure, Integer> 
 
     @Query(value = "select a from Adventure a left join fetch a.pricelistItems left join fetch a.sales where a.id = :id")
     Adventure fetchById(@Param("id") Integer id);
+
+    Adventure findAdventureByName(String name);
 }

@@ -1,220 +1,242 @@
 <template>
-    <NavBar @change-state = "changeState"></NavBar>
     <div id="add-entity-form"> 
-        <div class="title"><h1>New Cottage</h1></div> 
+        <div class="title"><h1>New Adventure</h1></div> 
         <div class="content">
 
             <div class="left-side">
-                <input type="text" class="form-control" placeholder="Name*" v-model="newCottage.name"/>
-                <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.newCottage.name.$errors" :key="index">
-                    <div class="text-danger">{{ error.$message }}</div>
-                </div>
+                <input type="text" class="form-control" placeholder="Name*" v-model="v$.newAdventure.name.$model"/>
+                <span class="text-danger" v-if="v$.newAdventure.name.$error">{{v$.newAdventure.name.$errors[0].$message}}</span>
 
-                <textarea class="reason-area" placeholder="Description*" v-model="newCottage.description" rows="4" cols="65"></textarea>
-                <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.newCottage.description.$errors" :key="index">
-                     <div class="text-danger">{{ error.$message }}</div>
-                </div>
-                <br/> <br/><hr/>
+                <textarea class="form-control reason-area" placeholder="Description*" v-model="v$.newAdventure.description.$model" ></textarea>
+                <span class="text-danger" v-if="v$.newAdventure.description.$error">{{v$.newAdventure.description.$errors[0].$message}}</span>
 
-                <!-- Number of rooms and beds per room -->
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum"/><br/>
-                <ol v-if="roomsNum">
-                    <li v-for="rn in roomsNum" :key="rn">
-                        <div class="room-type">
-                            <input type="number" class="form-control"/>
-                            <label>bed room</label>
-                        </div>
-                    </li>
-                </ol>
+                <input type="text" class="form-control max-persons" placeholder="Maximum persons*" v-model="v$.newAdventure.maxPersons.$model"/>
+                <span class="text-danger" v-if="v$.newAdventure.maxPersons.$error">{{v$.newAdventure.maxPersons.$errors[0].$message}}</span>
                 <hr/>
+
+                <!-- Fishing equipment -->
+                <div class="allowed-behavior">
+                    <h6> Fishing equipment: </h6>
+                    <div class="icons">
+                    <span><i class="fas fa-plus-square fa-2x icon" @click="fishingEquipment += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="fishingEquipment -= 1"></i></span>
+                    </div>
+                </div>
+                <ul v-if="fishingEquipment">
+                    <li v-for="index in fishingEquipment" :key="index">
+                        <input type="text" class="form-control" v-model="newAdventure.fishingEquipment[index-1]"/>
+                    </li>
+                </ul>
+                <br/>
+
                 <!-- Allowed behavior -->
-                <div class="multiple-inputs">
+                <div class="allowed-behavior">
                     <h6> Allowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon"  @click="allowedBehaviorNum += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehaviorNum -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon" @click="allowedBehavior += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="allowedBehavior -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="allowedBehaviorNum">
-                    <li v-for="ab in allowedBehaviorNum" :key="ab">
-                        <input type="text" class="form-control" v-model="newCottage.allowedBehavior[ab-1]"/>
+                <ul v-if="allowedBehavior">
+                    <li v-for="index in allowedBehavior" :key="index">
+                        <input type="text" class="form-control" v-model="newAdventure.allowedBehavior[index-1]"/>
                     </li>
-                </ul><hr/>
+                </ul>
                 <br/>
+
                 <!-- Unallowed behavior -->
-                <div class="multiple-inputs">
+                <div class="allowed-behavior">
                     <h6> Unallowed behavior: </h6>
                     <div class="icons">
-                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehaviorNum += 1"></i></span>
-                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehaviorNum -= 1"></i></span>
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="unallowedBehavior += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="unallowedBehavior -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="unallowedBehaviorNum">
-                    <li v-for="(ub,index) in unallowedBehaviorNum" :key="ub">
-                        <input type="text" class="form-control" v-model="newCottage.unallowedBehavior[index]"/>
+                <ul v-if="unallowedBehavior">
+                    <li v-for="index in unallowedBehavior" :key="index">
+                        <input type="text" class="form-control" v-model="newAdventure.unallowedBehavior[index-1]"/>
                     </li>
-                </ul><hr/>
+                </ul>
                 <br/>
+
                 <!--Pricelist -->
-                <div class="multiple-inputs">
+                <div class="allowed-behavior">
                     <h6> Pricelist: </h6>
                     <div class="icons">
                         <span><i class="fas fa-plus-square fa-2x icon"  @click="addPricelistItem()"></i></span>
                         <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="pricelistItemsNum">
-                    <li v-for="(pli,index) in pricelistItemsNum" :key="pli">
+                <ul v-if="newAdventure.pricelistItems">
+                    <li v-for="item in newAdventure.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="newCottage.pricelistItem[index].service" placeholder="Service*"/>
-                            <input type="number" class="form-control" v-model="newCottage.pricelistItem[index].price"   placeholder="Price*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="number" class="form-control" v-model="item.price" placeholder="Price*"/>
                         </div>
                     </li>
-                </ul><hr/>
+                </ul>
                 <br/>
+
                 <!--Additional services -->
-                <div class="multiple-inputs">
+                <!--<div class="allowed-behavior">
                     <h6> Additional services: </h6>
                     <div class="icons">
-                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServicesNum += 1"></i></span>
-                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServicesNum -= 1"></i></span>
+                        <span><i class="fas fa-plus-square fa-2x icon"  @click="additionalServices += 1"></i></span>
+                        <span><i class="fas fa-minus-square fa-2x icon" @click="additionalServices -= 1"></i></span>
                     </div>
                 </div>
-                <ul v-if="additionalServicesNum">
-                    <li v-for="ads in additionalServicesNum" :key="ads">
+                <ul v-if="additionalServices">
+                    <li v-for="index in additionalServices" :key="index">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" placeholder="Service*"/>
                             <input type="number" class="form-control" placeholder="Price*"/>
                         </div>
                     </li>
-                </ul><hr/>
-                <br/>
+                </ul>
+                <br/>-->
+
+                <!--Cancellation percentage -->
+                <p class="percentage-label">Percentage of price you keep, in case of reservation cancellation:</p>
+                <input type="number" class="form-control" v-model="newAdventure.cancellationPercentage"/><br/><hr/>
             </div>
 
             <div class="right-side">
                 <!--Images upload -->
-                <div class="upload-images">
-                    <p> Upload images of your cottage: </p>
-                    <input type="file" class="file-upload" @change="imageAdded"/>
-                </div> <br/>
-                <div v-if="imagesFrontend" class="images-preview">
-                        <div v-for="image in imagesFrontend" :key="image">
-                            <img :src="image" />
-                        </div>
-                </div>               
-                 <OpenLayersMap></OpenLayersMap>
-                 <div class="btn-div">
-                     <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
-                     <button class="btn cancel-button">Cancel</button>
-                 </div>
+                <div class="upload-image">
+                    <div class="upload-images">
+                        <p>Upload images from your adventure: </p>
+                        <input type="file" class="file-upload" @change="imageAdded"/>
+                    </div>
+                    <div v-if="imagesFrontend" class="images-preview">
+                            <div v-for="image in imagesFrontend" :key="image">
+                                <img :src="image" class="image-show" />
+                            </div>
+                    </div>  
+                </div>
+                             
+                 <OpenLayersMap @change-address="changeAddress" :address ="newAdventure.address" ></OpenLayersMap>
+
+                <br/><br/>
+                <div class="btn-div">
+                    <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
+                    <button class="btn cancel-button">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import NavBar from "@/components/Navbar.vue"
     import useValidate from '@vuelidate/core'
-    import {required} from '@vuelidate/validators' 
+    import {required, numeric} from '@vuelidate/validators'
     import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
-
-    export function validName(name) {
-        let validNamePattern = new RegExp("^[a-zA-Z]+(?:[-'\\s][a-zA-Z]+)*$");
-        if (validNamePattern.test(name))
-            return true;
-        
-        return false;
-    }
+    import server from '../server/index'
+    import axios from 'axios'
 
     export default ({
         components: {
-            NavBar,
             OpenLayersMap,
         },
         setup() {
             return {v$: useValidate()}
         },
+        computed:{
+            token(){
+                return this.$store.getters.getToken;
+            }
+        },
         data() {
             return{
-                newCottage: {
+                newAdventure: {
                     name: '',
                     description: '',
-                    averageGrade: 0,
                     cancellationPercentage: 0,
                     images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
+                    fishingEquipment: [],
+                    maxPersons: undefined,
                     address: {
                         streetName: '',
                         streetNumber: '',
-                        postalcode: '',
+                        postalCode: '',
                         city: '',
                         country:  '',
-                        longitude: '',
-                        latitude: ''
+                        longitude: undefined,
+                        latitude: undefined
                     },
-                    unvaliablePeriod: [],
-                    pricelistItem: [
+                    pricelistItems: [
                         {
                             service:'',
-                            price: null,
-                            rentingEntity: this.newCottage
-                        },
+                            price: undefined
+                        }
                     ],
-                    sale: [],
-                    rooms: [
-                        {
-                            bedNumber: 0,
-                            cottage: this.newCottage
-                        },
-                    ],
-                    cottageOwner:{}
+                    fishingInstructor: {
+                        email: ''
+                    }
                 },
-                roomsNum: undefined,
-                allowedBehaviorNum: 1,
-                unallowedBehaviorNum: 1,
-                pricelistItemsNum: 1,
-                additionalServicesNum: 1,
+                allowedBehavior: 1,
+                unallowedBehavior: 1,
+                pricelistItems: 1,
+                additionalServices: 1,
+                fishingEquipment: 1,
                 imagesFrontend: []
             }
         },
         validations() {
             return {
-                newCottage: {
-                    name: { 
-                        required, name_validation: {
-                            $validator: validName,
-                             $message: 'Invalid Name. Valid name only contain letters, dashes (-) and spaces'
-                        } 
-                    },
-                    description: {required}
+                newAdventure: {
+                    name: { required },
+                    description: {required},
+                    maxPersons: { required, numeric }
                 },
             }
         },
         methods: {
-            submitForm(){
-                this.v$.$validate()      
-                console.log(this.newCottage)          
-            },
+            submitForm: function() {
+                this.v$.$validate();  
 
-            addPricelistItem() {
-                this.pricelistItem += 1;
-                this.newCottage.pricelistItem.push({
-                    service: '',
-                    price: undefined,
-                    cottage: this.newCottage
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+                
+                axios.post(`${server.baseUrl}/adventure/add`, this.newAdventure, {headers: headers})
+                .then((response) => {
+                    this.newAdventure= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
+                    address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
+                    pricelistItem: [ { service:'', price: null }, ], rooms: [ { bedNumber: undefined },], cottageOwner:{}};
+                    this.$emit('entity-added', 0)
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    
+                })
+                .catch(() => {
+                    this.$swal('Internal server error!');
                 })
             },
-
-            removePricelistItem(){
-                this.pricelistItem -= 1;
-                this.newCottage.pricelistItem.pop()
+            changeAddress: function(data) {
+                this.newAdventure.address = data
             },
-
-            imageAdded(e) {
-                const file = e.target.files[0];
+            addPricelistItem: function() {
+                this.pricelistItems += 1;
+                this.newAdventure.pricelistItems.push({
+                    service: '',
+                    price: undefined
+                })
+            },
+            removePricelistItem: function() {
+                this.pricelistItems -= 1;
+                this.newAdventure.pricelistItems.pop()
+            },
+            imageAdded: function(e) {
+                const file = e.target.files[0];  
+                console.log(file)        
                 this.createBase64Image(file);
                 this.imagesFrontend.push(URL.createObjectURL(file));
             },
@@ -223,12 +245,13 @@
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
-                    this.newCottage.images.push(img);
+                     console.log(img)  
+                    this.newAdventure.images.push(img);
                 }
                 reader.readAsDataURL(file);
             },
-
-        },
+        }
+        
     })
 </script>
 
@@ -245,14 +268,19 @@
 
     #add-entity-form{
         padding-top: 50px;
-        padding-bottom: 50px;
+        padding-bottom: 150px;
         margin-left: 15%;
         margin-right: 15%;
     }
 
-     .content {
+    .content {
         display: flex;
         margin-top: 50px;
+        justify-content: space-between;
+    }
+
+    .percentage-label {
+        text-align: left;
     }
 
     .left-side {
@@ -262,36 +290,24 @@
         width: 50%;
     }
     .form-control{
-        border-radius:1.5rem;
         width: 90%;
-        height: 40px;  
-    }
-
-    .room-type .form-control{
-        width : 50%;
-        margin-right: 10px;
-        margin-bottom: 5px;
+        height: 40px;
+   
     }
 
      ul .form-control{
-        width : 80%;
-        margin-right: 10px;
+        width : 96%;
+        margin-left: -33px;
         margin-bottom: 10px;
     }
 
     .reason-area{
-      width: 90%;
-      align-self: left;
-      margin-right: 30%;
       margin-top: 25px;
-      background-color: #ffffff;
-      border-width: 0.5px solid rgb(248, 244, 244) ;
-      font-size: 16px;
-      resize: none;
-      outline: none;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 15px;
-      border-radius: 15px;
+      height: 15%;
+    }
+
+    .max-persons {
+        margin-top: 25px;
     }
 
     .map{
@@ -312,7 +328,7 @@
         align-items: center;
     }
 
-    .multiple-inputs{
+    .allowed-behavior{
         display: flex;
         align-items: center;
         margin-bottom: 10px;
@@ -321,35 +337,16 @@
 
     .icons, .pricelistItem{
         display: flex;
-        margin-right: 15%;
+        justify-content: space-between;
+        margin-right: 10%;
     }
 
     .icons span{
         margin-left: 10px;
     }
 
-    .upload-images{
-        margin-right: 200px;
-    }
-
-    .images-preview{
-        display: contents;
-         width: 40%;
-         height: 30%;
-     }
-
-    .images-preview img{
-        width:50%;
-        height: 50%;
-    }
-
-    p{
-        font-size: 20px;
-        color: #1c3146;
-    }
-
-    .file-upload{
-       margin-left: 45%;  
+    .pricelistItem .form-control {
+        width: 53%;
     }
 
     .cancel-button {
@@ -365,6 +362,31 @@
       color: white;
       width: 120px;
       margin-right: 10px;
-     }
+  }
+
+  ul {
+      list-style-type: none;
+  }
+
+  .upload-image {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+  }
+
+  .upload-images p {
+      margin-left: -35px;
+  }
+
+  .images-preview{
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+  }
+
+  .image-show {
+      width: 150px;
+      height: 100px;
+  }
 
 </style>

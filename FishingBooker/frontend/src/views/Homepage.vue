@@ -10,6 +10,7 @@
       </div>
     </div>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
@@ -46,6 +47,7 @@
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"  @entity-deleted="changeState"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
@@ -90,6 +92,7 @@
     <OwnerAnalytics v-if="state == 4"/>
     <MyProfile v-if="state == 3"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
+    <AddNewAdventure v-if="state == 31" @entity-added="changeState"/>
   </div>
   
 </template>
@@ -109,6 +112,7 @@ import Complaints from "@/components/admin/Complaints.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
+import AddNewAdventure from "@/views/AddNewAdventure.vue"
 import EditCottage from "@/views/EditCottage.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
@@ -143,7 +147,8 @@ export default {
         AdventureReservations,
         MyScheduleInstructor,
         ConfirmModal,
-        AdventureDetails
+        AdventureDetails,
+        AddNewAdventure
     },
     data(){
       return{
@@ -271,7 +276,7 @@ export default {
         this.state = 26;
       },
       addNewAdventure: function() {
-        this.$router.push({ path: `/addNewAdventure` })
+        this.state = 31;
       },
       sortHistory: function(value){
         this.historySort = value
