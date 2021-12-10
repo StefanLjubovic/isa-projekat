@@ -41,7 +41,7 @@ public class CottageService {
         return cottageRepository.findByName(name);
     }
 
-    public Cottage Save(Cottage cottage) throws IOException {
+    public Cottage save(Cottage cottage) throws IOException {
         RentingEntity entity = createEntityFromCottage(cottage);
         RegisteredUser user = this.userRepository.findByEmail(cottage.getCottageOwner().getEmail());
         CottageOwner owner = new CottageOwner(user);

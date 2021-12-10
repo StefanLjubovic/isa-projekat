@@ -93,7 +93,7 @@
     <MyProfile v-if="state == 3"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState" @edit-adventure="editAdventure"/>
     <AddNewAdventure v-if="state == 31" @entity-added="changeState"/>
-    <EditAdventure v-if="state = 32" :adventureId="selectedAdventureId"/>
+    <EditAdventure v-if="state == 32" :adventureId="selectedAdventureId"/>
   </div>
   
 </template>
@@ -143,7 +143,6 @@ export default {
         CottageDetails,
         AddNewCottage,
         EditCottage,
-        EditAdventure,
         MyProfile,
         AdminAnalytics,
         OwnerAnalytics,
@@ -152,7 +151,7 @@ export default {
         ConfirmModal,
         AdventureDetails,
         AddNewAdventure,
-        
+        EditAdventure,
     },
     data(){
       return{
@@ -278,6 +277,7 @@ export default {
         this.state = 27;
       },
       editAdventure(id) {
+        console.log("adve" + id)
         this.selectedAdventureId = id;
         this.state = 32;
       },

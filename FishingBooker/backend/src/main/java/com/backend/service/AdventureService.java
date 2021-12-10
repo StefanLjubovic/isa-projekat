@@ -81,4 +81,24 @@ public class AdventureService {
         }
         return  base64Images;
     }
+
+    public Adventure update(Adventure adventure) {
+        Adventure adventureToUpdate = adventureRepository.findById(adventure.getId()).get();
+        adventureToUpdate.setName(adventure.getName());
+        adventureToUpdate.setDescription(adventure.getDescription());
+        adventureToUpdate.setMaxPersons(adventure.getMaxPersons());
+        adventureToUpdate.setCancellationPercentage(adventure.getCancellationPercentage());
+        adventureToUpdate.setAllowedBehavior(adventure.getAllowedBehavior());
+        adventureToUpdate.setUnallowedBehavior(adventure.getUnallowedBehavior());
+        adventureToUpdate.setFishingEquipment(adventure.getFishingEquipment());
+
+        adventureToUpdate.setPricelistItems(adventure.getPricelistItems());
+        for (PricelistItem item : adventureToUpdate.getPricelistItems()){
+            item.setRentingEntity(adventureToUpdate);
+        }
+
+        adventureToUpdate.setAddress(adventure.getAddress());
+
+        return adventureRepository.save(adventureToUpdate);
+    }
 }
