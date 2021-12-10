@@ -1,11 +1,8 @@
 package com.backend.controller;
 
 import com.backend.dto.CottageDTO;
-import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateCottageDTO;
 import com.backend.model.Cottage;
-import com.backend.model.CottageOwner;
-import com.backend.model.RegisteredUser;
 import com.backend.service.CottageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +45,7 @@ public class CottageController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage with this name already exists!");
 
         cottage.getCottageOwner().setEmail(user.getName());
-        this.cottageService.Save(cottage);
+        this.cottageService.save(cottage);
         return new ResponseEntity<>("Successfully added cottage!", HttpStatus.CREATED);
     }
 

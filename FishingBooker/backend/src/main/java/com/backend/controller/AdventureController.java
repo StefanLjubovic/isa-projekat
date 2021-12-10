@@ -1,6 +1,7 @@
 package com.backend.controller;
 
 import com.backend.dto.CottageDTO;
+import com.backend.dto.UpdateCottageDTO;
 import com.backend.model.Adventure;
 import com.backend.model.Cottage;
 import com.backend.model.FishingInstructor;
@@ -29,7 +30,14 @@ public class AdventureController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Adventure> getAdventureById(@PathVariable("id") Integer id) {
-        Adventure adventure = adventureService.getById(id);
+        Adventure adventure = null;
+
+        try {
+            adventure = adventureService.getById(id);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not load images!");
+        }
+
         if(adventure == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no adventure with this id!");
 
         return new ResponseEntity<>(adventure, HttpStatus.OK);
@@ -45,5 +53,20 @@ public class AdventureController {
         adventure.getFishingInstructor().setEmail(user.getName());
         adventureService.save(adventure);
         return new ResponseEntity<>("Adventure successfully added!", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update")
+    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<String> updateAdventure(@RequestBody Adventure adventure) throws IOException {
+        if(existsAdventureWithSameName(adventure))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adventure with this name already exists!");
+
+        adventureService.update(adventure);
+        return new ResponseEntity<>("Successfully edited cottage!", HttpStatus.OK);
+    }
+
+    private boolean existsAdventureWithSameName(Adventure adventure) {
+        Adventure existedAdventure = adventureService.findByName(adventure.getName());
+        return existedAdventure != null && existedAdventure.getId() != adventure.getId();
     }
 }

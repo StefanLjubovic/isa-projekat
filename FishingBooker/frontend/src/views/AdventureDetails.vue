@@ -44,9 +44,10 @@
         </div>
     </div>
 
-    <div id="page">
-        <AdventureCaption :adventureName="this.adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
-            @create-sale="openModalForCreatingSale()" @edit-entity="editEntity()" @entity-deleted="this.$emit('entity-deleted', 0)"/>
+
+    <div id="page" v-if="adventure">
+        <AdventureCaption :adventureName="adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
+            @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-adventure', this.adventure.id)" @entity-deleted="this.$emit('entity-deleted', 0)"/>
         <div class="content">
             <div class="left">
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
@@ -102,31 +103,11 @@ export default {
     props: [
         'entityId'
     ],
+    emits: ['entity-deleted', 'edit-adventure'],
     data() {
         return {
             adventureId: this.entityId,
-            adventure:{
-                    name: '',
-                    address: {
-                        streetName: '',
-                        streetNumber: '',
-                        postalCode: '',
-                        city: '',
-                        country: '',
-                        longitude: undefined,
-                        latitude: undefined
-                    },
-                    description: '',
-                    averageGrade: undefined,
-                    images: [],
-                    allowedBehaviour: [],
-                    unallowedBehaviour: [],
-                    cancellationPercentage: undefined,
-                    pricelistItem: [],
-                    rooms: [],
-                    fishingInstructor : {},
-                    sales : {}
-               },
+            adventure: undefined,
             sale: {
                 dateTimeFrom : '',
                 durationInHours: '',
