@@ -45,7 +45,7 @@
     </div>
 
     <div id="page">
-        <AdventureCaption :adventureName="adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
+        <AdventureCaption :adventureName="this.adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
             @create-sale="openModalForCreatingSale()" @edit-entity="editEntity()" @entity-deleted="this.$emit('entity-deleted', 0)"/>
         <div class="content">
             <div class="left">
@@ -105,7 +105,28 @@ export default {
     data() {
         return {
             adventureId: this.entityId,
-            adventure: undefined,
+            adventure:{
+                    name: '',
+                    address: {
+                        streetName: '',
+                        streetNumber: '',
+                        postalCode: '',
+                        city: '',
+                        country: '',
+                        longitude: undefined,
+                        latitude: undefined
+                    },
+                    description: '',
+                    averageGrade: undefined,
+                    images: [],
+                    allowedBehaviour: [],
+                    unallowedBehaviour: [],
+                    cancellationPercentage: undefined,
+                    pricelistItem: [],
+                    rooms: [],
+                    fishingInstructor : {},
+                    sales : {}
+               },
             sale: {
                 dateTimeFrom : '',
                 durationInHours: '',
@@ -153,7 +174,6 @@ export default {
         axios.get(`${server.baseUrl}/adventure/${this.adventureId}`)
         .then((response) => {
             this.adventure = response.data;
-
             axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`)
             .then((res) => {
                 for(let period of res.data) {
