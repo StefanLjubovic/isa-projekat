@@ -1,5 +1,6 @@
 package com.backend.service;
 
+import com.backend.dto.EntityDTO;
 import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IUserRepository;

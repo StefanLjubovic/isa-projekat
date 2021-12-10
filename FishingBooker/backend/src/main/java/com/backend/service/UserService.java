@@ -48,7 +48,7 @@ public class UserService {
 
     public RegistrationRequest saveRequest(UserRequest userRequest){
         RegistrationRequest u = new RegistrationRequest();
-        u.setPassword(userRequest.getPassword());
+        u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         u.setFirstName(userRequest.getFirstname());
         u.setLastName(userRequest.getLastname());
@@ -63,7 +63,7 @@ public class UserService {
 
     public RegisteredUser saveClient(RegistrationRequest userRequest) {
         Client u = new Client(userRequest);
-        u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        u.setPassword(userRequest.getPassword());
         Role role = roleService.findOneByName(userRequest.getRole().getName());
         u.setRole(role);
         addressRepository.save(userRequest.getAddress());

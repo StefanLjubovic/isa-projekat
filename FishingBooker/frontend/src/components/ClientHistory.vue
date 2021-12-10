@@ -1,5 +1,6 @@
 <template>
-  <table class="table table-color container">
+<div class="container wrapper">
+  <table class="table table-color">
   <thead>
     <tr>
       <th scope="col">{{entityName}}</th>
@@ -21,6 +22,7 @@
     </tr>
   </tbody>
 </table>
+</div>
 </template>
 
 <script>
@@ -41,13 +43,13 @@ export default {
       entityName: 'Cottage',
       entities: [
         {
-          name: 'Marijina vikendica',
+          name: 'Fruskogorska vikendica',
           date: new Date(2021, 9, 9),
           duration: 7,
           price: 10000
         },
         {
-          name: 'Marijina vikendica',
+          name: 'Palicka vikendica',
           date: new Date(2021, 10, 11),
           duration: 4,
           price: 30000
@@ -57,7 +59,13 @@ export default {
           date: new Date(2021, 6, 5),
           duration: 11,
           price: 20000
-        }
+        },
+        {
+          name: 'Petrovaradinska vikendica',
+          date: new Date(2021, 12, 5),
+          duration: 12,
+          price: 50000
+        },
       ]
     }
   },
@@ -75,6 +83,9 @@ export default {
 </script>
 
 <style scoped>
+    .wrapper{
+      min-height: 50vh;
+    }
     .table-color{
     background: white;
     border-radius: 10px;

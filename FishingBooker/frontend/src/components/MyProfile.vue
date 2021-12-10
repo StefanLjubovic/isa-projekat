@@ -49,6 +49,9 @@
                             <div v-if="userRole=='ROLE_CLIENT'" class="mb-4 penalty-div">
                              <h4 class="cancelation-label">Number of penalties: {{getPenealties()}}</h4><i class="fas fa-info-circle fa-2x info" @click="penaltyInfo()"></i>
                             </div>
+                            <div v-if="userRole=='ROLE_CLIENT'" class="mb-4 penalty-div">
+                             <h4 class="cancelation-label">{{getPoints()}}</h4><i class="fas fa-info-circle fa-2x info" @click="pointsInfo()"></i>
+                            </div>
                             <div class="buttons">
                                 <button class="btn cancel-button" @click.prevent="changePassword()" :disabled="!editMode || v$.password.$invalid">changePassword</button>
                                 <div class="confirm-buttons">
@@ -100,6 +103,7 @@ export function validName(name) {
 export default ({
     data() {
         return {
+            points : 1200,
             editMode: false,
             penalty : 1,
             user: {},
@@ -249,7 +253,31 @@ export default ({
             'Penalty info',
             'For every canceled reservation client gets penalty.If client gets three penalties in a mounth he is banned.',
             'question'
-)
+            )
+        },
+        getPoints(){
+            return 'Points collected: ' + this.points
+        },
+        pointsInfo(){
+            if(this.points < 1000){
+                this.$swal.fire(
+                'Loyality program: regular',
+                'With this program client does not get discount on reservations, make more reservations to advance to silver program!',
+                'question'
+                )
+            }else if(this.points < 1500){
+                this.$swal.fire(
+                'Loyality program: silver',
+                'With this program client gets 10% discount on reservations, make more reservations to advance to gold program!',
+                'question'
+                )
+            }else{
+                this.$swal.fire(
+                'Loyality program: gold',
+                'With this program client gets 15% discount on reservations!',
+                'question'
+                )
+            }
         }
     }
 })

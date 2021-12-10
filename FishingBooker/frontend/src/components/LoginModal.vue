@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="modal-overlay"></div>
+    <div class="modal-overlay" @click="$emit('close-modal')"></div>
     <div class="modal-inner">
       <div class="login" v-if="!this.changePassword">
         <h1>Log In</h1>

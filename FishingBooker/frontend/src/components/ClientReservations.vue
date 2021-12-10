@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div class="container wrapper">
   <h1 class="mt-4">My Reservations</h1>
   <table class="table table-color">
   <thead>
@@ -79,6 +79,9 @@ export default {
 </script>
 
 <style scoped>
+    .wrapper{
+      min-height: 50vh;
+    }
     .table-color{
     background: white;
     border-radius: 10px;

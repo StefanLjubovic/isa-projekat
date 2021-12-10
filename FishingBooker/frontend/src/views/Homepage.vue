@@ -21,7 +21,7 @@
     <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
     </transition>
     <transition name="fade" appear>
-      <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation"/>
+      <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation" :title="confirmTitle"/>
     </transition>
     <ClientReservations v-if="state==7" @open-cancelation="openCancelation"/>
     <MyProfile v-if="state == 3"/>
@@ -225,12 +225,12 @@ export default {
         console.log(this.entities)
       },
       openEntityDetails: function(entity) {
-        if(this.state == 0){
+        if(this.state == 0 || (this.state ==8 && entity.entityType == 'Adventure')){
           this.selectedEntityId = entity.id;
           this.state = 30;
         } else if (this.state == 1) {
           // navigacija za detalje o brodu
-        } else if (this.state == 2 || this.state == 21) {
+        } else if (this.state == 2 || this.state == 21 || (this.state ==8 && entity.entityType == 'Cottage')) {
           this.selectedEntityId = entity.id;
           this.state = 25;
         }
@@ -289,7 +289,7 @@ export default {
       const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       this.entities=resp.data;
-
+      console.log(resp.data)
       if(this.state==0) this.searchTitle="Adventures we offer";
       else if(this.state==1)this.searchTitle="Ships we offer"
       else if(this.state==2) this.searchTitle="Cottages we offer";
@@ -300,6 +300,7 @@ export default {
 <style>
 .adventures-wrapper{
   height: 100%;
+  min-height: 70vh;
   display: flex;
   padding-top: 50px;
   padding-bottom: 20px;
@@ -327,7 +328,6 @@ export default {
   margin-left: 10vw;
   margin-top: 5vh;
 }
-
 #add-new-cottage{
   margin-left: 58%;
   margin-top: 3%;

@@ -13,10 +13,12 @@ import java.util.Set;
 @Repository
 public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> {
 
-    @Query("SELECT e  FROM RentingEntity e where type(e) = ?1")
+    @Query("SELECT e  FROM RentingEntity e LEFT JOIN FETCH e.images where type(e) = ?1")
     <T extends RentingEntity> List<T> getEntityByClass(Class<?> type);
 
-    @Query("select entity from RentingEntity entity,Client client where client.email = ?1 and entity in (" +
+    @Query("select entity" +
+            " from RentingEntity entity,Client client LEFT JOIN FETCH entity.images " +
+            "where client.email = ?1 and entity in (" +
             "select e from client.subscriptions e)")
     <T extends RentingEntity> List<T> findSubscriptions(String email);
 

@@ -3,6 +3,7 @@ package com.backend.controller;
 import com.backend.dto.EntityDTO;
 import com.backend.dto.SaleDTO;
 import com.backend.model.Adventure;
+import com.backend.model.Cottage;
 import com.backend.model.RentingEntity;
 import com.backend.model.Sale;
 import com.backend.service.EntityService;
@@ -45,8 +46,12 @@ public class EntityController {
 
     private Collection<EntityDTO> getEntityDTOS(Collection<? extends RentingEntity> entities) {
         Collection<EntityDTO> dto = new ArrayList<>();
+        String type;
         for (RentingEntity e : entities) {
-            EntityDTO entityDTO = new EntityDTO(e.getId(), e.getName(), e.getDescription(), e.getAverageGrade(), e.getImages(), e.getAddress());
+            if(e.getClass().equals(Adventure.class)) type="Adventure";
+            else if(e.getClass().equals(Cottage.class)) type="Cottage";
+            else type = "Ship";
+            EntityDTO entityDTO = new EntityDTO(e.getId(), e.getName(), e.getDescription(), e.getAverageGrade(), e.getImages(), e.getAddress(),type);
             dto.add(entityDTO);
         }
         return dto;

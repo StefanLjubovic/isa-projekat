@@ -13,6 +13,7 @@ public class EntityDTO {
     private Set<String> image;
     private Address address;
     private String fishingInstructorName;
+    private String entityType;
 
     public EntityDTO() {}
 
@@ -23,6 +24,24 @@ public class EntityDTO {
         this.averageGrade = averageGrade;
         this.image = image;
         this.address = address;
+    }
+
+    public EntityDTO(Integer id, String name, String description, double averageGrade, Set<String> image, Address address, String entityType) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.averageGrade = averageGrade;
+        this.image = image;
+        this.address = address;
+        this.entityType = entityType;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public Integer getId() {
