@@ -121,6 +121,9 @@ export default {
     computed:{
         userRole(){
             return this.$store.getters.getRole;
+        },
+        token() {
+            return this.$store.getters.getToken;
         }
     },
     setup() {
@@ -186,7 +189,7 @@ export default {
         createSale: function() {
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
-                    Accept: 'application/json',
+                'Accept': 'application/json',
                 'Authorization': `Bearer ${this.token}`
             }
 

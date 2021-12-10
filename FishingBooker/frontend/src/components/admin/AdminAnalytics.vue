@@ -101,7 +101,7 @@ export default ({
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
                 Accept: 'application/json',
-                'Authorization': `Bearer ${this.token}`
+                'Authorization': `Bearer ${this.$store.getters.getToken}`
             }
 
             axios.put(`${server.baseUrl}/adminAnalytics/percentage/${this.moneyPercentage}`, {headers: headers})
