@@ -3,7 +3,7 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=30" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=30 && state!=25" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -91,8 +91,9 @@
     <MyScheduleInstructor v-if="state == 2"/>
     <OwnerAnalytics v-if="state == 4"/>
     <MyProfile v-if="state == 3"/>
-    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState" @edit-adventure="editAdventure"/>
     <AddNewAdventure v-if="state == 31" @entity-added="changeState"/>
+    <EditAdventure v-if="state = 32" :adventureId="selectedAdventureId"/>
   </div>
   
 </template>
@@ -114,6 +115,7 @@ import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
 import AddNewAdventure from "@/views/AddNewAdventure.vue"
 import EditCottage from "@/views/EditCottage.vue"
+import EditAdventure from "@/views/EditAdventure.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
@@ -141,6 +143,7 @@ export default {
         CottageDetails,
         AddNewCottage,
         EditCottage,
+        EditAdventure,
         MyProfile,
         AdminAnalytics,
         OwnerAnalytics,
@@ -148,7 +151,8 @@ export default {
         MyScheduleInstructor,
         ConfirmModal,
         AdventureDetails,
-        AddNewAdventure
+        AddNewAdventure,
+        
     },
     data(){
       return{
@@ -162,7 +166,8 @@ export default {
         entitiesForDisplay: [],
         historySort : '',
         selectedEntityId: undefined,
-        selectedCottageId: undefined
+        selectedCottageId: undefined,
+        selectedAdventureId: undefined
       }
     },
     computed:{
@@ -271,6 +276,10 @@ export default {
       editCottage(id){
         this.selectedCottageId = id;
         this.state = 27;
+      },
+      editAdventure(id) {
+        this.selectedAdventureId = id;
+        this.state = 32;
       },
       addNewCottage: function() {
         this.state = 26;

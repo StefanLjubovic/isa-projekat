@@ -29,7 +29,14 @@ public class AdventureController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Adventure> getAdventureById(@PathVariable("id") Integer id) {
-        Adventure adventure = adventureService.getById(id);
+        Adventure adventure = null;
+
+        try {
+            adventure = adventureService.getById(id);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not load images!");
+        }
+
         if(adventure == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no adventure with this id!");
 
         return new ResponseEntity<>(adventure, HttpStatus.OK);

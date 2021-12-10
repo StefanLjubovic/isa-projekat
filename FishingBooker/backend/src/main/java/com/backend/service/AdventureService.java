@@ -27,8 +27,9 @@ public class AdventureService {
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
-    public Adventure getById(Integer id) {
+    public Adventure getById(Integer id) throws  IOException {
         Adventure adventure = adventureRepository.fetchById(id);
+        adventure.setImages(loadImages(adventure.getImages()));
         adventure.setUnavailablePeriods(new HashSet<>());
         return adventure;
     }

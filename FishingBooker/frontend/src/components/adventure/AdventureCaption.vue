@@ -28,6 +28,7 @@ export default ({
         adventureId: Number,
         entityName: String
     },
+    emits: ['entity-deleted', 'create-sale', 'edit-entity'],
     data() {
         return {
             subscribed: false,
