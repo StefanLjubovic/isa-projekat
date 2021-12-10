@@ -8,35 +8,37 @@ import com.backend.model.Room;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CottageDTO {
+public class UpdateCottageDTO {
 
+    private Integer id;
     private String name;
     private String description;
     private double cancellationPercentage;
-    private Set<String> images = new HashSet<String>();
     private Set<String> allowedBehavior = new HashSet<String>();
     private Set<String> unallowedBehavior = new HashSet<String>();
     private Address address;
     private Set<PricelistItem> pricelistItems = new HashSet<PricelistItem>();
     private Set<Room> rooms = new HashSet<Room>();
-    private CottageOwner cottageOwner;
 
-    public CottageDTO() { }
+    public UpdateCottageDTO() { }
 
-    public CottageDTO(String name, String description, double cancellationPercentage, Set<String> images,
+    public UpdateCottageDTO(Integer id, String name, String description, double cancellationPercentage,
                       Set<String> allowedBehavior, Set<String> unallowedBehavior, Address address,
-                      Set<PricelistItem> pricelistItems, Set<Room> rooms, CottageOwner cottageOwner) {
+                      Set<PricelistItem> pricelistItem, Set<Room> rooms) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.cancellationPercentage = cancellationPercentage;
-        this.images = images;
         this.allowedBehavior = allowedBehavior;
         this.unallowedBehavior = unallowedBehavior;
         this.address = address;
-        this.pricelistItems = pricelistItems;
+        this.pricelistItems = pricelistItem;
         this.rooms = rooms;
-        this.cottageOwner = cottageOwner;
     }
+
+    public Integer getId() { return id; }
+
+    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
 
@@ -49,10 +51,6 @@ public class CottageDTO {
     public double getCancellationPercentage() { return cancellationPercentage; }
 
     public void setCancellationPercentage(double cancellationPercentage) { this.cancellationPercentage = cancellationPercentage; }
-
-    public Set<String> getImages() { return images; }
-
-    public void setImages(Set<String> images) {  this.images = images; }
 
     public Set<String> getAllowedBehavior() { return allowedBehavior; }
 
@@ -73,8 +71,4 @@ public class CottageDTO {
     public Set<Room> getRooms() {  return rooms; }
 
     public void setRooms(Set<Room> rooms) {  this.rooms = rooms; }
-
-    public CottageOwner getCottageOwner() {   return cottageOwner; }
-
-    public void setCottageOwner(CottageOwner cottageOwner) { this.cottageOwner = cottageOwner;  }
 }

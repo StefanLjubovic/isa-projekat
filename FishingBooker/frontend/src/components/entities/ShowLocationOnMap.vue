@@ -72,8 +72,6 @@ export default {
         });
 
       var center = fromLonLat([19.84, 45.2]);
-
-     // console.log(this.address)
       
         this.mapSearch = new Map({
         target: 'map',
@@ -102,7 +100,6 @@ export default {
         const source = vectorLayer.getSource()    
         source.addFeatures(this.positionFeature)  
     }
-
 }
   
 </script>
