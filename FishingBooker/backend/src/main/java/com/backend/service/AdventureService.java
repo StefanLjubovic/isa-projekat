@@ -82,7 +82,7 @@ public class AdventureService {
         return  base64Images;
     }
 
-    public Adventure update(Adventure adventure) {
+    public Adventure update(Adventure adventure) throws IOException {
         Adventure adventureToUpdate = adventureRepository.findById(adventure.getId()).get();
         adventureToUpdate.setName(adventure.getName());
         adventureToUpdate.setDescription(adventure.getDescription());
@@ -91,6 +91,7 @@ public class AdventureService {
         adventureToUpdate.setAllowedBehavior(adventure.getAllowedBehavior());
         adventureToUpdate.setUnallowedBehavior(adventure.getUnallowedBehavior());
         adventureToUpdate.setFishingEquipment(adventure.getFishingEquipment());
+        adventureToUpdate.setImages(saveImages(adventure));
 
         adventureToUpdate.setPricelistItems(adventure.getPricelistItems());
         for (PricelistItem item : adventureToUpdate.getPricelistItems()){

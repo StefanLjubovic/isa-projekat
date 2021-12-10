@@ -93,7 +93,7 @@
     <MyProfile v-if="state == 3"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState" @edit-adventure="editAdventure"/>
     <AddNewAdventure v-if="state == 31" @entity-added="changeState"/>
-    <EditAdventure v-if="state == 32" :adventureId="selectedAdventureId"/>
+    <EditAdventure v-if="state == 32" :adventureId="selectedAdventureId" @adventure-updated="adventureUpdated"/>
   </div>
   
 </template>
@@ -280,6 +280,10 @@ export default {
         console.log("adve" + id)
         this.selectedAdventureId = id;
         this.state = 32;
+      },
+      adventureUpdated: function(id) {
+        this.selectedAdventureId = id;
+        this.state = 30;
       },
       addNewCottage: function() {
         this.state = 26;

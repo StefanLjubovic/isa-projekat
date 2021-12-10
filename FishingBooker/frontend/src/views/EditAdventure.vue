@@ -105,21 +105,20 @@
 
             <div class="right-side">
                 <!--Images upload -->
-                <div class="upload-image">
-                    <div class="upload-images">
-                        <p>Upload images from your adventure: </p>
-                        <input type="file" class="file-upload" @change="imageAdded"/>
-                    </div>
-                    <div v-if="imagesFrontend" class="images-preview">
-                            <div v-for="image in imagesFrontend" :key="image">
-                                <img :src="image" class="image-show" />
-                            </div>
-                    </div>  
-                </div>
+                <div class="upload-images">
+                    <p> Upload images of your adventure: </p>
+                    <input type="file" class="file-upload" @change="imageAdded"/>
+                </div> <br/>
+                <div v-if="imagesFrontend" class="images-preview">
+                        <div class="display-images" v-for="image in imagesFrontend" :key="image">
+                            <img :src="image" />
+                            <button class="btn btn-close close" @click="removeImage(image)"></button>
+                        </div>
+                </div> <hr/><br/>
                              
                 <!-- Address -->
                  <div class="fields">
-                    <br/><br/>
+                    <br/>
                     <h5>ADDRESS </h5>
                     <h6>Street name: </h6>
                     <input id="streetID"        type="text"   class="form-control"  v-model="adventure.address.streetName"     placeholder="Street name*">  <br/>
@@ -211,7 +210,7 @@
                 axios.put(`${server.baseUrl}/adventure/update`, this.adventure, {headers: headers})
                 .then((response) => {
                     
-                    //this.$emit('adventure-updated', this.adventure.id)
+                    this.$emit('adventure-updated', this.adventure.id)
                     this.$swal({
                         icon: 'success',
                         title: response.data,
@@ -230,6 +229,7 @@
                 .get(`${server.baseUrl}/adventure/` + this.advId)
                 .then(response => {
                     this.adventure = response.data;
+                    this.imagesFrontend = this.adventure.images;
                     this.allowedBehavior = this.adventure.allowedBehavior.length;
                     this.unallowedBehavior = this.adventure.unallowedBehavior.length;
                     this.pricelistItems = this.adventure.pricelistItems.length;
@@ -252,11 +252,18 @@
                 this.pricelistItems -= 1;
                 this.adventure.pricelistItems.pop()
             },
+
+            removeImage(image) {
+                const index = this.adventure.images.indexOf(image);
+                if (index > -1) {
+                  this.adventure.images.splice(index, 1);
+                }
+            },
             imageAdded: function(e) {
                 const file = e.target.files[0];  
                 console.log(file)        
                 this.createBase64Image(file);
-                this.imagesFrontend.push(URL.createObjectURL(file));
+                //this.imagesFrontend.push(URL.createObjectURL(file));
             },
             createBase64Image(file){
                 const reader= new FileReader();
@@ -386,21 +393,22 @@
       list-style-type: none;
   }
 
-  .upload-image {
+  .upload-images {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
   }
 
-  .upload-images p {
-      margin-left: -35px;
-  }
-
   .images-preview{
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 20px;
-  }
+        display: contents;
+         width: 40%;
+         height: 30%;
+     }
+
+    .images-preview img{
+        width:50%;
+        height: 50%;
+    }
 
   .image-show {
       width: 150px;
@@ -410,5 +418,17 @@
   h6, h5 {
       text-align: left;
   }
+
+  .btn-close{ 
+        background-color: transparent;
+        margin-left: 2px;
+        margin-bottom: 25%;
+    }
+
+    .display-images{
+        display: flex;
+        margin-left: 10%;
+        margin-bottom: 5px;
+    }
 
 </style>
