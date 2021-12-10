@@ -3,14 +3,14 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=30" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=30" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
-    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
     <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
@@ -47,7 +47,7 @@
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"  @entity-deleted="changeState"/>
+    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @entity-deleted="changeState"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->

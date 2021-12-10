@@ -47,7 +47,7 @@
 
         <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
         <div v-if="userRole == 'ROLE_COTTAGE_OWNER'" class="cottage-owner">
-          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==21 }" @click="changeState(2)">My Cottages</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">My Cottages</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==22 }" @click="changeState(22)">Reservation History</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==23 }" @click="changeState(23)">My Schedule</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==24 }" @click="changeState(24)">Analytics</a>
