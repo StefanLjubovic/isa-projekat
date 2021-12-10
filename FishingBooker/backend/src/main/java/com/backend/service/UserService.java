@@ -100,8 +100,8 @@ public class UserService {
     }
 
     public void deleteUser(Integer id) {
-        this.verificationTokenService.DeleteTokenByUser(registrationRequestRepository.getById(id));
-        this.userRepository.delete(this.userRepository.getById(id));
+        //this.verificationTokenService.DeleteTokenByUser(registrationRequestRepository.getById(id));
+        this.userRepository.delete(userRepository.getById(id));
     }
 
     public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {

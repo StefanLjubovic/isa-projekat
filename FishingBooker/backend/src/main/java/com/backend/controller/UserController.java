@@ -69,13 +69,13 @@ public class UserController {
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/deleteRequest")
     public ResponseEntity<Void> saveDeleteRequest(@RequestBody String content, Principal principal) {
         deleteRequestService.save(principal.getName(),content);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/passwordChanged")

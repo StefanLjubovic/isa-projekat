@@ -52,7 +52,7 @@
                             <div class="buttons">
                                 <button class="btn cancel-button" @click.prevent="changePassword()" :disabled="!editMode || v$.password.$invalid">changePassword</button>
                                 <div class="confirm-buttons">
-                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode">Save</button>
+                                    <button class="btn save-button" @click.prevent="saveChanges()" :disabled="!editMode || v$.user.$invalid">Save</button>
                                     <button class="btn cancel-button" @click.prevent="cancelEditing()" :disabled="!editMode">Cancel</button>
                                 </div>
                             </div>
