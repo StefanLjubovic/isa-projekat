@@ -111,8 +111,19 @@ export default ({
            responseToRejection: { required }
         }
     },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
+        }
+    },
     mounted() {
-        axios.get(`${server.baseUrl}/regRequest`)
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+
+        axios.get(`${server.baseUrl}/regRequest`, {headers: headers})
         .then((response) => {
             this.allRequests = response.data;
             this.requests = this.allRequests.slice();
@@ -121,7 +132,13 @@ export default ({
     },
     methods: {
         approveRequest: function(request) {
-            axios.get(`${server.baseUrl}/regRequest/approve/${request.id}`)
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.get(`${server.baseUrl}/regRequest/approve/${request.id}`, {headers: headers})
             .then(() => {
                 let index = this.requests.indexOf(request);
                 if(index > -1) this.requests.splice(index, 1);
@@ -153,8 +170,14 @@ export default ({
                 id: this.selectedRequest.id,
                 rejectionReason: this.responseToRejection
             }
+
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
             
-            axios.put(`${server.baseUrl}/regRequest/reject`, rejection)
+            axios.put(`${server.baseUrl}/regRequest/reject`, rejection, {headers: headers})
             .then(() => {
                 let index = this.requests.indexOf(this.selectedRequest);
                 if(index > -1) this.requests.splice(index, 1);

@@ -12,7 +12,7 @@ VALUES (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '2100
        (nextval('address_address_id_seq'), 'Sabac', 'Srbija', 0.0, 0.0, '15000', 'Janka Veselinovica', '25'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Janka Cmelika', '5a'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Bulevar Despota Stefana', '10'),
-       (nextval('address_address_id_seq'), 'Beograd', 'Srbija', 0.0, 0.0, '11000', 'Safarikova', '1b');
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Safarikova', '1b');
 
 -- users
 INSERT INTO registered_user (type, reg_user_id, email, enabled, first_name, last_name, last_password_reset_date, password, phone_number, user_status, initial_password_changed, cancellation_number, client_type, points, short_biography, address_id, role_id)

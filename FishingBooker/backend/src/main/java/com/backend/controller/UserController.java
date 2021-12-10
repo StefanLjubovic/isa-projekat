@@ -27,35 +27,36 @@ public class UserController {
     DeleteRequestService deleteRequestService;
 
     @GetMapping(value="/getById/{id}")
-    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<RegisteredUserDTO> getById(@PathVariable Integer id){
         RegisteredUser user = userService.GetById(id);
         RegisteredUserDTO userDTO = new RegisteredUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getStatus(), user.isEnabled(), user.getRole(), user.getLastPasswordResetDate(), user.getAddress());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
+
     @GetMapping(value="/getLoggedUser")
-    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<RegisteredUserDTO> getLoggedUser(Principal principal){
         RegisteredUserDTO user=userService.fetchMyProfileInfo(principal.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping(value="/update")
-    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<Void> updateUser(@RequestBody UpdateProfileDTO user){
         userService.update(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping (value="/changePassword/{password}")
-    //@PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<Void> changePassword(@PathVariable String password, Principal principal){
         userService.updatePasswod(principal.getName(), password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/allUsers")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RegisteredUserDTO>> getAllUsers() {
         List<RegisteredUser> users = this.userService.getAllUsers();
 
@@ -69,7 +70,7 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUser/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -82,7 +83,7 @@ public class UserController {
     }
 
     @GetMapping("/passwordChanged")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boolean> hasAdminChangedInitialPassword(Principal admin) {
         Boolean initialPasswordChanged = userService.hasAdminChangedInitialPassword(admin.getName());
         return new ResponseEntity<>(initialPasswordChanged, HttpStatus.OK);

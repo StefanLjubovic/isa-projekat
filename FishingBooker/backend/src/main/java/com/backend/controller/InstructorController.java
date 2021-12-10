@@ -36,7 +36,7 @@ public class InstructorController {
     private Base64ToImage base64ToImage = new Base64ToImage();
 
     @GetMapping("/adventures")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<EntityDTO>> getAllAdventuresFromInstructor(Principal instructor) throws IOException {
         List<Adventure> adventures = adventureService.getAllAdventuresFromInstructor(instructor.getName());
 
@@ -58,7 +58,7 @@ public class InstructorController {
     }
 
     @PostMapping("/unavailablePeriod")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<UnavailablePeriodDTO> defineUnavailablePeriodForInstructor(@RequestBody UnavailablePeriod unavailablePeriod, Principal user) throws ResponseStatusException{
         UnavailablePeriod period = instructorService.defineUnavailablePeriodForInstructor(unavailablePeriod, user.getName());
         UnavailablePeriodDTO dto = new UnavailablePeriodDTO(period.getId(), period.getFromDateTime(), period.getToDateTime(), "Instructor unavailable.");
@@ -66,7 +66,7 @@ public class InstructorController {
     }
 
     @GetMapping("/unavailablePeriods")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Set<UnavailablePeriodDTO>> getAllUnavailablePeriodsForInstructor(Principal user) {
         if(user.getName() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no logged user!");
 
@@ -77,7 +77,6 @@ public class InstructorController {
     }
 
     @GetMapping("/unavailablePeriods/{id}")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Set<UnavailablePeriodDTO>> getAllUnavailablePeriodsForInstructorById(@PathVariable("id") Integer id) {
         Set<UnavailablePeriod> periods = instructorService.getAllUnavailablePeriodsForInstructorById(id);
 

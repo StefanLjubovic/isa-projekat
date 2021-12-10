@@ -225,8 +225,14 @@
             },
 
             getData() {
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                     Accept: 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+
                 axios
-                .get(`${server.baseUrl}/adventure/` + this.advId)
+                .get(`${server.baseUrl}/adventure/` + this.advId, {headers: headers})
                 .then(response => {
                     this.adventure = response.data;
                     this.imagesFrontend = this.adventure.images;

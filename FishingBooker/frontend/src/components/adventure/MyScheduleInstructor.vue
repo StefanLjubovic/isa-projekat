@@ -63,11 +63,13 @@ export default {
         };
     },
     mounted() {
-        axios.get(`${server.baseUrl}/instructor/unavailablePeriods`, {
-            headers: {
-                'Authorization': `Bearer ${this.$store.getters.getToken}`
-            }
-        })
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.$store.getters.getToken}`
+        }
+
+        axios.get(`${server.baseUrl}/instructor/unavailablePeriods`, {headers: headers})
         .then((response) => {
             for(let period of response.data) {
                 this.unavailablePeriods.push({
@@ -84,11 +86,14 @@ export default {
                 fromDateTime : this.range.start,
                 toDateTime : this.range.end
             }
-            axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {
-                headers: {
-                    'Authorization': `Bearer ${this.$store.getters.getToken}`
-                }
-            })
+
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.$store.getters.getToken}`
+            }
+
+            axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {headers: headers})
             .then((response) => {
                 this.unavailablePeriods.push({
                     id : response.data.id,

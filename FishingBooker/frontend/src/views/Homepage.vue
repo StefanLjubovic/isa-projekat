@@ -172,6 +172,9 @@ export default {
     computed:{
         userRole(){
             return this.$store.getters.getRole;
+        },
+        token(){
+          return this.$store.getters.getToken;
         }
     },
     methods:{
@@ -181,11 +184,14 @@ export default {
         console.log(state);
         if(state == 0 || state == 1 || state == 2) {
           if(this.userRole == 'ROLE_INSTRUCTOR') {
-            axios.get(`${server.baseUrl}/instructor/adventures`, {
-              headers: {
-                'Authorization' : `Bearer ${this.$store.getters.getToken}`
-              }
-            }).then((response) => {
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.get(`${server.baseUrl}/instructor/adventures`, {headers: headers})
+            .then((response) => {
               this.entities = response.data;
             })
           } else {

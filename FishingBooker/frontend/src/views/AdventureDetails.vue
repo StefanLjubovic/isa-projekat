@@ -121,6 +121,9 @@ export default {
     computed:{
         userRole(){
             return this.$store.getters.getRole;
+        },
+        token() {
+            return this.$store.getters.getToken;
         }
     },
     setup() {
@@ -184,7 +187,13 @@ export default {
             window.$('#new-sale-modal').modal('hide');
         },
         createSale: function() {
-            axios.post(`${server.baseUrl}/entity/sale/${this.adventure.id}`, this.sale)
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.post(`${server.baseUrl}/entity/sale/${this.adventure.id}`, this.sale, { headers: headers })
             .then((response) => {
                 this.adventure.sales = response.data;
                 window.$('#new-sale-modal').modal('hide');
