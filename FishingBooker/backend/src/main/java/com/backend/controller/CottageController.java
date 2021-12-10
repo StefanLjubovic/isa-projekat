@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,7 +39,7 @@ public class CottageController {
     }
 
     @PostMapping("/add")
-    //@PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<String> addNewCottage(Principal user, @RequestBody CottageDTO cottageDTO) throws IOException {
         Cottage cottage = modelMapper.map(cottageDTO, Cottage.class);
         if(cottageService.findByName(cottage.getName()) != null)
@@ -50,7 +51,7 @@ public class CottageController {
     }
 
     @PutMapping("/update")
-    //@PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<String> updateCottage(@RequestBody UpdateCottageDTO updateDTO) throws IOException {
         Cottage cottage = modelMapper.map(updateDTO, Cottage.class);
         if(existCottageWithSameName(cottage))
