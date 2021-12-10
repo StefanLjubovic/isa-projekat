@@ -61,7 +61,7 @@ public class CottageService {
         return newCottage;
     }
 
-    public Cottage update (Cottage cottage){
+    public Cottage update (Cottage cottage) throws IOException {
         Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
         cottageToUpdate.setName(cottage.getName());
         cottageToUpdate.setDescription(cottage.getDescription());
@@ -74,6 +74,7 @@ public class CottageService {
             item.setRentingEntity(cottage);
 
         cottageToUpdate.setAddress(cottage.getAddress());
+        cottageToUpdate.setImages(this.saveImages(cottage));
 
         return this.cottageRepository.save(cottageToUpdate);
     }

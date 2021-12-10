@@ -86,10 +86,11 @@
                     <input type="file" class="file-upload" @change="imageAdded"/>
                 </div> <br/>
                 <div v-if="imagesFrontend" class="images-preview">
-                        <div v-for="image in imagesFrontend" :key="image">
+                        <div class="display-images" v-for="image in imagesFrontend" :key="image">
                             <img :src="image" />
+                            <button class="btn btn-close close" @click="removeImage(image)"></button>
                         </div>
-                </div>   
+                </div> <hr/><br/>
                 <!-- Address -->
                  <div class="fields">
                      <h6> Address: </h6>
@@ -175,9 +176,11 @@
                         {
                             bedNumber: undefined
                         }
-                    ]
+                    ],
+                    images: []
                 },
                 backupCottage: {},
+                imagesFrontend: [],
                 roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
@@ -211,7 +214,8 @@
                     unallowedBehavior: this.cottage.unallowedBehavior,
                     address: this.cottage.address,
                     pricelistItems: this.cottage.pricelistItems,
-                    rooms: this.cottage.rooms                 
+                    rooms: this.cottage.rooms,
+                    images: this.cottage.images                 
                 }
 
                 const headers = {
@@ -242,6 +246,7 @@
                 .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
                 .then(response => {
                     this.cottage = response.data;
+                    this.imagesFrontend = this.cottage.images;
                     this.allowedBehaviorNum = this.cottage.allowedBehavior.length;
                     this.unallowedBehaviorNum = this.cottage.unallowedBehavior.length;
                     this.pricelistItemNum = this.cottage.pricelistItems.length;
@@ -270,6 +275,28 @@
             removePricelistItem(){
                 this.pricelistItemsNum -= 1;
                 this.cottage.pricelistItems.pop()
+            },
+
+            removeImage(image) {
+                const index = this.cottage.images.indexOf(image);
+                if (index > -1) {
+                  this.cottage.images.splice(index, 1);
+                }
+            },
+
+            imageAdded(e) {
+                const file = e.target.files[0];    
+                this.createBase64Image(file);
+                //this.imagesFrontend.push(URL.createObjectURL(file));
+            },
+            createBase64Image(file){
+                const reader= new FileReader();
+            
+                reader.onload = (e) =>{
+                    let img = e.target.result;
+                    this.cottage.images.push(img);
+                }
+                reader.readAsDataURL(file);
             },
         },
     })
@@ -396,9 +423,21 @@
         height: 50%;
     }
 
+    .display-images{
+        display: flex;
+        margin-left: 10%;
+        margin-bottom: 5px;
+    }
+
     p{
         font-size: 20px;
         color: #1c3146;
+    }
+
+    .btn-close{ 
+        background-color: transparent;
+        margin-left: 2px;
+        margin-bottom: 25%;
     }
 
     .cancel-button {

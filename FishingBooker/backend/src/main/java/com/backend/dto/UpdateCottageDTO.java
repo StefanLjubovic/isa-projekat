@@ -19,12 +19,13 @@ public class UpdateCottageDTO {
     private Address address;
     private Set<PricelistItem> pricelistItems = new HashSet<PricelistItem>();
     private Set<Room> rooms = new HashSet<Room>();
+    private Set<String> images = new HashSet<>();
 
     public UpdateCottageDTO() { }
 
     public UpdateCottageDTO(Integer id, String name, String description, double cancellationPercentage,
                       Set<String> allowedBehavior, Set<String> unallowedBehavior, Address address,
-                      Set<PricelistItem> pricelistItem, Set<Room> rooms) {
+                      Set<PricelistItem> pricelistItem, Set<Room> rooms, Set<String> images) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -34,6 +35,7 @@ public class UpdateCottageDTO {
         this.address = address;
         this.pricelistItems = pricelistItem;
         this.rooms = rooms;
+        this.images = images;
     }
 
     public Integer getId() { return id; }
@@ -71,4 +73,8 @@ public class UpdateCottageDTO {
     public Set<Room> getRooms() {  return rooms; }
 
     public void setRooms(Set<Room> rooms) {  this.rooms = rooms; }
+
+    public Set<String> getImages() { return images; }
+
+    public void setImages(Set<String> images) {  this.images = images; }
 }
