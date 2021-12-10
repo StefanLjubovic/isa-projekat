@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,7 +45,7 @@ public class AdventureController {
     }
 
     @PostMapping("/add")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<String> addNewAdventure(Principal user, @RequestBody Adventure adventure) throws IOException {
 
         if(adventureService.findByName(adventure.getName()) != null)
@@ -56,7 +57,7 @@ public class AdventureController {
     }
 
     @PutMapping("/update")
-    //@PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<String> updateAdventure(@RequestBody Adventure adventure) throws IOException {
         if(existsAdventureWithSameName(adventure))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adventure with this name already exists!");

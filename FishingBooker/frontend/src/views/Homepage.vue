@@ -197,7 +197,8 @@ export default {
         }
         if (state==8){
           const resp=await Server.getSubscriptions(this.$store.getters.getToken)
-          this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+          this.entitiesForDisplay=resp.data;
+          console.log(resp.data);
           this.entities=resp.data;
         }
 
@@ -315,32 +316,32 @@ export default {
   height: 100%;
   min-height: 70vh;
   display: flex;
-  padding-top: 50px;
-  padding-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 150px;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 .cottages-wrapper{
   height: 100%;
   display: flex;
-  padding-top: 50px;
-  padding-bottom: 20px;
-  padding-left: 5%;
+  padding-top: 20px;
+  padding-bottom: 150px;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 .subscription-title{
   display: flex;
   justify-content: flex-start;
 }
-.gap{
-  margin-left: 10vw;
-  margin-top: 5vh;
-}
+
 #add-new-cottage{
   margin-left: 58%;
   margin-top: 3%;

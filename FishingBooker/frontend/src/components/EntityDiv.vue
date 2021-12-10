@@ -1,15 +1,15 @@
 <template>
   <div class="div-wrapper" @click="$emit('entity-details')">
       <div class="img-div">
-          <img class="img-class" src='../assets/fish.jpg' alt="none">
+          <img class="img-class" :src="entity.image" alt="none">
       </div>
       <div class="entity-content">
           <div>
-      <h4>🚗{{entity.name}}</h4>
-      <h6>📍{{getRestaurantInfo(entity)}}</h6>
-      <p id="desc">📖{{entity.description}}</p>
+      <h4>{{entity.name}}</h4>
+      <h6><i class="fas fa-map-marker-alt"></i> &nbsp;{{getRestaurantInfo(entity)}}</h6>
+      <p id="desc"><i class="fas fa-info-circle"></i> &nbsp;{{entity.description}}</p>
       </div>
-    <div class="grade-div"><p>{{entity.averageGrade}}<i class="fas fa-star star"></i></p></div>
+    <div class="grade-div"><p>4.5<i class="fas fa-star star"></i></p></div>
     </div>
   </div>
 </template>
@@ -31,8 +31,8 @@ export default {
 
 <style scoped>
 .div-wrapper{
-    width: 16vw;
-    height: 45vh;
+    width: 21vw;
+    height: 55vh;
     border-radius: 10px;
     background: white;
     display: flex;
@@ -42,20 +42,14 @@ export default {
     position:relative;
 }
 .img-div{
-    width: 100%;
-    height: 40%;
     padding: 15px;
 }
 .img-class{
     width: 100%;
-    height: auto;
+    height: 170px;
     border-radius: 10px;
 }
 #desc{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
     padding: 10px;
     color: #5a5a73;
     font-weight: 400;
@@ -72,6 +66,7 @@ export default {
     position: absolute;
     bottom:5px;
     right:5px;
+    color: #FDCC0D ;  
 }
 .star{
    color: #FDCC0D ;  

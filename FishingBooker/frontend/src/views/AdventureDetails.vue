@@ -152,10 +152,16 @@ export default {
         }
     },
     created() {
-        axios.get(`${server.baseUrl}/adventure/${this.adventureId}`)
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+
+        axios.get(`${server.baseUrl}/adventure/${this.adventureId}`, { headers: headers })
         .then((response) => {
             this.adventure = response.data;
-            axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`)
+            axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`, { headers: headers })
             .then((res) => {
                 for(let period of res.data) {
                     console.log(res.data)

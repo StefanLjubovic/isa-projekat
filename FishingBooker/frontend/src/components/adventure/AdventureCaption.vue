@@ -39,6 +39,9 @@ export default ({
     computed:{
         userRole(){
             return this.$store.getters.getRole;
+        },
+        token(){
+            return this.$store.getters.getToken;
         }
     },
     methods: {
@@ -56,7 +59,14 @@ export default ({
             }).then((result) => {
                 if(result.isConfirmed) {
                     console.log(this.advID)
-                    axios.delete(`${server.baseUrl}/entity/delete/${this.advID}`)
+
+                    const headers = {
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        Accept: 'application/json',
+                        'Authorization': `Bearer ${this.token}`
+                    }
+
+                    axios.delete(`${server.baseUrl}/entity/delete/${this.advID}`, { headers: headers })
                     .then(() => {
                         this.$swal({
                             position: 'top-end',

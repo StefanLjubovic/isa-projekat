@@ -5,6 +5,7 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.Adventure;
 import com.backend.model.UnavailablePeriod;
 import com.backend.service.AdventureService;
+import com.backend.service.Base64ToImage;
 import com.backend.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,14 +33,24 @@ public class InstructorController {
     @Autowired
     AdventureService adventureService;
 
+    private Base64ToImage base64ToImage = new Base64ToImage();
+
     @GetMapping("/adventures")
     //@PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<List<EntityDTO>> getAllAdventuresFromInstructor(Principal instructor) {
+    public ResponseEntity<List<EntityDTO>> getAllAdventuresFromInstructor(Principal instructor) throws IOException {
         List<Adventure> adventures = adventureService.getAllAdventuresFromInstructor(instructor.getName());
 
         List<EntityDTO> dto = new ArrayList<>();
         for(Adventure a : adventures) {
-            EntityDTO entityDTO = new EntityDTO(a.getId(), a.getName(), a.getDescription(), a.getAverageGrade(), a.getImages(), a.getAddress());
+            String[] images = a.getImages().toArray(new String[a.getImages().size()]);
+
+            EntityDTO entityDTO;
+            if(images.length > 0) {
+                entityDTO = new EntityDTO(a.getId(), a.getName(), a.getDescription(), a.getAverageGrade(), base64ToImage.encodeImageToBase64(images[0]), a.getAddress());
+            } else {
+                entityDTO = new EntityDTO(a.getId(), a.getName(), a.getDescription(), a.getAverageGrade(), base64ToImage.encodeImageToBase64("/images/undefined/no_image.jpg"), a.getAddress());
+            }
+
             dto.add(entityDTO);
         }
 

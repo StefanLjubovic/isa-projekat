@@ -10,14 +10,14 @@ public class EntityDTO {
     private String name;
     private String description;
     private double averageGrade;
-    private Set<String> image;
+    private String image;
     private Address address;
     private String fishingInstructorName;
     private String entityType;
 
     public EntityDTO() {}
 
-    public EntityDTO(Integer id, String name, String description, double averageGrade, Set<String> image, Address address) {
+    public EntityDTO(Integer id, String name, String description, double averageGrade, String image, Address address) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,7 +26,7 @@ public class EntityDTO {
         this.address = address;
     }
 
-    public EntityDTO(Integer id, String name, String description, double averageGrade, Set<String> image, Address address, String entityType) {
+    public EntityDTO(Integer id, String name, String description, double averageGrade, String image, Address address, String entityType) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -76,11 +76,11 @@ public class EntityDTO {
         this.averageGrade = averageGrade;
     }
 
-    public Set<String> getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Set<String> image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
