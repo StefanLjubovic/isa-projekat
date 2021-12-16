@@ -28,8 +28,21 @@ const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada
         //console.log('frtch',response.data.roles)
     },
     async logout({commit}){
+        const token = state.token
         commit('setToken', {});
         commit('setRole', '');
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:8082/auth/logout',
+            'Authorization': `Bearer ${token}`
+        };
+        await axios(options)
+    },
+
+    async updateToken({commit}, data){
+        console.log('Data  '+data)
+        commit('setToken', data.accessToken);
+        commit('setRole', data.roles);
     }
 };
 

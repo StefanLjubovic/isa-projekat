@@ -92,6 +92,7 @@
 import useValidate from '@vuelidate/core'
 import {required, email, sameAs, minLength, maxLength, numeric, alpha} from '@vuelidate/validators'
 import Server from '../server';
+import {mapActions} from 'vuex';
 export function validName(name) {
   let validNamePattern = new RegExp("^[a-zA-ZšđžčćŠĐŽČĆ]+(?:[-'\\s][a-zA-ZšđžčćŠĐŽČĆ]+)*$");
   if (validNamePattern.test(name)){
@@ -158,6 +159,7 @@ export default ({
         }
     },
     methods: {
+        ...mapActions(['updateToken']),
         async saveChanges() {
             this.userBackup = this.user;
             this.editMode = !this.editMode;
@@ -220,7 +222,7 @@ export default ({
         },
         async changePassword(){
               await Server.changePassword(this.password.password,this.$store.getters.getToken)
-            .then(resp=> {
+            .then(async resp=> {
                 if(resp.success){
                     this.$swal.fire({
                         icon: 'success',
@@ -228,6 +230,7 @@ export default ({
                         text: 'Password updated successfully!',
                         confirmButtonColor: '#2c3e50'
                     })
+                    await this.updateToken(resp.data)
                 }else{
                     this.$swal.fire({
                         icon: 'error',

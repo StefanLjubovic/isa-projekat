@@ -305,6 +305,7 @@ export default {
       }
     },
     async mounted(){
+      console.log(this.$store.getters.getToken)
       if(this.$route.params.data == undefined)this.state = 0
       else this.state = this.$route.params.data
 

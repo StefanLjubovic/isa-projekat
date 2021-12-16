@@ -145,4 +145,10 @@ public class AuthenticationController {
         Admin addedAdmin = this.userService.saveAdmin(newAdminUser);
         return new ResponseEntity<>(addedAdmin, HttpStatus.CREATED);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> Logout() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

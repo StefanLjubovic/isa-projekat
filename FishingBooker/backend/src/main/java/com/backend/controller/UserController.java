@@ -2,14 +2,20 @@ package com.backend.controller;
 
 import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
+import com.backend.dto.UserTokenState;
 import com.backend.model.RegisteredUser;
 import com.backend.service.DeleteRequestService;
 import com.backend.service.UserService;
+import com.backend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,10 +27,16 @@ import java.util.List;
 public class UserController {
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
     UserService userService;
 
     @Autowired
     DeleteRequestService deleteRequestService;
+
+    @Autowired
+    private TokenUtils tokenUtils;
 
     @GetMapping(value="/getById/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
@@ -50,9 +62,24 @@ public class UserController {
 
     @PutMapping (value="/changePassword/{password}")
     @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
-    public ResponseEntity<Void> changePassword(@PathVariable String password, Principal principal){
+    public ResponseEntity<UserTokenState> changePassword(@PathVariable String password, Principal principal){
+        String email = principal.getName();
         userService.updatePasswod(principal.getName(), password);
-        return new ResponseEntity<>(HttpStatus.OK);
+        SecurityContextHolder.getContext().setAuthentication(null);
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    email, password));
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        RegisteredUser user = (RegisteredUser) authentication.getPrincipal();
+        String jwt = tokenUtils.generateToken(user.getUsername());
+        int expiresIn = tokenUtils.getExpiredIn();
+
+        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn,user.getRole().getName()));
     }
 
     @GetMapping("/allUsers")
