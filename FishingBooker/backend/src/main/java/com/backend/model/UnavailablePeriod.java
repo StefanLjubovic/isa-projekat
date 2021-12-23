@@ -19,6 +19,11 @@ public class UnavailablePeriod {
 
    public UnavailablePeriod() {}
 
+   public UnavailablePeriod(Date dateTime, Date endDate) {
+      this.fromDateTime=dateTime;
+      this.toDateTime=endDate;
+   }
+
    public Integer getId() {
       return id;
    }

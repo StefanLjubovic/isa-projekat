@@ -58,6 +58,9 @@ public class RentingEntity {
    @JsonIgnoreProperties("rentingEntity")
    private Set<Sale> sales = new HashSet<Sale>();
 
+   @Version
+   private Integer version;
+
    public RentingEntity() { }
 
    public RentingEntity(String name, String description, double averageGrade,Address address,Set<String> unallowedBehavior){
@@ -183,6 +186,14 @@ public class RentingEntity {
 
    public void setUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriod) {
       this.unavailablePeriods = unavailablePeriod;
+   }
+
+   public Integer getVersion() {
+      return version;
+   }
+
+   public void setVersion(Integer version) {
+      this.version = version;
    }
 
    public Set<PricelistItem> getPricelistItems() {
