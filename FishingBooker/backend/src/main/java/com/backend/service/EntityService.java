@@ -23,7 +23,6 @@ public class EntityService {
 
     public EntityService(){ }
 
-    @Cacheable("entity")
     public List<? extends RentingEntity> GetAllEntities(int state){
         List<? extends RentingEntity> entities=null;
         if(state==0)entities=entityRepository.getEntityByClass(Adventure.class);

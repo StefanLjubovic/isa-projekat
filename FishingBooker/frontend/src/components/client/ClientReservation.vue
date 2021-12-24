@@ -1,0 +1,210 @@
+<template>
+  <div id="app">
+  <div class="modal-overlay" @click="$emit('close-modal')"></div>
+  <div class="container">
+      <div class='wrapper'>
+        <div class="header-border">
+              <h2>Create reservation:</h2>
+         </div>
+         <div class="content">
+          <div class="left">
+              <h5 class="mb-5">{{GetEntityName()}}</h5>
+              <h5 class="mb-5">Reservation from:  &nbsp; 23.12.2021.</h5>
+              <h5 class="mb-5">Reservation to:  &nbsp; 25.12.2021.</h5>
+              <span class="mb-5"><h5 id="request">Additionall request:</h5> <span class="request-input"><input type="text" class="form-control request" v-model="currentRequest" /><i class="fas fa-plus fa-sm" @click="addRequest"></i></span></span>
+              <div class="dropdown-row mb-5">
+                  <h5 id="drop-lab">Requested:</h5>          
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{GetFirstRequest()}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li v-for="(request,index) in requests" :key="request">
+                            <span><a class="dropdown-item" href="#">{{request}} </a><i class="fas fa-minus" @click="removeRequest(index)"></i></span>
+                        </li>
+                    </div>
+            </div>
+</div>
+            <h5 class="mb-5">{{GetPersons()}}</h5>
+                      <div class="button-div">
+              <button class="btn droptdown-btn">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
+          </div>
+          </div>
+          </div>
+      </div>
+  </div>
+   </div>
+</template>
+
+<script>
+export default {
+    data(){
+        return{
+            requests: [],
+            currentRequest : '',
+            entity:{
+                maxPersons : 8,
+                type : 'adventure',
+                name : 'Marijina vikendica'
+            }
+        }
+    },
+    methods:{
+        addRequest(){
+            if(this.currentRequest =='') return;
+            this.requests.push(this.currentRequest)
+            this.currentRequest = '';
+        },
+        GetFirstRequest(){
+            if(this.requests.length)
+                return this.requests[0]
+            return 'No current requests.'
+        },
+        removeRequest(index){
+            this.requests.splice(index, 1)
+        },
+        GetPersons(){
+            if(this.entity.type == 'adventure') return 'Maximum persons per adventure: '+ this.entity.maxPersons;
+            let max = 0;
+            this.entity.rooms.map(room => {
+                max+=room.bedNumber
+            })
+            return 'Maximum persons: '+ max;
+        },
+        GetEntityName(){
+            if(this.entity.type =='adventure') return 'Adventure: '+this.entity.name;
+            else if(this.entity.type =='ship') return 'Ship: '+this.entity.name;
+            return 'Cottage: '+this.entity.name;
+        }
+    }
+}
+</script>
+
+<style scoped>
+#app {
+ position: absolute;
+ 
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ left:0;
+ top:0;
+ width: 100vw;
+ min-height: 100vh;
+ overflow-x: hidden;
+}
+
+.modal-overlay {
+ position: absolute;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ z-index: 98;
+ background-color: rgba(0, 0, 0, 0.3);
+}
+.container{
+     flex-direction: column;
+  justify-content: space-around;
+   width: 40%;
+   background: white;
+  z-index: 1000;
+   position: fixed;
+  border-radius: 16px;
+ padding: 25px;
+}
+    .wrapper{
+        height: 80vh;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .content{
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex: 17;
+    }
+    .left{
+        padding: 3rem;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        width: 100%;
+    }
+    .dropdown-row{
+        display:flex;
+        flex-direction: row;
+    }
+    .request-input{
+        flex:2;
+    }
+    .request{
+        width: 70%;
+        margin-right:1rem ;
+    }
+    .button-div{
+        justify-content: flex-end;
+        align-self: flex-end;
+        flex-direction: row;
+    }
+h2{
+    color: #5a5a73;
+}
+h5{
+    display: flex;
+    justify-content: flex-start;
+}
+i{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+     color: #0e0f40;
+     margin-right: 1rem;
+}
+.header-border{
+    width: 80%;
+    align-self: center;
+    border-bottom:1px solid #5a5a73;
+    flex: 1;
+}
+#request{
+    flex:1
+}
+
+span{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#drop-lab{
+    margin-right: 1rem;
+}
+
+.droptdown-btn{
+    width: 5vw;
+    height: 3rem;
+    color:white;
+    border-radius: 5px;
+  background: #0e0f40;
+}
+
+.cancel-btn{
+    width: 5vw;
+    height: 3rem;
+    background:white;
+    border-radius: 5px;
+  color: #0e0f40;
+  margin-left: 1rem;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
+}
+</style>

@@ -44,6 +44,10 @@
         </div>
     </div>
 
+        <transition name="fade" appear>
+    <ClientReservation v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
+
 
     <div id="page" v-if="adventure">
         <AdventureCaption :adventureName="adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
@@ -76,6 +80,7 @@
 </template>
 
 <script>
+import ClientReservation from "@/components/client/ClientReservation.vue"
 import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
 import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
 import AdventureTextDescription from "@/components/adventure/AdventureTextDescription.vue"
@@ -98,6 +103,7 @@ export default {
         ImageGallery,
         CalendarView,
         PricelistTable,
+        ClientReservation,
         Sales
     },
     props: [
@@ -115,7 +121,8 @@ export default {
                 expireDateTime: '',
                 additionalServices: '',
                 price: ''
-            }
+            },
+            displayReservationModal : false
         }
     },
     computed:{
@@ -210,7 +217,16 @@ export default {
             })
         },
         editEntity: function() {},
-        makeReservation: function() {},  
+        makeReservation: function() {
+            this.displayReservationModal = true;
+            document.getElementById('appContainer').style.overflow ='hidden';
+            document.getElementById('appContainer').style.height='100vh';
+        },  
+        closeModal: function(){
+            this.displayReservationModal = false;
+            document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+        }
     }
 }
 </script>
