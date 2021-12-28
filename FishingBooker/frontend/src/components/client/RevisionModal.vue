@@ -71,7 +71,6 @@ export default {
   z-index: 1000;
    position: fixed;
   border-radius: 16px;
- 
  padding: 25px;
 }
 .button-div{

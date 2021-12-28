@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +22,11 @@ public class ReservationController {
     ReservationService service;
 
     @PostMapping
+    @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Void> saveReservation(@RequestBody Reservation reservation) {
         if(reservation ==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
-        if(!service.Save(reservation)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
+        boolean saved = service.Save(reservation);
+        if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

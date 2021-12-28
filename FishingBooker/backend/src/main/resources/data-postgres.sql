@@ -20,7 +20,7 @@ INSERT INTO registered_user (type, reg_user_id, email, enabled, first_name, last
 VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdravko', 'Colic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 1, 2),
        ('INSTRUCTOR', nextval('user_seq_gen'), 'ana.gavrilovic247@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
-       ('CLIENT', nextval('user_seq_gen'), 'stefanljubovic@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1);
+       ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value)
@@ -28,8 +28,8 @@ VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE'
        (nextval('system_property_system_properties_id_seq'), 'MAIN_ADMIN_ID', '1');
 
 -- cottage
-INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name, address_id)
-VALUES (nextval('entity_seq_gen'), 4.8, 15, 'Prelepa vikendica uz pogled na jezero', 'Marijina vikendica', 2);
+INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name, version,address_id)
+VALUES (nextval('entity_seq_gen'), 4.8, 15, 'Prelepa vikendica uz pogled na jezero', 'Marijina vikendica',0 ,2);
 INSERT INTO cottage(entity_id, reg_user_id)
 VALUES (1, 3);
 INSERT INTO room(room_id, bed_number)
@@ -44,8 +44,8 @@ INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
 VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 5000, 'Per night', 1);
 
 -- adventure
-INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name, address_id)
-VALUES (nextval('entity_seq_gen'), 0, 0, 'Beautiful moments with beautiful nature and sun', 'Fishing in the sunset', 6);
+INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
+VALUES (nextval('entity_seq_gen'), 0, 0, 'Beautiful moments with beautiful nature and sun', 'Fishing in the sunset',0, 6);
 INSERT INTO adventure(max_persons, entity_id, reg_user_id)
 VALUES (5, 2, 2);
 INSERT INTO adventure_fishing_equipment(entity_id, fishing_equipment)

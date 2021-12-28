@@ -2,7 +2,9 @@ package com.backend.repository;
 import com.backend.model.RegisteredUser;
 import com.backend.model.Adventure;
 import com.backend.model.RentingEntity;
+import com.backend.model.UnavailablePeriod;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +26,7 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
 
     @Query(value = "select e from RentingEntity e left join fetch e.sales where e.id = :id")
     <T extends RentingEntity> T fetchById(@Param("id") Integer id);
+
+    @Query(value = "select e from RentingEntity e left join fetch e.unavailablePeriods where e.id = :id")
+    <T extends RentingEntity> T fetchWithPeriods(@Param("id") Integer id);
 }

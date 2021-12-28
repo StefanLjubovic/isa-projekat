@@ -35,7 +35,7 @@ public class Reservation {
    private double price;
 
    @Column(unique=true, nullable=false)
-   private Boolean isCanceled;
+   private Boolean isCanceled = false;
 
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "reg_user_id")
@@ -44,6 +44,18 @@ public class Reservation {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "entity_id")
    private RentingEntity rentingEntity;
+
+   public Reservation(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Client client, RentingEntity rentingEntity) {
+      this.id = id;
+      this.dateTime = dateTime;
+      this.durationInHours = durationInHours;
+      this.maxPersons = maxPersons;
+      this.additionalServices = new HashSet<>();
+      this.price = price;
+      this.isCanceled = false;
+      this.client = client;
+      this.rentingEntity = rentingEntity;
+   }
 
    public Reservation() { }
 

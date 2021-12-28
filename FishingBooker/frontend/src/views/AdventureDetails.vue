@@ -45,7 +45,7 @@
     </div>
 
         <transition name="fade" appear>
-    <ClientReservation v-if="displayReservationModal" @close-modal='closeModal'/>
+    <ClientReservation :rentingEntity="adventure" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
 

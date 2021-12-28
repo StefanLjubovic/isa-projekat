@@ -39,6 +39,15 @@ public class Address {
       this.country = country;
    }
 
+   public Address(Integer id, String streetName, String streetNumber, String postalCode, String city, String country) {
+      this.id = id;
+      this.streetName = streetName;
+      this.streetNumber = streetNumber;
+      this.postalCode = postalCode;
+      this.city = city;
+      this.country = country;
+   }
+
    public Integer getId() {
       return id;
    }

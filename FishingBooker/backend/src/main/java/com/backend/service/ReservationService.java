@@ -19,7 +19,6 @@ public class ReservationService {
     @Autowired
     MailService mailService;
 
-    @Transactional(readOnly = false)
     public Boolean Save(Reservation reservation){
         Reservation updatedReservation=entityService.updateUnavailablePeriod(reservation);
         if(updatedReservation==null)

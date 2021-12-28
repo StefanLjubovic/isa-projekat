@@ -117,7 +117,7 @@ export default ({
         }
     },
     async mounted() {
-        const resp=await Server.getLoggedUser(this.$store.getters.getToken)
+        const resp=await Server.getLoggedUser()
         this.user = resp.data
         this.userBackup = {...this.user};
     },

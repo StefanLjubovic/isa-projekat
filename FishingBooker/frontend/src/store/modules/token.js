@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const state = {
-    token : {},
+    token : '',
     role : '',
     longitude: '',
     latitude: '',

@@ -112,6 +112,16 @@ public class RentingEntity {
       this.address = entity.address;
    }
 
+   public RentingEntity(Integer id, String name, String description, double averageGrade, Address address) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+      this.averageGrade = averageGrade;
+      this.cancellationPercentage = cancellationPercentage;
+      this.address = address;
+      unavailablePeriods=new HashSet<>();
+   }
+
    public Address getAddress() {
       return address;
    }

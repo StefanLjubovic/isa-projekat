@@ -34,7 +34,7 @@ server.registerClient = async (client) =>{
 };
 
 server.getUserById = async (id) =>{
-    const token = localStorage.getters.token
+    const token = localStorage.getters.getToken
     const options ={
         method: 'GET',
         headers: {
@@ -50,7 +50,9 @@ server.getUserById = async (id) =>{
     .catch((error) => handleError(error));
 };
 
-server.getLoggedUser = async (token) =>{
+server.getLoggedUser = async () =>{
+    const token = localStorage.getters.getToken
+    console.log(localStorage.getters.getToken)
     const options ={
         method: 'GET',
         headers: {
@@ -89,6 +91,23 @@ server.saveDeleteRequest= async (content,token) =>{
             'Authorization': `Bearer ${token}`
         },
         url: server.baseUrl+`/user/deleteRequest/`,
+        data : content
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.saveReservation= async (content) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/`,
         data : content
     }; 
     return axios(options)

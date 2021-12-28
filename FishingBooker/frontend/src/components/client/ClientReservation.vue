@@ -8,12 +8,12 @@
          </div>
          <div class="content">
           <div class="left">
-              <h5 class="mb-5">{{GetEntityName()}}</h5>
-              <h5 class="mb-5">Reservation from:  &nbsp; 23.12.2021.</h5>
-              <h5 class="mb-5">Reservation to:  &nbsp; 25.12.2021.</h5>
-              <span class="mb-5"><h5 id="request">Additionall request:</h5> <span class="request-input"><input type="text" class="form-control request" v-model="currentRequest" /><i class="fas fa-plus fa-sm" @click="addRequest"></i></span></span>
-              <div class="dropdown-row mb-5">
-                  <h5 id="drop-lab">Requested:</h5>          
+              <h5 class="mb-4">{{GetEntityName()}}</h5>
+              <h5 class="mb-4">Reservation from:  &nbsp; 23.12.2021.</h5>
+              <h5 class="mb-4">Reservation to:  &nbsp; 25.12.2021.</h5>
+              <span class="mb-4 mr-2"><h5 id="request">Additionall request:</h5> <span class="request-input"><input type="text" class="form-control request" v-model="currentRequest" /><i class="fas fa-plus fa-sm" @click="addRequest"></i></span></span>
+              <div class="dropdown-row mb-4">
+                  <h5 id="drop-lab">Requested: </h5>          
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{GetFirstRequest()}}
@@ -25,9 +25,11 @@
                     </div>
             </div>
 </div>
-            <h5 class="mb-5">{{GetPersons()}}</h5>
+            <h5 class="mb-5">Maximum persons: {{GetPersons()}}</h5>
                       <div class="button-div">
-              <button class="btn droptdown-btn">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
+              <span><h4 id="price">Price : {{price}} rsd</h4><div class="btn1"><button class="btn droptdown-btn" @click="saveReservation">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
+              </div>
+              </span>
           </div>
           </div>
           </div>
@@ -37,7 +39,11 @@
 </template>
 
 <script>
+import server from '../../server/index';
 export default {
+    props:{
+        rentingEntity : Object
+    },
     data(){
         return{
             requests: [],
@@ -46,7 +52,10 @@ export default {
                 maxPersons : 8,
                 type : 'adventure',
                 name : 'Marijina vikendica'
-            }
+            },
+            price : 3000,
+            dateTime :new Date('12/23/2021'),
+            dateTo : new Date('12/25/2021'),
         }
     },
     methods:{
@@ -64,18 +73,53 @@ export default {
             this.requests.splice(index, 1)
         },
         GetPersons(){
-            if(this.entity.type == 'adventure') return 'Maximum persons per adventure: '+ this.entity.maxPersons;
+            if(this.entity.type == 'adventure') return this.entity.maxPersons;
             let max = 0;
             this.entity.rooms.map(room => {
                 max+=room.bedNumber
             })
-            return 'Maximum persons: '+ max;
+            return  max;
         },
         GetEntityName(){
             if(this.entity.type =='adventure') return 'Adventure: '+this.entity.name;
             else if(this.entity.type =='ship') return 'Ship: '+this.entity.name;
             return 'Cottage: '+this.entity.name;
-        }
+        },
+        async saveReservation(){
+            const diffTime = Math.abs(this.dateTo - this.dateTime);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const client=await server.getLoggedUser()
+            const reservation = {
+                rentingEntity : this.rentingEntity,
+                dateTime : this.dateTime,
+                client : client.data,
+                price : this.price,
+                isCanceled : false,
+                additionalServices : this.requests,
+                maxPersons : this.GetPersons(),
+                durationInHours : diffDays*24
+            }
+
+            await server.saveReservation(reservation)
+            .then(resp=> {
+                if(resp.success){
+                    this.$swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Reservation succesfully created!',
+                        confirmButtonColor: '#2c3e50'
+                    })
+                }
+        }).catch(resp=> {
+                    this.$swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: resp.data,
+                    })
+        })
+        this.$emit('close-modal')
+        
+}
     }
 }
 </script>
@@ -106,7 +150,7 @@ export default {
 .container{
      flex-direction: column;
   justify-content: space-around;
-   width: 40%;
+   width: 45%;
    background: white;
   z-index: 1000;
    position: fixed;
@@ -114,7 +158,7 @@ export default {
  padding: 25px;
 }
     .wrapper{
-        height: 80vh;
+        height: 70%;
         border-radius: 15px;
         display: flex;
         justify-content: center;
@@ -145,11 +189,26 @@ export default {
         width: 70%;
         margin-right:1rem ;
     }
+
+    .btn1{
+        display: flex;
+        justify-self: flex-end;
+        align-self: flex-end;
+        margin-left:11rem ;
+    }
     .button-div{
-        justify-content: flex-end;
+        justify-content: space-between;
         align-self: flex-end;
         flex-direction: row;
+        width: 100%;
     }
+
+  h4{
+      display: flex;
+      justify-items: flex-end;
+      align-self: flex-start;
+      border-bottom:2px solid #5a5a73;
+  }  
 h2{
     color: #5a5a73;
 }
