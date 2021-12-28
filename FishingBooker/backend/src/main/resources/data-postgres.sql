@@ -59,3 +59,14 @@ VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure'
 
 INSERT INTO subscriptions(client_id,entity_id)
 VALUES (4,1),(4,2);
+
+--reservation
+
+INSERT INTO reservation(reservation_id,date_time,duration_in_hours,is_canceled,max_persons,price,reg_user_id,entity_id)
+VALUES  (1,'2022-01-05',72,false,7,4000,4,1);
+
+INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
+ VALUES (1,'2022-01-05','2022-01-08');
+
+INSERT INTO renting_entity_unavailable_periods(renting_entity_entity_id,unavailable_periods_period_id)
+VALUES(1,1);

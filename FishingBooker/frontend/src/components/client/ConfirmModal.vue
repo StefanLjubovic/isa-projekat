@@ -4,7 +4,7 @@
    <div class="modal-inner">
      <h1>{{title}}</h1>
       <div class="form-group mt-4 button-div">
-        <button type="button" class="btn log-btn p-2">Yes</button>
+        <button type="button" class="btn log-btn p-2" @click="$emit('confirm')">Yes</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-cancelation')">No</button>
       </div>
 </div>
@@ -58,8 +58,8 @@ export default {
 .modal-inner{
   flex-direction: column;
   justify-content: space-around;
-  width: 22vw;
-  height: 30vh;
+  width: 30%;
+  height: 30%;
    background-color: #8495e8;
   z-index: 1000;
    position: fixed;

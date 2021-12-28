@@ -12,12 +12,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="entity in entities" :key="entity.name">
-      <td>{{entity.name}}</td>
-      <td>{{setDateFormat(entity.date)}}</td>
-      <td>{{entity.duration}} days</td>
-      <td>{{entity.price}}</td>
-      <td><i class="fas fa-window-close fa-2x icon" v-if="checkDate(entity)" @click="$emit('open-cancelation',entity)"></i></td>
+    <tr v-for="reservation in reservations" :key="reservation.id">
+      <td>{{reservation.entityName}}</td>
+      <td>{{setDateFormat(reservation.dateTime)}}</td>
+      <td>{{reservation.durationInHours}} days</td>
+      <td>{{reservation.price}}</td>
+      <td><i class="fas fa-window-close fa-2x icon" v-if="checkDate(reservation)" @click="$emit('open-cancelation',reservation)"></i></td>
     </tr>
   </tbody>
 </table>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  props:['state'],
+  props:['state','reservations'],
   emits:['open-complaint','open-cancelation'],
   updated(){
     if(this.state==4) this.entityName='Cottage';
@@ -35,39 +35,24 @@ export default {
   },
   methods:{
     checkDate(entity){
+      console.log(entity)
       var dt = new Date();
       dt.setDate(dt.getDate() + 3);
-      if(entity.date < dt)
+       var date = new Date(entity.dateTime );
+       console.log(date)
+       console.log(dt)
+      if(date < dt)
         return false
       return true
     },
-    setDateFormat(date){
+    setDateFormat(timestamp){
+      var date = new Date(timestamp);
         return date.toLocaleDateString("sr-RS")
     }
   },
   data(){
     return{
-      entityName: 'Cottage',
-      entities: [
-        {
-          name: 'Marijina vikendica',
-          date: new Date(2021, 11, 12) ,
-          duration: 5,
-          price: 50000
-        },
-        {
-          name: 'Marijina vikendica',
-          date: new Date(2021, 11, 15) ,
-          duration: 5,
-          price: 50000
-        },
-        {
-          name: 'Marijina vikendica',
-          date: new Date(2021, 11, 16) ,
-          duration: 5,
-          price: 50000
-        }
-      ]
+      entityName: 'Cottage'
     }
   },
   async mounted(){

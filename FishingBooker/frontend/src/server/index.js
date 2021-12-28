@@ -115,6 +115,40 @@ server.saveReservation= async (content) =>{
     .catch((error) => handleError(error));
 };
 
+
+server.getFutureReservations= async () =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/future-reservations`,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.cancelReservation= async (id) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/cancel-reservation/`+id,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+
 server.updateUser = async(data,token)=>{
     const options ={
         method: 'PUT',
@@ -130,6 +164,7 @@ server.updateUser = async(data,token)=>{
     .then(response => handleSuccess(response))
     .catch((error) => handleError(error));
 };
+
 
 server.changePassword = async(password,token)=>{
     const options ={

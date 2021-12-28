@@ -15,15 +15,15 @@
     <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
     <transition name="fade" appear>
-    <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle"/>
+    <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle" @confirm="cancelReservation"/>
     </transition>
     <transition name="fade" appear>
     <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
     </transition>
     <transition name="fade" appear>
-      <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation" :title="confirmTitle"/>
+      <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation" @confirm="cancelReservation" :title="confirmTitle"/>
     </transition>
-    <ClientReservations v-if="state==7" @open-cancelation="openCancelation"/>
+    <ClientReservations v-if="state==7" @open-cancelation="openCancelation" :reservations = "reservations"/>
     <MyProfile v-if="state == 3"/>
     <h1 class="mt-4 subscription-title container" v-if="state==8" >My Subscriptions</h1>
     <div v-if="state==8" class="adventures-wrapper">
@@ -166,7 +166,9 @@ export default {
         historySort : '',
         selectedEntityId: undefined,
         selectedCottageId: undefined,
-        selectedAdventureId: undefined
+        selectedAdventureId: undefined,
+        selectedReservation : {},
+        reservations : []
       }
     },
     computed:{
@@ -275,11 +277,19 @@ export default {
          document.getElementById('appContainer').style.overflow = 'unset';
         document.getElementById('appContainer').style.height='unset';
       },
-       openCancelation: function(entity){
-         console.log(entity)
+       openCancelation: function(reservation){
+        this.selectedReservation = reservation
         this.showCancelation=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
+      },
+      //Cancel future reservation
+      async cancelReservation(){
+        this.showCancelation=false;
+         document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+        const resp =await Server.cancelReservation(this.selectedReservation.id)
+        this.reservations = resp.data;
       },
       editCottage(id){
         this.selectedCottageId = id;
@@ -315,6 +325,11 @@ export default {
       if(this.state==0) this.searchTitle="Adventures we offer";
       else if(this.state==1)this.searchTitle="Ships we offer"
       else if(this.state==2) this.searchTitle="Cottages we offer";
+      if(this.userRole == 'ROLE_CLIENT'){
+         const respRes=await Server.getFutureReservations()
+          this.reservations=JSON.parse(JSON.stringify(respRes.data));
+          console.log( this.reservations)
+      }
     }
 }
 </script>
