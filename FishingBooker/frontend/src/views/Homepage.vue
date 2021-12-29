@@ -15,7 +15,7 @@
     <div v-if="userRole == 'ROLE_CLIENT'">
     <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' :reservations="reservations" @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
     <transition name="fade" appear>
-    <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle" @confirm="cancelReservation"/>
+    <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle" @save-complaint="saveComplaint"/>
     </transition>
     <transition name="fade" appear>
     <RevisionModal v-if="showRevision" @close-modal="closeRevision" @submit-revision="submitRevision"/>
@@ -182,8 +182,6 @@ export default {
     methods:{
 
       changeState: async function(state){
-        this.state=state;
-        console.log(state);
 
         if(state == 0 || state == 1 || state == 2) {
           if(this.userRole == 'ROLE_INSTRUCTOR') {
@@ -210,17 +208,14 @@ export default {
             else if (state == 5) classType = "Ship"
             const respResHistory=await Server.getHistoryOfReservations(classType)
             this.reservations=JSON.parse(JSON.stringify(respResHistory.data));
-            console.log(this.reservations)
           }
           if (state ==7 && (this.userRole == 'ROLE_CLIENT')){
             const respRes=await Server.getFutureReservations()
             this.reservations=JSON.parse(JSON.stringify(respRes.data));
-            console.log(this.reservations)
           }
         if (state==8){
           const resp=await Server.getSubscriptions(this.$store.getters.getToken)
           this.entitiesForDisplay=resp.data;
-          console.log(resp.data);
           this.entities=resp.data;
         }
 
@@ -232,10 +227,10 @@ export default {
         else if(state==6) this.searchTitle="History of reserved adventures"
 
         else if(state==21) this.searchTitle=""
+                this.state=state;
       },
 
       filterSort: function(sort,name,address,mark){
-        console.log(sort,name,address,mark)
         this.entitiesForDisplay=this.entities.filter(
           (entity) => 
                     entity.name.toLowerCase().includes(name.toLowerCase()) &&
@@ -249,7 +244,6 @@ export default {
           );
           if(sort=="Ime") this.entitiesForDisplay.sort(function(a,b){return ('' + a.name).localeCompare(b.name)});
           else if(sort=="Ocena")this.entitiesForDisplay.sort(function(a, b){return a.averageGrade-b.averageGrade});
-        console.log(this.entities)
       },
       openEntityDetails: function(entity) {
         if(this.state == 0 || (this.state ==8 && entity.entityType == 'Adventure')){
@@ -267,11 +261,23 @@ export default {
         document.getElementById('appContainer').style.overflow = 'unset';
         document.getElementById('appContainer').style.height='unset';
       },
-      openComplaint: function(entity){
-        console.log(entity)
+      openComplaint: function(reservation){
+        console.log(reservation)
         this.showComplaint=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
+        this.selectedReservation = reservation
+      },
+      async saveComplaint(content){
+          this.showComplaint=false;
+        document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+        const complaintDTO={
+          content : content,
+          entityId : this.selectedReservation.entityId
+        }
+        console.log(complaintDTO)
+         await Server.saveComplaint(complaintDTO)
       },
       closeRevision: function(){
           this.showRevision=false;
@@ -321,7 +327,6 @@ export default {
         this.state = 27;
       },
       editAdventure(id) {
-        console.log("adve" + id)
         this.selectedAdventureId = id;
         this.state = 32;
       },
@@ -346,7 +351,6 @@ export default {
       const resp=await Server.getAllEntities(this.state)
       this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
       this.entities=resp.data;
-      console.log(resp.data)
       if(this.state==0) this.searchTitle="Adventures we offer";
       else if(this.state==1)this.searchTitle="Ships we offer"
       else if(this.state==2) this.searchTitle="Cottages we offer";

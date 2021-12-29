@@ -1,5 +1,6 @@
 package com.backend.controller;
 
+import com.backend.dto.ComplaintDTO;
 import com.backend.dto.EntityDTO;
 import com.backend.dto.SaleDTO;
 import com.backend.model.Adventure;
@@ -87,5 +88,12 @@ public class EntityController {
             dto.add(saleDTO);
         }
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/save-complaint")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Void> createClientComplaint(@RequestBody ComplaintDTO dto,Principal principal){
+        entityService.createComplaint(dto,principal.getName());
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

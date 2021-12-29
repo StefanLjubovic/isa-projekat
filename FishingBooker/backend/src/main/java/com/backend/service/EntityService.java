@@ -1,7 +1,9 @@
 package com.backend.service;
 
+import com.backend.dto.ComplaintDTO;
 import com.backend.model.*;
 import com.backend.repository.IAddressRepository;
+import com.backend.repository.IComplaintRepository;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class EntityService {
 
     @Autowired
     IUserRepository userRepository;
+
+    @Autowired
+    IComplaintRepository complaintRepository;
 
     public EntityService(){ }
 
@@ -111,5 +116,10 @@ public class EntityService {
             }
         }
         return null;
+    }
+
+    public void createComplaint(ComplaintDTO dto, String email) {
+        Complaint complaint = new Complaint(dto.getContent(),new Client(userRepository.findByEmail(email)),entityRepository.findById(dto.getEntityId()).get());
+        complaintRepository.save(complaint);
     }
 }

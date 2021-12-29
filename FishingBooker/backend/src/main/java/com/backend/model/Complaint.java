@@ -23,6 +23,12 @@ public class Complaint {
 
    public Complaint() { }
 
+   public Complaint(String content, Client client, RentingEntity rentingEntity) {
+      this.content = content;
+      this.client = client;
+      this.rentingEntity = rentingEntity;
+   }
+
    public Integer getId() {
       return id;
    }

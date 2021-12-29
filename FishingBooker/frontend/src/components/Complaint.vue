@@ -3,9 +3,9 @@
   <div class="modal-overlay" @click="$emit('close-modal')"></div>
    <div class="modal-inner">
      <h1>What didnt you like?</h1>
-      <textarea id="w3review" name="w3review" rows="6" cols="50" class="mt-4"/>
+      <textarea id="w3review" name="w3review" rows="6" cols="50" class="mt-4" v-model="content"/>
       <div class="form-group mt-4 button-div">
-        <button type="button" class="btn log-btn p-2">Submit</button>
+        <button type="button" class="btn log-btn p-2" @click="$emit('save-complaint',content)">Submit</button>
        <button type="button" class="btn cancel-btn p-2" @click="$emit('close-modal')">Cancel</button>
       </div>
 </div>
@@ -14,7 +14,12 @@
 
 <script>
 export default {
-  props: ['showModal'],
+  props: ['showModal','save-complaint'],
+  data(){
+    return{
+      content: ''
+    }
+  }
 }
 </script>
 
@@ -52,7 +57,7 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   width: 25vw;
-  height: 40vh;
+  height: 50%;
    background-color: #8495e8;
   z-index: 1000;
    position: fixed;
@@ -80,6 +85,7 @@ export default {
 textarea{
     border-radius: 5px;
     border:none;
+    width: 100%;
     height: 15vh;
 }
 
