@@ -13,12 +13,12 @@
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
-    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
+    <ClientHistory v-if="state==4 || state==5 || state==6" :state='state' :reservations="reservations" @open-complaint="openComplaint" @open-revision="openRevision" :sort="historySort"/>
     <transition name="fade" appear>
     <Complaint v-if="showComplaint" @close-modal="closeComplaint" :title="confirmTitle" @confirm="cancelReservation"/>
     </transition>
     <transition name="fade" appear>
-    <RevisionModal v-if="showRevision" @close-modal="closeRevision"/>
+    <RevisionModal v-if="showRevision" @close-modal="closeRevision" @submit-revision="submitRevision"/>
     </transition>
     <transition name="fade" appear>
       <ConfirmModal v-if="showCancelation" @close-cancelation="closeCancelation" @confirm="cancelReservation" :title="confirmTitle"/>
@@ -203,8 +203,20 @@ export default {
             this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
             this.entities=resp.data;
           }
-
         }
+          if((state == 4 || state ==5 || state == 6)&& (this.userRole == 'ROLE_CLIENT')){
+            let classType = "Cottage"
+            if(state == 6) classType = "Adventure"
+            else if (state == 5) classType = "Ship"
+            const respResHistory=await Server.getHistoryOfReservations(classType)
+            this.reservations=JSON.parse(JSON.stringify(respResHistory.data));
+            console.log(this.reservations)
+          }
+          if (state ==7 && (this.userRole == 'ROLE_CLIENT')){
+            const respRes=await Server.getFutureReservations()
+            this.reservations=JSON.parse(JSON.stringify(respRes.data));
+            console.log(this.reservations)
+          }
         if (state==8){
           const resp=await Server.getSubscriptions(this.$store.getters.getToken)
           this.entitiesForDisplay=resp.data;
@@ -266,12 +278,25 @@ export default {
         document.getElementById('appContainer').style.overflow = 'unset';
         document.getElementById('appContainer').style.height='unset';
       },
-      openRevision: function(entity){
-        console.log(entity)
+      openRevision: function(reservation){
+        this.selectedReservation = reservation;
         this.showRevision=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
       },
+       submitRevision: async function(description,rating){
+        this.showRevision=false;
+        document.getElementById('appContainer').style.overflow = 'unset';
+        document.getElementById('appContainer').style.height='unset';
+        const revisionDTO = {
+          content :description,
+          isApproved : false,
+          mark : rating,
+          reservationId : this.selectedReservation.id
+        }
+        await Server.saveClientRevision(revisionDTO)
+      },
+
       closeCancelation: function(){
         this.showCancelation=false;
          document.getElementById('appContainer').style.overflow = 'unset';
@@ -325,11 +350,6 @@ export default {
       if(this.state==0) this.searchTitle="Adventures we offer";
       else if(this.state==1)this.searchTitle="Ships we offer"
       else if(this.state==2) this.searchTitle="Cottages we offer";
-      if(this.userRole == 'ROLE_CLIENT'){
-         const respRes=await Server.getFutureReservations()
-          this.reservations=JSON.parse(JSON.stringify(respRes.data));
-          console.log( this.reservations)
-      }
     }
 }
 </script>

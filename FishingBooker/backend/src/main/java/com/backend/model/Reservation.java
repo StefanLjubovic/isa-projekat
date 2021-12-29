@@ -20,10 +20,10 @@ public class Reservation {
    @Column(unique=true, nullable=false)
    private Date dateTime;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private int durationInHours;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private int maxPersons;
 
    @ElementCollection(fetch = FetchType.EAGER)
@@ -31,10 +31,10 @@ public class Reservation {
    @Column(name = "additional_services")
    private Set<String> additionalServices = new HashSet<String>();
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private double price;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private Boolean isCanceled = false;
 
    @ManyToOne(fetch = FetchType.EAGER)

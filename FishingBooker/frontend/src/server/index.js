@@ -148,6 +148,39 @@ server.cancelReservation= async (id) =>{
     .catch((error) => handleError(error));
 };
 
+server.getHistoryOfReservations= async (classType) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/history-reservations/`+classType,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.saveClientRevision= async (content) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/save-revision/`,
+        data : content
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 
 server.updateUser = async(data,token)=>{
     const options ={

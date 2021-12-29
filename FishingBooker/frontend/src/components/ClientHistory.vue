@@ -12,13 +12,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="entity in entities" :key="entity.name">
-      <td>{{entity.name}}</td>
-      <td>{{setDateFormat(entity.date)}}</td>
-      <td>{{entity.duration}} days</td>
-      <td>{{entity.price}}</td>
-      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint',entity)"></i></td>
-      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-revision',entity)"></i></td>
+    <tr v-for="reservation in reservationsForDisplay" :key="reservation.id">
+      <td>{{reservation.entityName}}</td>
+      <td>{{setDateFormat(reservation.dateTime)}}</td>
+      <td>{{reservation.durationInHours}} hours</td>
+      <td>{{reservation.price}}</td>
+      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint',reservation)"></i></td>
+      <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-revision',reservation)"></i></td>
     </tr>
   </tbody>
 </table>
@@ -27,13 +27,12 @@
 
 <script>
 export default {
-  props:['state','sort'],
+  props:['state','sort','reservations'],
   emits:['open-complaint','open-revision'],
   updated(){
-    console.log(this.$props)
-    if(this.$props.sort == 'Price')this.entities.sort(function(a, b){return a.price-b.price});
-    if(this.$props.sort == 'Duration')this.entities.sort(function(a, b){return a.duration-b.duration});
-    if(this.$props.sort == 'Date')this.entities.sort(function(a, b){ return new Date(b.date) - new Date(a.date);});
+    if(this.$props.sort == 'Price')this.reservationsForDisplay.sort(function(a, b){return a.price-b.price});
+    if(this.$props.sort == 'Duration')this.reservationsForDisplay.sort(function(a, b){return a.durationInHours-b.durationInHours});
+    if(this.$props.sort == 'Date')this.reservationsForDisplay.sort(function(a, b){ return new Date(b.dateTime) - new Date(a.dateTime);});
     if(this.state==4) this.entityName='Cottage';
     else if(this.state==5) this.entityName='Ship';
     else if(this.state==6) this.entityName='Adventure';
@@ -41,41 +40,18 @@ export default {
   data(){
     return{
       entityName: 'Cottage',
-      entities: [
-        {
-          name: 'Fruskogorska vikendica',
-          date: new Date(2021, 9, 9),
-          duration: 7,
-          price: 10000
-        },
-        {
-          name: 'Palicka vikendica',
-          date: new Date(2021, 10, 11),
-          duration: 4,
-          price: 30000
-        },
-        {
-          name: 'Marijina vikendica',
-          date: new Date(2021, 6, 5),
-          duration: 11,
-          price: 20000
-        },
-        {
-          name: 'Petrovaradinska vikendica',
-          date: new Date(2021, 12, 5),
-          duration: 12,
-          price: 50000
-        },
-      ]
+      reservationsForDisplay : []
     }
   },
   mounted(){
     if(this.state==4) this.entityName='Cottage';
     else if(this.state==5) this.entityName='Ship';
     else if(this.state==6) this.entityName='Adventure';
+    this.reservationsForDisplay = JSON.parse(JSON.stringify(this.reservations));
   },
   methods:{
-    setDateFormat(date){
+     setDateFormat(timestamp){
+      var date = new Date(timestamp);
         return date.toLocaleDateString("sr-RS")
     }
   }

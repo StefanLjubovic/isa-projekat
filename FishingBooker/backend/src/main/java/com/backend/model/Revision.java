@@ -25,6 +25,13 @@ public class Revision {
 
    public Revision() { }
 
+   public Revision(String content, int mark, Boolean isApproved, Reservation reservation) {
+      this.content = content;
+      this.mark = mark;
+      this.isApproved = isApproved;
+      this.reservation = reservation;
+   }
+
    public Integer getId() { return id; }
 
    public void setId(Integer id) { this.id = id; }

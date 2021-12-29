@@ -1,9 +1,7 @@
 package com.backend.service;
 
 import com.backend.dto.ReservationDTO;
-import com.backend.model.RentingEntity;
-import com.backend.model.Reservation;
-import com.backend.model.UnavailablePeriod;
+import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +69,12 @@ public class ReservationService {
         );
         entityRepository.save(entityToUpdate);
         return entityToUpdate;
+    }
+
+
+    public List<ReservationDTO> getHistoryOfReservations(String email,String classType){
+        if(classType.equals("Adventure")) return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Adventure.class);
+        else if(classType.equals("Cottage")) return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Cottage.class);
+        return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Ship.class);
     }
 }
