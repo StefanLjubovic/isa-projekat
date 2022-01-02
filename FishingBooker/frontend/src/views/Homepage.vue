@@ -197,7 +197,7 @@ export default {
               this.entitiesForDisplay = response.data;
             })
           } else {
-            const resp=await Server.getAllEntities(this.state)
+            const resp=await Server.getAllEntities(state)
             this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
             this.entities=resp.data;
           }

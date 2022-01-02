@@ -44,8 +44,15 @@ export default ({
             return this.$store.getters.getToken;
         }
     },
+    async mounted (){
+        const resp=await server.checkIfSubscibed(this.advID)
+        console.log(resp.data)
+        if(resp.data == true) this.subscribed = true
+        else this.subscribed = false
+    },
     methods: {
-        toggleSubscribe: function() {
+        toggleSubscribe: async function() {
+             await server.alterSubscriptions(this.advID)
             this.subscribed = !this.subscribed;
         },
         deleteEntity : function() {

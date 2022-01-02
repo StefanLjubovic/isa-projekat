@@ -5,6 +5,7 @@ import com.backend.dto.UpdateProfileDTO;
 import com.backend.dto.UserRequest;
 import com.backend.model.*;
 import com.backend.repository.IAddressRepository;
+import com.backend.repository.IEntityRepository;
 import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -28,6 +31,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private IEntityRepository entityRepository;
 
     @Autowired
     private VerificationTokenService verificationTokenService;
@@ -139,5 +145,15 @@ public class UserService {
     public Boolean hasAdminChangedInitialPassword(String email) {
         Admin admin = (Admin) userRepository.findByEmail(email);
         return admin.isInitialPasswordChanged();
+    }
+
+    public void  alterSubscriptions(String email, Integer id){
+        Client client = userRepository.fetchClientWithSubscriptions(email);
+        RentingEntity entityToAdd = client.getSubscriptions()
+                .stream()
+                .filter(e -> e.getId().equals(id)).findFirst().orElse(null);
+        if(entityToAdd == null)client.getSubscriptions().add(entityRepository.findById(id).get());
+        else client.getSubscriptions().remove(entityToAdd);
+        userRepository.save(client);
     }
 }

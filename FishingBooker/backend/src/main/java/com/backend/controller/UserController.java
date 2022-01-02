@@ -4,6 +4,7 @@ import com.backend.dto.RegisteredUserDTO;
 import com.backend.dto.UpdateProfileDTO;
 import com.backend.dto.UserTokenState;
 import com.backend.model.RegisteredUser;
+import com.backend.model.RentingEntity;
 import com.backend.service.DeleteRequestService;
 import com.backend.service.UserService;
 import com.backend.util.TokenUtils;
@@ -114,5 +115,12 @@ public class UserController {
     public ResponseEntity<Boolean> hasAdminChangedInitialPassword(Principal admin) {
         Boolean initialPasswordChanged = userService.hasAdminChangedInitialPassword(admin.getName());
         return new ResponseEntity<>(initialPasswordChanged, HttpStatus.OK);
+    }
+
+    @PutMapping("/alter-subscriptions/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Void> alterSubscriptions(@PathVariable Integer id, Principal principal) {
+        userService.alterSubscriptions(principal.getName(),id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -19,10 +19,11 @@
 
 <script>
 import moment from 'moment'
-
+import server from '../../server';
 export default ({
     props: {
-        sales: Array
+        sales: Array,
+        adventure: Object
     },
     computed:{
         userRole(){
@@ -30,7 +31,7 @@ export default ({
         }
     },
     methods: {
-        displaySaleInfo: function(sale) {
+        displaySaleInfo: async function(sale) {
             if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR' || this.userRole == ''){
                 this.$swal({
                     title: '<h2>SALE INFO</h2>',
@@ -61,7 +62,38 @@ export default ({
                     confirmButtonText: 'Book!',
                     cancelButtonText: 'No',
                     confirmButtonColor: '#2c3e50'
-                })
+                }).then(async (result) => {
+                    if (result.value) {
+                        const client=await server.getLoggedUser()
+                        const reservation = {
+                            rentingEntity : this.adventure,
+                            dateTime : sale.dateTimeFrom,
+                            client : client.data,
+                            price : sale.price,
+                            isCanceled : false,
+                            additionalServices : sale.additionalServices,
+                            maxPersons : sale.maximumPersons,
+                            durationInHours : sale.durationInHours
+                        }
+                        await server.saveReservation(reservation)
+                            .then(resp=> {
+                                if(resp.success){
+                                    this.$swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: 'Reservation succesfully created!',
+                                        confirmButtonColor: '#2c3e50'
+                                    })
+                                }
+                        }).catch(resp=> {
+                                    this.$swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: resp.data,
+                                    })
+                        })
+                    }
+                });
             }
         },
         dateFormat(value) {

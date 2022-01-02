@@ -198,6 +198,22 @@ server.saveComplaint= async (content) =>{
     .catch((error) => handleError(error));
 };
 
+server.checkIfSubscibed= async (id) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/entity/check-subscription/`+id,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 server.updateUser = async(data,token)=>{
     const options ={
         method: 'PUT',
@@ -208,6 +224,22 @@ server.updateUser = async(data,token)=>{
         },
         url: server.baseUrl+`/user/update/`,
         data : data
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.alterSubscriptions = async(id)=>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/user/alter-subscriptions/`+id,
     }; 
     return axios(options)
     .then(response => handleSuccess(response))

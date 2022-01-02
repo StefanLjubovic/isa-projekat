@@ -96,4 +96,10 @@ public class EntityController {
         entityService.createComplaint(dto,principal.getName());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/check-subscription/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Boolean> checkIfSubscribed(@PathVariable Integer id, Principal principal) {
+        return new ResponseEntity<>(entityService.checkIfSubscribed(principal.getName(), id), HttpStatus.OK);
+    }
 }

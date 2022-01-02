@@ -5,7 +5,6 @@ import java.util.*;
 
 @Entity
 public class UnavailablePeriod {
-
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name="period_id", unique=true, nullable=false)

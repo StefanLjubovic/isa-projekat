@@ -2,10 +2,7 @@ package com.backend.service;
 
 import com.backend.dto.ComplaintDTO;
 import com.backend.model.*;
-import com.backend.repository.IAddressRepository;
-import com.backend.repository.IComplaintRepository;
-import com.backend.repository.IEntityRepository;
-import com.backend.repository.IUserRepository;
+import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,7 @@ public class EntityService {
 
     @Autowired
     IComplaintRepository complaintRepository;
+
 
     public EntityService(){ }
 
@@ -116,6 +114,12 @@ public class EntityService {
             }
         }
         return null;
+    }
+
+    public boolean checkIfSubscribed(String email,Integer entityId){
+        RentingEntity e = entityRepository.checkIfSubscribed(email,entityId);
+        if(e == null) return false;
+        return true;
     }
 
     public void createComplaint(ComplaintDTO dto, String email) {

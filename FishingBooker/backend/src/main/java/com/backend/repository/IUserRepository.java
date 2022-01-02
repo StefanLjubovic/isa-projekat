@@ -4,6 +4,7 @@ import com.backend.dto.RegisteredUserDTO;
 import com.backend.model.Client;
 import com.backend.model.FishingInstructor;
 import com.backend.model.RegisteredUser;
+import com.backend.model.RentingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +28,7 @@ public interface IUserRepository extends JpaRepository<RegisteredUser, Integer> 
 
     @Query(value = "select c from Client c left join fetch c.subscriptions")
     List<Client> fetchAllClients();
+
+    @Query(value="select client from Client client left join fetch client.subscriptions where client.email = ?1" )
+    Client fetchClientWithSubscriptions(String email);
 }

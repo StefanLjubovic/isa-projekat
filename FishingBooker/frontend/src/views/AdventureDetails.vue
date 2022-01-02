@@ -57,7 +57,7 @@
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
-                <Sales :sales="adventure.sales"/><br/>
+                <Sales :sales="adventure.sales" :adventure="adventure"/><br/>
 
                 <div class="btn-placeholder">
                     <h2>Schedule for this adventure</h2>
@@ -122,7 +122,7 @@ export default {
                 additionalServices: '',
                 price: ''
             },
-            displayReservationModal : false
+            displayReservationModal : false,
         }
     },
     computed:{
@@ -162,6 +162,7 @@ export default {
         }
     },
     created() {
+
         const headers = {
             'Content-Type': 'application/json;charset=UTF-8',
                 Accept: 'application/json',
