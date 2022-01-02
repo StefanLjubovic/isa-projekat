@@ -246,6 +246,22 @@ server.alterSubscriptions = async(id)=>{
     .catch((error) => handleError(error));
 };
 
+server.getEntitiesOnSale = async(state)=>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/entity/get-on-sale/`+state,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 
 server.changePassword = async(password,token)=>{
     const options ={

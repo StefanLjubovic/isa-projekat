@@ -126,4 +126,12 @@ public class EntityService {
         Complaint complaint = new Complaint(dto.getContent(),new Client(userRepository.findByEmail(email)),entityRepository.findById(dto.getEntityId()).get());
         complaintRepository.save(complaint);
     }
+
+    public List<? extends RentingEntity> getEntitiesOnSale(int state){
+        List<? extends RentingEntity> entities=null;
+        if(state==0)entities=entityRepository.getEntitiesOnSale(Adventure.class);
+        else if(state==1)entities=entityRepository.getEntitiesOnSale(Ship.class);
+        else if(state==2) entities=entityRepository.getEntitiesOnSale(Cottage.class);
+        return entities;
+    }
 }

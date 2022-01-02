@@ -3,7 +3,7 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=30" :searchTitle="searchTitle"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=30" :searchTitle="searchTitle" @get-offers="getOffers"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
@@ -227,7 +227,7 @@ export default {
         else if(state==6) this.searchTitle="History of reserved adventures"
 
         else if(state==21) this.searchTitle=""
-                this.state=state;
+        this.state=state;
       },
 
       filterSort: function(sort,name,address,mark){
@@ -314,7 +314,6 @@ export default {
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
       },
-      //Cancel future reservation
       async cancelReservation(){
         this.showCancelation=false;
          document.getElementById('appContainer').style.overflow = 'unset';
@@ -342,6 +341,19 @@ export default {
       },
       sortHistory: function(value){
         this.historySort = value
+      },
+      async getOffers(offerActive){
+        console.log(offerActive)
+        if(!offerActive && (this.state== 1 || this.state==2 || this.state==3)){
+        const resp=await Server.getAllEntities(this.state)
+        this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+        this.entities = resp.data
+        }else if(offerActive && (this.state== 1 || this.state==2 || this.state==3)){ 
+          const resp=await Server.getEntitiesOnSale(this.state)
+        this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
+        console.log(resp.data)
+        this.entities = resp.data
+        }
       }
     },
     async mounted(){

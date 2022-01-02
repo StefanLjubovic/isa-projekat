@@ -4,7 +4,7 @@
       <h1>
         {{ searchTitle }}
       </h1>
-      <button type="button" class="btn btn-success" v-if="
+      <button type="button" class="btn btn-success" v-bind:class="{ 'active': offerActivate }" @click="getOffers" v-if="
           !searchTitle.includes('History') &&
           userRole != 'ROLE_COTTAGE_OWNER' &&
           userRole != 'ROLE_SHIP_OWNER' &&
@@ -12,7 +12,7 @@
         Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i>
       </button>
     </div>
-    <div class="filter-div" v-if="!searchTitle.includes('History')">
+     <div class="filter-div" v-if="!searchTitle.includes('History')">
       <div class="dropdown">
         <button class="btn droptdown-btn dropdown-toggle" ref="btnToggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -83,6 +83,8 @@
   </div>
 </template>
 
+
+
 <script>
 export default {
   data() {
@@ -91,14 +93,26 @@ export default {
       name: "",
       address: "",
       mark: "",
+      offerActivate : false
     };
   },
   props: ["searchTitle"],
+  emits:['get-offers'],
   computed: {
     userRole() {
       return this.$store.getters.getRole;
     },
   },
+  watch: {
+    searchTitle(){
+     this.offerActivate = false
+    this.$emit('get-offers',this.offerActivate)
+    }
+  },
+  // updated(){
+  //   this.offerActivate = false
+  //    this.$emit('get-offers',this.offerActivate)
+  // },
   methods: {
     changeButtonState: function (state) {
       this.sort = state;
@@ -106,6 +120,10 @@ export default {
     },
     sortAndFilterEntities: function () {
       this.$emit("filter-sort", this.sort, this.name, this.address, this.mark);
+    },
+    getOffers(){
+      this.offerActivate= !this.offerActivate
+      this.$emit('get-offers',this.offerActivate)
     },
     sortHistory: function (value) {
       console.log(value);

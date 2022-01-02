@@ -73,7 +73,9 @@ public class ReservationService {
 
 
     public List<ReservationDTO> getHistoryOfReservations(String email,String classType){
-        if(classType.equals("Adventure")) return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Adventure.class);
+        if(classType.equals("Adventure")) {
+            List<ReservationDTO> r =reservationRepository.fetchHistoryByClientEmail(email,new Date(), Adventure.class);
+            return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Adventure.class);}
         else if(classType.equals("Cottage")) return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Cottage.class);
         return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Ship.class);
     }

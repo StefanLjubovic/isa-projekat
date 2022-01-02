@@ -102,4 +102,11 @@ public class EntityController {
     public ResponseEntity<Boolean> checkIfSubscribed(@PathVariable Integer id, Principal principal) {
         return new ResponseEntity<>(entityService.checkIfSubscribed(principal.getName(), id), HttpStatus.OK);
     }
+
+    @GetMapping(value="/get-on-sale/{state}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<EntityDTO>>getEntitiesOnSale(@PathVariable int state) throws IOException {
+        Collection<? extends RentingEntity> entities=entityService.getEntitiesOnSale(state);
+        Collection<EntityDTO> dto = getEntityDTOS(entities);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }
