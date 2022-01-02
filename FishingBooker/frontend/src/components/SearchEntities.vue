@@ -44,10 +44,25 @@
           v-model="address" />
       </div>
       <div class="form-group">
+         <input
+          type="date"
+          id = "dateFromfield"
+          class="form-control"
+          :formatter="format"
+          v-model="dateFrom"/>
+      </div>
+      <div class="form-group">
+        <input
+          type="date"
+          id = "dateTofield"
+          class="form-control"
+          v-model="dateTo"/>
+      </div>
+      <div class="form-group input-mark">
         <input
           type="text"
           class="form-control"
-          placeholder="Search by mark*"
+          placeholder="Mark*"
           v-model="mark"  />
       </div>
       <button
@@ -93,7 +108,9 @@ export default {
       name: "",
       address: "",
       mark: "",
-      offerActivate : false
+      offerActivate : false,
+      dateFrom : undefined,
+      dateTo : undefined,
     };
   },
   props: ["searchTitle"],
@@ -101,12 +118,29 @@ export default {
   computed: {
     userRole() {
       return this.$store.getters.getRole;
-    },
+    }
   },
   watch: {
     searchTitle(){
      this.offerActivate = false
     this.$emit('get-offers',this.offerActivate)
+    },
+    dateFrom(){
+      console.log(this.dateFrom)
+    var today = new Date(this.dateFrom);
+    var dd = today.getDate() + 1;
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dateTofield").setAttribute("min", today);
     }
   },
   // updated(){
@@ -119,9 +153,10 @@ export default {
       this.$refs.btnToggle.innerText = state;
     },
     sortAndFilterEntities: function () {
-      this.$emit("filter-sort", this.sort, this.name, this.address, this.mark);
+      this.$emit("filter-sort", this.sort, this.name, this.address, this.mark , new Date(this.dateFrom),new Date(this.dateTo));
     },
     getOffers(){
+      console.log(this.dateFrom)
       this.offerActivate= !this.offerActivate
       this.$emit('get-offers',this.offerActivate)
     },
@@ -131,8 +166,24 @@ export default {
       this.$refs.btnSort.innerText = value;
       if (value == "") this.$refs.btnSort.innerText = "Sort by";
       this.$emit("sort-history", value);
-    },
+    }
   },
+  mounted(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dateFromfield").setAttribute("min", today);
+  }
 };
 </script>
 
@@ -153,9 +204,9 @@ export default {
 }
 .filter-div {
   display: flex;
-  justify-content: space-between;
-  margin-left: 9%;
-  margin-right: 9%;
+  justify-content: space-evenly;
+  margin-left: 7%;
+  margin-right: 7%;
 }
 .sort-history {
   display: flex;
@@ -163,10 +214,13 @@ export default {
   margin-left: 2vw;
 }
 input {
-  width: 270px;
+  width: 100%;
+}
+.input-mark{
+  width:7%;
 }
 .droptdown-btn {
-  width: 10vw;
+  width: 100%;
   color: white;
   background: #0e0f40;
 }

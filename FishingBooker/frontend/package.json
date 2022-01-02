@@ -30,6 +30,7 @@
     "vue-swal": "^1.0.0",
     "vue-sweet-calendar": "^0.4.1",
     "vue-sweetalert2": "^5.0.2",
+    "vue2-datepicker": "^3.10.4",
     "vue3-openlayers": "^0.1.54",
     "vuex": "^4.0.2",
     "vuex-persist": "^3.1.3",

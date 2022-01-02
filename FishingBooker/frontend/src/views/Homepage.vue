@@ -230,7 +230,12 @@ export default {
         this.state=state;
       },
 
-      filterSort: function(sort,name,address,mark){
+      filterSort: function(sort,name,address,mark,dateFrom,dateTo){
+        var timestampFrom = Date.parse(dateFrom)
+        var timestampTo = Date.parse(dateTo)
+        if(isNaN(timestampFrom) == false && isNaN(timestampTo) == false){
+          console.log(timestampTo)
+        }
         this.entitiesForDisplay=this.entities.filter(
           (entity) => 
                     entity.name.toLowerCase().includes(name.toLowerCase()) &&
