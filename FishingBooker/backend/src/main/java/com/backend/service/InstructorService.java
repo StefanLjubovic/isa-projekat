@@ -23,9 +23,6 @@ public class InstructorService {
     private IUserRepository userRepository;
 
     @Autowired
-    private IAdventureRepository adventureRepository;
-
-    @Autowired
     private IUnavailablePeriodRepository unavailablePeriodRepository;
 
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {

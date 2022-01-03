@@ -63,7 +63,7 @@
                     <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()" v-if="userRole != 'ROLE_ADMIN'">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView :unavailablePeriods="adventure.unavailablePeriods"/>
+                <Calendar class="calendar" :events="events"/>
                 
                 <p>If you cancel the reservation, the instructor retains {{ adventure.cancellationPercentage }}% 
                     of the price!
@@ -87,7 +87,7 @@ import AdventureTextDescription from "@/components/adventure/AdventureTextDescri
 import Sales from "@/components/adventure/Sales.vue"
 import Map from "@/components/entities/ShowLocationOnMap.vue"
 import ImageGallery from "@/components/ImageGallery.vue"
-import CalendarView from "@/components/CalendarView.vue"
+import Calendar from "@/components/Calendar.vue"
 import PricelistTable from "@/components/entities/PricelistTable.vue"
 import axios from 'axios'
 import server from '../server'
@@ -101,7 +101,7 @@ export default {
         AdventureTextDescription,
         Map,
         ImageGallery,
-        CalendarView,
+        Calendar,
         PricelistTable,
         ClientReservation,
         Sales
@@ -122,7 +122,8 @@ export default {
                 additionalServices: '',
                 price: ''
             },
-            displayReservationModal : false
+            displayReservationModal : false,
+            events: []
         }
     },
     computed:{
@@ -175,10 +176,11 @@ export default {
             .then((res) => {
                 for(let period of res.data) {
                     console.log(res.data)
-                    this.adventure.unavailablePeriods.push({
-                        id : period.id,
-                        dates : { start : new Date(period.fromDateTime), end : new Date(period.toDateTime) },
-                        customData : { title : period.message, isUnavailable : true }
+                    this.events.push({
+                        start : new Date(period.fromDateTime), 
+                        end : new Date(period.toDateTime),
+                        title : period.message,
+                        class: 'calendar-unavailable'
                     })
                 }
             })
@@ -203,6 +205,18 @@ export default {
             axios.post(`${server.baseUrl}/entity/sale/${this.adventure.id}`, this.sale, { headers: headers })
             .then((response) => {
                 this.adventure.sales = response.data;
+
+                var endTime = new Date(this.sale.dateTimeFrom);
+                endTime.setHours(parseInt(endTime.getHours()) + parseInt(this.sale.durationInHours));
+
+                this.events.push({
+                    start : new Date(this.sale.dateTimeFrom), 
+                    end : endTime,
+                    title : 'SALE',
+                    class: 'calendar-sale',
+                    background: true
+                })
+
                 window.$('#new-sale-modal').modal('hide');
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
 
@@ -294,4 +308,9 @@ input {
     font-size: 13px;
 }
 
+.calendar {
+    margin-top: 20px;
+    height: 100vh;
+    margin-bottom: 20px;
+}
 </style>

@@ -21,7 +21,7 @@
                                     <input
                                         class="form-control"
                                         :class="isDragging ? 'text-gray-600' : 'text-gray-900'"
-                                        :value="inputValue.end" v-on="inputEvents.end" />
+                                        :value="inputValue.end"/>
                                     <i class="fas fa-calendar-alt icon"></i>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@ export default {
                     start : new Date(period.fromDateTime), 
                     end : new Date(period.toDateTime),
                     title : period.message,
-                    class: 'unavaliable'
+                    class: 'calendar-unavailable'
                 })
             }
         })
@@ -101,12 +101,12 @@ export default {
                     start : new Date(response.data.fromDateTime), 
                     end : new Date(response.data.toDateTime),
                     title : response.data.message,
-                    class: 'unavaliable'
+                    class: 'calendar-unavailable'
                 });
                 this.$swal({
                     position: 'top-end',
                     icon: 'success',
-                    title: 'Unavaliable period saved!',
+                    title: 'Unavailable period saved!',
                     showConfirmButton: false,
                     timer: 2000
                 })
