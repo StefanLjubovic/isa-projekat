@@ -9,7 +9,7 @@
       <h6><i class="fas fa-map-marker-alt"></i> &nbsp;{{getRestaurantInfo(entity)}}</h6>
       <p id="desc"><i class="fas fa-info-circle"></i> &nbsp;{{entity.description}}</p>
       </div>
-    <div class="grade-div"><p>4.5<i class="fas fa-star star"></i></p></div>
+    <div class="grade-div"><p>{{entity.averageGrade}}<i class="fas fa-star star"></i></p></div>
     </div>
   </div>
 </template>

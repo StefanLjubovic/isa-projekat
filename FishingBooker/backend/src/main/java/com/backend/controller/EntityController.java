@@ -3,10 +3,7 @@ package com.backend.controller;
 import com.backend.dto.ComplaintDTO;
 import com.backend.dto.EntityDTO;
 import com.backend.dto.SaleDTO;
-import com.backend.model.Adventure;
-import com.backend.model.Cottage;
-import com.backend.model.RentingEntity;
-import com.backend.model.Sale;
+import com.backend.model.*;
 import com.backend.service.Base64ToImage;
 import com.backend.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,4 +99,20 @@ public class EntityController {
     public ResponseEntity<Boolean> checkIfSubscribed(@PathVariable Integer id, Principal principal) {
         return new ResponseEntity<>(entityService.checkIfSubscribed(principal.getName(), id), HttpStatus.OK);
     }
+
+    @GetMapping(value="/get-on-sale/{state}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Collection<EntityDTO>>getEntitiesOnSale(@PathVariable int state) throws IOException {
+        Collection<? extends RentingEntity> entities=entityService.getEntitiesOnSale(state);
+        Collection<EntityDTO> dto = getEntityDTOS(entities);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+    @PostMapping(value="/get-available-for-period/{state}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Collection<EntityDTO>>getAvailableEntities(@RequestBody UnavailablePeriod period,@PathVariable int state) throws IOException {
+        Collection<? extends RentingEntity> entities=entityService.getAvailableEntities(period,state);
+        Collection<EntityDTO> dto = getEntityDTOS(entities);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 }

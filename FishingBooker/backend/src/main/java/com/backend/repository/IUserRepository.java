@@ -31,4 +31,7 @@ public interface IUserRepository extends JpaRepository<RegisteredUser, Integer> 
 
     @Query(value="select client from Client client left join fetch client.subscriptions where client.email = ?1" )
     Client fetchClientWithSubscriptions(String email);
+
+    @Query(value = "select client from Client client where ?1 in (select s.id from client.subscriptions s)")
+    List<Client> fetchClientsSubscribedToEntity(Integer id);
 }

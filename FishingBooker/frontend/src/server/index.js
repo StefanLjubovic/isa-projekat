@@ -50,6 +50,24 @@ server.getUserById = async (id) =>{
     .catch((error) => handleError(error));
 };
 
+server.getAvailableEntitiesInPeriod = async (state,content) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+            
+        },
+        url: server.baseUrl+`/entity/get-available-for-period/`+state,
+        data: content,
+    };
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
 server.getLoggedUser = async () =>{
     const token = localStorage.getters.getToken
     console.log(localStorage.getters.getToken)
@@ -240,6 +258,22 @@ server.alterSubscriptions = async(id)=>{
             'Authorization': `Bearer ${token}`
         },
         url: server.baseUrl+`/user/alter-subscriptions/`+id,
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
+
+server.getEntitiesOnSale = async(state)=>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/entity/get-on-sale/`+state,
     }; 
     return axios(options)
     .then(response => handleSuccess(response))

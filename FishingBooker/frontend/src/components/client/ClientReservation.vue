@@ -9,8 +9,16 @@
          <div class="content">
           <div class="left">
               <h5 class="mb-4">{{GetEntityName()}}</h5>
-              <h5 class="mb-4">Reservation from:  &nbsp; 23.12.2021.</h5>
-              <h5 class="mb-4">Reservation to:  &nbsp; 25.12.2021.</h5>
+              <span><h5 class="mb-4">Reservation from: </h5><input
+           class="form-control date" 
+           type="date" 
+          id = "dateFromfield"
+          v-model="dateFrom"/></span>
+             <span><h5 class="mb-4">Reservation to: </h5><input
+           class="form-control date-to" 
+           type="date" 
+          id = "dateTofield"
+          v-model="dateTo"/></span>
               <span class="mb-4 mr-2"><h5 id="request">Additionall request:</h5> <span class="request-input"><input type="text" class="form-control request" v-model="currentRequest" /><i class="fas fa-plus fa-sm" @click="addRequest"></i></span></span>
               <div class="dropdown-row mb-4">
                   <h5 id="drop-lab">Requested: </h5>          
@@ -25,7 +33,8 @@
                     </div>
             </div>
 </div>
-            <h5 class="mb-5">Maximum persons: {{GetPersons()}}</h5>
+            <h5 class="mb-5">Maximum people: &nbsp;{{entity.maxPersons}}
+            </h5>
                       <div class="button-div">
               <span><h4 id="price">Price : {{price}} rsd</h4><div class="btn1"><button class="btn droptdown-btn" @click="saveReservation">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
               </div>
@@ -54,10 +63,46 @@ export default {
                 name : 'Marijina vikendica'
             },
             price : 3000,
-            dateTime :new Date('12/23/2021'),
-            dateTo : new Date('12/25/2021'),
+            dateFrom :new Date(),
+            dateTo : new Date(),
+            persons : 1
         }
     },
+     watch: {
+    dateFrom(){
+    var today = new Date(this.dateFrom);
+    var dd = today.getDate() + 1;
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dateTofield").setAttribute("min", today);
+    }
+  },
+    mounted(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("dateFromfield").setAttribute("min", today);
+    document.getElementById("dateTofield").setAttribute("min", today);
+  },
     methods:{
         addRequest(){
             if(this.currentRequest =='') return;
@@ -85,13 +130,18 @@ export default {
             else if(this.entity.type =='ship') return 'Ship: '+this.entity.name;
             return 'Cottage: '+this.entity.name;
         },
+        changeButtonContext(index){
+            this.persons = index
+        },
         async saveReservation(){
-            const diffTime = Math.abs(this.dateTo - this.dateTime);
+            const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            console.log(this.dateTo,this.dateFrom,'aaaaaaaaaaaa')
+            console.log(diffTime)
             const client=await server.getLoggedUser()
             const reservation = {
                 rentingEntity : this.rentingEntity,
-                dateTime : this.dateTime,
+                dateTime : this.dateFrom,
                 client : client.data,
                 price : this.price,
                 isCanceled : false,
@@ -250,7 +300,9 @@ span{
     border-radius: 5px;
   background: #0e0f40;
 }
-
+.persons{
+    margin-left:1rem ;
+}
 .cancel-btn{
     width: 5vw;
     height: 3rem;
@@ -259,7 +311,16 @@ span{
   color: #0e0f40;
   margin-left: 1rem;
 }
-
+.date{
+    height: 70%;
+    width: 50%;
+    margin-left:1rem ;
+}
+.date-to{
+    height: 70%;
+    width: 50%;
+    margin-left:2.4rem ;
+}
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
 }
