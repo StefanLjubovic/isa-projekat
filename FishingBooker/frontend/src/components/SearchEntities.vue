@@ -45,17 +45,21 @@
       </div>
       <div class="form-group">
          <input
-          type="date"
+          placeholder="Date from* "
+           class="textbox-n form-control" 
+           type="text" 
+           onfocus="(this.type='date')"
           id = "dateFromfield"
-          class="form-control"
           :formatter="format"
           v-model="dateFrom"/>
       </div>
       <div class="form-group">
         <input
-          type="date"
+          placeholder="Date to* "
+           class="textbox-n form-control" 
+           type="text" 
+           onfocus="(this.type='date')"
           id = "dateTofield"
-          class="form-control"
           v-model="dateTo"/>
       </div>
       <div class="form-group input-mark">
@@ -212,6 +216,10 @@ export default {
   display: flex;
   justify-content: flex-start;
   margin-left: 2vw;
+}
+.active{
+  transform: scale(0.95);
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
 }
 input {
   width: 100%;

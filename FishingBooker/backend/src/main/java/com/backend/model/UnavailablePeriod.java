@@ -55,6 +55,6 @@ public class UnavailablePeriod {
 
    @Override
    public String toString() {
-      return "UnavaliablePeriod{}";
+      return "UnavailablePeriod{}";
    }
 }

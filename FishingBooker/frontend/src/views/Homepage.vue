@@ -230,11 +230,16 @@ export default {
         this.state=state;
       },
 
-      filterSort: function(sort,name,address,mark,dateFrom,dateTo){
+      filterSort: async function(sort,name,address,mark,dateFrom,dateTo){
         var timestampFrom = Date.parse(dateFrom)
         var timestampTo = Date.parse(dateTo)
         if(isNaN(timestampFrom) == false && isNaN(timestampTo) == false){
-          console.log(timestampTo)
+          let period = {
+            fromDateTime :dateFrom,
+            toDateTime : dateTo
+          }
+            const resp=await Server.getAvailableEntitiesInPeriod(this.state,period)
+            this.entities=resp.data;
         }
         this.entitiesForDisplay=this.entities.filter(
           (entity) => 

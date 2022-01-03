@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EntityService {
@@ -133,5 +134,25 @@ public class EntityService {
         else if(state==1)entities=entityRepository.getEntitiesOnSale(Ship.class);
         else if(state==2) entities=entityRepository.getEntitiesOnSale(Cottage.class);
         return entities;
+    }
+
+    public List<? extends RentingEntity> getAvailableEntities(UnavailablePeriod unavailablePeriod,int state){
+        List<? extends RentingEntity> entities=null;
+        if(state==0)entities=entityRepository.getEntityByClassWithPeriods(Adventure.class);
+        else if(state==1)entities=entityRepository.getEntityByClassWithPeriods(Ship.class);
+        else if(state==2) entities=entityRepository.getEntityByClassWithPeriods(Cottage.class);
+        entities=entities
+                .stream()
+                .filter(e-> !CheckOverlappingDates(e,unavailablePeriod))
+                .collect(Collectors.toList());
+        return entities;
+    }
+
+    private boolean CheckOverlappingDates(RentingEntity e,UnavailablePeriod unavailablePeriod) {
+        for(UnavailablePeriod period : e.getUnavailablePeriods())
+            if(period.getFromDateTime().compareTo(unavailablePeriod.getToDateTime()) <=0 &&
+                period.getToDateTime().compareTo(unavailablePeriod.getFromDateTime())>=0)
+                return true;
+        return false;
     }
 }
