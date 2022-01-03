@@ -20,7 +20,8 @@ INSERT INTO registered_user (type, reg_user_id, email, enabled, first_name, last
 VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdravko', 'Colic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 1, 2),
        ('INSTRUCTOR', nextval('user_seq_gen'), 'ana.gavrilovic247@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
-       ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1);
+       ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
+       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 5, 4);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value)
@@ -56,6 +57,22 @@ INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (2, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
 VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure', 2);
+
+-- ship
+INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
+VALUES (nextval('entity_seq_gen'), 0, 0, 'Beautiful moments with beautiful nature and sun', 'Anin brod',0, 6);
+INSERT INTO ship(type, length, engine_number, engine_power, max_speed, capacity, entity_id, reg_user_id)
+VALUES ('Fishing ship', 550.5, 16, 250, 50, 15, 3, 5);
+INSERT INTO ship_navigation_equipment(entity_id, navigation_equipment)
+VALUES (3, 0), (3, 1), (3, 2);
+INSERT INTO ship_fishing_equipment(entity_id, fishing_equipment)
+VALUES (3, 'Fishing rod'), (3, 'Hooks');
+INSERT INTO renting_entity_allowed_behavior(entity_id, allowed_behaviour)
+VALUES (3, 'Music is allowed'), (3, 'Alcohol is allowed!');
+INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
+VALUES (3, 'Smoking');
+INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Two hours ship ride', 3);
 
 INSERT INTO subscriptions(client_id,entity_id)
 VALUES (4,2);

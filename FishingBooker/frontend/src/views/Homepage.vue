@@ -73,7 +73,22 @@
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
   <div v-if="userRole == 'ROLE_SHIP_OWNER'">
-
+      <div v-if="state == 2">
+        <!--button  type="button" id="add-new-ship" @click="addNewShip()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button-->
+        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+    </div>
+    <div v-if="state == 1" class="ships-wrapper">
+        <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
+        <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
+      </div>
+    </div>  
+    <ShipReservations v-if="state==42"/>
+    <MyProfile v-if="state == 3"/>
+    <MyScheduleInstructor v-if="state == 43"/>
+    <OwnerAnalytics v-if="state == 44"/>
+    <ShipDetails v-if="state == 45" :entityId="selectedEntityId" @edit-ship="editShip" @entity-deleted="changeState"/>
+    <!--AddNewCottage v-if="state == 26" />
+    <EditCottage    v-if="state == 27" :cottageId="selectedCottageId"/-->
   </div>
 
   <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
@@ -110,6 +125,8 @@ import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
+import ShipReservations from "@/components/ship/ShipReservations.vue"
+import ShipDetails from "@/components/ship/ShipDetails.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
@@ -152,6 +169,8 @@ export default {
         AdventureDetails,
         AddNewAdventure,
         EditAdventure,
+        ShipReservations,
+        ShipDetails
     },
     data(){
       return{
@@ -196,12 +215,36 @@ export default {
               this.entities = response.data;
               this.entitiesForDisplay = response.data;
             })
+          } else if (this.userRole == 'COTTAGE_OWNER'){
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.get(`${server.baseUrl}/cottageOwner/cottages`, {headers: headers})
+            .then((response) => {
+              this.entities = response.data;
+              this.entitiesForDisplay = response.data;
+            })
+          }else if (this.userRole == 'SHIP_OWNER'){
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+
+            axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
+            .then((response) => {
+              this.entities = response.data;
+              this.entitiesForDisplay = response.data;
+            })
           } else {
             const resp=await Server.getAllEntities(state)
             this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
             this.entities=resp.data;
           }
-        }
+        } 
           if((state == 4 || state ==5 || state == 6)&& (this.userRole == 'ROLE_CLIENT')){
             let classType = "Cottage"
             if(state == 6) classType = "Adventure"
@@ -226,8 +269,8 @@ export default {
         else if(state==5) this.searchTitle="History of reserved ships"
         else if(state==6) this.searchTitle="History of reserved adventures"
 
-        else if(state==21) this.searchTitle=""
-                this.state=state;
+        else if(state==21 || state == 41) this.searchTitle=""
+          this.state=state;
       },
 
       filterSort: function(sort,name,address,mark){
@@ -250,7 +293,8 @@ export default {
           this.selectedEntityId = entity.id;
           this.state = 30;
         } else if (this.state == 1) {
-          // navigacija za detalje o brodu
+          this.selectedEntityId = entity.id;
+          this.state = 45;
         } else if (this.state == 2 || this.state == 21 || (this.state ==8 && entity.entityType == 'Cottage')) {
           this.selectedEntityId = entity.id;
           this.state = 25;
@@ -373,6 +417,18 @@ export default {
 }
 
 .cottages-wrapper{
+  height: 100%;
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 150px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.ships-wrapper{
   height: 100%;
   display: flex;
   padding-top: 20px;

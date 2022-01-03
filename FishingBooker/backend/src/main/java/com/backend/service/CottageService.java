@@ -132,4 +132,8 @@ public class CottageService {
         }
         return  base64Images;
     }
+
+    public List<Cottage> getAllCottagesFromCottageOwner(String email) {
+        return cottageRepository.getCottagesByCottageOwner_Email(email);
+    }
 }
