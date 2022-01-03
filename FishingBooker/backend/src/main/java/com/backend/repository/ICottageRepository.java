@@ -1,15 +1,20 @@
 package com.backend.repository;
 
+import com.backend.model.Adventure;
 import com.backend.model.Cottage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ICottageRepository extends JpaRepository<Cottage,Integer> {
 
     Cottage findByName(String name);
+
+    List<Cottage> getCottagesByCottageOwner_Email(String id);
 
     @Query(value = "SELECT c FROM Cottage c LEFT JOIN FETCH c.sales")
     Cottage fetchAllSales();

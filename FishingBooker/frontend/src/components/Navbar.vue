@@ -54,8 +54,11 @@
         </div>
 
         <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
-        <div v-if="userRole == 'ROLE_SHIP_OWNER'">
-
+        <div v-if="userRole == 'ROLE_SHIP_OWNER'" class="cottage-owner">
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }"  @click="changeState(1)">My Ships</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==42 }" @click="changeState(42)">Reservation History</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==43 }" @click="changeState(43)">My Schedule</a>
+          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==44 }" @click="changeState(44)">Analytics</a>
         </div>
 
         <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
@@ -111,6 +114,12 @@ export default {
 }
 
 .cottage-owner{
+  display: flex;
+  align-items: center;
+  margin-right: 25%;
+}
+
+.ship-owner{
   display: flex;
   align-items: center;
   margin-right: 25%;
