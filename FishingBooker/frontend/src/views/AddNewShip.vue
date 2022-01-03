@@ -22,6 +22,8 @@
                     <input type="number" class="form-control" v-model="newShip.capacity"/><br/>
                     <h6>Type: </h6>
                     <input type="text" class="form-control" v-model="newShip.type"/><br/>
+                    <h6>Length: </h6>
+                    <input type="number" class="form-control" v-model="newShip.length"/><br/>
                     <h6>Engine number: </h6>
                     <input type="number" class="form-control" v-model="newShip.engineNumber"/><br/>
                     <h6>Engine power: </h6>
@@ -34,19 +36,19 @@
                     <h6> Navigation equipment: </h6>
                     <div class="navigation-equipment-inputs">
                         <span>
-                            <input type="checkbox" id="gps" value="GPS" v-model="checkedEquipment">
+                            <input type="checkbox" id="gps" value="0" v-model="newShip.navigationEquipment">
                             <label for="gps">GPS</label>
                         </span>
                         <span>
-                            <input type="checkbox" id="radar" value="Radar" v-model="checkedEquipment">
+                            <input type="checkbox" id="radar" value="1" v-model="newShip.navigationEquipment">
                             <label for="radar">Radar</label>
                         </span>
                         <span>
-                            <input type="checkbox" id="vhfradio" value="VHF radio" v-model="checkedEquipment">
+                            <input type="checkbox" id="vhfradio" value="2" v-model="newShip.navigationEquipment">
                             <label for="vhfradio">VHF radio</label>
                         </span>
                         <span>
-                            <input type="checkbox" id="fishfinder" value="Fishfinder" v-model="checkedEquipment">
+                            <input type="checkbox" id="fishfinder" value="3" v-model="newShip.navigationEquipment">
                             <label for="fishfinder">Fishfinder</label>
                         </span>
                     </div>
@@ -175,12 +177,6 @@
                     images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
-                    fishingEquipment: [],
-                    type: '',
-                    engineNumber: undefined,
-                    enginePower: undefined,
-                    capacity: undefined,
-                    maxSpeed: undefined,
                     address: {
                         streetName: "Bulevar Cara Lazara",
                         streetNumber: "171",
@@ -196,6 +192,14 @@
                             price: undefined
                         }
                     ],
+                    type: '',
+                    length: undefined,
+                    engineNumber: undefined,
+                    enginePower: undefined,
+                    maxSpeed: undefined,
+                    capacity: undefined,
+                    navigationEquipment: [],
+                    fishingEquipment: [],
                     shipOwner:{
                         email: ''
                     }
@@ -204,8 +208,7 @@
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
                 fishingEquipmentNum: 1,
-                imagesFrontend: [],
-                checkedEquipment: []
+                imagesFrontend: []
             }
         },
         validations() {
@@ -225,7 +228,7 @@
             submitForm(){
                 this.v$.$validate();  
                 
-                 const headers = {
+                const headers = {
                     'Content-Type': 'application/json;charset=UTF-8',
                      Accept: 'application/json',
                     'Authorization': `Bearer ${this.token}`
@@ -235,7 +238,7 @@
                 .then((response) => {
                     this.newShip= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
                     address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
-                    pricelistItems: [ { service:'', price: null }, ]};
+                    pricelistItems: [ { service:'', price: null }, ], fishingEquipment : [], navigationEquipment: []};
                     this.$swal({
                         icon: 'success',
                         title: response.data,
@@ -319,18 +322,18 @@
         margin-bottom: 10px;
     }
     .description-area{
-      width: 90%;
-      align-self: left;
-      margin-right: 30%;
-      margin-top: 25px;
-      background-color: #ffffff;
-      border-width: 0.5px solid rgb(248, 244, 244) ;
-      font-size: 16px;
-      resize: none;
-      outline: none;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 15px;
-      border-radius: 15px;
+        width: 90%;
+        align-self: left;
+        margin-right: 30%;
+        margin-top: 25px;
+        background-color: #ffffff;
+        border-width: 0.5px solid rgb(248, 244, 244) ;
+        font-size: 16px;
+        resize: none;
+        outline: none;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 15px;
+        border-radius: 15px;
     }
     .map{
         margin-left: 10px;
@@ -377,8 +380,8 @@
     }
     .images-preview{
         display: contents;
-         width: 40%;
-         height: 30%;
+        width: 40%;
+        height: 30%;
      }
     .images-preview img{
         width:50%;
@@ -404,5 +407,4 @@
       width: 120px;
       margin-right: 10px;
      }
-
 </style>

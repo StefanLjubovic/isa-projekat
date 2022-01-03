@@ -2,6 +2,8 @@ package com.backend.service;
 
 import java.io.*;
 import java.util.Base64;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Base64ToImage {
 
@@ -27,6 +29,15 @@ public class Base64ToImage {
         } catch (IOException e) { e.printStackTrace(); }
 
         return "";
+    }
+
+    public Set<String> loadImages(Set<String> images) throws IOException {
+        Set<String> base64Images = new HashSet<String>();
+        for (String image: images) {
+            String base64Image = encodeImageToBase64(image);
+            base64Images.add(base64Image);
+        }
+        return base64Images;
     }
 
     private String getImagePath(String relativePath) {

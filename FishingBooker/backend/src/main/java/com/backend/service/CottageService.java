@@ -16,8 +16,6 @@ public class CottageService {
     @Autowired
     private ICottageRepository cottageRepository;
     @Autowired
-    private IRoomRepository roomRepostirory;
-    @Autowired
     private IUserRepository userRepository;
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
@@ -49,10 +47,6 @@ public class CottageService {
         newCottage.setRooms(cottage.getRooms());
         this.cottageRepository.save(newCottage);
 
-        Set<Room> rooms = cottage.getRooms();
-        for (Room room: rooms)
-            this.roomRepostirory.save(room);
-
         Set<PricelistItem> items = cottage.getPricelistItems();
         for(PricelistItem item: items){
             item.setRentingEntity(newCottage);
@@ -70,9 +64,10 @@ public class CottageService {
         cottageToUpdate.setAllowedBehavior(cottage.getAllowedBehavior());
         cottageToUpdate.setUnallowedBehavior(cottage.getUnallowedBehavior());
         cottageToUpdate.setPricelistItems(cottage.getPricelistItems());
-        for (PricelistItem item : cottageToUpdate.getPricelistItems())
-            item.setRentingEntity(cottage);
-
+        for (PricelistItem item : cottageToUpdate.getPricelistItems()) {
+            item.setRentingEntity(cottageToUpdate);
+            this.pricelistItemRepostory.save(item);
+        }
         cottageToUpdate.setAddress(cottage.getAddress());
         cottageToUpdate.setImages(this.saveImages(cottage));
 

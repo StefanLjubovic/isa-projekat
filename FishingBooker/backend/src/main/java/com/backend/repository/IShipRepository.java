@@ -1,6 +1,5 @@
 package com.backend.repository;
 
-import com.backend.model.Cottage;
 import com.backend.model.Ship;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +9,7 @@ import java.util.List;
 
 public interface IShipRepository extends JpaRepository<Ship, Integer> {
 
+    Ship findByName(String name);
     List<Ship> getShipsByShipOwner_Email(String email);
 
     @Query(value = "SELECT s FROM Ship s LEFT JOIN FETCH s.sales")
