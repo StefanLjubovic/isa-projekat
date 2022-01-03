@@ -16,10 +16,7 @@ export default ({
     props: [
         'events'
     ],
-    components: { VueCal },
-    data() {
-
-    }
+    components: { VueCal }
 })
 </script>
 

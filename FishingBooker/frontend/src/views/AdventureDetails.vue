@@ -57,7 +57,7 @@
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
-                <Sales :sales="adventure.sales" :adventure="adventure"/><br/>
+                <Sales :sales="adventure.sales" :adventure="adventure" @sale-to-reservation="saleToReservation"/><br/>
 
                 <div class="btn-placeholder">
                     <h2>Schedule for this adventure</h2>
@@ -240,6 +240,7 @@ export default {
                     start : new Date(this.sale.dateTimeFrom), 
                     end : endTime,
                     title : 'SALE',
+                    content: `<p style="font-size: 12px; color="light-gray;"> Expires on ${this.dateFormat(this.sale.expireDateTime)} </p>`,
                     class: 'calendar-sale'
                 })
 
@@ -255,6 +256,19 @@ export default {
                     timer: 2000
                 })
             })
+        },
+        saleToReservation(reservation) {
+            for(let e of this.events) {
+                var endTime = new Date(reservation.dateTime);
+                endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                
+                if(e.start.getTime() === new Date(reservation.dateTime).getTime() && e.end.getTime() === endTime.getTime()) {
+                    e.title = "BOOKED";
+                    e.class = "calendar-booked";
+                    e.content = "";
+                    break;
+                }
+            }
         },
         editEntity: function() {},
         makeReservation: function() {

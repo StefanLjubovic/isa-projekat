@@ -25,6 +25,12 @@ export default ({
         sales: Array,
         adventure: Object
     },
+    emits: ['sale-to-reservation'],
+    data() {
+        return {
+            salesArray: this.sales
+        }
+    },
     computed:{
         userRole(){
             return this.$store.getters.getRole;
@@ -71,26 +77,29 @@ export default ({
                             client : client.data,
                             price : sale.price,
                             isCanceled : false,
-                            additionalServices : sale.additionalServices,
+                            additionalServices : sale.additionalServices.split(","),
                             maxPersons : sale.maximumPersons,
                             durationInHours : sale.durationInHours
                         }
                         await server.saveReservation(reservation)
-                            .then(resp=> {
-                                if(resp.success){
-                                    this.$swal.fire({
-                                        icon: 'success',
-                                        title: 'Success',
-                                        text: 'Reservation succesfully created!',
-                                        confirmButtonColor: '#2c3e50'
-                                    })
-                                }
+                        .then(resp=> {
+                            if(resp.success){
+                                this.$swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Reservation succesfully created!',
+                                    confirmButtonColor: '#2c3e50'
+                                })
+
+                                this.$emit('sale-to-reservation', reservation);
+                                this.salesArray.splice(this.salesArray.indexOf(sale), 1);
+                            }
                         }).catch(resp=> {
-                                    this.$swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: resp.data,
-                                    })
+                            this.$swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: resp.data,
+                            })
                         })
                     }
                 });
