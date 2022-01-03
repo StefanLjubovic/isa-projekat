@@ -25,6 +25,7 @@
     "v-calendar": "^3.0.0-alpha.6",
     "v-viewer": "^3.0.10",
     "vue": "^3.2.21",
+    "vue-cal": "^4.2.0",
     "vue-router": "^4.0.0-0",
     "vue-star-rating": "^2.1.0",
     "vue-swal": "^1.0.0",

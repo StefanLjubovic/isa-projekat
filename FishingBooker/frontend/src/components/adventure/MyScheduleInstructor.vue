@@ -21,7 +21,7 @@
                                     <input
                                         class="form-control"
                                         :class="isDragging ? 'text-gray-600' : 'text-gray-900'"
-                                        :value="inputValue.end" v-on="inputEvents.end" />
+                                        :value="inputValue.end"/>
                                     <i class="fas fa-calendar-alt icon"></i>
                                 </div>
                             </div>
@@ -31,18 +31,19 @@
             </form>
             <button class="btn" @click="defineUnavaliablePeriod()"><i class="fas fa-check"></i></button>
         </div>
-        <CalendarView :unavailablePeriods="unavailablePeriods"/>
+        <!--<CalendarView :unavailablePeriods="unavailablePeriods"/>-->
+        <Calendar class="calendar" :events="unavailablePeriods"/>
     </div>
 </template>
 
 <script>
-import CalendarView from "@/components/CalendarView.vue"
 import axios from 'axios';
 import server from '../../server';
+import Calendar from '../Calendar.vue'
 
 export default {
     components: {
-        CalendarView
+        Calendar
     },
     computed:{
         userRole(){
@@ -73,9 +74,10 @@ export default {
         .then((response) => {
             for(let period of response.data) {
                 this.unavailablePeriods.push({
-                    id : period.id,
-                    dates : { start : new Date(period.fromDateTime), end : new Date(period.toDateTime) },
-                    customData : { title : period.message, isUnavailable : true }
+                    start : new Date(period.fromDateTime), 
+                    end : new Date(period.toDateTime),
+                    title : period.message,
+                    class: 'calendar-unavailable'
                 })
             }
         })
@@ -96,20 +98,21 @@ export default {
             axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {headers: headers})
             .then((response) => {
                 this.unavailablePeriods.push({
-                    id : response.data.id,
-                    dates : { start : new Date(response.data.fromDateTime), end : new Date(response.data.toDateTime) },
-                    customData : { title : response.data.message, isUnavailable : true }
+                    start : new Date(response.data.fromDateTime), 
+                    end : new Date(response.data.toDateTime),
+                    title : response.data.message,
+                    class: 'calendar-unavailable'
                 });
                 this.$swal({
                     position: 'top-end',
                     icon: 'success',
-                    title: 'Unavaliable period saved!',
+                    title: 'Unavailable period saved!',
                     showConfirmButton: false,
                     timer: 2000
                 })
             })
             .catch(() => {
-                this.$swal("There is already defined unavailable period in this range!");
+                this.$swal("There is already defined unavailable period or booked adventure in this time range!");
             })
         }
     }
@@ -121,6 +124,7 @@ export default {
     margin-top: 50px;
     margin-left: 15%;
     margin-right: 15%;
+    padding-bottom: 150px;
 }
 
 h1 {
@@ -160,4 +164,8 @@ h1 {
     padding-left: 10px;
 }
 
+.calendar {
+    margin-top: 30px;
+    height: 120vh;
+}
 </style>
