@@ -64,10 +64,13 @@
 
 <script>
 
+import server from '../server'
+import axios from 'axios'
+
 export default ({
     data() {
         return {
-            entityType: "Cottage",
+            entityType: "",
             dateFrom: "",
             dateTo: "",
 
@@ -108,11 +111,55 @@ export default ({
             entities: []
         }
     },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        },
+        token(){
+          return this.$store.getters.getToken;
+        }
+    },
+    created() {
+        //this.fetchData();
+    },
     mounted() {
         this.reservations = this.allReservations;
         this.entities = this.allEntities;
+
+        if(this.userRole == "ROLE_COTTAGE_OWNER")
+            this.entityType = 'cottages';
+        else if(this.userRole == "ROLE_SHIP_OWNER")
+            this.entityType = 'ships';
+        else
+            this.entityType = 'adventures';
     },
     methods: {
+
+        fetchData: function(){
+             const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+
+            if(this.userRole == 'ROLE_INSTRUCTOR') {   
+                axios.get(`${server.baseUrl}/instructor/adventures`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            } else if (this.userRole == 'ROLE_COTTAGE_OWNER'){
+                axios.get(`${server.baseUrl}/cottageOwner/cottages`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            }else {
+                axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            }
+        },
+
         getTotalIncome: function() {
             let sum = 0;
             for(let res of this.reservations) {
@@ -137,40 +184,33 @@ export default ({
         margin: 50px 17%;
         padding-bottom: 100px;
     }
-
     h1 {
         text-align: left;
         margin-bottom: 40px;
     }
-
     .btn {
         margin-top: -5px;
         width: 40px;
         height: 40px;
     }
-
     h2 {
         margin-top: 40px;
         margin-bottom: 20px;
         text-align: left;
     }
-
     .filter-dates {
         display: flex;
     }
-
     .form-control-dates {
         margin-right: 10px;
         width: 25vw;
     }
-
     .btn-option {
         background-color: #2c3e50;
         color: white;
         margin-top: 0px;
         margin-right: 10px;
     }
-
     .card {
         margin-top:20px;
         width: 57vw;
@@ -179,7 +219,6 @@ export default ({
     .table, .table-striped, .table-hover {
         color: #2c3e50;
     }
-
     .total-income{ 
         display: flex;
         justify-content: space-between;

@@ -2,7 +2,14 @@
     <div class="text">
         <p> {{ ship.description }} </p> <br/>
 
-        <p> <span class="ul-caption">Capacity:  </span> {{ ship.capacity }} persons </p> <br/>
+        <div class="ship-info">
+            <h6> <span class="ul-caption">Capacity:      </span> {{ ship.capacity }} persons </h6> 
+            <h6><span class="ul-caption">Type:           </span> {{ship.type}}         </h6>
+            <h6><span class="ul-caption">Length:         </span> {{ship.length}}       </h6>
+            <h6><span class="ul-caption">Engine number:  </span> {{ship.engineNumber}} </h6>
+            <h6><span class="ul-caption">Engine power:   </span> {{ship.enginePower}}  </h6>
+            <h6><span class="ul-caption">Max speed:      </span> {{ship.maxSpeed}}     </h6>
+        </div><hr/>
 
         <p class="ul-caption">Fishing equipment: </p>
         <ul>
@@ -47,7 +54,6 @@ export default ({
 </script>
 
 <style scoped>
-
 .text {
     display: flex;
     align-items: flex-start;
@@ -55,17 +61,19 @@ export default ({
     flex-direction: column;
     margin-top: 30px;
 }
-
+.ship-info{
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+    flex-direction: column;
+}
 .ul-caption {
     margin-bottom: 0px;
     font-weight: bold;
 }
-
-
 br {
     display: block; 
     content: ""; 
     margin-top: 7px; 
 }
-
 </style>

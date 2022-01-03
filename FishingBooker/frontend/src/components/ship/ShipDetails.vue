@@ -49,13 +49,6 @@
             @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-ship', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
         <div class="content">
             <div class="left-side">
-                <div class="ship-info">
-                    <p>Type: {{ship.type}} </p>
-                    <p>Length: {{ship.length}} </p>
-                    <p>Engine number: {{ship.engineNumber}} </p>
-                    <p>Engine power: {{ship.enginePower}} </p>
-                    <p>Max speed: {{ship.maxSpeed}} </p>
-                </div><hr/>
                 <ImageGallery :images="ship.images"  description="Photos of our ship"/>
                 <hr/>
                   <div class="btn-wrap">
@@ -188,41 +181,29 @@
 <style scoped>
 
     #profile {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    margin-left: 15%;
-    margin-right: 15%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-left: 15%;
+        margin-right: 15%;
     }
-
-    .ship-info{
-      display: flex;
-      align-items: flex-start;
-      text-align: left;
-      flex-direction: column;
-    }
-
     hr {
         margin-top: 30px;
         margin-bottom: 30px;
     }
-
     h2 {
-    font-size: 25px;
+        font-size: 25px;
     }
-
     .content {
         display: flex;
         margin-top: 50px;
         justify-content: space-between;
     }
-
     .left-side {
         width: 63%;
     }
     .right-side {
         width: 30%;
     }
-
     .btn-wrap {
         display: flex;
         justify-content: space-between;
@@ -232,22 +213,19 @@
         color: white;
     }
 
-    .btn-close{ 
+   .btn-close{ 
         background-color: transparent;
     }
-
     .cancel-btn {
-    background-color: white;
-    color: #2c3e50;
-    border-color: #cfd3d8;
-    margin-left: 10px;
-}
-
+        background-color: white;
+        color: #2c3e50;
+        border-color: #cfd3d8;
+        margin-left: 10px;
+    }
     input {
         width: 465px;
         margin-bottom: 25px;
     }
-
     .text-danger {
         margin-top: -20px;
         margin-bottom: 5px;

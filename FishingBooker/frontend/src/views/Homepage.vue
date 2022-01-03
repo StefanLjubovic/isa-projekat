@@ -54,7 +54,7 @@
   <div v-if="userRole == 'ROLE_COTTAGE_OWNER'">
     <div v-if="state == 2">
         <button  type="button" id="add-new-cottage" @click="addNewCottage()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button>
-        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+        <SearchEntities :searchTitle="'My Cottages'"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 2" class="cottages-wrapper">
         <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -73,9 +73,9 @@
 
   <!-- Ship owner options (userRole 'ROLE_SHIP_OWNER') -->
   <div v-if="userRole == 'ROLE_SHIP_OWNER'">
-      <div v-if="state == 2">
-        <!--button  type="button" id="add-new-ship" @click="addNewShip()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new cottage</button-->
-        <SearchEntities :searchTitle="searchTitle"  @filter-sort="filterSort"/>
+      <div v-if="state == 1">
+        <button  type="button" id="add-new-ship" @click="addNewShip()" class="btn btn-success"> <i class="fas fa-plus"></i>&nbsp;  Add new ship </button>
+        <SearchEntities :searchTitle="'My ships'"  @filter-sort="filterSort"/>
     </div>
     <div v-if="state == 1" class="ships-wrapper">
         <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
@@ -215,7 +215,7 @@ export default {
               this.entities = response.data;
               this.entitiesForDisplay = response.data;
             })
-          } else if (this.userRole == 'COTTAGE_OWNER'){
+          } else if (this.userRole == 'ROLE_COTTAGE_OWNER'){
             const headers = {
               'Content-Type': 'application/json;charset=UTF-8',
                Accept: 'application/json',
@@ -227,7 +227,7 @@ export default {
               this.entities = response.data;
               this.entitiesForDisplay = response.data;
             })
-          }else if (this.userRole == 'SHIP_OWNER'){
+          }else if (this.userRole == 'ROLE_SHIP_OWNER'){
             const headers = {
               'Content-Type': 'application/json;charset=UTF-8',
                Accept: 'application/json',
@@ -269,8 +269,7 @@ export default {
         else if(state==5) this.searchTitle="History of reserved ships"
         else if(state==6) this.searchTitle="History of reserved adventures"
 
-        else if(state==21 || state == 41) this.searchTitle=""
-          this.state=state;
+        this.state=state;
       },
 
       filterSort: function(sort,name,address,mark){
@@ -381,6 +380,9 @@ export default {
       addNewCottage: function() {
         this.state = 26;
       },
+      addNewShip: function() {
+        this.state = 46;
+      },
       addNewAdventure: function() {
         this.state = 31;
       },
@@ -415,7 +417,6 @@ export default {
   margin-left: 15%;
   margin-right: 15%;
 }
-
 .cottages-wrapper{
   height: 100%;
   display: flex;
@@ -427,7 +428,6 @@ export default {
   margin-left: 15%;
   margin-right: 15%;
 }
-
 .ships-wrapper{
   height: 100%;
   display: flex;
@@ -439,14 +439,16 @@ export default {
   margin-left: 15%;
   margin-right: 15%;
 }
-
 .subscription-title{
   display: flex;
   justify-content: flex-start;
 }
-
 #add-new-cottage{
   margin-left: 58%;
+  margin-top: 3%;
+}
+#add-new-ship{
+  margin-left: 61%;
   margin-top: 3%;
 }
 
