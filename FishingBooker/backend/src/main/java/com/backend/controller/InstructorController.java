@@ -1,8 +1,10 @@
 package com.backend.controller;
 
 import com.backend.dto.EntityDTO;
+import com.backend.dto.ReservationDTO;
 import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.Adventure;
+import com.backend.model.Reservation;
 import com.backend.model.UnavailablePeriod;
 import com.backend.service.AdventureService;
 import com.backend.service.Base64ToImage;
@@ -82,6 +84,22 @@ public class InstructorController {
 
         Set<UnavailablePeriodDTO> dto = getUnavailablePeriodDTOS(periods);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/reservations",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Set<ReservationDTO>> getReservationsForInstructor(Principal principal) {
+        List<Reservation> reservations = instructorService.getReservationsForInstructor(principal.getName());
+
+        Set<ReservationDTO> reservationDTOS = new HashSet<>();
+        for(Reservation r : reservations) {
+            ReservationDTO dto = new ReservationDTO(r.getId(), r.getDateTime(), r.getDurationInHours(), r.getMaxPersons(), r.getPrice(), r.getCanceled(), r.getRentingEntity().getId(), r.getRentingEntity().getName());
+            dto.setClientName(r.getClient().getFirstName() + " " + r.getClient().getLastName());
+            reservationDTOS.add(dto);
+        }
+
+        return new ResponseEntity<>(reservationDTOS, HttpStatus.OK);
     }
 
     private Set<UnavailablePeriodDTO> getUnavailablePeriodDTOS(Set<UnavailablePeriod> periods) {

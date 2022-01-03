@@ -4,7 +4,6 @@ package com.backend.controller;
 import com.backend.dto.ReservationDTO;
 import com.backend.dto.RevisionDTO;
 import com.backend.model.Reservation;
-import com.backend.model.Revision;
 import com.backend.service.ReservationService;
 import com.backend.service.RevisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +14,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.websocket.server.PathParam;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/reservation", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReservationController {
 
     @Autowired
-    ReservationService service;
+    ReservationService reservationService;
 
     @Autowired
     RevisionService revisionService;
@@ -33,7 +33,7 @@ public class ReservationController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Void> saveReservation(@RequestBody Reservation reservation) {
         if(reservation ==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
-        boolean saved = service.Save(reservation);
+        boolean saved = reservationService.Save(reservation);
         if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -42,7 +42,7 @@ public class ReservationController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<ReservationDTO>> getClientFutureReservations(Principal principal){
         if(principal == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No registered user!");
-        List<ReservationDTO> r=service.getClientFutureReservations(principal.getName());
+        List<ReservationDTO> r= reservationService.getClientFutureReservations(principal.getName());
         return new ResponseEntity<>(r,HttpStatus.OK);
     }
 
@@ -50,14 +50,14 @@ public class ReservationController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<ReservationDTO>> cancelReservation(@PathVariable Integer id,Principal principal){
         if(id ==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reservation was not selected!");
-        return new ResponseEntity<>( service.cancelReservation(id,principal.getName()),HttpStatus.OK);
+        return new ResponseEntity<>( reservationService.cancelReservation(id,principal.getName()),HttpStatus.OK);
     }
 
     @GetMapping(value = "/history-reservations/{classType}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<ReservationDTO>> getClientHistoryOfReservations(Principal principal,@PathVariable String classType){
         if(principal == null || classType==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No registered user!");
-        List<ReservationDTO> r=service.getHistoryOfReservations(principal.getName(),classType);
+        List<ReservationDTO> r= reservationService.getHistoryOfReservations(principal.getName(),classType);
         return new ResponseEntity<>(r,HttpStatus.OK);
     }
 
@@ -67,5 +67,17 @@ public class ReservationController {
         if(dto==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No registered user!");
         revisionService.saveClientRevision(dto);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/entity/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ReservationDTO>> getReservationsByEntityId(@PathVariable("id") Integer id) {
+        List<Reservation> reservations = reservationService.getReservationsByEntityId(id);
+
+        Set<ReservationDTO> reservationDTOS = new HashSet<>();
+        for(Reservation r : reservations) {
+            ReservationDTO dto = new ReservationDTO(r.getId(), r.getDateTime(), r.getDurationInHours(), r.getMaxPersons(), r.getPrice(), r.getCanceled(), r.getRentingEntity().getId(), r.getRentingEntity().getName());
+            reservationDTOS.add(dto);
+        }
+        return new ResponseEntity<>(reservationDTOS, HttpStatus.OK);
     }
 }

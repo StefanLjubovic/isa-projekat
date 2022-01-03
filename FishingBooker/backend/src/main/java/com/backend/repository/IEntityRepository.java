@@ -1,8 +1,5 @@
 package com.backend.repository;
-import com.backend.model.RegisteredUser;
-import com.backend.model.Adventure;
-import com.backend.model.RentingEntity;
-import com.backend.model.UnavailablePeriod;
+import com.backend.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +37,5 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
 
     @Query("SELECT e  FROM RentingEntity e LEFT JOIN FETCH e.images LEFT JOIN FETCH e.unavailablePeriods where type(e) = ?1")
     <T extends RentingEntity> List<T> getEntityByClassWithPeriods(Class<?> type);
+
 }

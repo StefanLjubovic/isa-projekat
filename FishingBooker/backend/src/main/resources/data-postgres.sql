@@ -77,11 +77,11 @@ VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Two hours ship r
 INSERT INTO subscriptions(client_id,entity_id)
 VALUES (4,2);
 
---reservation
+-- reservation
 INSERT INTO reservation(reservation_id,date_time,duration_in_hours,is_canceled,max_persons,price,reg_user_id,entity_id)
 VALUES  (nextval('reservation_seq_gen'),'2022-01-05',72,false,7,4000,4,1),
-        (nextval('reservation_seq_gen'),'2021-11-05',48,false,10,8000,4,2),
-        (nextval('reservation_seq_gen'),'2021-10-05',72,false,11,7000,4,2);
+        (nextval('reservation_seq_gen'),'2022-11-05',48,false,10,8000,4,2),
+        (nextval('reservation_seq_gen'),'2022-01-09 08:00:00',5,false,11,7000,4,2);
 
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
 VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-05','2022-01-08');
@@ -89,7 +89,13 @@ VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-05','2022-01-08');
 INSERT INTO renting_entity_unavailable_periods(renting_entity_entity_id,unavailable_periods_period_id)
 VALUES(1,1);
 
---sales
-
+-- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)
-VALUES (nextval('sale_sale_id_seq'),'2022-01-10',72,'2022-01-06',8,4000,2)
+VALUES (nextval('sale_sale_id_seq'),'2022-01-10',4,'2022-01-06',8,4000,2);
+
+-- instructor - unavailable period
+INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
+VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-04 08:00:00','2022-01-04 12:30:00');
+
+INSERT INTO public.registered_user_unavailable_periods(fishing_instructor_reg_user_id, unavailable_periods_period_id)
+VALUES (2, 2);

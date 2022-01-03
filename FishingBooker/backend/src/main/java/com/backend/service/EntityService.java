@@ -36,6 +36,10 @@ public class EntityService {
         return entities;
     }
 
+    public RentingEntity getEntityById(Integer id) {
+        return entityRepository.getById(id);
+    }
+
     public List<? extends RentingEntity> GetByUsersSubscriptions(String email) {
         return entityRepository.findSubscriptions(email);
     }
@@ -56,13 +60,6 @@ public class EntityService {
         entityRepository.deleteById(id);
     }
 
-    public Set<Sale> createSaleForEntity(Sale sale, Integer entityId) {
-        RentingEntity entity = entityRepository.fetchById(entityId);
-        sale.setRentingEntity(entity);
-        entity.getSales().add(sale);
-        entityRepository.save(entity);
-        return entity.getSales();
-    }
     @Transactional
     public Reservation updateUnavailablePeriod(Reservation reservation) {
         Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());

@@ -1,5 +1,5 @@
 <template>
-    <vue-cal class="calendar vuecal--green-theme"
+    <vue-cal class="calendar"
              active-view="week" 
              :disable-views="['years', 'day']"
              today-button
@@ -29,10 +29,16 @@ export default ({
     color: #2c3e50;
 }
 
+.vuecal__menu, .vuecal__cell-events-count {background-color: #2c3e50; color: white;}
+.vuecal__title-bar {background-color: #e0e2e4;}
+.vuecal__cell--today, .vuecal__cell--current {background-color: rgba(229, 237, 245, 0.4);}
+.vuecal:not(.vuecal--day-view) .vuecal__cell--selected {background-color: rgba(222, 232, 241, 0.4);}
+.vuecal__cell--selected:before {border-color: #1e2c3a;}
+
 .vuecal__event.calendar-unavailable { 
     font-size: 15px;
     background-color: #df6060e6;
-    border: 1px solid rgb(235, 82, 82);
+    border: 1px solid rgb(165, 60, 60);
     color: #fff;
 }
 
@@ -40,6 +46,13 @@ export default ({
     font-size: 15px;
     background-color: #43aa62e6;
     border: 1px solid #2e7944e6;
+    color: #fff;
+}
+
+.vuecal__event.calendar-booked { 
+    font-size: 15px;
+    background-color: #d3c60fe6;
+    border: 1px solid #a7a40de6;
     color: #fff;
 }
 

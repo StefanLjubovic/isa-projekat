@@ -103,6 +103,13 @@ public class Sale {
       this.rentingEntity = rentingEntity;
    }
 
+   public Date getSaleEndTime() {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(this.getDateTimeFrom());
+      cal.add(Calendar.HOUR_OF_DAY, this.getDurationInHours());
+      return cal.getTime();
+   }
+
    @Override
    public String toString() {
       return "Sale{}";

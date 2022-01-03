@@ -11,6 +11,7 @@ public class SaleDTO {
     private Date expireDateTime;
     private String additionalServices;
     private double price;
+    private String entityName;
 
     public SaleDTO() {
     }
@@ -79,5 +80,13 @@ public class SaleDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 }

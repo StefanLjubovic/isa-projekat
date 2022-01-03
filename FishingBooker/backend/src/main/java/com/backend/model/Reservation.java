@@ -129,6 +129,13 @@ public class Reservation {
       this.rentingEntity = rentingEntity;
    }
 
+   public Date getReservationEndTime() {
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(this.getDateTime());
+      cal.add(Calendar.HOUR_OF_DAY, this.getDurationInHours());
+      return cal.getTime();
+   }
+
    @Override
    public String toString() {
       return "Reservation{}";

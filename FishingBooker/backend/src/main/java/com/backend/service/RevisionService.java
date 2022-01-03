@@ -1,12 +1,15 @@
 package com.backend.service;
 
 import com.backend.dto.RevisionDTO;
+import com.backend.model.Reservation;
 import com.backend.model.Revision;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.repository.IRevisionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RevisionService {

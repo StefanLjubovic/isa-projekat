@@ -9,23 +9,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ReservationDTO {
+
     private Integer id;
-
     private Date dateTime;
-
     private int durationInHours;
-
     private int maxPersons;
-
     private Set<String> additionalServices = new HashSet<String>();
-
     private double price;
-
     private Boolean isCanceled = false;
-
     private Integer entityId;
-
     private String entityName;
+    private String clientName;
 
     public ReservationDTO(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Boolean isCanceled, Integer entityId, String entityName) {
         this.id = id;
@@ -109,5 +103,13 @@ public class ReservationDTO {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

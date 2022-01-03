@@ -74,19 +74,6 @@ public class EntityController {
         return new ResponseEntity<>("Entity deleted!", HttpStatus.OK);
     }
 
-    @PostMapping("/sale/{id}")
-    @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
-    public ResponseEntity<List<SaleDTO>> createSaleForEntity(@RequestBody Sale sale, @PathVariable("id") Integer entityId) {
-        Set<Sale> sales = entityService.createSaleForEntity(sale, entityId);
-
-        List<SaleDTO> dto = new ArrayList<>();
-        for(Sale s : sales) {
-            SaleDTO saleDTO = new SaleDTO(s.getId(), s.getDateTimeFrom(), s.getDurationInHours(), s.getMaximumPersons(), s.getExpireDateTime(), s.getAdditionalServices(), s.getPrice());
-            dto.add(saleDTO);
-        }
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }
-
     @PostMapping("/save-complaint")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Void> createClientComplaint(@RequestBody ComplaintDTO dto,Principal principal){
@@ -107,6 +94,7 @@ public class EntityController {
         Collection<EntityDTO> dto = getEntityDTOS(entities);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
     @PostMapping(value="/get-available-for-period/{state}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Collection<EntityDTO>>getAvailableEntities(@RequestBody UnavailablePeriod period,@PathVariable int state) throws IOException {

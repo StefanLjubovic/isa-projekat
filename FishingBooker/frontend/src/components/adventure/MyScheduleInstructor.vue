@@ -31,12 +31,12 @@
             </form>
             <button class="btn" @click="defineUnavaliablePeriod()"><i class="fas fa-check"></i></button>
         </div>
-        <!--<CalendarView :unavailablePeriods="unavailablePeriods"/>-->
-        <Calendar class="calendar" :events="unavailablePeriods"/>
+        <Calendar class="calendar" :events="events"/>
     </div>
 </template>
 
 <script>
+import moment from 'moment'
 import axios from 'axios';
 import server from '../../server';
 import Calendar from '../Calendar.vue'
@@ -59,7 +59,7 @@ export default {
             masks: {
                 input: 'YYYY-MM-DD h:mm A',
             },
-            unavailablePeriods: [],
+            events: [],
             reservations: []
         };
     },
@@ -73,11 +73,44 @@ export default {
         axios.get(`${server.baseUrl}/instructor/unavailablePeriods`, {headers: headers})
         .then((response) => {
             for(let period of response.data) {
-                this.unavailablePeriods.push({
+                this.events.push({
                     start : new Date(period.fromDateTime), 
                     end : new Date(period.toDateTime),
                     title : period.message,
                     class: 'calendar-unavailable'
+                })
+            }
+        })
+
+        axios.get(`${server.baseUrl}/sale/instructor/`, { headers: headers })
+        .then((response) => {
+            for(let sale of response.data) {
+                var endTime = new Date(sale.dateTimeFrom);
+                endTime.setHours(parseInt(endTime.getHours()) + parseInt(sale.durationInHours));
+
+                this.events.push({
+                    start : new Date(sale.dateTimeFrom), 
+                    end : endTime,
+                    title : `SALE for ${sale.entityName}`,
+                    content: `<p style="font-size: 12px; color="light-gray;"> Expires on ${this.dateFormat(sale.expireDateTime)} </p> `,
+                    class: 'calendar-sale'
+                })
+            }
+        })
+
+        axios.get(`${server.baseUrl}/instructor/reservations`, { headers: headers })
+        .then((response) => {
+            for(let reservation of response.data) {
+                var endTime = new Date(reservation.dateTime);
+                endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+
+                this.events.push({
+                    start : new Date(reservation.dateTime), 
+                    end : endTime,
+                    title : `BOOKED`,
+                    content: `<p style="font-size: 13px;"> Adventure ${reservation.entityName} </p>
+                              <p style="font-size: 13px;"> Client ${reservation.clientName} </p>  `,
+                    class: 'calendar-booked'
                 })
             }
         })
@@ -97,7 +130,7 @@ export default {
 
             axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {headers: headers})
             .then((response) => {
-                this.unavailablePeriods.push({
+                this.events.push({
                     start : new Date(response.data.fromDateTime), 
                     end : new Date(response.data.toDateTime),
                     title : response.data.message,
@@ -111,10 +144,14 @@ export default {
                     timer: 2000
                 })
             })
-            .catch(() => {
-                this.$swal("There is already defined unavailable period or booked adventure in this time range!");
+            .catch((error) => {
+                this.$swal(error.response.data.message);
+                console.log(error.response.data.message);
             })
-        }
+        },
+        dateFormat(value) {
+            return moment(value).format("DD.MM.YYYY. HH:mm");
+        },
     }
 }
 </script>

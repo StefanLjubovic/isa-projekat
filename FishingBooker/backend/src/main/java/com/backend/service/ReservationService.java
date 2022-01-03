@@ -4,6 +4,7 @@ import com.backend.dto.ReservationDTO;
 import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
+import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,5 +79,9 @@ public class ReservationService {
             return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Adventure.class);}
         else if(classType.equals("Cottage")) return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Cottage.class);
         return reservationRepository.fetchHistoryByClientEmail(email,new Date(), Ship.class);
+    }
+
+    public List<Reservation> getReservationsByEntityId(Integer id) {
+        return reservationRepository.getReservationByRentingEntity_Id(id);
     }
 }

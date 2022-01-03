@@ -1,8 +1,8 @@
 package com.backend.service;
 
-import com.backend.model.FishingInstructor;
-import com.backend.model.UnavailablePeriod;
+import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
+import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUnavailablePeriodRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.xml.crypto.Data;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class InstructorService {
@@ -25,14 +23,21 @@ public class InstructorService {
     @Autowired
     private IUnavailablePeriodRepository unavailablePeriodRepository;
 
+    @Autowired
+    private IAdventureRepository adventureRepository;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
+
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
 
-        for (UnavailablePeriod period : fishingInstructor.getUnavailablePeriods()) {
-            if(period.getFromDateTime().before(unavailablePeriod.getToDateTime()) && period.getToDateTime().after(unavailablePeriod.getFromDateTime())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this range!");
-            }
-        }
+        if (overlapsWithExistingUnavailablePeriod(unavailablePeriod, fishingInstructor))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
+        if (overlapsWithExistingSale(unavailablePeriod, instructorEmail))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
+        if (overlapsWithExistingReservation(unavailablePeriod, instructorEmail))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already booked reservation in this time range!");
 
         UnavailablePeriod savedPeriod = unavailablePeriodRepository.save(unavailablePeriod);
         fishingInstructor.getUnavailablePeriods().add(savedPeriod);
@@ -50,4 +55,50 @@ public class InstructorService {
         FishingInstructor fishingInstructor = userRepository.fetchById(id);
         return fishingInstructor.getUnavailablePeriods();
     }
+
+    public List<Reservation> getReservationsForInstructor(String email) {
+        List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(email);
+        List<Reservation> reservations = new ArrayList<>();
+        for(Adventure a : instructorAdventures) {
+            List<Reservation> r = reservationRepository.fetchByEntityId(a.getId());
+            reservations.addAll(r);
+        }
+        return reservations;
+    }
+
+    private boolean overlapsWithExistingReservation(UnavailablePeriod unavailablePeriod, String instructorEmail) {
+        List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(instructorEmail);
+
+        for(Adventure adventure : instructorAdventures) {
+            List<Reservation> reservations = reservationRepository.fetchByEntityId(adventure.getId());
+            for(Reservation r : reservations) {
+                if (r.getDateTime().before(unavailablePeriod.getToDateTime()) && r.getReservationEndTime().after(unavailablePeriod.getFromDateTime()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean overlapsWithExistingSale(UnavailablePeriod unavailablePeriod, String instructorEmail) {
+        List<Adventure> adventures = adventureRepository.fetchAdventuresByFishingInstructor_Email(instructorEmail);
+
+        for(Adventure a : adventures) {
+            for(Sale s : a.getSales()) {
+                if (s.getDateTimeFrom().before(unavailablePeriod.getToDateTime()) && s.getSaleEndTime().after(unavailablePeriod.getFromDateTime()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean overlapsWithExistingUnavailablePeriod(UnavailablePeriod unavailablePeriod, FishingInstructor fishingInstructor) {
+        for (UnavailablePeriod period : fishingInstructor.getUnavailablePeriods()) {
+            if(period.getFromDateTime().before(unavailablePeriod.getToDateTime()) && period.getToDateTime().after(unavailablePeriod.getFromDateTime()))
+                return true;
+        }
+        return false;
+    }
+
 }

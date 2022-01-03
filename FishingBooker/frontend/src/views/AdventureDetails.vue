@@ -93,6 +93,7 @@ import axios from 'axios'
 import server from '../server'
 import useValidate from '@vuelidate/core'
 import {required, numeric} from '@vuelidate/validators'
+import moment from 'moment'
 
 export default {
     components: {
@@ -163,7 +164,6 @@ export default {
         }
     },
     created() {
-
         const headers = {
             'Content-Type': 'application/json;charset=UTF-8',
                 Accept: 'application/json',
@@ -173,10 +173,22 @@ export default {
         axios.get(`${server.baseUrl}/adventure/${this.adventureId}`, { headers: headers })
         .then((response) => {
             this.adventure = response.data;
+
+            for(let sale of this.adventure.sales) {
+                var endTime = new Date(sale.dateTimeFrom);
+                endTime.setHours(parseInt(endTime.getHours()) + parseInt(sale.durationInHours));
+                this.events.push({
+                    start : new Date(sale.dateTimeFrom), 
+                    end : endTime,
+                    title : 'SALE',
+                    content: `<p style="font-size: 12px; color="light-gray;"> Expires on ${this.dateFormat(sale.expireDateTime)} </p>`,
+                    class: 'calendar-sale'
+                })
+            }
+
             axios.get(`${server.baseUrl}/instructor/unavailablePeriods/${this.adventure.fishingInstructor.id}`, { headers: headers })
             .then((res) => {
                 for(let period of res.data) {
-                    console.log(res.data)
                     this.events.push({
                         start : new Date(period.fromDateTime), 
                         end : new Date(period.toDateTime),
@@ -185,8 +197,22 @@ export default {
                     })
                 }
             })
+
+            axios.get(`${server.baseUrl}/reservation/entity/${this.adventure.id}`, { headers: headers })
+            .then((res) => {
+                for(let reservation of res.data) {
+                    var endTime = new Date(reservation.dateTime);
+                    endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                    this.events.push({
+                        start : new Date(reservation.dateTime), 
+                        end : endTime,
+                        title : 'BOOKED',
+                        class: 'calendar-booked'
+                    })
+                }
+            })
         })
-        .catch((error) => (console.log(error)))
+        .catch((error) => (console.log(error)));
     },
     methods: {
         openModalForCreatingSale: function() {
@@ -203,9 +229,9 @@ export default {
                 'Authorization': `Bearer ${this.token}`
             }
 
-            axios.post(`${server.baseUrl}/entity/sale/${this.adventure.id}`, this.sale, { headers: headers })
+            axios.post(`${server.baseUrl}/sale/${this.adventure.id}`, this.sale, { headers: headers })
             .then((response) => {
-                this.adventure.sales = response.data;
+                this.adventure.sales.push(response.data);
 
                 var endTime = new Date(this.sale.dateTimeFrom);
                 endTime.setHours(parseInt(endTime.getHours()) + parseInt(this.sale.durationInHours));
@@ -214,8 +240,7 @@ export default {
                     start : new Date(this.sale.dateTimeFrom), 
                     end : endTime,
                     title : 'SALE',
-                    class: 'calendar-sale',
-                    background: true
+                    class: 'calendar-sale'
                 })
 
                 window.$('#new-sale-modal').modal('hide');
@@ -240,8 +265,11 @@ export default {
         closeModal: function(){
             this.displayReservationModal = false;
             document.getElementById('appContainer').style.overflow = 'unset';
-        document.getElementById('appContainer').style.height='unset';
-        }
+            document.getElementById('appContainer').style.height='unset';
+        },
+        dateFormat(value) {
+            return moment(value).format("DD.MM.YYYY. HH:mm");
+        },
     }
 }
 </script>
