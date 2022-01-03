@@ -54,7 +54,7 @@ export default {
         layers: [
           // adding a background tiled layer
           new TileLayer({
-          source: new OSM() // tiles are served by OpenStreetMap       
+          source: new OSM()    
         }),
         ],
 		view : new View({
@@ -139,22 +139,18 @@ export default {
         display:flex;
         flex-direction: column;
     }
-
     .map-style{ 
         width: 500px;
         height: 400px;
     }
-
     #map {
         width: 100%;
         height: 100%;
     }
-
     .fields{
         width: 600px;
         margin-left: 10%;
     }
-
     .form-control{
         border-radius:1.5rem;
         width: 400px;

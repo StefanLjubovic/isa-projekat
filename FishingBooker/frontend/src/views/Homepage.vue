@@ -87,8 +87,8 @@
     <MyScheduleInstructor v-if="state == 43"/>
     <OwnerAnalytics v-if="state == 44"/>
     <ShipDetails v-if="state == 45" :entityId="selectedEntityId" @edit-ship="editShip" @entity-deleted="changeState"/>
-    <!--AddNewCottage v-if="state == 26" />
-    <EditCottage    v-if="state == 27" :cottageId="selectedCottageId"/-->
+    <AddNewShip  v-if="state == 46" />
+    <!--EditCottage    v-if="state == 27" :cottageId="selectedCottageId"/-->
   </div>
 
   <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
@@ -129,6 +129,7 @@ import ShipReservations from "@/components/ship/ShipReservations.vue"
 import ShipDetails from "@/components/ship/ShipDetails.vue"
 import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
+import AddNewShip from "@/views/AddNewShip.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
 import AddNewAdventure from "@/views/AddNewAdventure.vue"
 import EditCottage from "@/views/EditCottage.vue"
@@ -170,7 +171,8 @@ export default {
         AddNewAdventure,
         EditAdventure,
         ShipReservations,
-        ShipDetails
+        ShipDetails,
+        AddNewShip
     },
     data(){
       return{

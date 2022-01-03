@@ -93,33 +93,14 @@
         data() {
             return {
                 id: this.entityId,
-                 ship: {
-                    name: '',
-                    address: {
-                        streetName: '',
-                        streetNumber: '',
-                        postalCode: '',
-                        city: '',
-                        country: '',
-                        longitude: undefined,
-                        latitude: undefined
-                    },
-                    description: '',
-                    averageGrade: undefined,
-                    images: [],
-                    allowedBehaviour: [],
-                    unallowedBehaviour: [],
-                    cancellationPercentage: undefined,
-                    pricelistItem: [],
-                    rooms: []
-               },
-               sale: {
-                dateTimeFrom : '',
-                durationInHours: '',
-                maximumPersons: '',
-                expireDateTime: '',
-                additionalServices: '',
-                price: ''
+                ship: {},
+                sale: {
+                    dateTimeFrom : '',
+                    durationInHours: '',
+                    maximumPersons: '',
+                    expireDateTime: '',
+                    additionalServices: '',
+                    price: ''
                }
             } 
         },
@@ -179,7 +160,6 @@
 </script>
 
 <style scoped>
-
     #profile {
         padding-top: 50px;
         padding-bottom: 50px;
@@ -232,5 +212,4 @@
         text-align: left;
         font-size: 13px;
     }
-
 </style>
