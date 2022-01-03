@@ -72,6 +72,31 @@ public class ShipService {
         return newShip;
     }
 
+    public Ship update(Ship ship) throws IOException {
+        Ship shipToUpdate = this.shipRepository.findById(ship.getId()).get();
+        shipToUpdate.setName(ship.getName());
+        shipToUpdate.setDescription(ship.getDescription());
+        shipToUpdate.setCancellationPercentage(ship.getCancellationPercentage());
+        shipToUpdate.setImages(this.saveImages(ship));
+        shipToUpdate.setAllowedBehavior(ship.getAllowedBehavior());
+        shipToUpdate.setUnallowedBehavior(ship.getUnallowedBehavior());
+        shipToUpdate.setAddress(ship.getAddress());
+        shipToUpdate.setPricelistItems(ship.getPricelistItems());
+        for (PricelistItem item : ship.getPricelistItems()) {
+            item.setRentingEntity(shipToUpdate);
+            this.pricelistItemRepostory.save(item);
+        }
+        shipToUpdate.setType(ship.getType());
+        shipToUpdate.setLength(ship.getLength());
+        shipToUpdate.setEngineNumber(ship.getEngineNumber());
+        shipToUpdate.setEnginePower(ship.getEnginePower());
+        shipToUpdate.setMaxSpeed(ship.getMaxSpeed());
+        shipToUpdate.setCapacity(ship.getCapacity());
+        shipToUpdate.setNavigationEquipment(ship.getNavigationEquipment());
+        shipToUpdate.setFishingEquipment(ship.getFishingEquipment());
+        return this.shipRepository.save(shipToUpdate);
+    }
+
     private RentingEntity createEntityFromShip(Ship ship) throws IOException {
         Address address = ship.getAddress();
         address.setId(null);

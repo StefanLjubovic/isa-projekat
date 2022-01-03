@@ -88,7 +88,7 @@
     <OwnerAnalytics v-if="state == 44"/>
     <ShipDetails v-if="state == 45" :entityId="selectedEntityId" @edit-ship="editShip" @entity-deleted="changeState"/>
     <AddNewShip  v-if="state == 46" />
-    <!--EditCottage    v-if="state == 27" :cottageId="selectedCottageId"/-->
+    <EditShip    v-if="state == 47" :shipId="selectedShipId"/>
   </div>
 
   <!-- Fishing instructor options (userRole 'ROLE_INSTRUCTOR') -->
@@ -134,6 +134,7 @@ import AddNewCottage from "@/views/AddNewCottage.vue"
 import AddNewAdventure from "@/views/AddNewAdventure.vue"
 import EditCottage from "@/views/EditCottage.vue"
 import EditAdventure from "@/views/EditAdventure.vue"
+import EditShip from "@/views/EditShip.vue"
 import MyProfile from "@/components/MyProfile.vue"
 import AdminAnalytics from "@/components/admin/AdminAnalytics.vue"
 import OwnerAnalytics from "@/components/OwnerAnalytics.vue"
@@ -172,7 +173,8 @@ export default {
         EditAdventure,
         ShipReservations,
         ShipDetails,
-        AddNewShip
+        AddNewShip,
+        EditShip
     },
     data(){
       return{
@@ -187,6 +189,7 @@ export default {
         historySort : '',
         selectedEntityId: undefined,
         selectedCottageId: undefined,
+        selectedShipId: undefined,
         selectedAdventureId: undefined,
         selectedReservation : {},
         reservations : []
@@ -370,6 +373,10 @@ export default {
       editCottage(id){
         this.selectedCottageId = id;
         this.state = 27;
+      },
+      editShip(id) {
+        this.selectedShipId = id;
+        this.state = 47;
       },
       editAdventure(id) {
         this.selectedAdventureId = id;

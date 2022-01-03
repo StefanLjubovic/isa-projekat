@@ -1,6 +1,7 @@
 package com.backend.controller;
 
 import com.backend.dto.ShipDTO;
+import com.backend.dto.UpdateShipDTO;
 import com.backend.model.Ship;
 import com.backend.service.ShipService;
 import org.modelmapper.ModelMapper;
@@ -42,4 +43,19 @@ public class ShipController {
         return new ResponseEntity<>("Successfully added ship!", HttpStatus.CREATED);
     }
 
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('SHIP_OWNER')")
+    public ResponseEntity<String> updateShip(Principal user, @RequestBody UpdateShipDTO updateShipDTO) throws IOException {
+        Ship ship = modelMapper.map(updateShipDTO, Ship.class);
+        if(existShipeWithSameName(ship))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ship with this name already exists!");
+
+        this.shipService.update(ship);
+        return new ResponseEntity<>("Successfully edited ship!", HttpStatus.OK);
+    }
+
+    private boolean existShipeWithSameName(Ship ship) {
+        Ship existedShip = this.shipService.findByName(ship.getName());
+        return existedShip != null && existedShip.getId() != ship.getId();
+    }
 }

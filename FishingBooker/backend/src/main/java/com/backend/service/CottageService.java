@@ -27,7 +27,7 @@ public class CottageService {
 
     public Cottage findById(int id) throws IOException {
         Cottage cottage = cottageRepository.findById(id).get();
-        cottage.setImages(loadImages(cottage.getImages()));
+        cottage.setImages(imageConverter.loadImages(cottage.getImages()));
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
@@ -119,16 +119,5 @@ public class CottageService {
         return convertedImages;
     }
 
-    private Set<String> loadImages(Set<String> images) throws IOException {
-        Set<String> base64Images = new HashSet<String>();
-        for (String image: images) {
-            String base64Image = imageConverter.encodeImageToBase64(image);
-            base64Images.add(base64Image);
-        }
-        return  base64Images;
-    }
-
-    public List<Cottage> getAllCottagesFromCottageOwner(String email) {
-        return cottageRepository.getCottagesByCottageOwner_Email(email);
-    }
+    public List<Cottage> getAllCottagesFromCottageOwner(String email) { return cottageRepository.getCottagesByCottageOwner_Email(email); }
 }
