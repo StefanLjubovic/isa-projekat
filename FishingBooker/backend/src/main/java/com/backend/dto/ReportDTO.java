@@ -5,16 +5,16 @@ public class ReportDTO {
     private String content;
     private boolean isBadReview;
     private boolean notAppeared;
-    private  Integer clientId;
+    private String clientEmail;
     private Integer rentingEntityId;
-    
+
     public ReportDTO() {}
 
-    public ReportDTO(String content, boolean isBadReview, boolean notAppeared, Integer clientId, Integer rentingEntityId) {
+    public ReportDTO(String content, boolean isBadReview, boolean notAppeared, String clientEmail, Integer rentingEntityId) {
         this.content = content;
         this.isBadReview = isBadReview;
         this.notAppeared = notAppeared;
-        this.clientId = clientId;
+        this.clientEmail = clientEmail;
         this.rentingEntityId = rentingEntityId;
     }
 
@@ -30,9 +30,9 @@ public class ReportDTO {
 
     public void setNotAppeared(boolean notAppeared) {   this.notAppeared = notAppeared; }
 
-    public Integer getClientId() {  return clientId; }
+    public String getClientEmail() {  return clientEmail; }
 
-    public void setClientId(Integer clientId) { this.clientId = clientId; }
+    public void setClientEmail(String clientEmail) { this.clientEmail = clientEmail; }
 
     public Integer getRentingEntityId() { return rentingEntityId;  }
 

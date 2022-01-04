@@ -20,7 +20,7 @@
         <td>{{convertToDate(reservation.dateTime)}}</td>
         <td>{{convertToDays(reservation.durationInHours)}} days</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client.id, reservation.entityId)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client.email, reservation.entityId)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -114,7 +114,7 @@ export default {
         content: undefined,
         isBadReview: undefined,
         notAppeared: undefined,
-        clientId: undefined,
+        clientEmail: undefined,
         rentingEntityId: undefined,
       },
       rentingEntity: undefined
@@ -154,8 +154,8 @@ export default {
         this.selectedClient = client;
         window.$('#client-details-modal').modal('show');
       },
-      openModalForReport : function(clientId, rentingEntityId) {
-        this.report.clientId = clientId;
+      openModalForReport : function(clientEmail, rentingEntityId) {
+        this.report.clientEmail = clientEmail;
         this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },

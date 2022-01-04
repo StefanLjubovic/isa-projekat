@@ -34,9 +34,10 @@ public class ReportController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
-    public ResponseEntity<String> addNewReport(Principal user, @RequestBody ReportDTO reportDTO) throws AccessDeniedException {
+    public ResponseEntity<String> addNewReport(Principal user, @RequestBody ReportDTO reportDTO)  {
+
         Report report = new Report(reportDTO.getContent(), reportDTO.isBadReview(), reportDTO.isNotAppeared(),
-                        new Client(this.userService.findById(reportDTO.getClientId())),
+                        new Client(this.userService.findByEmail(reportDTO.getClientEmail())),
                         this.entityService.getEntityById(reportDTO.getRentingEntityId()));
         this.reportService.save(report);
         System.out.println("********************************************");

@@ -27,15 +27,15 @@ public class Client extends RegisteredUser {
    @JoinTable(name = "subscriptions", joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "reg_user_id"), inverseJoinColumns = @JoinColumn(name = "entity_id", referencedColumnName = "entity_id"))
    private Set<RentingEntity> subscriptions = new HashSet<RentingEntity>();
 
-   public Client() { }
+   public Client() {}
 
-    public Client(RegistrationRequest userRequest) {
+   public Client(RegistrationRequest userRequest) {
       super(userRequest);
     }
-    public Client(RegisteredUser registeredUser) {
-      super(registeredUser);
-   }
-    public double getPoints() {
+
+   public Client(RegisteredUser registeredUser) { super(registeredUser); }
+
+   public double getPoints() {
       return points;
    }
 
