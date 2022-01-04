@@ -86,7 +86,7 @@
             </div>            
             <textarea class="comment-area" v-model="report.content" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
             <div class="options">
-                <input type="checkbox" id="penalty" name="penalty" v-model="report.isBadReview" value="penalty"/><span> Request a penalty for client</span><br/>
+                <input type="checkbox" id="penalty" name="penalty" v-model="report.badReview" value="penalty"/><span> Request a penalty for client</span><br/>
                 <input type="checkbox" id="didnot-appear" name="didnot-appear" v-model="report.notAppeared" value="Client did not appear"/><span> Did not appear</span><br/>
             </div><br/>
             <div class="confirm-buttons">
@@ -112,8 +112,8 @@ export default {
       selectedClient: undefined,
       report: {
         content: undefined,
-        isBadReview: undefined,
-        notAppeared: undefined,
+        badReview: false,
+        notAppeared: false,
         clientEmail: undefined,
         rentingEntityId: undefined,
       },
@@ -166,13 +166,10 @@ export default {
                Accept: 'application/json',
               'Authorization': `Bearer ${this.token}`
             }
-            if(!this.report.isBadReview) this.report.isBadReview = false;
-            else this.report.isBadReview = JSON.parse("true");
-            if(!this.report.notAppeared) this.report.notAppeared = false;
             console.log(JSON.stringify(this.report));
             axios.post(`${server.baseUrl}/report/add`, this.report, {headers: headers})
                 .then((response) => {
-                    this.report= { content: '', isBadReview: false, notAppeared: false};
+                    this.report= { content: '', badReview: false, notAppeared: false};
                     this.$swal({
                         icon: 'success',
                         title: response.data,

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.file.AccessDeniedException;
+
 import java.security.Principal;
 
 @RestController
@@ -35,15 +35,10 @@ public class ReportController {
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
     public ResponseEntity<String> addNewReport(Principal user, @RequestBody ReportDTO reportDTO)  {
-
         Report report = new Report(reportDTO.getContent(), reportDTO.isBadReview(), reportDTO.isNotAppeared(),
                         new Client(this.userService.findByEmail(reportDTO.getClientEmail())),
                         this.entityService.getEntityById(reportDTO.getRentingEntityId()));
         this.reportService.save(report);
-        System.out.println("********************************************");
-        System.out.println(reportDTO.isBadReview());
-        System.out.println(reportDTO.isNotAppeared());
-        System.out.println("********************************************");
         return new ResponseEntity<>("Report sent to administrator!", HttpStatus.CREATED);
     }
 }
