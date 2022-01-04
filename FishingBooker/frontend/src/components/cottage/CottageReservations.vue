@@ -130,7 +130,7 @@ export default {
                Accept: 'application/json',
               'Authorization': `Bearer ${this.token}`
         }
-        axios.get(`${server.baseUrl}/cottageOwner/history-reservations`, {headers: headers})
+        axios.get(`${server.baseUrl}/cottageOwner/reservation-history`, {headers: headers})
         .then((response) => {
              this.reservations = response.data;
         })

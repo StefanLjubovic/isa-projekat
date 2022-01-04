@@ -52,7 +52,7 @@ public class CottageOwnerController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping(value="/history-reservations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/reservation-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForCottageOwner(Principal user){
         List<ReservationHistoryDTO> reservations = this.cottageService.getReservationHistoryForCottageOwner(user.getName());

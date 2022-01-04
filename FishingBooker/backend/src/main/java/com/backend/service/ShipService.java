@@ -1,7 +1,9 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.*;
 import com.backend.repository.IPricelistItemRepository;
+import com.backend.repository.IReservationRepository;
 import com.backend.repository.IShipRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +23,8 @@ public class ShipService {
     private IShipRepository shipRepository;
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IReservationRepository reservationRepository;
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
     private Base64ToImage imageConverter = new Base64ToImage();
@@ -120,5 +125,18 @@ public class ShipService {
             ++i;
         }
         return convertedImages;
+    }
+
+    public List<ReservationHistoryDTO> getReservationHistoryForShipOwner(String email) {
+        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
+        List<Ship> ships = getAllShipsFromShipOwner(email);
+        for (Ship ship: ships) {
+            List<ReservationHistoryDTO> reservationsPerShip = this.reservationRepository.fetchReservationHistoryByEntityName(ship.getName());
+            for (ReservationHistoryDTO reservation : reservationsPerShip) {
+                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                reservations.add(reservation);
+            }
+        }
+        return reservations;
     }
 }

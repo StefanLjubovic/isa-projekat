@@ -25,8 +25,8 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
     @Query("SELECT new com.backend.dto.ReservationDTO(r.id,r.dateTime,r.durationInHours,r.maxPersons,r.price,r.isCanceled,r.rentingEntity.id,r.rentingEntity.name)  " +
             "FROM Reservation r left join r.rentingEntity e WHERE type(e) = ?3 and r.client.email = ?1 and r.isCanceled = false and r.dateTime < ?2")
     List<ReservationDTO> fetchHistoryByClientEmail(String email, Date date,Class<?> type);
-
+    
     @Query("SELECT new com.backend.dto.ReservationHistoryDTO(r.id, r.dateTime, r.durationInHours, r.price, r.rentingEntity.id, r.rentingEntity.name, r.client.email) " +
             "FROM Reservation r where r.rentingEntity.name = :name")
-    List<ReservationHistoryDTO> fetchReservationHistoryByCottageName(@Param("name") String name);
+    List<ReservationHistoryDTO> fetchReservationHistoryByEntityName(@Param("name") String name);
 }

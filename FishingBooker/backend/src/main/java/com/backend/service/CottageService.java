@@ -126,7 +126,7 @@ public class CottageService {
         List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
         List<Cottage> cottages = getAllCottagesFromCottageOwner(email);
         for (Cottage cottage : cottages) {
-           List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByCottageName(cottage.getName());
+           List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByEntityName(cottage.getName());
             for (ReservationHistoryDTO reservation : reservationsPerCottage) {
                 reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
                 reservations.add(reservation);
