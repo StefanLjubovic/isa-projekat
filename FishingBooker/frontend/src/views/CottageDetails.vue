@@ -44,6 +44,10 @@
         </div>
     </div>
 
+    <transition name="fade" appear>
+    <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
+
     <div id="profile">
         <AdventureCaption :adventureName="this.cottage.name" :adventureId="this.entityId" :entityName="'cottage'"
             @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-cottage', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+    import ClientReservation from "@/components/client/ClientReservation.vue"
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
     import CalendarView from "@/components/CalendarView.vue"
@@ -83,6 +88,7 @@
         props:['entityId'],
         emits:['edit-cottage'],
         components: {
+            ClientReservation,
             AdventureCaption,
             ImageGallery,
             CalendarView,
@@ -92,6 +98,8 @@
         },
         data() {
             return {
+                displayReservationModal : false,
+                type: 'Cottage',
                 id: this.entityId,
                  cottage: {
                     name: '',
@@ -166,13 +174,22 @@
             openModalForCreatingSale(){
                 window.$('#new-sale-modal').modal('show');
             },
+            makeReservation: function() {
+            this.displayReservationModal = true;
+            document.getElementById('appContainer').style.overflow ='hidden';
+            document.getElementById('appContainer').style.height='100vh';
+            },  
+        closeModal: function(){
+            this.displayReservationModal = false;
+            document.getElementById('appContainer').style.overflow = 'unset';
+            document.getElementById('appContainer').style.height='unset';
+        },
             createSale: function() { this.v$.$validate();  },
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 window.$('#new-sale-modal').modal('hide');
             },
             editEntity: function() {},
-            makeReservation: function() {},  
         }
     }
 

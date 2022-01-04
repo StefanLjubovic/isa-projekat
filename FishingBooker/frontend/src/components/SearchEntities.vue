@@ -144,7 +144,10 @@ export default {
       mm = '0' + mm;
     } 
     today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("dateTofield").setAttribute("min", today);
+    let element=document.getElementById("dateTofield").setAttribute("min", today);
+    if (typeof(element) != 'undefined' && element != null){
+      document.getElementById("dateTofield").setAttribute("min", today);
+    }
     }
   },
   // updated(){
@@ -186,7 +189,10 @@ export default {
       mm = '0' + mm;
     } 
     today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("dateFromfield").setAttribute("min", today);
+    let element=document.getElementById("dateTofield")
+    if (typeof(element) != 'undefined' && element != null){
+      document.getElementById("dateTofield").setAttribute("min", today);
+    }
   }
 };
 </script>

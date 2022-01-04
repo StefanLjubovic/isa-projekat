@@ -94,7 +94,7 @@ VALUES(1,1);
 
 -- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)
-VALUES (nextval('sale_sale_id_seq'),'2022-01-10',4,'2022-01-06',8,4000,2);
+VALUES (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,4000,2);
 
 -- instructor - unavailable period
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)

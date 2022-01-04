@@ -14,12 +14,51 @@
            type="date" 
           id = "dateFromfield"
           v-model="dateFrom"/></span>
-             <span><h5 class="mb-4">Reservation to: </h5><input
+             <span  v-if="type!='Adventure'"><h5 class="mb-4">Reservation to: </h5><input
            class="form-control date-to" 
            type="date" 
           id = "dateTofield"
           v-model="dateTo"/></span>
-              <span class="mb-4 mr-2"><h5 id="request">Additionall request:</h5> <span class="request-input"><input type="text" class="form-control request" v-model="currentRequest" /><i class="fas fa-plus fa-sm" @click="addRequest"></i></span></span>
+           <div class="dropdown-row mb-4" v-if="type=='Adventure'">
+                  <h5 id="drop-lab">Start: </h5>          
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{start}} : 00
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li v-for="index in getNumbers(7,21)" :key="index">
+                            <span><a class="dropdown-item" href="#" @click="calculateAdventurePriceStart(index)">{{index}}:00 </a></span>
+                        </li>
+                    </div>
+            </div>
+            </div>
+
+              <div class="dropdown-row mb-4" v-if="type=='Adventure'">
+                  <h5 id="drop-lab">End: </h5>          
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{end}} : 00
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li v-for="index in getNumbers(start+1,24)" :key="index">
+                            <span><a class="dropdown-item" href="#" @click="calculateAdventurePriceEnd(index)">{{index}}:00 </a></span>
+                        </li>
+                    </div>
+            </div>
+            </div>
+               <div class="dropdown-row mb-4">
+                  <h5 id="drop-lab">Services: </h5>          
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{GetFirstService()}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li v-for="(pricelistItem,index) in rentingEntity.pricelistItems" :key="pricelistItem.id">
+                            <span v-if="index != 0"><a class="dropdown-item" href="#">{{getContentPrice(pricelistItem)}} </a><i v-if="!checkIfAlreadyAdded(pricelistItem)" class="fas fa-plus" @click="addRequest(index)"></i></span>
+                        </li>
+                    </div>
+            </div>
+                </div>
               <div class="dropdown-row mb-4">
                   <h5 id="drop-lab">Requested: </h5>          
                 <div class="dropdown">
@@ -28,12 +67,12 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li v-for="(request,index) in requests" :key="request">
-                            <span><a class="dropdown-item" href="#">{{request}} </a><i class="fas fa-minus" @click="removeRequest(index)"></i></span>
+                            <span><a class="dropdown-item" href="#">{{getContentPrice(request)}} </a><i class="fas fa-minus" @click="removeRequest(index)"  v-if="index != 0"></i></span>
                         </li>
                     </div>
             </div>
 </div>
-            <h5 class="mb-5">Maximum people: &nbsp;{{entity.maxPersons}}
+            <h5 class="mb-5">Maximum people: &nbsp;{{GetPersons()}}
             </h5>
                       <div class="button-div">
               <span><h4 id="price">Price : {{price}} rsd</h4><div class="btn1"><button class="btn droptdown-btn" @click="saveReservation">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
@@ -49,23 +88,25 @@
 
 <script>
 import server from '../../server/index';
+import moment from 'moment';
 export default {
     props:{
-        rentingEntity : Object
+        entity : Object,
+        type : String
     },
     data(){
         return{
             requests: [],
             currentRequest : '',
-            entity:{
-                maxPersons : 8,
-                type : 'adventure',
-                name : 'Marijina vikendica'
-            },
-            price : 3000,
+            price : 0,
+            priceOneDay : 0,
             dateFrom :new Date(),
             dateTo : new Date(),
-            persons : 1
+            persons : 1,
+            start : 7,
+            end: 10,
+            rentingEntity :this.entity
+            
         }
     },
      watch: {
@@ -83,10 +124,18 @@ export default {
       mm = '0' + mm;
     } 
     today = yyyy + '-' + mm + '-' + dd;
-    document.getElementById("dateTofield").setAttribute("min", today);
+    if(this.type != 'Adventure') document.getElementById("dateTofield").setAttribute("min", today);
+    },
+    dateTo(){
+        this.CalculatePrice()
     }
   },
     mounted(){
+        this.rentingEntity = this.entity
+        this.requests.push(this.rentingEntity.pricelistItems[0])
+        this.priceOneDay +=this.rentingEntity.pricelistItems[0].price
+        if(this.type =='Adventure') this.price = this.priceOneDay * Math.abs(this.end - this.start)
+        else this.price = this.priceOneDay
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth() + 1; //January is 0!
@@ -101,34 +150,75 @@ export default {
     } 
     today = yyyy + '-' + mm + '-' + dd;
     document.getElementById("dateFromfield").setAttribute("min", today);
-    document.getElementById("dateTofield").setAttribute("min", today);
+    if(this.type != 'Adventure')document.getElementById("dateTofield").setAttribute("min", today);
   },
     methods:{
-        addRequest(){
-            if(this.currentRequest =='') return;
-            this.requests.push(this.currentRequest)
-            this.currentRequest = '';
+        getNumbers:function(start,stop){
+            return new Array(stop-start).fill(start).map((n,i)=>n+i);
+        },
+        getContentPrice(pricelistItem){
+            return pricelistItem.service + ':     '+pricelistItem.price+'  rsd'
         },
         GetFirstRequest(){
             if(this.requests.length)
-                return this.requests[0]
+                return this.rentingEntity.pricelistItems[0].service + '  '+ this.rentingEntity.pricelistItems[0].price + '  rsd';
             return 'No current requests.'
         },
+        addRequest(index){
+            this.requests.push(this.rentingEntity.pricelistItems[index])
+            this.priceOneDay +=this.rentingEntity.pricelistItems[index].price
+             this.price = this.priceOneDay * Math.abs(this.end - this.start)
+        },
+        GetFirstService(){
+             if(this.rentingEntity.pricelistItems.length)
+                return this.rentingEntity.pricelistItems[0].service + '  '+ this.rentingEntity.pricelistItems[0].price + '  rsd';
+        },
         removeRequest(index){
+            this.priceOneDay -=this.requests[index].price
+             this.price = this.priceOneDay * Math.abs(this.end - this.start)
             this.requests.splice(index, 1)
+            
+        },
+        calculateAdventurePriceEnd(index){
+            this.end = index;
+            this.price = this.priceOneDay * Math.abs(this.end - this.start)
+        },
+        calculateAdventurePriceStart(index){
+            this.start = index;
+            if(this.start > this.end) this.end = index +1
+            this.price = this.priceOneDay * Math.abs(this.end - this.start)
         },
         GetPersons(){
-            if(this.entity.type == 'adventure') return this.entity.maxPersons;
+            if(this.type == 'Adventure') return this.rentingEntity.maxPersons;
+            else if(this.type =='Cottage'){
             let max = 0;
-            this.entity.rooms.map(room => {
+            this.rentingEntity.rooms.map(room => {
                 max+=room.bedNumber
             })
-            return  max;
+            return  max
+            }
+            else return this.rentingEntity.capacity
+        },
+        checkIfAlreadyAdded(pricelistItem){
+            var i;
+            for (i = 0; i < this.requests.length; i++) {
+                if ( this.requests[i].id === pricelistItem.id) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        CalculatePrice(){
+            const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            console.log(diffDays+'  DAYSSSSSSSSSSSSS')
+            this.price = this.priceOneDay * diffDays
         },
         GetEntityName(){
-            if(this.entity.type =='adventure') return 'Adventure: '+this.entity.name;
-            else if(this.entity.type =='ship') return 'Ship: '+this.entity.name;
-            return 'Cottage: '+this.entity.name;
+            if(this.type =='Adventure') return 'Adventure: '+this.rentingEntity.name;
+            else if(this.type =='Ship') return 'Ship: '+this.rentingEntity.name;
+            return 'Cottage: '+this.rentingEntity.name;
         },
         changeButtonContext(index){
             this.persons = index
@@ -136,20 +226,29 @@ export default {
         async saveReservation(){
             const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            console.log(this.dateTo,this.dateFrom,'aaaaaaaaaaaa')
-            console.log(diffTime)
+            let services = []
+            this.requests.map(r => services.push(r.service))
+            let time =0
+            let durationRet = 0
+            if(this.type == 'Adventure') {
+                time =  moment(this.dateFrom).add(this.start*60, 'm').toDate();
+                durationRet = Math.abs(this.end-this.start)
+                }
+            else{
+                time= new Date(this.dateFrom)
+                durationRet= diffDays * 24
+            }
             const client=await server.getLoggedUser()
             const reservation = {
                 rentingEntity : this.rentingEntity,
-                dateTime : this.dateFrom,
+                dateTime : time,
                 client : client.data,
                 price : this.price,
                 isCanceled : false,
-                additionalServices : this.requests,
+                additionalServices : services,
                 maxPersons : this.GetPersons(),
-                durationInHours : diffDays*24
+                durationInHours : durationRet
             }
-
             await server.saveReservation(reservation)
             .then(resp=> {
                 if(resp.success){
@@ -159,17 +258,17 @@ export default {
                         text: 'Reservation succesfully created!',
                         confirmButtonColor: '#2c3e50'
                     })
-                }
-        }).catch(resp=> {
-                    this.$swal.fire({
+                }else{
+                    console.log(resp.data)
+                   this.$swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: resp.data,
-                    })
+                        text: resp.data.message,
+                    })     
+                    }
         })
         this.$emit('close-modal')
-        
-}
+            }
     }
 }
 </script>
@@ -187,7 +286,6 @@ export default {
  min-height: 100vh;
  overflow-x: hidden;
 }
-
 .modal-overlay {
  position: absolute;
  top: 0;

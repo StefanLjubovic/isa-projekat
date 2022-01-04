@@ -2,10 +2,13 @@ package com.backend.controller;
 
 
 import com.backend.dto.ReservationDTO;
+import com.backend.dto.ReservationSaleDTO;
 import com.backend.dto.RevisionDTO;
 import com.backend.model.Reservation;
+import com.backend.model.Sale;
 import com.backend.service.ReservationService;
 import com.backend.service.RevisionService;
+import com.backend.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,10 +32,13 @@ public class ReservationController {
     @Autowired
     RevisionService revisionService;
 
+    @Autowired
+    SaleService saleService;
+
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Void> saveReservation(@RequestBody Reservation reservation) {
-        if(reservation ==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
+        if(reservation ==null || reservation.getDurationInHours() <= 0 || reservation.getDateTime() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
         boolean saved = reservationService.Save(reservation);
         if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(HttpStatus.OK);
@@ -87,4 +93,14 @@ public class ReservationController {
         Boolean isBooked = reservationService.isEntityBooked(id);
         return new ResponseEntity<>(isBooked, HttpStatus.OK);
     }
+    @PostMapping(value = "/fast-reservation/",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Boolean> saveFastReservation(@RequestBody ReservationSaleDTO dto) {
+        if(dto.getReservation() ==null || dto.getSale() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
+        saleService.delete(dto.getSale());
+        boolean saved = reservationService.Save(dto.getReservation());
+        if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
+        return new ResponseEntity<>(true,HttpStatus.OK);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.backend.model.RentingEntity;
 import com.backend.model.Sale;
 import com.backend.repository.IAdventureRepository;
 import com.backend.repository.IEntityRepository;
+import com.backend.repository.ISaleRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class SaleService {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    private ISaleRepository saleRepository;
 
     public Sale createSaleForEntity(Sale sale, Integer entityId) {
         RentingEntity entity = entityRepository.fetchById(entityId);
@@ -69,4 +73,7 @@ public class SaleService {
         return stringBuilder.toString();
     }
 
+    public void delete(Sale sale) {
+        saleRepository.delete(sale);
+    }
 }

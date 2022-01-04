@@ -15,7 +15,7 @@
     <tr v-for="reservation in reservations" :key="reservation.id">
       <td>{{reservation.entityName}}</td>
       <td>{{setDateFormat(reservation.dateTime)}}</td>
-      <td>{{reservation.durationInHours}} days</td>
+      <td>{{GetDuration(reservation)}}</td>
       <td>{{reservation.price}}</td>
       <td><i class="fas fa-window-close fa-2x icon" v-if="checkDate(reservation)" @click="$emit('open-cancelation',reservation)"></i></td>
     </tr>
@@ -48,6 +48,11 @@ export default {
     setDateFormat(timestamp){
       var date = new Date(timestamp);
         return date.toLocaleDateString("sr-RS")
+    },
+    GetDuration(reservation){
+      console.log(reservation)
+      if(reservation.durationInHours > 24) return reservation.durationInHours /24+' days'
+      else return reservation.durationInHours + ' hours'
     }
   },
   data(){

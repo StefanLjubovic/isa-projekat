@@ -81,10 +81,11 @@ public class EntityService {
     @Transactional
     public Reservation updateUnavailablePeriod(Reservation reservation) {
         Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());
+        RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
+        reservation.setRentingEntity(entityToUpdate);
         if(!CheckOverlappingDates(reservation,endDate)){
             UnavailablePeriod reservationPeriod = new UnavailablePeriod(reservation.getDateTime(),endDate);
             try{
-                RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
                 entityToUpdate.getUnavailablePeriods().add(reservationPeriod);
                 entityRepository.save(entityToUpdate);
                 reservation.setRentingEntity(entityToUpdate);
@@ -98,16 +99,22 @@ public class EntityService {
 
     private boolean CheckOverlappingDates(Reservation reservation,Date endDate) {
         for(UnavailablePeriod period : reservation.getRentingEntity().getUnavailablePeriods())
-            if(reservation.getDateTime().compareTo(period.getToDateTime()) <=0 || period.getFromDateTime().compareTo(endDate) <=0)
+            if(period.getFromDateTime().compareTo(endDate) <=0 &&
+                    period.getToDateTime().compareTo(reservation.getDateTime())>=0)
                 return true;
+            FishingInstructor instructor = userRepository.fetchByAdventureId(reservation.getRentingEntity().getId());
+            if(instructor == null) return false;
+            for (UnavailablePeriod period : instructor.getUnavailablePeriods())
+                if (period.getFromDateTime().compareTo(endDate) <= 0 &&
+                        period.getToDateTime().compareTo(reservation.getDateTime()) >= 0)
+                    return true;
         return false;
     }
 
     private Date getEndDate(Date fromDate,Integer durationInHours) {
-        Integer hoursToDays= (int) Math.ceil(Double.valueOf(durationInHours/24));
         Calendar c = Calendar.getInstance();
         c.setTime(fromDate);
-        c.add(Calendar.DATE, hoursToDays);
+        c.add(Calendar.HOUR_OF_DAY,durationInHours);
         Date endDate= c.getTime();
         return endDate;
     }

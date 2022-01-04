@@ -133,6 +133,22 @@ server.saveReservation= async (content) =>{
     .catch((error) => handleError(error));
 };
 
+server.saveFastReservation= async (content) =>{
+    const token = localStorage.getters.getToken
+    const options ={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        url: server.baseUrl+`/reservation/fast-reservation/`,
+        data : content
+    }; 
+    return axios(options)
+    .then(response => handleSuccess(response))
+    .catch((error) => handleError(error));
+};
 
 server.getFutureReservations= async () =>{
     const token = localStorage.getters.getToken

@@ -15,7 +15,7 @@
     <tr v-for="reservation in reservationsForDisplay" :key="reservation.id">
       <td>{{reservation.entityName}}</td>
       <td>{{setDateFormat(reservation.dateTime)}}</td>
-      <td>{{reservation.durationInHours}} hours</td>
+      <td>{{ GetDuration(reservation)}}</td>
       <td>{{reservation.price}}</td>
       <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-complaint',reservation)"></i></td>
       <td><i class="fas fa-plus-square fa-2x icon" @click="$emit('open-revision',reservation)"></i></td>
@@ -55,6 +55,11 @@ export default {
      setDateFormat(timestamp){
       var date = new Date(timestamp);
         return date.toLocaleDateString("sr-RS")
+    },
+    GetDuration(reservation){
+      console.log(reservation)
+      if(reservation.durationInHours > 24) return reservation.durationInHours /24+' days'
+      else return reservation.durationInHours + ' hours'
     }
   }
 }

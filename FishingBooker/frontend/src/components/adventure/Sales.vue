@@ -77,11 +77,15 @@ export default ({
                             client : client.data,
                             price : sale.price,
                             isCanceled : false,
-                            additionalServices : sale.additionalServices.split(","),
+                            additionalServices : [],
                             maxPersons : sale.maximumPersons,
                             durationInHours : sale.durationInHours
                         }
-                        await server.saveReservation(reservation)
+                        const dto={
+                            reservation : reservation,
+                            sale : sale
+                        }
+                        await server.saveFastReservation(dto)
                         .then(resp=> {
                             if(resp.success){
                                 this.$swal.fire({
@@ -94,12 +98,6 @@ export default ({
                                 this.$emit('sale-to-reservation', reservation);
                                 this.salesArray.splice(this.salesArray.indexOf(sale), 1);
                             }
-                        }).catch(resp=> {
-                            this.$swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: resp.data,
-                            })
                         })
                     }
                 });

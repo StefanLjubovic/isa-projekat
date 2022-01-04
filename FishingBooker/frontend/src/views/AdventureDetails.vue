@@ -45,7 +45,7 @@
     </div>
 
         <transition name="fade" appear>
-    <ClientReservation :rentingEntity="adventure" v-if="displayReservationModal" @close-modal='closeModal'/>
+    <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
 
@@ -115,6 +115,7 @@ export default {
         return {
             adventureId: this.entityId,
             adventure: undefined,
+            type : 'Adventure',
             sale: {
                 dateTimeFrom : '',
                 durationInHours: '',
