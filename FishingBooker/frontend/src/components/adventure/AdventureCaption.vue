@@ -10,7 +10,7 @@
 
         <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
             <button class="btn" @click="this.$emit('create-sale')" v-if="userRole != 'ROLE_ADMIN'">Create sale&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn" @click="this.$emit('edit-entity', this.adventureId)" v-if="userRole != 'ROLE_ADMIN'"><i class="fas fa-solid fa-pen"></i> </button>
+            <button class="btn" @click="editEntity()" v-if="userRole != 'ROLE_ADMIN'"><i class="fas fa-solid fa-pen"></i> </button>
             <button class="btn" @click="deleteEntity()"><i class="fas fa-solid fa-trash"></i></button>
         </div>
     </div>
@@ -84,8 +84,24 @@ export default ({
                         })
                         .then(() => this.$emit('entity-deleted'))
                     })
+                    .catch(() => {
+                        this.$swal(`You can't delete ${this.name} because it is booked at this time.`)
+                    })
                 } 
             })
+        },
+        editEntity() {
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            axios.get(`${server.baseUrl}/reservation/booked/${this.advID}`, { headers: headers })
+            .then((response) => {
+                if(!response.data) this.$emit('edit-entity', this.adventureId);
+                else this.$swal(`You can't edit ${this.name} because it is booked at this time.`)
+            })
+            
         }
     }
 })

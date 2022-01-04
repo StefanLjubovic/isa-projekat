@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.xml.crypto.Data;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class InstructorService {
@@ -60,7 +61,7 @@ public class InstructorService {
         List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(email);
         List<Reservation> reservations = new ArrayList<>();
         for(Adventure a : instructorAdventures) {
-            List<Reservation> r = reservationRepository.fetchByEntityId(a.getId());
+            List<Reservation> r = reservationRepository.fetchByEntityId(a.getId()).stream().filter(res -> res.getCanceled() == Boolean.FALSE).collect(Collectors.toList());
             reservations.addAll(r);
         }
         return reservations;

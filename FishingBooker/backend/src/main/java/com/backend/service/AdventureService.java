@@ -3,12 +3,16 @@ package com.backend.service;
 import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
 import com.backend.repository.IPricelistItemRepository;
+import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,13 +21,16 @@ import java.util.Set;
 public class AdventureService {
 
     @Autowired
-    IAdventureRepository adventureRepository;
+    private IAdventureRepository adventureRepository;
 
     @Autowired
-    IUserRepository userRepository;
+    private IUserRepository userRepository;
 
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
 
     private Base64ToImage imageConverter = new Base64ToImage();
 

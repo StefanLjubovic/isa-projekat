@@ -20,6 +20,7 @@ public class ReservationDTO {
     private Integer entityId;
     private String entityName;
     private String clientName;
+    private String clientEmail;
 
     public ReservationDTO(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Boolean isCanceled, Integer entityId, String entityName) {
         this.id = id;
@@ -32,6 +33,18 @@ public class ReservationDTO {
         this.entityName = entityName;
     }
 
+    public ReservationDTO(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Boolean isCanceled, Integer entityId, String entityName, String clientName, String clientEmail) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.durationInHours = durationInHours;
+        this.maxPersons = maxPersons;
+        this.price = price;
+        this.isCanceled = isCanceled;
+        this.entityId = entityId;
+        this.entityName = entityName;
+        this.clientName = clientName;
+        this.clientEmail = clientEmail;
+    }
 
     public Integer getId() {
         return id;
@@ -111,5 +124,13 @@ public class ReservationDTO {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
     }
 }

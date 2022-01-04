@@ -82,6 +82,14 @@ public class ReservationService {
     }
 
     public List<Reservation> getReservationsByEntityId(Integer id) {
-        return reservationRepository.getReservationByRentingEntity_Id(id);
+        return reservationRepository.getReservationByRentingEntity_Id(id).stream().filter(r -> r.getCanceled() == Boolean.FALSE).collect(Collectors.toList());
+    }
+
+    public Boolean isEntityBooked(Integer id) {
+        List<Reservation> reservations = reservationRepository.getReservationByRentingEntity_Id(id);
+        for(Reservation r : reservations) {
+            if(r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled()) return true;
+        }
+        return false;
     }
 }

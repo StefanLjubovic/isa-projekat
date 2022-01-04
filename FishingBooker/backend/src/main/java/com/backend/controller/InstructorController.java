@@ -94,8 +94,7 @@ public class InstructorController {
 
         Set<ReservationDTO> reservationDTOS = new HashSet<>();
         for(Reservation r : reservations) {
-            ReservationDTO dto = new ReservationDTO(r.getId(), r.getDateTime(), r.getDurationInHours(), r.getMaxPersons(), r.getPrice(), r.getCanceled(), r.getRentingEntity().getId(), r.getRentingEntity().getName());
-            dto.setClientName(r.getClient().getFirstName() + " " + r.getClient().getLastName());
+            ReservationDTO dto = new ReservationDTO(r.getId(), r.getDateTime(), r.getDurationInHours(), r.getMaxPersons(), r.getPrice(), r.getCanceled(), r.getRentingEntity().getId(), r.getRentingEntity().getName(), r.getClient().getFirstName() + " " + r.getClient().getLastName(), r.getClient().getEmail());
             reservationDTOS.add(dto);
         }
 

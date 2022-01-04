@@ -12,7 +12,8 @@ VALUES (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '2100
        (nextval('address_address_id_seq'), 'Sabac', 'Srbija', 0.0, 0.0, '15000', 'Janka Veselinovica', '25'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Janka Cmelika', '5a'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Bulevar Despota Stefana', '10'),
-       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Safarikova', '1b');
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Safarikova', '1b'),
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Kralja Aleksandra', '12');
 
 -- users
 --passwords 123456
@@ -60,7 +61,7 @@ VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure'
 
 -- ship
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
-VALUES (nextval('entity_seq_gen'), 0, 0, 'Beautiful moments with beautiful nature and sun', 'Anin brod',0, 6);
+VALUES (nextval('entity_seq_gen'), 0, 0, 'Beautiful moments with beautiful nature and sun', 'Anin brod',0, 7);
 INSERT INTO ship(type, length, engine_number, engine_power, max_speed, capacity, entity_id, reg_user_id)
 VALUES ('Fishing ship', 550.5, 16, 250, 50, 15, 3, 5);
 INSERT INTO ship_navigation_equipment(entity_id, navigation_equipment)
@@ -80,8 +81,8 @@ VALUES (4,2);
 -- reservation
 INSERT INTO reservation(reservation_id,date_time,duration_in_hours,is_canceled,max_persons,price,reg_user_id,entity_id)
 VALUES  (nextval('reservation_seq_gen'),'2022-01-05',72,false,7,4000,4,1),
-        (nextval('reservation_seq_gen'),'2022-11-05',48,false,10,8000,4,2),
-        (nextval('reservation_seq_gen'),'2022-01-09 08:00:00',5,false,11,7000,4,2);
+        (nextval('reservation_seq_gen'),'2021-11-05',48,false,10,8000,4,2),
+        (nextval('reservation_seq_gen'),'2022-01-07 08:00:00',5,false,11,7000,4,2);
 
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
 VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-05','2022-01-08');

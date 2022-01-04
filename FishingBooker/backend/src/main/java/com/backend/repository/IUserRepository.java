@@ -17,6 +17,8 @@ public interface IUserRepository extends JpaRepository<RegisteredUser, Integer> 
 
     RegisteredUser findByEmail(String email);
 
+    RegisteredUser getByEmail(String email);
+
     @Query("select new com.backend.dto.RegisteredUserDTO(u) from RegisteredUser u where u.email = ?1")
     RegisteredUserDTO myProfileInformation(String email);
 

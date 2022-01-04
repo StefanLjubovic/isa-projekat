@@ -80,4 +80,11 @@ public class ReservationController {
         }
         return new ResponseEntity<>(reservationDTOS, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/booked/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
+    public ResponseEntity<Boolean> isEntityBooked(@PathVariable("id") Integer id) {
+        Boolean isBooked = reservationService.isEntityBooked(id);
+        return new ResponseEntity<>(isBooked, HttpStatus.OK);
+    }
 }

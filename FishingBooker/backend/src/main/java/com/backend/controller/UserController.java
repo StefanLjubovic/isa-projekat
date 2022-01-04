@@ -47,6 +47,14 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value="/getByEmail/{email}")
+    @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
+    public ResponseEntity<RegisteredUserDTO> getByEmail(@PathVariable("email") String email){
+        RegisteredUser user = userService.GetByEmail(email);
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPassword(), user.getStatus(), user.isEnabled(), user.getRole(), user.getLastPasswordResetDate(), user.getAddress());
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
     @GetMapping(value="/getLoggedUser")
     @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
     public ResponseEntity<RegisteredUserDTO> getLoggedUser(Principal principal){

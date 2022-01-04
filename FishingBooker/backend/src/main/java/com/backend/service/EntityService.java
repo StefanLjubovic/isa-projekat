@@ -4,11 +4,13 @@ import com.backend.dto.ComplaintDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,13 +19,16 @@ import java.util.stream.Collectors;
 public class EntityService {
 
     @Autowired
-    IEntityRepository entityRepository;
+    private IEntityRepository entityRepository;
 
     @Autowired
-    IUserRepository userRepository;
+    private IUserRepository userRepository;
 
     @Autowired
-    IComplaintRepository complaintRepository;
+    private IComplaintRepository complaintRepository;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
 
 
     public EntityService(){ }
@@ -45,6 +50,8 @@ public class EntityService {
     }
 
     public void deleteEntity(Integer id) {
+        if(isEntityBooked(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entity is now booked.");
+
         List<Client> clients = userRepository.fetchAllClients();
 
         for (Client c : clients) {
@@ -58,6 +65,17 @@ public class EntityService {
         }
 
         entityRepository.deleteById(id);
+    }
+
+    private boolean isEntityBooked(Integer id) {
+        List<Reservation> reservations = reservationRepository.getReservationByRentingEntity_Id(id);
+        for(Reservation r : reservations) {
+            if(r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled()) return true;
+        }
+        for(Reservation r : reservations) {
+            reservationRepository.delete(r);
+        }
+        return false;
     }
 
     @Transactional

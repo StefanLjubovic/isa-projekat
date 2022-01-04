@@ -156,4 +156,8 @@ public class UserService {
         else client.getSubscriptions().remove(entityToAdd);
         userRepository.save(client);
     }
+
+    public RegisteredUser GetByEmail(String email) {
+        return userRepository.getByEmail(email);
+    }
 }

@@ -15,12 +15,12 @@
     </thead>
     <tbody>
       <tr v-for="reservation in reservations" :key="reservation.id">
-        <td>{{reservation.name}}</td>
-        <td><a href="#" @click="openModalForClientDetails(reservation.client)">{{reservation.client.email}}</a></td>
-        <td>{{reservation.dateTime}}</td>
-        <td>{{reservation.duration}} days</td>
+        <td>{{reservation.entityName}}</td>
+        <td><a href="#" @click="openModalForClientDetails(reservation.clientEmail)">{{reservation.clientEmail}}</a></td>
+        <td>{{this.dateFormat(reservation.dateTime)}}</td>
+        <td>{{reservation.durationInHours}} hours</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.clientEmail)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -52,11 +52,11 @@
                     <p>{{ selectedClient.email }}</p>
                     <p>{{ selectedClient.firstName }}</p>
                     <p>{{ selectedClient.lastName }}</p>
-                    <p>{{ selectedClient.streetName }}</p>
-                    <p>{{ selectedClient.streetNumber }}</p>
-                    <p>{{ selectedClient.postalCode }}</p>
-                    <p>{{ selectedClient.city }}</p>
-                    <p>{{ selectedClient.country }}</p>
+                    <p>{{ selectedClient.address.streetName }}</p>
+                    <p>{{ selectedClient.address.streetNumber }}</p>
+                    <p>{{ selectedClient.address.postalCode }}</p>
+                    <p>{{ selectedClient.address.city }}</p>
+                    <p>{{ selectedClient.address.country }}</p>
                     <p>{{ selectedClient.phoneNumber }}</p>
                 </div>
             </div>
@@ -104,79 +104,49 @@
 </template>
 
 <script>
+import axios from 'axios';
+import server from '../../server';
+import moment from 'moment'
+
 export default {
     name: "AdventureReservations",
   data(){
     return{
-      reservations: [
-        {
-          id: '1',
-          name: 'Fishing in the Sunset',
-          client: {
-            email: 'anagavrilovic@gmail.com',
-            firstName: 'Ana',
-            lastName: 'Gavrilovic',
-            streetName: 'Bulevar Kralja Petra I',
-            streetNumber: '65',
-            postalCode: '21000',
-            city: 'Novi Sad',
-            country: 'Serbia',
-            phoneNumber: '0651234567'
-
-          },
-          dateTime: '5.10.2021',
-          duration: 5,
-          price: 50000
-        },
-        {
-          id: '2',
-          name: 'Fishing in the Sunset',
-          client: {
-            email: 'stefanljubovic@gmail.com',
-            firstName: 'Stefan',
-            lastName: 'Ljubovic',
-            streetName: 'Bulevar Despota Stefana',
-            streetNumber: '7',
-            postalCode: '21000',
-            city: 'Novi Sad',
-            country: 'Serbia',
-            phoneNumber: '0641234567'
-
-          },
-          dateTime: '5.11.2021',
-          duration: 7,
-          price: 70000
-        },
-        {
-          id: '3',
-          name: 'Fishing in the Sunset',
-          client: {
-            email: 'tamarapantic@gmail.com',
-            firstName: 'Tamara',
-            lastName: 'Pantic',
-            streetName: 'Bulevar Despota Stefana',
-            streetNumber: '5a',
-            postalCode: '21000',
-            city: 'Novi Sad',
-            country: 'Serbia',
-            phoneNumber: '0661234567'
-
-          },
-          dateTime: '5.11.2020',
-          duration: 7,
-          price: 70000
-        }
-      ],
+      reservations: [],
       selectedClient: undefined
     }
   },
+  computed:{
+    userRole(){
+        return this.$store.getters.getRole;
+    },
+    token(){
+        return this.$store.getters.getToken;
+    }
+  },
   mounted(){
-   
+    const headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      Accept: 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    }
+    axios.get(`${server.baseUrl}/instructor/reservations`, { headers: headers })
+    .then((response) => {
+      this.reservations = response.data;
+    })
   },
   methods: {
-      openModalForClientDetails: function(client) {
-        this.selectedClient = client;
-        window.$('#client-details-modal').modal('show');
+      openModalForClientDetails: function(clientEmail) {
+        const headers = {
+          'Content-Type': 'application/json;charset=UTF-8',
+          Accept: 'application/json',
+          'Authorization': `Bearer ${this.token}`
+        }
+        axios.get(`${server.baseUrl}/user/getByEmail/${clientEmail}`, { headers: headers })
+        .then((response) => {
+          this.selectedClient = response.data;
+          window.$('#client-details-modal').modal('show');
+        });
       },
       openModalForReport : function(client) {
         this.selectedClient = client;
@@ -187,7 +157,10 @@ export default {
             console.log(this.v$)
 
             window.$('#report-modal').modal('hide');
-      }
+      },
+      dateFormat(value) {
+        return moment(value).format("DD.MM.YYYY. HH:mm");
+      },
   }
 }
 </script>
