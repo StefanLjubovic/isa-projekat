@@ -153,6 +153,7 @@ export default {
         });
       },
       openModalForReport : function(clientEmail, rentingEntityId) {
+        this.selectedClient = clientEmail;
         this.report.clientEmail = clientEmail;
         this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
