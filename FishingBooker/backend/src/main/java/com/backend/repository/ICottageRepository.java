@@ -5,6 +5,7 @@ import com.backend.model.Cottage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface ICottageRepository extends JpaRepository<Cottage,Integer> {
     Cottage fetchPricelistItemsByName(@Param("name") String name);
     @Query(value="SELECT c FROM Cottage c LEFT JOIN FETCH c.rooms pl WHERE c.name = :name")
     Cottage fetchRoomsByName(@Param("name") String name);
+
+    @Query("select c from Cottage c left join fetch c.cottageOwner where c.id = :id")
+    Cottage fetchOwnerByCottageId(@Param("id") Integer id);
 }

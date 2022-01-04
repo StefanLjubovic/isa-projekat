@@ -22,9 +22,9 @@ public class AdminAnalyticsController {
         return new ResponseEntity<>(percentage, HttpStatus.OK);
     }
 
-    @PutMapping("/percentage/{percentage}")
+    @PutMapping("/percentage/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateIncomePercentage(@PathVariable("percentage") Double percentage) {
+    public ResponseEntity<?> updateIncomePercentage(@RequestBody Double percentage) {
         this.systemPropertyService.updatePercentage(percentage);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

@@ -191,7 +191,7 @@ server.saveClientRevision= async (content) =>{
             Accept: 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        url: server.baseUrl+`/reservation/save-revision/`,
+        url: server.baseUrl+`/revision/save-revision/`,
         data : content
     }; 
     return axios(options)

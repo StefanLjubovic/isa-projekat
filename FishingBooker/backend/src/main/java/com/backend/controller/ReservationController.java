@@ -24,10 +24,10 @@ import java.util.Set;
 public class ReservationController {
 
     @Autowired
-    ReservationService reservationService;
+    private ReservationService reservationService;
 
     @Autowired
-    RevisionService revisionService;
+    private RevisionService revisionService;
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
@@ -59,14 +59,6 @@ public class ReservationController {
         if(principal == null || classType==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No registered user!");
         List<ReservationDTO> r= reservationService.getHistoryOfReservations(principal.getName(),classType);
         return new ResponseEntity<>(r,HttpStatus.OK);
-    }
-
-    @PostMapping(value = "save-revision",produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Void> saveClientRevision(@RequestBody RevisionDTO dto){
-        if(dto==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No registered user!");
-        revisionService.saveClientRevision(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/entity/{id}",produces = MediaType.APPLICATION_JSON_VALUE)

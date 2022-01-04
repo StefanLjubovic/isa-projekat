@@ -9,8 +9,8 @@
                 <p><b>Content:</b> {{ selectedRevision.content }} </p>
                 <p><b>Mark:</b> {{ selectedRevision.mark }} </p>
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn"><i class="fas fa-check"></i> Approve </button>
-                    <button class="btn cancel-btn"><i class="fas fa-times"></i> Disapprove </button>
+                    <button class="btn submit-btn" @click="approveRevision()"><i class="fas fa-check"></i> Approve </button>
+                    <button class="btn cancel-btn" @click="disapproveRevision()"><i class="fas fa-times"></i> Disapprove </button>
                 </div>
             </div>
         </div>
@@ -27,9 +27,9 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(-1)">All types</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(2)" >Cottage</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(3)" >Ship</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(4)" >Adventure</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_COTTAGE_OWNER')" >Cottage</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_SHIP_OWNER')" >Ship</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_INSTRUCTOR')" >Adventure</a>
                 </div>
             </div>
 
@@ -55,12 +55,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="revision in revisions" :key="revision.id">
+                    <tr v-for="revision in revisions" :key="revision.reservationId">
                         <th scope="row">{{ revisions.indexOf(revision) + 1 }}</th>
-                        <td>{{ revision.client.email }}</td>
-                        <td>{{ revision.client.firstName }} {{ revision.client.lastName }}</td>
-                        <td>Marija Kljestan</td>
-                        <td>Marijina vikendica</td>
+                        <td>{{ revision.clientEmail }}</td>
+                        <td>{{ revision.clientFullName }}</td>
+                        <td>{{ revision.advertiserFullName }}</td>
+                        <td>{{ revision.entityName }}</td>
 
                         <td><button class="btn btn-info" @click="revisionDeatils(revision)"><i class="fas fa-info"></i></button></td>
                     </tr>
@@ -71,85 +71,86 @@
 </template>
 
 <script>
+import axios from 'axios'
+import server from '../../server'
 
 export default ({
     data() {
         return {
-            allRevisions: [
-                {
-                    client: {
-                        id: 1,
-                        email: "zdravkocolic@gmail.com",
-                        firstName: "Zdravko",
-                        lastName: "Colic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    mark: 4,
-                    isApproved: false
-                },
-                {
-                    client: {
-                        id: 2,
-                        email: "anagavrilovic@gmail.com",
-                        firstName: "Ana",
-                        lastName: "Gavrilovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    mark: 5,
-                    isApproved: false
-                },
-                {
-                    client: {
-                        id: 3,
-                        email: "marijakljestan@gmail.com",
-                        firstName: "Marija",
-                        lastName: "Kljestan",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    mark: 3,
-                    isApproved: true
-                },
-                {
-                    client: {
-                        id: 4,
-                        email: "stefanljubovic@gmail.com",
-                        firstName: "Stefan",
-                        lastName: "Ljubovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    mark: 4,
-                    isApproved: true
-                },
-            ],
+            allRevisions: [],
             revisions: [],
             searchParams: "",
-            selectedRevision: undefined
+            selectedRevision: undefined,
+            filterRole: -1
+        }
+    },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
         }
     },
     mounted() {
-        this.revisions = this.allRevisions;
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+        axios.get(`${server.baseUrl}/revision`, { headers: headers })
+        .then((response) => {
+            this.allRevisions = response.data;
+            this.revisions = this.allRevisions;
+        })
     },
     methods: {
         filterByAdvertiserType: function(type) {
-            if(type == -1) {
-                this.revisions = this.allRevisions;
-                return;
-            }
-
-            // filter po roli advertisera
+            this.filterRole = type;
+            this.search();
         },
         revisionDeatils: function(revision) {
             this.selectedRevision = revision;
             window.$('#revision-modal').modal('show');
         },
         search: function() {
-            this.revisions = this.allRevisions.filter((revision) => revision.client.email.includes(this.searchParams.toLowerCase())
-                                               || revision.client.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
-                                               || revision.client.lastName.toLowerCase().includes(this.searchParams.toLowerCase()));
+            this.revisions = this.allRevisions.filter((revision) => revision.clientEmail.includes(this.searchParams.toLowerCase())
+                                               || revision.clientEmail.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || revision.entityName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || revision.advertiserFullName.toLowerCase().includes(this.searchParams.toLowerCase()));
+            if(this.filterRole != -1) {
+                this.revisions = this.revisions.filter((revision) => revision.type == this.filterRole);
+            }
+        },
+        approveRevision: function() {
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            axios.put(`${server.baseUrl}/revision/approve`, this.selectedRevision.id, { headers: headers })
+            .then(() => {
+                this.revisions.splice(this.revisions.indexOf(this.selectedRevision), 1);
+                this.allRevisions.splice(this.allRevisions.indexOf(this.selectedRevision), 1);
+                window.$('#revision-modal').modal('hide');
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Revision successfully approved!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+        },
+        disapproveRevision: function() {
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            axios.delete(`${server.baseUrl}/revision/disapprove/${this.selectedRevision.id}`, { headers: headers })
+            .then(() => {
+                this.revisions.splice(this.revisions.indexOf(this.selectedRevision), 1);
+                this.allRevisions.splice(this.allRevisions.indexOf(this.selectedRevision), 1);
+                window.$('#revision-modal').modal('hide');
+            })
         }
     }
 })
