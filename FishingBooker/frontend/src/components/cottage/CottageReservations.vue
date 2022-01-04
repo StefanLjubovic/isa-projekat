@@ -20,7 +20,7 @@
         <td>{{convertToDate(reservation.dateTime)}}</td>
         <td>{{convertToDays(reservation.durationInHours)}} days</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client.email, reservation.entityId)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -84,10 +84,10 @@
                     <p>{{ selectedClient.lastName }}</p>               
                 </div>
             </div>            
-            <textarea class="comment-area" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
+            <textarea class="comment-area" v-model="report.content" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
             <div class="options">
-                <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
-                <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
+                <input type="checkbox" id="penalty" name="penalty" v-model="report.badReview" value="penalty"/><span> Request a penalty for client</span><br/>
+                <input type="checkbox" id="didnot-appear" name="didnot-appear" v-model="report.notAppeared" value="Client did not appear"/><span> Did not appear</span><br/>
             </div><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendReport()" >Submit</button>
@@ -96,12 +96,12 @@
        </div>
      </div>
   </div>
-
 </template>
 
 <script>
 import server from '../../server'
 import axios from 'axios'
+import moment from 'moment'
 
 export default {
   props:['state'],
@@ -109,7 +109,15 @@ export default {
   data(){
     return{
       reservations: [], 
-      selectedClient: undefined
+      selectedClient: undefined,
+      report: {
+        content: undefined,
+        badReview: false,
+        notAppeared: false,
+        clientEmail: undefined,
+        rentingEntityId: undefined,
+      },
+      rentingEntity: undefined
     }
   },
   computed:{
@@ -137,7 +145,7 @@ export default {
       },
       convertToDate(date){
         var d = new Date(date);
-        return d.toDateString() + ', ' + d.toLocaleTimeString();
+        return moment(d).format("DD.MM.YYYY. HH:mm");
       },
       convertToDays(durationInHours){
         return durationInHours / 24;
@@ -146,13 +154,30 @@ export default {
         this.selectedClient = client;
         window.$('#client-details-modal').modal('show');
       },
-      openModalForReport : function(client) {
-        this.selectedClient = client;
+      openModalForReport : function(clientEmail, rentingEntityId) {
+        this.selectedClient = clientEmail;
+        this.report.clientEmail = clientEmail;
+        this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },
       sendReport() {
-            this.v$.$validate()
-            console.log(this.v$)
+            console.log(JSON.stringify(this.report));
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+            console.log(JSON.stringify(this.report));
+            axios.post(`${server.baseUrl}/report/add`, this.report, {headers: headers})
+                .then((response) => {
+                    this.report= { content: '', badReview: false, notAppeared: false};
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                })
+           })
             window.$('#report-modal').modal('hide');
       }
   }
@@ -184,7 +209,6 @@ export default {
     .modal-dialog {
       background-color: #ffffff;
     }
-
     .client-info {
       display: flex;
       justify-content: space-between;
@@ -201,38 +225,31 @@ export default {
       -moz-border-radius: 5px;
       border-radius: 10px;
     }
-
     .options{
       text-align: left;
       margin-left: 12px;
     }
-
     .info {
       text-align: right;
     }
-
     .labels {
       text-align: left;
     }
-
     .modal-content {
       padding: 30px;
       font-size: 20px;
       background-color: rgb(211, 222, 223);
     }
-
     .btn-close {
       background-color: transparent;
       border-color: transparent;
       color: transparent;
       margin-right: 12px;
     }
-
     h3 {
       margin-left: 15px;
       margin-top: 17px;
     }
-
     .cancel-button {
       background-color: white;
       border-color: rgb(218, 214, 214);
@@ -240,7 +257,6 @@ export default {
       width: 80px;
       margin-left: 10px;
     }
-
     .save-button {
       background-color: #2c3e50;
       color: white;

@@ -20,7 +20,7 @@
         <td>{{this.dateFormat(reservation.dateTime)}}</td>
         <td>{{reservation.durationInHours}} hours</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.clientEmail)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.clientEmail, reservation.entityId)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -28,7 +28,6 @@
 </div>
 
 <!--Modal for client information -->
-
 <div v-if="selectedClient" class="modal fade" id="client-details-modal">
   <div class="modal-dialog rounded">
       <div class="modal-header">
@@ -65,7 +64,6 @@
   </div>
 
   <!--Modal for report -->
-
 <div v-if="selectedClient" class="modal fade" id="report-modal">
   <div class="modal-dialog rounded">
       <div class="modal-header">
@@ -87,11 +85,11 @@
                 </div>
             </div>
             <div class="comment-area">
-               <textarea placeholder="Your comment" cols="50" rows="4"></textarea>
+               <textarea class="comment-area" v-model="report.content" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
             </div> <br/>
             <div class="options">
-                <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
-                <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
+                <input type="checkbox" id="penalty" name="penalty" v-model="report.badReview" value="penalty"/><span> Request a penalty for client</span><br/>
+                <input type="checkbox" id="didnot-appear" name="didnot-appear" v-model="report.notAppeared" value="Client did not appear"/><span> Did not appear</span><br/>
             </div><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendReport()" >Submit</button>
@@ -100,7 +98,6 @@
        </div>
      </div>
   </div>
-
 </template>
 
 <script>
@@ -113,7 +110,14 @@ export default {
   data(){
     return{
       reservations: [],
-      selectedClient: undefined
+      selectedClient: undefined,
+      report: {
+        content: undefined,
+        badReview: undefined,
+        notAppeared: undefined,
+        clientEmail: undefined,
+        rentingEntityId: undefined,
+      },
     }
   },
   computed:{
@@ -148,14 +152,29 @@ export default {
           window.$('#client-details-modal').modal('show');
         });
       },
-      openModalForReport : function(client) {
-        this.selectedClient = client;
+      openModalForReport : function(clientEmail, rentingEntityId) {
+        this.selectedClient = clientEmail;
+        this.report.clientEmail = clientEmail;
+        this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },
       sendReport() {
-            this.v$.$validate()
-            console.log(this.v$)
-
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+            console.log(JSON.stringify(this.report));
+            axios.post(`${server.baseUrl}/report/add`, this.report, {headers: headers})
+                .then((response) => {
+                    this.report= { content: '', badReview: false, notAppeared: false};
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                })
+           })
             window.$('#report-modal').modal('hide');
       },
       dateFormat(value) {
@@ -190,12 +209,10 @@ export default {
     .modal-dialog {
       background-color: #ffffff;
     }
-
     .client-info {
         display: flex;
         justify-content: space-between;
     }
-
     .comment-area{
       align-self: left;
       margin-left: 5px;
@@ -203,40 +220,32 @@ export default {
       font-size: 18px;
       resize: none;
       outline: none;
-
     }
-
     .options{
       text-align: left;
       margin-left: 12px;
     }
-
     .info {
         text-align: right;
     }
-
     .labels {
         text-align: left;
     }
-
     .modal-content {
         padding: 30px;
         font-size: 20px;
         background-color: rgb(211, 222, 223);
     }
-
     .btn-close {
       background-color: transparent;
       border-color: transparent;
       color: transparent;
       margin-right: 12px;
     }
-
     h3 {
       margin-left: 15px;
       margin-top: 17px;
     }
-
     .cancel-button {
       background-color: white;
       border-color: rgb(218, 214, 214);
@@ -244,12 +253,10 @@ export default {
       width: 80px;
       margin-left: 10px;
     }
-
     .save-button {
       background-color: #2c3e50;
       color: white;
       width: 80px;
       margin-right: 10px;
   }
-
 </style>
