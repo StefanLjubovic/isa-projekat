@@ -96,12 +96,12 @@
        </div>
      </div>
   </div>
-
 </template>
 
 <script>
 import server from '../../server'
 import axios from 'axios'
+import moment from 'moment'
 
 export default {
   props:['state'],
@@ -145,7 +145,7 @@ export default {
       },
       convertToDate(date){
         var d = new Date(date);
-        return d.toDateString() + ', ' + d.toLocaleTimeString();
+        return moment(d).format("DD.MM.YYYY. HH:mm");
       },
       convertToDays(durationInHours){
         return durationInHours / 24;
@@ -154,13 +154,9 @@ export default {
         this.selectedClient = client;
         window.$('#client-details-modal').modal('show');
       },
-      openModalForReport : function(clientId, rentingEntity) {
+      openModalForReport : function(clientId, rentingEntityId) {
         this.report.clientId = clientId;
-        this.rentingEntity = rentingEntity;
-        axios.get(`${server.baseUrl}/cottage/getOne/` + rentingEntity)
-        .then((response) => {
-             this.report.rentingEntityId = response.data.id;
-        })
+        this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },
       sendReport() {
