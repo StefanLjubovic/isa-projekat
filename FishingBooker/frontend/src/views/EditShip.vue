@@ -1,34 +1,73 @@
 <template>
-        <div id="add-entity-form"> 
-        <div class="title"><h1>Edit '{{backupCottage.name}}' </h1></div> 
+        <div id="edit-entity-form"> 
+        <div class="title"><h1>Edit '{{backupShip.name}}' </h1></div> 
         <div class="content">
             <div class="left-side">
-                <input type="text" class="form-control" placeholder="Name*" v-model="cottage.name"/>
+                <input type="text" class="form-control" placeholder="Name*" v-model="ship.name"/>
                 <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.cottage.name.$errors" :key="index">
+                <div class="input-errors" v-for="(error, index) of v$.ship.name.$errors" :key="index">
                     <div class="text-danger">{{ error.$message }}</div>
                 </div><br/>
 
                 <h6> Description: </h6>
-                <textarea class="reason-area" placeholder="Description*" v-model="cottage.description" rows="4" cols="65"></textarea>
+                <textarea class="reason-area" placeholder="Description*" v-model="ship.description" rows="4" cols="65"></textarea>
                 <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.cottage.description.$errors" :key="index">
+                <div class="input-errors" v-for="(error, index) of v$.ship.description.$errors" :key="index">
                      <div class="text-danger">{{ error.$message }}</div>
                 </div>
                 <br/><hr/>
-
-                <!-- Number of rooms and beds per room -->
-                <h6> Rooms: </h6>
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum" @input="changeRoomsNumber()"/><br/>
-                <ol v-if="roomsNum">
-                    <li v-for="room in cottage.rooms" :key="room.id">
-                        <div class="room-type">
-                            <input type="number" class="form-control" v-model="room.bedNumber"/>
-                            <label>bed room</label>
-                        </div>
+                <!-- Ship properties -->
+                <div class="ship-properties">
+                    <h6>Capacity: </h6>
+                    <input type="number" class="form-control" v-model="ship.capacity"/><br/>
+                    <h6>Type: </h6>
+                    <input type="text" class="form-control" v-model="ship.type"/><br/>
+                    <h6>Length: </h6>
+                    <input type="number" class="form-control" v-model="ship.length"/><br/>
+                    <h6>Engine number: </h6>
+                    <input type="number" class="form-control" v-model="ship.engineNumber"/><br/>
+                    <h6>Engine power: </h6>
+                    <input type="number" class="form-control" v-model="ship.enginePower"/><br/>
+                    <h6>Max speed: </h6>
+                    <input type="number" class="form-control" v-model="ship.maxSpeed"/><br/><hr/>
+                </div>
+                <!-- Navigation equipment-->
+                <div class="ship-properties">
+                    <h6> Navigation equipment: </h6>
+                    <div class="navigation-equipment-inputs">
+                        <span>
+                            <input type="checkbox" id="gps" value="0" v-model="ship.navigationEquipment">
+                            <label for="gps">GPS</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="radar" value="1" v-model="ship.navigationEquipment">
+                            <label for="radar">Radar</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="vhfradio" value="2" v-model="ship.navigationEquipment">
+                            <label for="vhfradio">VHF radio</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="fishfinder" value="3" v-model="ship.navigationEquipment">
+                            <label for="fishfinder">Fishfinder</label>
+                        </span>
+                    </div>
+                </div><hr/>
+                <br/>
+                <!-- Fishing equipment -->
+                <div class="multiple-inputs">
+                    <h6> Fishing equipment: </h6>
+                    <div class="icons">
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="fishingEquipmentNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="fishingEquipmentNum -= 1"></i></span>
+                    </div>
+                </div>
+                <ul v-if="fishingEquipmentNum">
+                    <li v-for="fe in fishingEquipmentNum" :key="fe">
+                        <input type="text" class="form-control" v-model="ship.fishingEquipment[fe-1]"/>
                     </li>
-                </ol>
-                <hr/>
+                </ul><hr/>
+                <br/>
                 <!-- Allowed behavior -->
                 <div class="multiple-inputs">
                     <h6> Allowed behavior: </h6>
@@ -39,7 +78,7 @@
                 </div>
                 <ul v-if="allowedBehaviorNum">
                     <li v-for="ab in allowedBehaviorNum" :key="ab">
-                        <input type="text" class="form-control" v-model="cottage.allowedBehavior[ab-1]"/>
+                        <input type="text" class="form-control" v-model="ship.allowedBehavior[ab-1]"/>
                     </li>
                 </ul><hr/>
                 <br/>
@@ -53,7 +92,7 @@
                 </div>
                 <ul v-if="unallowedBehaviorNum">
                     <li v-for="(ub,index) in unallowedBehaviorNum" :key="ub">
-                        <input type="text" class="form-control" v-model="cottage.unallowedBehavior[index]"/>
+                        <input type="text" class="form-control" v-model="ship.unallowedBehavior[index]"/>
                     </li>
                 </ul><hr/>
                 <br/>
@@ -65,8 +104,8 @@
                         <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="cottage.pricelistItems">
-                    <li v-for="item in cottage.pricelistItems" :key="item.id">
+                <ul v-if="ship.pricelistItems">
+                    <li v-for="item in ship.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
@@ -76,13 +115,13 @@
                 <br/>
                  <!--Cancellation percentage -->
                  <label class="percentage-label">Percentage of price we keep in case of reservation cancellation:</label>
-                <input type="number" class="form-control" v-model="cottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
+                <input type="number" class="form-control" v-model="ship.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
 
             <div class="right-side">
                 <!--Images upload -->
                 <div class="upload-images">
-                    <p> Upload images of your cottage: </p>
+                    <p> Upload images of your ship: </p>
                     <input type="file" class="file-upload" @change="imageAdded"/>
                 </div> <br/>
                 <div v-if="imagesFrontend" class="images-preview">
@@ -94,15 +133,15 @@
                 <!-- Address -->
                  <div class="fields">
                      <h6> Address: </h6>
-                    <input id="streetID"        type="text"   class="form-control"  v-model="cottage.address.streetName"     placeholder="Street name*">  <br/>
-                    <input id="streetNumID"     type="text"   class="form-control"  v-model="cottage.address.streetNumber"   placeholder="Street number*"><br/>
-                    <input id="postalcodeID"    type="text"   class="form-control"  v-model="cottage.address.postalCode"     placeholder="Postalcode*">   <br/>
-                    <input id="cityID" 	        type="text"   class="form-control"  v-model="cottage.address.city"           placeholder="City*">         <br/>
-                    <input id="countryID" 	    type="text"   class="form-control"  v-model="cottage.address.country"        placeholder="Country*">      <br/>
-                    <input id="latitudeID"      type="number" class="form-control"  v-model="cottage.address.latitude"       placeholder="Latitude*">     <br/>
-                    <input id="longitudeID"     type="number" class="form-control"  v-model="cottage.address.longitude"      placeholder="Longitude*">    <br/>
+                    <input id="streetID"        type="text"   class="form-control"  v-model="ship.address.streetName"     placeholder="Street name*">  <br/>
+                    <input id="streetNumID"     type="text"   class="form-control"  v-model="ship.address.streetNumber"   placeholder="Street number*"><br/>
+                    <input id="postalcodeID"    type="text"   class="form-control"  v-model="ship.address.postalCode"     placeholder="Postalcode*">   <br/>
+                    <input id="cityID" 	        type="text"   class="form-control"  v-model="ship.address.city"           placeholder="City*">         <br/>
+                    <input id="countryID" 	    type="text"   class="form-control"  v-model="ship.address.country"        placeholder="Country*">      <br/>
+                    <input id="latitudeID"      type="number" class="form-control"  v-model="ship.address.latitude"       placeholder="Latitude*">     <br/>
+                    <input id="longitudeID"     type="number" class="form-control"  v-model="ship.address.longitude"      placeholder="Longitude*">    <br/>
                 </div>              
-                 <!--OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap-->
+                 <!--OpenLayersMap v-if="ship.address" @change-address="changeAddress" :existedAddress ="ship.address" ></OpenLayersMap-->
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -130,7 +169,7 @@
         components: {
             //OpenLayersMap,
         },
-        props:['cottageId'],
+        props:['shipId'],
         setup() {
             return {v$: useValidate()}
         },
@@ -142,17 +181,16 @@
                  return this.$store.getters.getToken;
              }
         },
-
         created(){
             this.getData();
-        },
-    
+        }, 
         data() {
             return{
-                cottage: {
+                ship: {
                     name: '',
                     description: '',
                     cancellationPercentage: undefined,
+                    images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
@@ -167,29 +205,29 @@
                     pricelistItems: [
                         {
                             service:'',
-                            price: undefined,
-                            rentingEntity: {}
+                            price: undefined
                         }
                     ],
-                    rooms: [
-                        {
-                            bedNumber: undefined
-                        }
-                    ],
-                    images: []
+                    type: '',
+                    length: undefined,
+                    engineNumber: undefined,
+                    enginePower: undefined,
+                    maxSpeed: undefined,
+                    capacity: undefined,
+                    navigationEquipment: [],
+                    fishingEquipment: []
                 },
-                backupCottage: {},
+                backupShip: {},
                 imagesFrontend: [],
-                roomsNum: undefined,
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
+                fishingEquipmentNum: 1,
                 pricelistItemsNum: 1,
-                additionalServicesNum: 1,
             }
         },
         validations() {
             return {
-                cottage: {
+                ship: {
                     name: { 
                         required, name_validation: {
                             $validator: validName,
@@ -204,17 +242,24 @@
             submitForm(){
                 this.v$.$validate();  
 
-                const editedCottage = {
-                    id: this.cottage.id,
-                    name: this.cottage.name,
-                    description: this.cottage.description,
-                    cancellationPercentage: this.cottage.cancellationPercentage,
-                    allowedBehavior: this.cottage.allowedBehavior,
-                    unallowedBehavior: this.cottage.unallowedBehavior,
-                    address: this.cottage.address,
-                    pricelistItems: this.cottage.pricelistItems,
-                    rooms: this.cottage.rooms,
-                    images: this.cottage.images                 
+                const editedShip = {
+                    id: this.ship.id,
+                    name: this.ship.name,
+                    description: this.ship.description,
+                    cancellationPercentage: this.ship.cancellationPercentage,
+                    images: this.ship.images,
+                    allowedBehavior: this.ship.allowedBehavior,
+                    unallowedBehavior: this.ship.unallowedBehavior,
+                    address: this.ship.address,
+                    pricelistItems: this.ship.pricelistItems,  
+                    type: this.ship.type,
+                    length: this.ship.length,
+                    engineNumber: this.ship.engineNumber,
+                    enginePower: this.ship.enginePower,
+                    maxSpeed: this.ship.maxSpeed,
+                    capacity: this.ship.capacity,
+                    navigationEquipment: this.ship.navigationEquipment,
+                    fishingEquipment: this.ship.fishingEquipment       
                 }
 
                 const headers = {
@@ -222,10 +267,8 @@
                      Accept: 'application/json',
                     'Authorization': `Bearer ${this.token}`
                 }
-
-                console.log(JSON.stringify(editedCottage))
                 
-                axios.put(`${server.baseUrl}/cottage/update/`, editedCottage, {headers: headers})
+                axios.put(`${server.baseUrl}/ship/update/`, editedShip, {headers: headers})
                 .then((response) => {
                     this.$swal({
                         icon: 'success',
@@ -236,53 +279,38 @@
                 })
                 .catch(() => {
                   this.$swal('Internal server error!');
-                })
-                 
+                })         
             },
-
             getData() {
                 axios
-                .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
+                .get(`${server.baseUrl}/ship/getOne/` + this.shipId)
                 .then(response => {
-                    this.cottage = response.data;
-                    this.imagesFrontend = this.cottage.images;
-                    this.allowedBehaviorNum = this.cottage.allowedBehavior.length;
-                    this.unallowedBehaviorNum = this.cottage.unallowedBehavior.length;
-                    this.pricelistItemNum = this.cottage.pricelistItems.length;
-                    this.roomsNum = this.cottage.rooms.length;
-                    this.backupCottage = {...this.cottage}
+                    this.ship = response.data;
+                    this.imagesFrontend = this.ship.images;
+                    this.allowedBehaviorNum = this.ship.allowedBehavior.length;
+                    this.unallowedBehaviorNum = this.ship.unallowedBehavior.length;
+                    this.pricelistItemNum = this.ship.pricelistItems.length;
+                    this.fishingEquipmentNum = this.ship.fishingEquipmentNum.length;
+                    this.backupShip = {...this.ship}
                 })
             },
-
-            changeRoomsNumber(){
-                this.cottage.rooms = []
-                for(let i = 0; i < this.roomsNum; i++){
-                     this.cottage.rooms.push({
-                            bedNumber: undefined
-                     });
-                }
-            },
-
             addPricelistItem() {
                 this.pricelistItemsNum += 1;
-                this.cottage.pricelistItems.push({
+                this.ship.pricelistItems.push({
                     service: '',
                     price: undefined
                 })
             },
-
             removePricelistItem(){
                 this.pricelistItemsNum -= 1;
-                this.cottage.pricelistItems.pop()
+                this.ship.pricelistItems.pop()
             },
-
             removeImage(image) {
-                const index = this.cottage.images.indexOf(image);
+                const index = this.ship.images.indexOf(image);
                 if (index > -1) {
-                  this.cottage.images.splice(index, 1);
+                  this.ship.images.splice(index, 1);
                 }
             },
-
             imageAdded(e) {
                 const file = e.target.files[0];    
                 this.createBase64Image(file);
@@ -311,7 +339,7 @@
     h6{
         text-align: left;
     }
-    #add-entity-form{
+    #edit-entity-form{
         padding-top: 50px;
         padding-bottom: 50px;
         margin-left: 15%;

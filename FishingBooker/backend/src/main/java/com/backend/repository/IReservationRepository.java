@@ -1,12 +1,14 @@
 package com.backend.repository;
 
 import com.backend.dto.ReservationDTO;
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.Reservation;
 import com.backend.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -27,4 +29,8 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
     List<Reservation> fetchByEntityId(@Param("id") Integer id);
 
     List<Reservation> getReservationByRentingEntity_Id(Integer id);
+
+    @Query("SELECT new com.backend.dto.ReservationHistoryDTO(r.id, r.dateTime, r.durationInHours, r.price, r.rentingEntity.id, r.rentingEntity.name, r.client.email) " +
+            "FROM Reservation r where r.rentingEntity.name = :name")
+    List<ReservationHistoryDTO> fetchReservationHistoryByEntityName(@Param("name") String name);
 }

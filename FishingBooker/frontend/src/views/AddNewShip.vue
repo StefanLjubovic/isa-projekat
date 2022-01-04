@@ -1,34 +1,73 @@
 <template>
-        <div id="add-entity-form"> 
-        <div class="title"><h1>Edit '{{backupCottage.name}}' </h1></div> 
+    <div id="add-entity-form"> 
+        <div class="title"><h1>New Ship</h1></div> 
         <div class="content">
             <div class="left-side">
-                <input type="text" class="form-control" placeholder="Name*" v-model="cottage.name"/>
+                <input type="text" class="form-control" placeholder="Name*" v-model="newShip.name"/>
                 <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.cottage.name.$errors" :key="index">
+                <div class="input-errors" v-for="(error, index) of v$.newShip.name.$errors" :key="index">
                     <div class="text-danger">{{ error.$message }}</div>
-                </div><br/>
+                </div>
 
-                <h6> Description: </h6>
-                <textarea class="reason-area" placeholder="Description*" v-model="cottage.description" rows="4" cols="65"></textarea>
+                <textarea class="description-area" placeholder="Description*" v-model="newShip.description" rows="4" cols="65"></textarea>
                 <!-- Error Message -->
-                <div class="input-errors" v-for="(error, index) of v$.cottage.description.$errors" :key="index">
+                <div class="input-errors" v-for="(error, index) of v$.newShip.description.$errors" :key="index">
                      <div class="text-danger">{{ error.$message }}</div>
                 </div>
-                <br/><hr/>
+                <br/> <br/><hr/>
 
-                <!-- Number of rooms and beds per room -->
-                <h6> Rooms: </h6>
-                <input type="number" class="form-control" placeholder="Number of rooms*" v-model="roomsNum" @input="changeRoomsNumber()"/><br/>
-                <ol v-if="roomsNum">
-                    <li v-for="room in cottage.rooms" :key="room.id">
-                        <div class="room-type">
-                            <input type="number" class="form-control" v-model="room.bedNumber"/>
-                            <label>bed room</label>
-                        </div>
+                <!-- Ship properties -->
+                <div class="ship-properties">
+                    <h6>Capacity: </h6>
+                    <input type="number" class="form-control" v-model="newShip.capacity"/><br/>
+                    <h6>Type: </h6>
+                    <input type="text" class="form-control" v-model="newShip.type"/><br/>
+                    <h6>Length: </h6>
+                    <input type="number" class="form-control" v-model="newShip.length"/><br/>
+                    <h6>Engine number: </h6>
+                    <input type="number" class="form-control" v-model="newShip.engineNumber"/><br/>
+                    <h6>Engine power: </h6>
+                    <input type="number" class="form-control" v-model="newShip.enginePower"/><br/>
+                    <h6>Max speed: </h6>
+                    <input type="number" class="form-control" v-model="newShip.maxSpeed"/><br/><hr/>
+                </div>
+                <!-- Navigation equipment-->
+                <div class="ship-properties">
+                    <h6> Navigation equipment: </h6>
+                    <div class="navigation-equipment-inputs">
+                        <span>
+                            <input type="checkbox" id="gps" value="0" v-model="newShip.navigationEquipment">
+                            <label for="gps">GPS</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="radar" value="1" v-model="newShip.navigationEquipment">
+                            <label for="radar">Radar</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="vhfradio" value="2" v-model="newShip.navigationEquipment">
+                            <label for="vhfradio">VHF radio</label>
+                        </span>
+                        <span>
+                            <input type="checkbox" id="fishfinder" value="3" v-model="newShip.navigationEquipment">
+                            <label for="fishfinder">Fishfinder</label>
+                        </span>
+                    </div>
+                </div><hr/>
+                <br/>
+                <!-- Fishing equipment -->
+                <div class="multiple-inputs">
+                    <h6> Fishing equipment: </h6>
+                    <div class="icons">
+                    <span><i class="fas fa-plus-square fa-2x icon"  @click="fishingEquipmentNum += 1"></i></span>
+                    <span><i class="fas fa-minus-square fa-2x icon" @click="fishingEquipmentNum -= 1"></i></span>
+                    </div>
+                </div>
+                <ul v-if="fishingEquipmentNum">
+                    <li v-for="fe in fishingEquipmentNum" :key="fe">
+                        <input type="text" class="form-control" v-model="newShip.fishingEquipment[fe-1]"/>
                     </li>
-                </ol>
-                <hr/>
+                </ul><hr/>
+                <br/>
                 <!-- Allowed behavior -->
                 <div class="multiple-inputs">
                     <h6> Allowed behavior: </h6>
@@ -39,7 +78,7 @@
                 </div>
                 <ul v-if="allowedBehaviorNum">
                     <li v-for="ab in allowedBehaviorNum" :key="ab">
-                        <input type="text" class="form-control" v-model="cottage.allowedBehavior[ab-1]"/>
+                        <input type="text" class="form-control" v-model="newShip.allowedBehavior[ab-1]"/>
                     </li>
                 </ul><hr/>
                 <br/>
@@ -53,7 +92,7 @@
                 </div>
                 <ul v-if="unallowedBehaviorNum">
                     <li v-for="(ub,index) in unallowedBehaviorNum" :key="ub">
-                        <input type="text" class="form-control" v-model="cottage.unallowedBehavior[index]"/>
+                        <input type="text" class="form-control" v-model="newShip.unallowedBehavior[index]"/>
                     </li>
                 </ul><hr/>
                 <br/>
@@ -65,8 +104,8 @@
                         <span><i class="fas fa-minus-square fa-2x icon" @click="removePricelistItem()"></i></span>
                     </div>
                 </div>
-                <ul v-if="cottage.pricelistItems">
-                    <li v-for="item in cottage.pricelistItems" :key="item.id">
+                <ul v-if="newShip.pricelistItems">
+                    <li v-for="item in newShip.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
                             <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
@@ -75,34 +114,21 @@
                 </ul><hr/>
                 <br/>
                  <!--Cancellation percentage -->
-                 <label class="percentage-label">Percentage of price we keep in case of reservation cancellation:</label>
-                <input type="number" class="form-control" v-model="cottage.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
+                <input type="number" class="form-control" v-model="newShip.cancellationPercentage" placeholder="*Percentage of price you keep, in case of reservation cancellation"/><br/><hr/>
             </div>
 
             <div class="right-side">
                 <!--Images upload -->
                 <div class="upload-images">
-                    <p> Upload images of your cottage: </p>
+                    <p> Upload images of your ship: </p>
                     <input type="file" class="file-upload" @change="imageAdded"/>
                 </div> <br/>
                 <div v-if="imagesFrontend" class="images-preview">
-                        <div class="display-images" v-for="image in imagesFrontend" :key="image">
+                        <div v-for="image in imagesFrontend" :key="image">
                             <img :src="image" />
-                            <button class="btn btn-close close" @click="removeImage(image)"></button>
                         </div>
-                </div> <hr/><br/>
-                <!-- Address -->
-                 <div class="fields">
-                     <h6> Address: </h6>
-                    <input id="streetID"        type="text"   class="form-control"  v-model="cottage.address.streetName"     placeholder="Street name*">  <br/>
-                    <input id="streetNumID"     type="text"   class="form-control"  v-model="cottage.address.streetNumber"   placeholder="Street number*"><br/>
-                    <input id="postalcodeID"    type="text"   class="form-control"  v-model="cottage.address.postalCode"     placeholder="Postalcode*">   <br/>
-                    <input id="cityID" 	        type="text"   class="form-control"  v-model="cottage.address.city"           placeholder="City*">         <br/>
-                    <input id="countryID" 	    type="text"   class="form-control"  v-model="cottage.address.country"        placeholder="Country*">      <br/>
-                    <input id="latitudeID"      type="number" class="form-control"  v-model="cottage.address.latitude"       placeholder="Latitude*">     <br/>
-                    <input id="longitudeID"     type="number" class="form-control"  v-model="cottage.address.longitude"      placeholder="Longitude*">    <br/>
-                </div>              
-                 <!--OpenLayersMap v-if="cottage.address" @change-address="changeAddress" :existedAddress ="cottage.address" ></OpenLayersMap-->
+                </div>               
+                 <OpenLayersMap @change-address="changeAddress" :address ="newShip.address" ></OpenLayersMap>
                  <div class="btn-div">
                      <button class="btn save-button" @click.prevent="submitForm()">Confirm</button> 
                      <button class="btn cancel-button">Cancel</button>
@@ -115,6 +141,7 @@
 <script>
     import useValidate from '@vuelidate/core'
     import {required} from '@vuelidate/validators' 
+    import OpenLayersMap from "@/components/entities/OpenLayersMap.vue"
     import server from '../server/index'
     import axios from 'axios'
 
@@ -128,9 +155,8 @@
 
     export default ({
         components: {
-            //OpenLayersMap,
+            OpenLayersMap,
         },
-        props:['cottageId'],
         setup() {
             return {v$: useValidate()}
         },
@@ -140,56 +166,54 @@
             },
              token(){
                  return this.$store.getters.getToken;
-             }
+            }
         },
-
-        created(){
-            this.getData();
-        },
-    
         data() {
             return{
-                cottage: {
+                newShip: {
                     name: '',
                     description: '',
                     cancellationPercentage: undefined,
+                    images: [],
                     allowedBehavior: [],
                     unallowedBehavior: [],
                     address: {
-                        streetName: "",
-                        streetNumber: "",
-                        postalCode: "",
-                        city: "",
-                        country:  "",
-                        longitude: undefined,
-                        latitude: undefined
+                        streetName: "Bulevar Cara Lazara",
+                        streetNumber: "171",
+                        postalCode: "21000",
+                        city: "Novi Sad",
+                        country:  "Serbia",
+                        longitude: 19,
+                        latitude: 45
                     },
                     pricelistItems: [
                         {
                             service:'',
-                            price: undefined,
-                            rentingEntity: {}
+                            price: undefined
                         }
                     ],
-                    rooms: [
-                        {
-                            bedNumber: undefined
-                        }
-                    ],
-                    images: []
+                    type: '',
+                    length: undefined,
+                    engineNumber: undefined,
+                    enginePower: undefined,
+                    maxSpeed: undefined,
+                    capacity: undefined,
+                    navigationEquipment: [],
+                    fishingEquipment: [],
+                    shipOwner:{
+                        email: ''
+                    }
                 },
-                backupCottage: {},
-                imagesFrontend: [],
-                roomsNum: undefined,
+                ownerId: '',
                 allowedBehaviorNum: 1,
                 unallowedBehaviorNum: 1,
-                pricelistItemsNum: 1,
-                additionalServicesNum: 1,
+                fishingEquipmentNum: 1,
+                imagesFrontend: []
             }
         },
         validations() {
             return {
-                cottage: {
+                newShip: {
                     name: { 
                         required, name_validation: {
                             $validator: validName,
@@ -203,96 +227,54 @@
         methods: {
             submitForm(){
                 this.v$.$validate();  
-
-                const editedCottage = {
-                    id: this.cottage.id,
-                    name: this.cottage.name,
-                    description: this.cottage.description,
-                    cancellationPercentage: this.cottage.cancellationPercentage,
-                    allowedBehavior: this.cottage.allowedBehavior,
-                    unallowedBehavior: this.cottage.unallowedBehavior,
-                    address: this.cottage.address,
-                    pricelistItems: this.cottage.pricelistItems,
-                    rooms: this.cottage.rooms,
-                    images: this.cottage.images                 
-                }
-
+                
                 const headers = {
                     'Content-Type': 'application/json;charset=UTF-8',
                      Accept: 'application/json',
                     'Authorization': `Bearer ${this.token}`
                 }
-
-                console.log(JSON.stringify(editedCottage))
-                
-                axios.put(`${server.baseUrl}/cottage/update/`, editedCottage, {headers: headers})
+               
+                axios.post(`${server.baseUrl}/ship/add`, this.newShip, {headers: headers})
                 .then((response) => {
+                    this.newShip= { name: '', description: '', cancellationPercentage: 0, images: [], allowedBehavior: [], unallowedBehavior: [],
+                    address: { streetName: '',  streetNumber: '', postalcode: '', city: '', country:  '', longitude: '', latitude: '' },
+                    pricelistItems: [ { service:'', price: null }, ], fishingEquipment : [], navigationEquipment: []};
                     this.$swal({
                         icon: 'success',
                         title: response.data,
                         showConfirmButton: false,
                         timer: 2000
-                    })
+                })
                 })
                 .catch(() => {
-                  this.$swal('Internal server error!');
-                })
-                 
-            },
-
-            getData() {
-                axios
-                .get(`${server.baseUrl}/cottage/getOne/` + this.cottageId)
-                .then(response => {
-                    this.cottage = response.data;
-                    this.imagesFrontend = this.cottage.images;
-                    this.allowedBehaviorNum = this.cottage.allowedBehavior.length;
-                    this.unallowedBehaviorNum = this.cottage.unallowedBehavior.length;
-                    this.pricelistItemNum = this.cottage.pricelistItems.length;
-                    this.roomsNum = this.cottage.rooms.length;
-                    this.backupCottage = {...this.cottage}
+                    this.$swal('Internal server error!');
                 })
             },
 
-            changeRoomsNumber(){
-                this.cottage.rooms = []
-                for(let i = 0; i < this.roomsNum; i++){
-                     this.cottage.rooms.push({
-                            bedNumber: undefined
-                     });
-                }
+            changeAddress(data){ 
+                this.newShip.address = data
             },
-
             addPricelistItem() {
-                this.pricelistItemsNum += 1;
-                this.cottage.pricelistItems.push({
+                this.newShip.pricelistItems.push({
                     service: '',
                     price: undefined
                 })
             },
-
             removePricelistItem(){
-                this.pricelistItemsNum -= 1;
-                this.cottage.pricelistItems.pop()
+                this.newShip.pricelistItems.pop()
             },
-
-            removeImage(image) {
-                const index = this.cottage.images.indexOf(image);
-                if (index > -1) {
-                  this.cottage.images.splice(index, 1);
-                }
-            },
-
             imageAdded(e) {
-                const file = e.target.files[0];    
+                const file = e.target.files[0];  
+                console.log(file)        
                 this.createBase64Image(file);
+                this.imagesFrontend.push(URL.createObjectURL(file));
             },
             createBase64Image(file){
-                const reader= new FileReader();
-            
+                const reader= new FileReader();       
                 reader.onload = (e) =>{
                     let img = e.target.result;
-                    this.cottage.images.push(img);
+                     console.log(img)  
+                    this.newShip.images.push(img);
                 }
                 reader.readAsDataURL(file);
             },
@@ -308,19 +290,11 @@
         margin-top: 10px;
         margin-left: 10px;
     }
-    h6{
-        text-align: left;
-    }
     #add-entity-form{
         padding-top: 50px;
         padding-bottom: 50px;
         margin-left: 15%;
         margin-right: 15%;
-    }
-    .percentage-label{
-        text-align: left;
-        margin-right: 100px;
-        margin-bottom: 10px;
     }
      .content {
         display: flex;
@@ -347,11 +321,11 @@
         margin-right: 10px;
         margin-bottom: 10px;
     }
-    .reason-area{
+    .description-area{
         width: 90%;
         align-self: left;
         margin-right: 30%;
-        margin-top: 15px;
+        margin-top: 25px;
         background-color: #ffffff;
         border-width: 0.5px solid rgb(248, 244, 244) ;
         font-size: 16px;
@@ -371,10 +345,10 @@
         margin-bottom: 17px;
         width: 90%;
     }
-    .room-type{
+    .ship-properties{
         display: flex;
-        margin-left: 5%;
-        align-items: center;
+        flex-direction: column;
+        text-align: left;
     }
     .multiple-inputs{
         display: flex;
@@ -382,7 +356,19 @@
         margin-bottom: 10px;
         justify-content: space-between;
     }
-   .icons, .pricelistItem{
+    .navigation-equipment-inputs{
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        margin-left: 7%;
+    }
+    .navigation-equipment-inputs label{
+        margin-left: 2%;
+    }
+    input[type=checkbox] {
+        transform: scale(1.5);
+    }
+    .icons, .pricelistItem{
         display: flex;
         margin-right: 15%;
     }
@@ -394,26 +380,19 @@
     }
     .images-preview{
         display: contents;
-         width: 40%;
-         height: 30%;
+        width: 40%;
+        height: 30%;
      }
     .images-preview img{
         width:50%;
         height: 50%;
     }
-    .display-images{
-        display: flex;
-        margin-left: 10%;
-        margin-bottom: 5px;
-    }
     p{
         font-size: 20px;
         color: #1c3146;
     }
-    .btn-close{ 
-        background-color: transparent;
-        margin-left: 2px;
-        margin-bottom: 25%;
+    .file-upload{
+       margin-left: 45%;  
     }
     .cancel-button {
       background-color: white;

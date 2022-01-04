@@ -1,5 +1,6 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,18 +8,16 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CottageService {
     @Autowired
     private ICottageRepository cottageRepository;
     @Autowired
-    private IRoomRepository roomRepostirory;
-    @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IReservationRepository reservationRepository;
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
     private Base64ToImage imageConverter = new Base64ToImage();
@@ -29,7 +28,7 @@ public class CottageService {
 
     public Cottage findById(int id) throws IOException {
         Cottage cottage = cottageRepository.findById(id).get();
-        cottage.setImages(loadImages(cottage.getImages()));
+        cottage.setImages(imageConverter.loadImages(cottage.getImages()));
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
@@ -49,10 +48,6 @@ public class CottageService {
         newCottage.setRooms(cottage.getRooms());
         this.cottageRepository.save(newCottage);
 
-        Set<Room> rooms = cottage.getRooms();
-        for (Room room: rooms)
-            this.roomRepostirory.save(room);
-
         Set<PricelistItem> items = cottage.getPricelistItems();
         for(PricelistItem item: items){
             item.setRentingEntity(newCottage);
@@ -70,9 +65,10 @@ public class CottageService {
         cottageToUpdate.setAllowedBehavior(cottage.getAllowedBehavior());
         cottageToUpdate.setUnallowedBehavior(cottage.getUnallowedBehavior());
         cottageToUpdate.setPricelistItems(cottage.getPricelistItems());
-        for (PricelistItem item : cottageToUpdate.getPricelistItems())
-            item.setRentingEntity(cottage);
-
+        for (PricelistItem item : cottageToUpdate.getPricelistItems()) {
+            item.setRentingEntity(cottageToUpdate);
+            this.pricelistItemRepostory.save(item);
+        }
         cottageToUpdate.setAddress(cottage.getAddress());
         cottageToUpdate.setImages(this.saveImages(cottage));
 
@@ -124,16 +120,18 @@ public class CottageService {
         return convertedImages;
     }
 
-    private Set<String> loadImages(Set<String> images) throws IOException {
-        Set<String> base64Images = new HashSet<String>();
-        for (String image: images) {
-            String base64Image = imageConverter.encodeImageToBase64(image);
-            base64Images.add(base64Image);
-        }
-        return  base64Images;
-    }
+    public List<Cottage> getAllCottagesFromCottageOwner(String email) { return cottageRepository.getCottagesByCottageOwner_Email(email); }
 
-    public List<Cottage> getAllCottagesFromCottageOwner(String email) {
-        return cottageRepository.getCottagesByCottageOwner_Email(email);
+    public List<ReservationHistoryDTO> getReservationHistoryForCottageOwner(String email) {
+        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
+        List<Cottage> cottages = getAllCottagesFromCottageOwner(email);
+        for (Cottage cottage : cottages) {
+           List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByEntityName(cottage.getName());
+            for (ReservationHistoryDTO reservation : reservationsPerCottage) {
+                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                reservations.add(reservation);
+            }
+        }
+        return reservations;
     }
 }

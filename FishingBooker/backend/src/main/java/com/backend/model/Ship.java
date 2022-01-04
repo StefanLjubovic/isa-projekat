@@ -10,19 +10,19 @@ import java.util.*;
 @Entity
 public class Ship extends RentingEntity {
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private String type;
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private double length;
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private int engineNumber;
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private int enginePower;
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private double maxSpeed;
 
    @ElementCollection(fetch = FetchType.EAGER)
@@ -30,7 +30,7 @@ public class Ship extends RentingEntity {
    @Column(name = "navigation_equipment")
    private Set<NavigationEquipment> navigationEquipment = new HashSet<NavigationEquipment>();
 
-   @Column(unique=true, nullable=false)
+   @Column(nullable=false)
    private int capacity;
 
    @ElementCollection(fetch = FetchType.EAGER)
@@ -46,6 +46,21 @@ public class Ship extends RentingEntity {
 
    public Ship(int id,String name,String description,Address address,double grade) {
       super(id,name,description,address,grade);
+   }
+
+   public Ship(RentingEntity entity, String type, double length, int engineNumber, int enginePower,
+               double maxSpeed, Set<NavigationEquipment> navigationEquipment, int capacity,
+               Set<String> fishingEquipment, ShipOwner shipOwner){
+      super(entity);
+      this.type = type;
+      this.length = length;
+      this.engineNumber = engineNumber;
+      this.enginePower = enginePower;
+      this.maxSpeed = maxSpeed;
+      this.navigationEquipment = navigationEquipment;
+      this.capacity = capacity;
+      this.fishingEquipment = fishingEquipment;
+      this.shipOwner = shipOwner;
    }
 
    public String getType() {

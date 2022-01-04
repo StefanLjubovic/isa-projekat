@@ -1,6 +1,7 @@
 package com.backend.controller;
 
 import com.backend.dto.EntityDTO;
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.Ship;
 import com.backend.service.Base64ToImage;
 import com.backend.service.ShipService;
@@ -46,5 +47,12 @@ public class ShipOwnerController {
         }
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/reservation-history", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('SHIP_OWNER')")
+    public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForShipOwner(Principal user){
+        List<ReservationHistoryDTO> reservations = this.shipService.getReservationHistoryForShipOwner(user.getName());
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 }

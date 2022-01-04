@@ -33,7 +33,8 @@ export default ({
         return {
             subscribed: false,
             name: this.adventureName,
-            advID: this.adventureId
+            advID: this.adventureId,
+            entityType: ''
         }
     },
     computed:{
@@ -49,6 +50,13 @@ export default ({
         console.log(resp.data)
         if(resp.data == true) this.subscribed = true
         else this.subscribed = false
+
+        if(this.userRole == "ROLE_COTTAGE_OWNER")
+            this.entityType = 'Cottage';
+        else if(this.userRole == "ROLE_SHIP_OWNER")
+            this.entityType = 'Ship';
+        else
+            this.entityType = 'Adventure';
     },
     methods: {
         toggleSubscribe: async function() {
@@ -78,7 +86,7 @@ export default ({
                         this.$swal({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Adventure deleted!',
+                            title: this.entityType + ' deleted!',
                             showConfirmButton: false,
                             timer: 2000
                         })

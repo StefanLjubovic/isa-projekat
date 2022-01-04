@@ -15,8 +15,8 @@
                     <tbody>
                         <tr v-for="entity in entities" :key="entity.id">
                             <th scope="row">{{ entities.indexOf(entity) + 1 }}</th>
-                            <td>{{ entity.entityName }}</td>
-                            <td>{{ entity.mark }}</td>
+                            <td>{{ entity.name }}</td>
+                            <td>{{ entity.averageGrade }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -46,10 +46,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="reservation in reservations" :key="reservation.id">
-                        <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
-                        <td>{{ reservation.entityName }}</td>
-                        <td>{{ reservation.income }}</td>
+                    <tr v-for="entity in entities" :key="entity.id">
+                        <th scope="row">{{ entities.indexOf(entity) + 1 }}</th>
+                        <td>{{ entity.name }}</td>
+                        <td>9350</td>
                     </tr>
                 </tbody>
             </table>
@@ -63,43 +63,28 @@
 </template>
 
 <script>
+import server from '../server'
+import axios from 'axios'
 
 export default ({
     data() {
         return {
-            entityType: "Cottage",
+            entityType: "",
             dateFrom: "",
             dateTo: "",
-
-            allEntities: [
-                {
-                    entityName: "Marijina vikendica",
-                    mark: "4.9"
-                },
-                {
-                    entityName: "The Cottage",
-                    mark: "4.5"
-                },
-                {
-                    entityName: "Cabin in the woods",
-                    mark: "2.5"
-                },
-
-            ],
-
             allReservations: [ 
                 {
-                    entityName: "Marijina vikendica",
+                    name: "Marijina vikendica",
                     type: "Cottage",
                     income: "5000"
                 },
                 {
-                    entityName: "The Cottage",
+                    name: "The Cottage",
                     type: "Cottage",
                     income: "4000"
                 },
                 {
-                    entityName: "Cabin in the woods",
+                    name: "Cabin in the woods",
                     type: "Cottage",
                     income: "350"
                 },
@@ -108,11 +93,51 @@ export default ({
             entities: []
         }
     },
+    computed:{
+        userRole(){
+            return this.$store.getters.getRole;
+        },
+        token(){
+          return this.$store.getters.getToken;
+        }
+    },
     mounted() {
-        this.reservations = this.allReservations;
-        this.entities = this.allEntities;
+       this.reservations = this.allReservations;
+       this.fetchData();
+
+        if(this.userRole == "ROLE_COTTAGE_OWNER")
+            this.entityType = 'cottages';
+        else if(this.userRole == "ROLE_SHIP_OWNER")
+            this.entityType = 'ships';
+        else
+            this.entityType = 'adventures';
     },
     methods: {
+        fetchData: function(){
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+
+            if(this.userRole == 'ROLE_INSTRUCTOR') {   
+                axios.get(`${server.baseUrl}/instructor/adventures`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            } else if (this.userRole == 'ROLE_COTTAGE_OWNER'){
+                axios.get(`${server.baseUrl}/cottageOwner/cottages`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            }else {
+                axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
+                .then((response) => {
+                    this.entities = response.data;
+                })
+            }
+        },
+
         getTotalIncome: function() {
             let sum = 0;
             for(let res of this.reservations) {
@@ -123,10 +148,10 @@ export default ({
         getAverageGrade: function() {
             let averageGrade = 0;
             for(let entity of this.entities){
-                averageGrade += parseInt(entity.mark);
+                averageGrade += entity.averageGrade;
             }
 
-            return (averageGrade/(this.entities.length)).toFixed(2);
+            return (averageGrade/(this.entities.length)).toFixed(1);
         }
     }
 })
@@ -137,40 +162,33 @@ export default ({
         margin: 50px 17%;
         padding-bottom: 100px;
     }
-
     h1 {
         text-align: left;
         margin-bottom: 40px;
     }
-
     .btn {
         margin-top: -5px;
         width: 40px;
         height: 40px;
     }
-
     h2 {
         margin-top: 40px;
         margin-bottom: 20px;
         text-align: left;
     }
-
     .filter-dates {
         display: flex;
     }
-
     .form-control-dates {
         margin-right: 10px;
         width: 25vw;
     }
-
     .btn-option {
         background-color: #2c3e50;
         color: white;
         margin-top: 0px;
         margin-right: 10px;
     }
-
     .card {
         margin-top:20px;
         width: 57vw;
@@ -179,7 +197,6 @@ export default ({
     .table, .table-striped, .table-hover {
         color: #2c3e50;
     }
-
     .total-income{ 
         display: flex;
         justify-content: space-between;
