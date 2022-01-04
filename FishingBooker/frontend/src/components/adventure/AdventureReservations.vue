@@ -20,7 +20,7 @@
         <td>{{this.dateFormat(reservation.dateTime)}}</td>
         <td>{{reservation.durationInHours}} hours</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.clientEmail)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.clientEmail, reservation.entityId)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -87,11 +87,11 @@
                 </div>
             </div>
             <div class="comment-area">
-               <textarea placeholder="Your comment" cols="50" rows="4"></textarea>
+               <textarea class="comment-area" v-model="report.content" placeholder="Your comment" cols="50" rows="4"></textarea><br/>
             </div> <br/>
             <div class="options">
-                <input type="checkbox" id="penalty" name="penalty" value="penalty"/><span> Request a penalty for client</span><br/>
-                <input type="checkbox" id="didnot-appear" name="didnot-appear" value="Client did not appear"/><span> Did not appear</span><br/>
+                <input type="checkbox" id="penalty" name="penalty" v-model="report.isBadReview" value="penalty"/><span> Request a penalty for client</span><br/>
+                <input type="checkbox" id="didnot-appear" name="didnot-appear" v-model="report.notAppeared" value="Client did not appear"/><span> Did not appear</span><br/>
             </div><br/>
             <div class="confirm-buttons">
                 <button class="btn save-button"  @click.prevent="sendReport()" >Submit</button>
@@ -113,7 +113,14 @@ export default {
   data(){
     return{
       reservations: [],
-      selectedClient: undefined
+      selectedClient: undefined,
+      report: {
+        content: undefined,
+        isBadReview: false,
+        notAppeared: false,
+        clientEmail: undefined,
+        rentingEntityId: undefined,
+      },
     }
   },
   computed:{
@@ -148,14 +155,28 @@ export default {
           window.$('#client-details-modal').modal('show');
         });
       },
-      openModalForReport : function(client) {
-        this.selectedClient = client;
+      openModalForReport : function(clientEmail, rentingEntityId) {
+        this.report.clientEmail = clientEmail;
+        this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },
       sendReport() {
-            this.v$.$validate()
-            console.log(this.v$)
-
+            const headers = {
+              'Content-Type': 'application/json;charset=UTF-8',
+               Accept: 'application/json',
+              'Authorization': `Bearer ${this.token}`
+            }
+            console.log(JSON.stringify(this.report));
+            axios.post(`${server.baseUrl}/report/add`, this.report, {headers: headers})
+                .then((response) => {
+                    this.report= { content: '', isBadReview: false, notAppeared: false};
+                    this.$swal({
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                })
+           })
             window.$('#report-modal').modal('hide');
       },
       dateFormat(value) {
