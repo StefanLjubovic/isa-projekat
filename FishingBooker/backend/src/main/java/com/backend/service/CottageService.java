@@ -1,5 +1,6 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CottageService {
@@ -17,6 +16,8 @@ public class CottageService {
     private ICottageRepository cottageRepository;
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IReservationRepository reservationRepository;
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
     private Base64ToImage imageConverter = new Base64ToImage();
@@ -120,4 +121,17 @@ public class CottageService {
     }
 
     public List<Cottage> getAllCottagesFromCottageOwner(String email) { return cottageRepository.getCottagesByCottageOwner_Email(email); }
+
+    public List<ReservationHistoryDTO> getReservationHistoryForCottageOwner(String email) {
+        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
+        List<Cottage> cottages = getAllCottagesFromCottageOwner(email);
+        for (Cottage cottage : cottages) {
+           List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByCottageName(cottage.getName());
+            for (ReservationHistoryDTO reservation : reservationsPerCottage) {
+                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                reservations.add(reservation);
+            }
+        }
+        return reservations;
+    }
 }
