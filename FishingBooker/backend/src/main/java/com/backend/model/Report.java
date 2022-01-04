@@ -29,6 +29,14 @@ public class Report {
 
    public Report() { }
 
+   public Report(String content, boolean isBadReview, boolean notAppeared, Client client, RentingEntity rentingEntity) {
+      this.content = content;
+      this.isBadReview = isBadReview;
+      this.notAppeared = notAppeared;
+      this.client = client;
+      this.rentingEntity = rentingEntity;
+   }
+
    public Integer getId() {
       return id;
    }
