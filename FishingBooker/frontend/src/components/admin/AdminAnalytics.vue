@@ -104,7 +104,7 @@ export default ({
                 'Authorization': `Bearer ${this.$store.getters.getToken}`
             }
 
-            axios.put(`${server.baseUrl}/adminAnalytics/percentage/${this.moneyPercentage}`, {headers: headers})
+            axios.put(`${server.baseUrl}/adminAnalytics/percentage/update`, this.moneyPercentage, {headers: headers})
             .then(() => {
                 this.editMode = false;
             })

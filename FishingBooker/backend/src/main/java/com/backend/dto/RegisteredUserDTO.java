@@ -21,8 +21,8 @@ public class RegisteredUserDTO {
     private Timestamp lastPasswordResetDate;
     private Address address;
 
-    public RegisteredUserDTO() {
-    }
+    public RegisteredUserDTO() { }
+
     public RegisteredUserDTO(RegisteredUser user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();

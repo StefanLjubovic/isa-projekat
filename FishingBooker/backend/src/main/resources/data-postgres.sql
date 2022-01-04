@@ -100,5 +100,9 @@ VALUES (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
 VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-04 08:00:00','2022-01-04 12:30:00');
 
-INSERT INTO public.registered_user_unavailable_periods(fishing_instructor_reg_user_id, unavailable_periods_period_id)
+INSERT INTO registered_user_unavailable_periods(fishing_instructor_reg_user_id, unavailable_periods_period_id)
 VALUES (2, 2);
+
+-- revision
+INSERT INTO revision(revision_id, content, is_approved, mark, reservation_id)
+VALUES (nextval('revision_revision_id_seq'), 'Super!', false, 4, 3);

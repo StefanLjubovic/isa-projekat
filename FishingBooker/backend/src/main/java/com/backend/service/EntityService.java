@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +29,9 @@ public class EntityService {
     @Autowired
     private IReservationRepository reservationRepository;
 
+    @Autowired
+    private IRevisionRepository revisionRepository;
+
 
     public EntityService(){ }
 
@@ -49,6 +51,7 @@ public class EntityService {
         return entityRepository.findSubscriptions(email);
     }
 
+    @Transactional
     public void deleteEntity(Integer id) {
         if(isEntityBooked(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entity is now booked.");
 
@@ -70,9 +73,11 @@ public class EntityService {
     private boolean isEntityBooked(Integer id) {
         List<Reservation> reservations = reservationRepository.getReservationByRentingEntity_Id(id);
         for(Reservation r : reservations) {
-            if(r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled()) return true;
+            if (r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled())
+                return true;
         }
         for(Reservation r : reservations) {
+            revisionRepository.deleteAllByReservation_Id(r.getId());
             reservationRepository.delete(r);
         }
         return false;
@@ -81,9 +86,10 @@ public class EntityService {
     @Transactional
     public Reservation updateUnavailablePeriod(Reservation reservation) {
         Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());
+
         RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
         reservation.setRentingEntity(entityToUpdate);
-        if(!CheckOverlappingDates(reservation,endDate)){
+        if(!checkOverlappingDates(reservation,endDate)){
             UnavailablePeriod reservationPeriod = new UnavailablePeriod(reservation.getDateTime(),endDate);
             try{
                 entityToUpdate.getUnavailablePeriods().add(reservationPeriod);
@@ -97,7 +103,7 @@ public class EntityService {
         return null;
     }
 
-    private boolean CheckOverlappingDates(Reservation reservation,Date endDate) {
+    private boolean checkOverlappingDates(Reservation reservation, Date endDate) {
         for(UnavailablePeriod period : reservation.getRentingEntity().getUnavailablePeriods())
             if(period.getFromDateTime().compareTo(endDate) <=0 &&
                     period.getToDateTime().compareTo(reservation.getDateTime())>=0)
@@ -165,12 +171,12 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClassWithPeriods(Cottage.class);
         entities=entities
                 .stream()
-                .filter(e-> !CheckOverlappingDates(e,unavailablePeriod))
+                .filter(e-> !checkOverlappingDates(e,unavailablePeriod))
                 .collect(Collectors.toList());
         return entities;
     }
 
-    private boolean CheckOverlappingDates(RentingEntity e,UnavailablePeriod unavailablePeriod) {
+    private boolean checkOverlappingDates(RentingEntity e, UnavailablePeriod unavailablePeriod) {
         for(UnavailablePeriod period : e.getUnavailablePeriods())
             if(period.getFromDateTime().compareTo(unavailablePeriod.getToDateTime()) <=0 &&
                 period.getToDateTime().compareTo(unavailablePeriod.getFromDateTime())>=0)
