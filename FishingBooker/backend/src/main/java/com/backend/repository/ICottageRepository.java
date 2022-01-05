@@ -19,6 +19,8 @@ public interface ICottageRepository extends JpaRepository<Cottage,Integer> {
 
     @Query(value = "SELECT c FROM Cottage c LEFT JOIN FETCH c.sales")
     Cottage fetchAllSales();
+    @Query(value = "SELECT c FROM Cottage c LEFT JOIN FETCH c.sales where c.name = :name")
+    Cottage fetchSalesByName(@Param("name") String name);
     @Query(value = "SELECT c FROM Cottage c LEFT JOIN FETCH c.unavailablePeriods where c.name = :name")
     Cottage fetchUnavailablePeriodsByName(@Param("name") String name);
     @Query(value="SELECT c FROM Cottage c LEFT JOIN FETCH c.pricelistItems pl WHERE c.name = :name")
