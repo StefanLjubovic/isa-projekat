@@ -28,4 +28,6 @@ public interface IAdventureRepository extends JpaRepository<Adventure, Integer> 
 
     @Query("select a from Adventure a left join fetch a.fishingInstructor where a.id = :id")
     Adventure fetchInstructorByAdventureId(@Param("id") Integer id);
+
+    List<Adventure> getAdventuresByFishingInstructor_Id(Integer id);
 }

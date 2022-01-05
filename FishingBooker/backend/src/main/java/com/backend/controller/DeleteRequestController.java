@@ -41,4 +41,18 @@ public class DeleteRequestController {
         }
         return new ResponseEntity<>(DTOs, HttpStatus.OK);
     }
+
+    @PutMapping("/reject/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> rejectDeleteRequest(@PathVariable("id") Integer id, @RequestBody String response) {
+        deleteRequestService.rejectDeleteRequest(id, response);
+        return new ResponseEntity<>("Delete request rejected!", HttpStatus.OK);
+    }
+
+    @PutMapping("/approve")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> approveDeleteRequest(@RequestBody Integer id) {
+        deleteRequestService.approveDeleteRequest(id);
+        return new ResponseEntity<>("Delete request approved", HttpStatus.OK);
+    }
 }

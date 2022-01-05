@@ -29,6 +29,12 @@ public class EntityService {
     @Autowired
     private IRevisionRepository revisionRepository;
 
+    @Autowired
+    private IComplaintRepository complaintRepository;
+
+    @Autowired
+    private IReportRepository reportRepository;
+
 
     public EntityService(){ }
 
@@ -75,6 +81,8 @@ public class EntityService {
         }
         for(Reservation r : reservations) {
             revisionRepository.deleteAllByReservation_Id(r.getId());
+            complaintRepository.deleteAllByRentingEntity_Id(r.getId());
+            reportRepository.deleteAllByRentingEntity_Id(r.getId());
             reservationRepository.delete(r);
         }
         return false;

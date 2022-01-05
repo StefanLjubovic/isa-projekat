@@ -246,7 +246,7 @@ export default {
     },
     methods: {
         removeUser: function(user) {
-            if(user.email == 'mainadmin@gmail.com') {
+            if(user.id == 1) {
                 this.$swal({
                     icon: 'error',
                     title: 'Ooops...',

@@ -21,4 +21,6 @@ public interface IShipRepository extends JpaRepository<Ship, Integer> {
 
     @Query("select s from Ship s left join fetch s.shipOwner where s.id = :id")
     Ship fetchOwnerByShipId(@Param("id") Integer id);
+
+    List<Ship> getShipsByShipOwner_Id(Integer id);
 }

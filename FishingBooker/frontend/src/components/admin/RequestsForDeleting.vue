@@ -132,14 +132,47 @@ export default ({
             }
         },
         approveRequest: function(request) {
-            console.log(request);
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            axios.put(`${server.baseUrl}/deleteRequest/approve`, request.id, { headers: headers })
+            .then(() => {
+                this.requests.splice(this.requests.indexOf(request), 1);
+                this.allRequests.splice(this.allRequests.indexOf(request), 1);
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Account deleted!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
         },
         disapproveRequest: function(request) {
             this.selectedRequest = request;
             window.$('#response-to-request-modal').modal('show');
         },
         sumbitRejection: function() {
-            window.$('#response-to-request-modal').modal('hide');
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            axios.put(`${server.baseUrl}/deleteRequest/reject/${this.selectedRequest.id}`, this.response, { headers: headers })
+            .then(() => {
+                this.requests.splice(this.requests.indexOf(this.selectedRequest), 1);
+                this.allRequests.splice(this.allRequests.indexOf(this.selectedRequest), 1);
+                window.$('#response-to-request-modal').modal('hide');
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Rejection email sent!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
         },
         cancelRejection: function() {
             window.$('#response-to-request-modal').modal('hide');
