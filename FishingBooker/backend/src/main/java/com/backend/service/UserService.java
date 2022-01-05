@@ -142,14 +142,19 @@ public class UserService {
         return admin.isInitialPasswordChanged();
     }
 
-    public void  alterSubscriptions(String email, Integer id){
+    public boolean  alterSubscriptions(String email, Integer id){
+        boolean exists = false;
         Client client = userRepository.fetchClientWithSubscriptions(email);
         RentingEntity entityToAdd = client.getSubscriptions()
                 .stream()
                 .filter(e -> e.getId().equals(id)).findFirst().orElse(null);
         if(entityToAdd == null)client.getSubscriptions().add(entityRepository.findById(id).get());
-        else client.getSubscriptions().remove(entityToAdd);
+        else{
+            client.getSubscriptions().remove(entityToAdd);
+            exists = true;
+        }
         userRepository.save(client);
+        return exists;
     }
 
     public RegisteredUser GetByEmail(String email) {

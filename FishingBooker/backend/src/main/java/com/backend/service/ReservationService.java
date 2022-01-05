@@ -48,28 +48,8 @@ public class ReservationService {
     public List<ReservationDTO> cancelReservation(Integer id,String email) {
         Reservation reservation = reservationRepository.fetchWithUnavailablePeriods(id);
         reservation.setCanceled(true);
-        UnavailablePeriod removedPeriod = null;
-        for(UnavailablePeriod period : reservation.getRentingEntity().getUnavailablePeriods())
-            if(period.getFromDateTime().equals(reservation.getDateTime()))
-                removedPeriod=period;
-        if(removedPeriod != null) {
-            RentingEntity entityToUpdate = updateUnavailablePeriodForEntity(reservation, removedPeriod);
-            reservation.getRentingEntity().setUnavailablePeriods(entityToUpdate.getUnavailablePeriods());
-        }
         reservationRepository.save(reservation);
         return getClientFutureReservations(email);
-    }
-
-    private RentingEntity updateUnavailablePeriodForEntity(Reservation reservation, UnavailablePeriod removedPeriod) {
-        RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
-        Integer periodId = removedPeriod.getId();
-        entityToUpdate.setUnavailablePeriods(
-                entityToUpdate.getUnavailablePeriods().stream().filter(p -> {
-                    return p.getId() != periodId;
-                }).collect(Collectors.toSet())
-        );
-        entityRepository.save(entityToUpdate);
-        return entityToUpdate;
     }
 
 
