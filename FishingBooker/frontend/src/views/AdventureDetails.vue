@@ -57,11 +57,11 @@
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
-                <Sales :sales="adventure.sales" :adventure="adventure" @sale-to-reservation="saleToReservation"/><br/>
+                <Sales :sales="adventure.sales" v-if="userRole != ''" :adventure="adventure" @sale-to-reservation="saleToReservation"/><br/>
 
                 <div class="btn-placeholder">
                     <h2>Schedule for this adventure</h2>
-                    <button class="btn" @click="makeReservation()" v-if="userRole != 'ROLE_ADMIN'">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
+                    <button class="btn" @click="makeReservation()" v-if="userRole != 'ROLE_ADMIN' && userRole != ''">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
                 <Calendar class="calendar" :events="events"/>
                 

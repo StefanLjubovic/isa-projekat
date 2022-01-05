@@ -83,19 +83,8 @@ public class EntityService {
     @Transactional
     public Reservation updateUnavailablePeriod(Reservation reservation) {
         Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());
-
-        RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
-        reservation.setRentingEntity(entityToUpdate);
         if(!checkOverlappingDates(reservation,endDate)){
-            UnavailablePeriod reservationPeriod = new UnavailablePeriod(reservation.getDateTime(),endDate);
-            try{
-                entityToUpdate.getUnavailablePeriods().add(reservationPeriod);
-                entityRepository.save(entityToUpdate);
-                reservation.setRentingEntity(entityToUpdate);
-                return reservation;
-            } catch (ObjectOptimisticLockingFailureException ex){
-                throw new ObjectOptimisticLockingFailureException("Entity got reserved in that period try again later.",ex);
-            }
+             return reservation;
         }
         return null;
     }
@@ -122,25 +111,6 @@ public class EntityService {
         return endDate;
     }
 
-
-    @Transactional(readOnly = false)
-    public Reservation updateUnavailablePeriodTest(Reservation reservation) {
-        Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());
-        if(!false){
-            UnavailablePeriod reservationPeriod = new UnavailablePeriod(reservation.getDateTime(),endDate);
-            try{
-                RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
-                entityToUpdate.getUnavailablePeriods().add(reservationPeriod);
-                entityToUpdate.setVersion(reservation.getRentingEntity().getVersion());
-                entityRepository.save(entityToUpdate);
-                reservation.setRentingEntity(entityToUpdate);
-                return reservation;
-            } catch (ObjectOptimisticLockingFailureException ex){
-                throw new ObjectOptimisticLockingFailureException("Entity got reserved in that period try again later.",ex);
-            }
-        }
-        return null;
-    }
 
     public boolean checkIfSubscribed(String email,Integer entityId){
         RentingEntity e = entityRepository.checkIfSubscribed(email,entityId);
@@ -174,5 +144,25 @@ public class EntityService {
                 period.getToDateTime().compareTo(unavailablePeriod.getFromDateTime())>=0)
                 return true;
         return false;
+    }
+
+    //ForTest
+    @Transactional(readOnly = false)
+    public Reservation updateUnavailablePeriodTest(Reservation reservation) {
+        Date endDate = getEndDate(reservation.getDateTime(),reservation.getDurationInHours());
+        if(!false){
+            UnavailablePeriod reservationPeriod = new UnavailablePeriod(reservation.getDateTime(),endDate);
+            try{
+                RentingEntity entityToUpdate = entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId());
+                entityToUpdate.getUnavailablePeriods().add(reservationPeriod);
+                entityToUpdate.setVersion(reservation.getRentingEntity().getVersion());
+                entityRepository.save(entityToUpdate);
+                reservation.setRentingEntity(entityToUpdate);
+                return reservation;
+            } catch (ObjectOptimisticLockingFailureException ex){
+                throw new ObjectOptimisticLockingFailureException("Entity got reserved in that period try again later.",ex);
+            }
+        }
+        return null;
     }
 }

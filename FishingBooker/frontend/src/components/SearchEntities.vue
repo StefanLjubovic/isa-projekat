@@ -5,10 +5,7 @@
         {{ searchTitle }}
       </h1>
       <button type="button" class="btn btn-success" v-bind:class="{ 'active': offerActivate }" @click="getOffers" v-if="
-          !searchTitle.includes('History') &&
-          userRole != 'ROLE_COTTAGE_OWNER' &&
-          userRole != 'ROLE_SHIP_OWNER' &&
-          userRole != 'ROLE_INSTRUCTOR'" >
+          !searchTitle.includes('History') && userRole == 'ROLE_CLIENT'">
         Special offer&nbsp;&nbsp;<i class="fas fa-money-bill-wave"></i>
       </button>
     </div>
