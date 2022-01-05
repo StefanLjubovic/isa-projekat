@@ -1,13 +1,11 @@
 package com.backend.service;
 
-import com.backend.dto.EntityIncomeAdminDTO;
 import com.backend.model.SystemProperty;
 import com.backend.repository.ISystemPropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Set;
 
 @Service
 public class SystemPropertyService {

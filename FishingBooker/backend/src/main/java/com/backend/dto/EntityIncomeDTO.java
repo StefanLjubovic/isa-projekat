@@ -2,7 +2,7 @@ package com.backend.dto;
 
 import java.util.Date;
 
-public class EntityIncomeAdminDTO {
+public class EntityIncomeDTO {
 
     private String entityName;
     private String clientEmail;
@@ -10,9 +10,9 @@ public class EntityIncomeAdminDTO {
     private Date dateFrom;
     private Date dateTo;
 
-    public EntityIncomeAdminDTO() {}
+    public EntityIncomeDTO() {}
 
-    public EntityIncomeAdminDTO(String entityName, String clientEmail, Date dateFrom, Date dateTo) {
+    public EntityIncomeDTO(String entityName, String clientEmail, Date dateFrom, Date dateTo) {
         this.entityName = entityName;
         this.clientEmail = clientEmail;
         this.dateFrom = dateFrom;
