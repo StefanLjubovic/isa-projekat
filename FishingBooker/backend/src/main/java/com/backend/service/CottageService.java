@@ -1,6 +1,5 @@
 package com.backend.service;
 
-import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,8 @@ public class CottageService {
     @Autowired
     private IUserRepository userRepository;
     @Autowired
-    private IReservationRepository reservationRepository;
-    @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
+
     private Base64ToImage imageConverter = new Base64ToImage();
 
     public CottageService() {}
@@ -118,20 +116,5 @@ public class CottageService {
             ++i;
         }
         return convertedImages;
-    }
-
-    public List<Cottage> getAllCottagesFromCottageOwner(String email) { return cottageRepository.getCottagesByCottageOwner_Email(email); }
-
-    public List<ReservationHistoryDTO> getReservationHistoryForCottageOwner(String email) {
-        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
-        List<Cottage> cottages = getAllCottagesFromCottageOwner(email);
-        for (Cottage cottage : cottages) {
-           List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByEntityName(cottage.getName());
-            for (ReservationHistoryDTO reservation : reservationsPerCottage) {
-                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
-                reservations.add(reservation);
-            }
-        }
-        return reservations;
     }
 }

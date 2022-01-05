@@ -3,9 +3,8 @@ package com.backend.controller;
 import com.backend.dto.EntityDTO;
 import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.Cottage;
-import com.backend.model.Reservation;
 import com.backend.service.Base64ToImage;
-import com.backend.service.CottageService;
+import com.backend.service.CottageOwnerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 public class CottageOwnerController {
 
     @Autowired
-    CottageService cottageService;
+    private CottageOwnerService cottageOwnerService;
 
     private ModelMapper modelMapper = new ModelMapper();
     private Base64ToImage base64ToImage = new Base64ToImage();
@@ -35,7 +34,7 @@ public class CottageOwnerController {
     @GetMapping("/cottages")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     public ResponseEntity<List<EntityDTO>> getAllCottagesForCottageOwner(Principal owner) throws IOException {
-        List<Cottage> cottages = cottageService.getAllCottagesFromCottageOwner(owner.getName());
+        List<Cottage> cottages = this.cottageOwnerService.getAllCottagesFromCottageOwner(owner.getName());
 
         List<EntityDTO> dto = new ArrayList<>();
         for(Cottage c : cottages) {
@@ -55,7 +54,7 @@ public class CottageOwnerController {
     @GetMapping(value="/reservation-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForCottageOwner(Principal user){
-        List<ReservationHistoryDTO> reservations = this.cottageService.getReservationHistoryForCottageOwner(user.getName());
+        List<ReservationHistoryDTO> reservations = this.cottageOwnerService.getReservationHistoryForCottageOwner(user.getName());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 }
