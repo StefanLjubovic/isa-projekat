@@ -56,8 +56,8 @@ export default ({
         return {
             moneyPercentage: undefined,
             editMode: false,
-            dateFrom: "",
-            dateTo: "",
+            dateFrom: undefined,
+            dateTo: undefined,
             allReservations: [],
             reservations: []
         }
@@ -82,10 +82,11 @@ export default ({
         axios.get(`${server.baseUrl}/adminAnalytics/income`, { headers: headers })
         .then((response) => {
             this.allReservations = response.data;
-            this.reservations = this.allReservations;
+            this.reservations = this.allReservations.slice();
         })
     },
     methods: {
+
         saveMoneyPercentage: function() {
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -103,6 +104,7 @@ export default ({
                 })
             })
         },
+
         getTotalIncome: function() {
             let sum = 0;
             for(let res of this.reservations) {
@@ -110,8 +112,37 @@ export default ({
             }
             return sum;
         },
-        search: function() {
 
+        search: function() {
+            while(this.reservations.length)
+                this.reservations.pop();
+
+            let searchDateFrom = undefined;
+            if(!this.dateFrom) {
+                searchDateFrom = new Date(-8640000000000000);
+            }
+            else {
+                searchDateFrom = new Date(this.dateFrom);
+                searchDateFrom.setHours(0,0,0,0);
+            }
+
+            let searchDateTo = undefined;
+            if(!this.dateTo){
+                searchDateTo = new Date(8640000000000000);
+            } 
+            else{
+                searchDateTo = new Date(this.dateTo);
+                searchDateTo.setHours(0,0,0,0);
+            }
+
+            for(let reservation of this.allReservations) {
+                let reservationBegin = new Date(reservation.dateFrom).setHours(0,0,0,0);
+                let reservationEnd = new Date(reservation.dateTo).setHours(0,0,0,0);
+
+                if(searchDateFrom < reservationBegin && reservationEnd < searchDateTo){
+                    this.reservations.push(reservation);
+                }
+            }
         }
     }
 })
