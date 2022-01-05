@@ -15,7 +15,7 @@ public interface IShipRepository extends JpaRepository<Ship, Integer> {
     @Query(value = "SELECT s FROM Ship s LEFT JOIN FETCH s.sales")
     Ship fetchAllSales();
     @Query(value = "SELECT s FROM Ship s LEFT JOIN FETCH s.sales where s.name = :name")
-    Ship fetchSalesByName(String shipName);
+    Ship fetchSalesByName(@Param("name") String name);
     @Query(value = "SELECT s FROM Ship s LEFT JOIN FETCH s.unavailablePeriods where s.name = :name")
     Ship fetchUnavailablePeriodsByName(@Param("name") String name);
     @Query(value="SELECT s FROM Ship s LEFT JOIN FETCH s.pricelistItems pl WHERE s.name = :name")
