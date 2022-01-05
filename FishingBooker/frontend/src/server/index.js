@@ -108,7 +108,7 @@ server.saveDeleteRequest= async (content,token) =>{
             Accept: 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        url: server.baseUrl+`/user/deleteRequest/`,
+        url: server.baseUrl+`/deleteRequest`,
         data : content
     }; 
     return axios(options)
@@ -224,7 +224,7 @@ server.saveComplaint= async (content) =>{
             Accept: 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        url: server.baseUrl+`/entity/save-complaint/`,
+        url: server.baseUrl+`/complaint/save-complaint/`,
         data : content
     }; 
     return axios(options)

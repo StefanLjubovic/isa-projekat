@@ -98,7 +98,7 @@ export default ({
         axios.get(`${server.baseUrl}/revision`, { headers: headers })
         .then((response) => {
             this.allRevisions = response.data;
-            this.revisions = this.allRevisions;
+            this.revisions = this.allRevisions.slice();
         })
     },
     methods: {

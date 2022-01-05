@@ -226,4 +226,8 @@ public class RegisteredUser implements UserDetails {
     public String toString() {
         return "RegistratedUser{}";
     }
+
+    public String getFullName() {
+        return this.getFirstName() + " " + this.getLastName();
+    }
 }

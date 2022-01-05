@@ -1,6 +1,6 @@
 <template>
     <div id="page">
-        <h1>Report Requests for Penalty</h1>
+        <h1>Report Requests</h1>
         <div class="filter-search">
             <div class="dropdown">
                 <button class="btn dropdown-toggle drop-btn" ref="btnToggle" id="dropdownMenuButton" data-toggle="dropdown" 
@@ -32,17 +32,15 @@
                         <th scope="col">E-mail</th>
                         <th scope="col">Client</th>
                         <th scope="col">Report</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="report in reports" :key="report.id">
                         <th scope="row">{{ reports.indexOf(report) + 1 }}</th>
-                        <td>Marija Kljestan</td>
-                        <td>Marijina vikendica</td>
-                        <td>{{ report.client.email }}</td>
-                        <td>{{ report.client.firstName }} {{ report.client.lastName }}</td>
+                        <td>{{ report.advertiserFullName }}</td>
+                        <td>{{ report.entityName }}</td>
+                        <td>{{ report.clientEmail }}</td>
+                        <td>{{ report.clientFullName }}</td>
 
                         <td>
                             <div id="to-hover">
@@ -50,8 +48,6 @@
                                 <div id="to-show" class="card rounded">{{ report.content }}</div>
                             </div> 
                         </td>
-                        <td><button class="btn" @click="approveReport(report)"><i class="fas fa-check"></i></button></td>
-                        <td><button class="btn btn-delete" @click="disapproveReport(report)"><i class="fas fa-times"></i></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -60,89 +56,51 @@
 </template>
 
 <script>
+import axios from 'axios'
+import server from '../../server'
 
 export default ({
     data() {
         return {
-            allReports: [
-                {
-                    client: {
-                        id: 1,
-                        email: "zdravkocolic@gmail.com",
-                        firstName: "Zdravko",
-                        lastName: "Colic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    isBadReview: true,
-                    notAppeared: false
-                },
-                {
-                    client: {
-                        id: 2,
-                        email: "anagavrilovic@gmail.com",
-                        firstName: "Ana",
-                        lastName: "Gavrilovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    isBadReview: false,
-                    notAppeared: false
-                },
-                {
-                    client: {
-                        id: 3,
-                        email: "marijakljestan@gmail.com",
-                        firstName: "Marija",
-                        lastName: "Kljestan",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    isBadReview: true,
-                    notAppeared: true
-                },
-                {
-                    client: {
-                        id: 4,
-                        email: "stefanljubovic@gmail.com",
-                        firstName: "Stefan",
-                        lastName: "Ljubovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco.",
-                    isBadReview: false,
-                    notAppeared: true
-                },
-            ],
+            allReports: [],
             reports: [],
             searchParams: "",
+            filterParam: -1
+        }
+    },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
         }
     },
     mounted() {
-        this.reports = this.allReports;
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+        axios.get(`${server.baseUrl}/report`, { headers: headers })
+        .then((response) => {
+            this.allReports = response.data;
+            this.reports = this.allReports.slice();
+        })
     },
     methods: {
         filterByContent: function(content) {
-            if(content == -1) {
-                this.reports = this.allReports;
-            }
-            else if(content == 0) {
-                this.reports = this.allReports.filter((report) => report.isBadReview == true);
-            }
-            else if(content == 1) {
-                this.reports = this.allReports.filter((report) => report.notAppeared == true);
-            }
+            this.filterParam = content;
+            this.search();
         },
         search: function() {
-            this.reports = this.allReports.filter((report) => report.client.email.includes(this.searchParams.toLowerCase())
-                                               || report.client.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
-                                               || report.client.lastName.toLowerCase().includes(this.searchParams.toLowerCase()));
-        },
-        approveReport: function(report) {
-            console.log(report);
-        },
-        disapproveReport: function(report) {
-            console.log(report);
+            this.reports = this.allReports.filter((report) => report.clientEmail.includes(this.searchParams.toLowerCase())
+                                               || report.clientFullName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || report.advertiserFullName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || report.entityName.toLowerCase().includes(this.searchParams.toLowerCase()));
+            if(this.filterParam == 0) {
+                this.reports = this.reports.filter((report) => report.badReview == true);
+            }
+            else if(this.filterParam == 1) {
+                this.reports = this.reports.filter((report) => report.notAppeared == true);
+            }
         }
     }
 })

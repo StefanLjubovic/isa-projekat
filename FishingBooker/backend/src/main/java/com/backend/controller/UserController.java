@@ -34,9 +34,6 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    DeleteRequestService deleteRequestService;
-
-    @Autowired
     private TokenUtils tokenUtils;
 
     @GetMapping(value="/getById/{id}")
@@ -110,12 +107,6 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
-    @PostMapping("/deleteRequest")
-    public ResponseEntity<Void> saveDeleteRequest(@RequestBody String content, Principal principal) {
-        deleteRequestService.save(principal.getName(),content);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/passwordChanged")

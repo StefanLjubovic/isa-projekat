@@ -6,10 +6,10 @@
                 <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
-                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."></textarea>
+                <textarea class="form-control textarea" rows="8" v-model="response" placeholder="Write your response..."></textarea>
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn" @click="sumbitRejection()">Submit</button>
-                    <button class="btn cancel-btn">Cancel</button>
+                    <button class="btn submit-btn" @click="sumbitRejection()" :disabled="!response">Submit</button>
+                    <button class="btn cancel-btn" @click="cancelRejection()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -25,10 +25,10 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByRole(-1)" >All users</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(0)" >Client</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(2)" >Cottage owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(3)" >Ship owner</a>
-                    <a class="dropdown-item" href="#a" @click="filterByRole(4)" >Fishing instructor</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_CLIENT')" >Client</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_COTTAGE_OWNER')" >Cottage owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_SHIP_OWNER')" >Ship owner</a>
+                    <a class="dropdown-item" href="#a" @click="filterByRole('ROLE_INSTRUCTOR')" >Fishing instructor</a>
                 </div>
             </div>
             <div class="search">
@@ -56,24 +56,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="request in requests" :key="request.registratedUser.id">
+                    <tr v-for="request in requests" :key="request.id">
                         <th scope="row">{{ requests.indexOf(request) + 1 }}</th>
-                        <td>{{ request.registratedUser.email }}</td>
-                        <td>{{ request.registratedUser.firstName }}</td>
-                        <td>{{ request.registratedUser.lastName }}</td>
-                        <td>{{ request.registratedUser.phoneNumber }}</td>
+                        <td>{{ request.userEmail }}</td>
+                        <td>{{ request.userFirstName }}</td>
+                        <td>{{ request.userLastName }}</td>
+                        <td>{{ request.phoneNumber }}</td>
 
-                        <td v-if="request.registratedUser.role == 0">Client</td>
-                        <td v-else-if="request.registratedUser.role == 1">Administrator</td>
-                        <td v-else-if="request.registratedUser.role == 2">Cottage owner</td>
-                        <td v-else-if="request.registratedUser.role == 3">Ship owner</td>
-                        <td v-else-if="request.registratedUser.role == 4">Fishing instructor</td>
+                        <td v-if="request.role == 'ROLE_CLIENT'">Client</td>
+                        <td v-else-if="request.role == 'ROLE_ADMIN'">Administrator</td>
+                        <td v-else-if="request.role == 'ROLE_COTTAGE_OWNER'">Cottage owner</td>
+                        <td v-else-if="request.role == 'ROLE_SHIP_OWNER'">Ship owner</td>
+                        <td v-else-if="request.role == 'ROLE_INSTRUCTOR'">Fishing instructor</td>
                         <td v-else></td>
 
                         <td>
                             <div id="to-hover">
                                 <button class="btn btn-info"><i class="fas fa-info"></i></button>
-                                <div id="to-show" class="card rounded">{{ request.content }}</div>
+                                <div id="to-show" class="card rounded">{{ request.reason }}</div>
                             </div> 
                         </td>
                         <td><button class="btn" @click="approveRequest(request)"><i class="fas fa-check"></i></button></td>
@@ -86,78 +86,50 @@
 </template>
 
 <script>
+import axios from 'axios'
+import server from '../../server'
 
 export default ({
     data() {
         return {
-            allRequests: [
-                {
-                    registratedUser: {
-                        id: 1,
-                        email: "zdravkocolic@gmail.com",
-                        firstName: "Zdravko",
-                        lastName: "Colic",
-                        phoneNumber: "0645555555",
-                        role: 0
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    registratedUser: {
-                        id: 2,
-                        email: "anagavrilovic@gmail.com",
-                        firstName: "Ana",
-                        lastName: "Gavrilovic",
-                        phoneNumber: "0645555555",
-                        role: 3
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    registratedUser: {
-                        id: 3,
-                        email: "marijakljestan@gmail.com",
-                        firstName: "Marija",
-                        lastName: "Kljestan",
-                        phoneNumber: "0645555555",
-                        role: 2
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    registratedUser: {
-                        id: 4,
-                        email: "stefanljubovic@gmail.com",
-                        firstName: "Stefan",
-                        lastName: "Ljubovic",
-                        phoneNumber: "0645555555",
-                        role: 4
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-            ],
+            allRequests: [],
             requests: [],
             searchParams: "",
-            selectedRequest: undefined
+            selectedRequest: undefined,
+            filterParam: -1,
+            response: ''
+        }
+    },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
         }
     },
     mounted() {
-        this.requests = this.allRequests;
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+        axios.get(`${server.baseUrl}/deleteRequest`, { headers: headers })
+        .then((response) => {
+            this.allRequests = response.data;
+            this.requests = this.allRequests.slice();
+        })
     },
     methods: {
         filterByRole: function(role) {
-            if(role == -1) {
-                this.requests = this.allRequests;
-                return;
-            }
-
-            this.requests = this.allRequests.filter((request) => request.registratedUser.role == role);
+            this.filterParam = role;
+            this.search();
         },
         search: function() {
-            this.requests = this.allRequests.filter((request) => request.registratedUser.email.includes(this.searchParams.toLowerCase())
-                                               || request.registratedUser.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
-                                               || request.registratedUser.lastName.toLowerCase().includes(this.searchParams.toLowerCase())
-                                               || request.registratedUser.phoneNumber.includes(this.searchParams));
+            this.requests = this.allRequests.filter((request) => request.userEmail.includes(this.searchParams.toLowerCase())
+                                               || request.userFirstName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || request.userLastName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || request.phoneNumber.includes(this.searchParams));
+            if(this.filterParam != -1) {
+                this.requests = this.requests.filter((request) => request.role == this.filterParam);
+            }
         },
         approveRequest: function(request) {
             console.log(request);
@@ -167,7 +139,11 @@ export default ({
             window.$('#response-to-request-modal').modal('show');
         },
         sumbitRejection: function() {
-            console.log(this.selectedRequest);
+            window.$('#response-to-request-modal').modal('hide');
+        },
+        cancelRejection: function() {
+            window.$('#response-to-request-modal').modal('hide');
+            this.response = '';
         }
     }
 })

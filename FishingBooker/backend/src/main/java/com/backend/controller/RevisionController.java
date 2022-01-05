@@ -38,7 +38,7 @@ public class RevisionController {
         Set<RevisionDTO> DTOs = new HashSet<>();
         for(Revision r : revisions) {
             RegisteredUser advertiser = advertiserService.findAdvertiserByEntityId(r.getReservation().getRentingEntity().getId());
-            RevisionDTO dto = new RevisionDTO(r.getId(), r.getContent(), r.getApproved(), r.getMark(), r.getId(), r.getReservation().getClient().getEmail(), r.getReservation().getClient().getFirstName() + " " + r.getReservation().getClient().getLastName(), advertiser.getFirstName() + " " + advertiser.getLastName(), r.getReservation().getRentingEntity().getName(), advertiser.getRole().getName());
+            RevisionDTO dto = new RevisionDTO(r.getId(), r.getContent(), r.getApproved(), r.getMark(), r.getId(), r.getReservation().getClient().getEmail(), r.getReservation().getClient().getFullName(), advertiser.getFullName(), r.getReservation().getRentingEntity().getName(), advertiser.getRole().getName());
             DTOs.add(dto);
         }
         return new ResponseEntity<>(DTOs, HttpStatus.OK);

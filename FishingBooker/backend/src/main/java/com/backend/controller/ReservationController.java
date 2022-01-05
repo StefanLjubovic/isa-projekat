@@ -30,9 +30,6 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @Autowired
-    private RevisionService revisionService;
-
-    @Autowired
     SaleService saleService;
 
     @PostMapping
@@ -85,6 +82,7 @@ public class ReservationController {
         Boolean isBooked = reservationService.isEntityBooked(id);
         return new ResponseEntity<>(isBooked, HttpStatus.OK);
     }
+
     @PostMapping(value = "/fast-reservation/",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Boolean> saveFastReservation(@RequestBody ReservationSaleDTO dto) {

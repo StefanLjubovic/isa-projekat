@@ -24,9 +24,6 @@ public class EntityService {
     private IUserRepository userRepository;
 
     @Autowired
-    private IComplaintRepository complaintRepository;
-
-    @Autowired
     private IReservationRepository reservationRepository;
 
     @Autowired
@@ -149,11 +146,6 @@ public class EntityService {
         RentingEntity e = entityRepository.checkIfSubscribed(email,entityId);
         if(e == null) return false;
         return true;
-    }
-
-    public void createComplaint(ComplaintDTO dto, String email) {
-        Complaint complaint = new Complaint(dto.getContent(),new Client(userRepository.findByEmail(email)),entityRepository.findById(dto.getEntityId()).get());
-        complaintRepository.save(complaint);
     }
 
     public List<? extends RentingEntity> getEntitiesOnSale(int state){

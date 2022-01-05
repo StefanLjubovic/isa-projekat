@@ -6,12 +6,12 @@
                 <button class="btn btn-close close" data-dismiss="modal"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
-                <p><b>From:</b> {{ selectedComplaint.client.email }} </p>
+                <p><b>From:</b> {{ selectedComplaint.clientEmail }} </p>
                 <p><b>Content:</b> {{ selectedComplaint.content }} </p>
-                <textarea class="form-control textarea" rows="8" placeholder="Write your response..."></textarea>
+                <textarea class="form-control textarea" rows="8" v-model="complaintResponse" placeholder="Write your response..."></textarea>
                 <div class="confirm-buttons">
-                    <button class="btn submit-btn">Submit</button>
-                    <button class="btn cancel-btn">Cancel</button>
+                    <button class="btn submit-btn" @click="respondToComplaint()" :disabled="!complaintResponse">Submit</button>
+                    <button class="btn cancel-btn" @click="cancelResponding()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -27,9 +27,9 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(-1)">All types</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(2)" >Cottage</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(3)" >Ship</a>
-                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType(4)" >Adventure</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_COTTAGE_OWNER')" >Cottage</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_SHIP_OWNER')" >Ship</a>
+                    <a class="dropdown-item" href="#a" @click="filterByAdvertiserType('ROLE_INSTRUCTOR')" >Adventure</a>
                 </div>
             </div>
             <div class="search">
@@ -56,10 +56,10 @@
                 <tbody>
                     <tr v-for="complaint in complaints" :key="complaint.id" >
                         <th scope="row">{{ complaints.indexOf(complaint) + 1 }}</th>
-                        <td>{{ complaint.client.email }}</td>
-                        <td>{{ complaint.client.firstName }} {{ complaint.client.lastName }}</td>
-                        <td>Marija Kljestan</td>
-                        <td>Marijina vikendica</td>
+                        <td>{{ complaint.clientEmail }}</td>
+                        <td>{{ complaint.clientFullName }}</td>
+                        <td>{{ complaint.advertiserFullName }}</td>
+                        <td>{{ complaint.entityName }}</td>
 
                         <td><button class="btn btn-info" @click="reportDeatils(complaint)">Read	&amp; Response</button></td>
                     </tr>
@@ -70,59 +70,36 @@
 </template>
 
 <script>
+import axios from 'axios'
+import server from '../../server'
 
 export default ({
     data() {
         return {
-            allComplaints: [
-                {
-                    client: {
-                        id: 1,
-                        email: "zdravkocolic@gmail.com",
-                        firstName: "Zdravko",
-                        lastName: "Colic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    client: {
-                        id: 2,
-                        email: "anagavrilovic@gmail.com",
-                        firstName: "Ana",
-                        lastName: "Gavrilovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    client: {
-                        id: 3,
-                        email: "marijakljestan@gmail.com",
-                        firstName: "Marija",
-                        lastName: "Kljestan",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-                {
-                    client: {
-                        id: 4,
-                        email: "stefanljubovic@gmail.com",
-                        firstName: "Stefan",
-                        lastName: "Ljubovic",
-                        phoneNumber: "0645555555"
-                    },
-                    content: "Exercitation incididunt esse veniam cillum ea dolor enim labore fugiat enim labore nostrud eiusmod ullamco."
-                },
-            ],
+            allComplaints: [],
             complaints: [],
             searchParams: "",
-            selectedComplaint: undefined
+            selectedComplaint: undefined,
+            filterParam: -1,
+            complaintResponse: ''
+        }
+    },
+    computed:{
+        token(){
+            return this.$store.getters.getToken;
         }
     },
     mounted() {
-        this.complaints = this.allComplaints;
+        const headers = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            Accept: 'application/json',
+            'Authorization': `Bearer ${this.token}`
+        }
+        axios.get(`${server.baseUrl}/complaint`, { headers: headers })
+        .then((response) => {
+            this.allComplaints = response.data;
+            this.complaints = this.allComplaints.slice();
+        })
     },
     methods: {
         reportDeatils: function(complaint) {
@@ -130,17 +107,43 @@ export default ({
             window.$('#response-to-complaint-modal').modal('show');
         },
         filterByAdvertiserType: function(type) {
-            if(type == -1) {
-                this.complaints = this.allComplaints;
-                return;
-            }
-
-            // filter po roli advertisera
+            this.filterParam = type;
+            this.search();
         },
         search: function() {
-            this.complaints = this.allComplaints.filter((complaint) => complaint.client.email.includes(this.searchParams.toLowerCase())
-                                               || complaint.client.firstName.toLowerCase().includes(this.searchParams.toLowerCase())
-                                               || complaint.client.lastName.toLowerCase().includes(this.searchParams.toLowerCase()));
+            this.complaints = this.allComplaints.filter((complaint) => complaint.clientEmail.includes(this.searchParams.toLowerCase())
+                                               || complaint.clientFullName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || complaint.advertiserFullName.toLowerCase().includes(this.searchParams.toLowerCase())
+                                               || complaint.entityName.toLowerCase().includes(this.searchParams.toLowerCase()));
+            if(this.filterParam != -1) {
+                this.complaints = this.complaints.filter((complaint) => complaint.type == this.filterParam);
+            }
+        },
+        respondToComplaint: function() {
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Accept: 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
+            console.log(this.selectedComplaint)
+            axios.put(`${server.baseUrl}/complaint/respond/${this.selectedComplaint.id}`, this.complaintResponse, { headers: headers })
+            .then(() => {
+                this.allComplaints.splice(this.allComplaints.indexOf(this.selectedComplaint), 1);
+                this.complaints.splice(this.complaints.indexOf(this.selectedComplaint), 1);
+                window.$('#response-to-complaint-modal').modal('hide');
+                this.complaintResponse = '';
+                this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Response successfully sent on email!',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+        },
+        cancelResponding: function() {
+            window.$('#response-to-complaint-modal').modal('hide');
+            this.complaintResponse = '';
         }
     }
 })

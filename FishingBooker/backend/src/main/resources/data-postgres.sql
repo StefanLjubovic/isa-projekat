@@ -105,4 +105,10 @@ VALUES (2, 2);
 
 -- revision
 INSERT INTO revision(revision_id, content, is_approved, mark, reservation_id)
-VALUES (nextval('revision_revision_id_seq'), 'Super!', false, 4, 3);
+VALUES (nextval('revision_revision_id_seq'), 'Super!', false, 4, 3),
+       (nextval('revision_revision_id_seq'), 'Nije lose!', false, 3, 2);
+
+-- complaints
+INSERT INTO complaint(complaint_id, content, reg_user_id, entity_id)
+VALUES (nextval('complaint_complaint_id_seq'), 'Ne svidja mi se avantura.', 4, 2),
+       (nextval('complaint_complaint_id_seq'), 'Ne svidja mi se vikendica.', 4, 1);

@@ -74,13 +74,6 @@ public class EntityController {
         return new ResponseEntity<>("Entity deleted!", HttpStatus.OK);
     }
 
-    @PostMapping("/save-complaint")
-    @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Void> createClientComplaint(@RequestBody ComplaintDTO dto,Principal principal){
-        entityService.createComplaint(dto,principal.getName());
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @GetMapping("/check-subscription/{id}")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Boolean> checkIfSubscribed(@PathVariable Integer id, Principal principal) {

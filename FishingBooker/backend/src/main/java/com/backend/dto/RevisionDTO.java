@@ -7,6 +7,7 @@ public class RevisionDTO {
     private boolean isApproved;
     private Integer mark;
     private Integer reservationId;
+
     private String clientEmail;
     private String clientFullName;
     private String advertiserFullName;

@@ -8,6 +8,8 @@ import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DeleteRequestService {
 
@@ -21,5 +23,9 @@ public class DeleteRequestService {
         RegisteredUser user=userRepository.findByEmail(email);
         DeleteRequest deleteRequest = new DeleteRequest(user,content);
         deleteRequestRepository.save(deleteRequest);
+    }
+
+    public List<DeleteRequest> getAllRequests() {
+        return deleteRequestRepository.findAll();
     }
 }
