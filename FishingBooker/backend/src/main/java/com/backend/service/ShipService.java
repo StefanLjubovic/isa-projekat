@@ -44,10 +44,6 @@ public class ShipService {
 
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
-    public List<Ship> getAllShipsFromShipOwner(String email) {
-        return shipRepository.getShipsByShipOwner_Email(email);
-    }
-
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForCottage(String cottageName) {
         Ship ship = this.shipRepository.fetchUnavailablePeriodsByName(cottageName);
         return ship.getUnavailablePeriods();
@@ -125,18 +121,5 @@ public class ShipService {
             ++i;
         }
         return convertedImages;
-    }
-
-    public List<ReservationHistoryDTO> getReservationHistoryForShipOwner(String email) {
-        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
-        List<Ship> ships = getAllShipsFromShipOwner(email);
-        for (Ship ship: ships) {
-            List<ReservationHistoryDTO> reservationsPerShip = this.reservationRepository.fetchReservationHistoryByEntityName(ship.getName());
-            for (ReservationHistoryDTO reservation : reservationsPerShip) {
-                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
-                reservations.add(reservation);
-            }
-        }
-        return reservations;
     }
 }

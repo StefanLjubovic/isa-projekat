@@ -98,9 +98,9 @@
         },
         data() {
             return {
-                displayReservationModal : false,
                 type: 'Cottage',
                 id: this.entityId,
+                displayReservationModal : false,
                  cottage: {
                     name: '',
                     address: {
@@ -175,15 +175,15 @@
                 window.$('#new-sale-modal').modal('show');
             },
             makeReservation: function() {
-            this.displayReservationModal = true;
-            document.getElementById('appContainer').style.overflow ='hidden';
-            document.getElementById('appContainer').style.height='100vh';
+                this.displayReservationModal = true;
+                document.getElementById('appContainer').style.overflow ='hidden';
+                document.getElementById('appContainer').style.height='100vh';
             },  
-        closeModal: function(){
-            this.displayReservationModal = false;
-            document.getElementById('appContainer').style.overflow = 'unset';
-            document.getElementById('appContainer').style.height='unset';
-        },
+            closeModal: function(){
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
+            },
             createSale: function() { this.v$.$validate();  },
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
@@ -196,36 +196,30 @@
 </script>
 
 <style scoped>
-
     #profile {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    margin-left: 15%;
-    margin-right: 15%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        margin-left: 15%;
+        margin-right: 15%;
     }
-
     hr {
         margin-top: 30px;
         margin-bottom: 30px;
     }
-
     h2 {
-    font-size: 25px;
+        font-size: 25px;
     }
-
     .content {
         display: flex;
         margin-top: 50px;
         justify-content: space-between;
     }
-
     .left-side {
         width: 63%;
     }
     .right-side {
         width: 30%;
     }
-
     .btn-wrap {
         display: flex;
         justify-content: space-between;
@@ -234,29 +228,23 @@
         background-color: #2c3e50;
         color: white;
     }
-
     .btn-close{ 
         background-color: transparent;
     }
-
     .cancel-btn {
-    background-color: white;
-    color: #2c3e50;
-    border-color: #cfd3d8;
-    margin-left: 10px;
-}
-
+        background-color: white;
+        color: #2c3e50;
+        border-color: #cfd3d8;
+        margin-left: 10px;
+    }
     input {
         width: 465px;
         margin-bottom: 25px;
     }
-
     .text-danger {
         margin-top: -20px;
         margin-bottom: 5px;
         text-align: left;
         font-size: 13px;
     }
-
-
 </style>

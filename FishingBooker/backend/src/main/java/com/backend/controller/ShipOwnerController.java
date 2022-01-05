@@ -4,7 +4,7 @@ import com.backend.dto.EntityDTO;
 import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.Ship;
 import com.backend.service.Base64ToImage;
-import com.backend.service.ShipService;
+import com.backend.service.ShipOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,14 +24,14 @@ import java.util.List;
 public class ShipOwnerController {
 
     @Autowired
-    private ShipService shipService;
+    private ShipOwnerService shipOwnerService;
 
     private Base64ToImage base64ToImage = new Base64ToImage();
 
     @GetMapping("/ships")
     @PreAuthorize("hasRole('SHIP_OWNER')")
     public ResponseEntity<List<EntityDTO>> getAllShipsFromShipOwner(Principal owner) throws IOException {
-        List<Ship> ships = shipService.getAllShipsFromShipOwner(owner.getName());
+        List<Ship> ships = this.shipOwnerService.getAllShipsFromShipOwner(owner.getName());
 
         List<EntityDTO> dto = new ArrayList<>();
         for(Ship s: ships) {
@@ -45,14 +45,13 @@ public class ShipOwnerController {
 
             dto.add(entityDTO);
         }
-
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value="/reservation-history", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('SHIP_OWNER')")
     public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForShipOwner(Principal user){
-        List<ReservationHistoryDTO> reservations = this.shipService.getReservationHistoryForShipOwner(user.getName());
+        List<ReservationHistoryDTO> reservations = this.shipOwnerService.getReservationHistoryForShipOwner(user.getName());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 }

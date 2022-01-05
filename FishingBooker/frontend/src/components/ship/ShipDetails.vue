@@ -44,6 +44,10 @@
         </div>
     </div>
 
+    <transition name="fade" appear>
+        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
+    </transition>
+
     <div id="profile" v-if="ship">
         <AdventureCaption :adventureName="this.ship.name" :adventureId="this.entityId" :entityName="'ship'"
             @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-ship', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
@@ -74,6 +78,7 @@
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import ShipTextDescription from "@/components/ship/ShipTextDescription.vue"
     import Map from "@/components/entities/ShowLocationOnMap.vue"
+    import ClientReservation from "@/components/client/ClientReservation.vue"
     import axios from 'axios'
     import server from '../../server/index'
     import useValidate from '@vuelidate/core'
@@ -88,11 +93,14 @@
             CalendarView,
             PricelistTable,
             ShipTextDescription,
-            Map
+            Map,
+            ClientReservation
         },
         data() {
             return {
                 id: this.entityId,
+                displayReservationModal : false,
+                type: 'Ship',
                 ship: {},
                 sale: {
                     dateTimeFrom : '',
@@ -151,6 +159,11 @@
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 window.$('#new-sale-modal').modal('hide');
+            },
+            closeReservationModal: function(){
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
             },
             editEntity: function() {},
             makeReservation: function() {},  
