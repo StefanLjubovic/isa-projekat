@@ -6,6 +6,7 @@ import com.backend.dto.UserTokenState;
 import com.backend.model.RegisteredUser;
 import com.backend.model.RentingEntity;
 import com.backend.service.DeleteRequestService;
+import com.backend.service.DeleteUserService;
 import com.backend.service.UserService;
 import com.backend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,10 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private DeleteUserService deleteUserService;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -105,7 +109,7 @@ public class UserController {
     @DeleteMapping("/deleteUser/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
-        userService.deleteUser(id);
+        deleteUserService.deleteUser(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

@@ -13,16 +13,17 @@ VALUES (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '2100
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Janka Cmelika', '5a'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Bulevar Despota Stefana', '10'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Safarikova', '1b'),
-       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Kralja Aleksandra', '12');
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Kralja Aleksandra', '12'),
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Petra Drapsina', '2');
 
 -- users
---passwords 123456
+-- passwords 123456
 INSERT INTO registered_user (type, reg_user_id, email, enabled, first_name, last_name, last_password_reset_date, password, phone_number, user_status, initial_password_changed, cancellation_number, client_type, points, short_biography, address_id, role_id)
 VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdravko', 'Colic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 1, 2),
        ('INSTRUCTOR', nextval('user_seq_gen'), 'ana.gavrilovic247@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
        ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
-       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 5, 4);
+       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value)
@@ -112,3 +113,7 @@ VALUES (nextval('revision_revision_id_seq'), 'Super!', false, 4, 3),
 INSERT INTO complaint(complaint_id, content, reg_user_id, entity_id)
 VALUES (nextval('complaint_complaint_id_seq'), 'Ne svidja mi se avantura.', 4, 2),
        (nextval('complaint_complaint_id_seq'), 'Ne svidja mi se vikendica.', 4, 1);
+
+-- delete requests
+INSERT INTO delete_request(delete_req_id, content, reg_user_id)
+VALUES (nextval('delete_request_delete_req_id_seq'), 'zelim', 2);
