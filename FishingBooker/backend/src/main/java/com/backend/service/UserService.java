@@ -105,11 +105,6 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public void deleteUser(Integer id) {
-        //this.verificationTokenService.DeleteTokenByUser(registrationRequestRepository.getById(id));
-        this.userRepository.delete(userRepository.getById(id));
-    }
-
     public RegistrationRequest saveRegistrationRequest(RegistrationRequest request) {
         request.setRole(this.roleService.findOneByName(request.getRole().getName()));
         request.setPassword(passwordEncoder.encode(request.getPassword()));

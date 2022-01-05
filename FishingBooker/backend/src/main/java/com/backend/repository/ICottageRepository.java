@@ -2,6 +2,7 @@ package com.backend.repository;
 
 import com.backend.model.Adventure;
 import com.backend.model.Cottage;
+import com.backend.model.RentingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +29,6 @@ public interface ICottageRepository extends JpaRepository<Cottage,Integer> {
 
     @Query("select c from Cottage c left join fetch c.cottageOwner where c.id = :id")
     Cottage fetchOwnerByCottageId(@Param("id") Integer id);
+
+    List<Cottage> getCottagesByCottageOwner_Id(Integer id);
 }

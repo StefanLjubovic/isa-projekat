@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IDeleteRequestRepository extends JpaRepository<DeleteRequest, Integer> {
+
+    void deleteAllByUser_Id(Integer id);
 }
