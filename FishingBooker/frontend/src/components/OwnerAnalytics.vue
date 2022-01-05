@@ -33,7 +33,7 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')">
             <input type="text" class="form-control form-control-dates" v-model="dateTo" placeholder="Date To"
                 onfocus="(this.type='date')" onblur="(this.type='text')">
-            <button class="btn btn-option"><i class="fas fa-search"></i></button>
+            <button class="btn btn-option" @click="search()"><i class="fas fa-search"></i></button>
             <button class="btn btn-option"><i class="far fa-file-pdf"></i></button>
         </div>
         <div class="requests-table card rounded">
@@ -70,25 +70,9 @@ export default ({
     data() {
         return {
             entityType: "",
-            dateFrom: "",
-            dateTo: "",
-            allReservations: [ 
-                {
-                    name: "Marijina vikendica",
-                    type: "Cottage",
-                    income: "5000"
-                },
-                {
-                    name: "The Cottage",
-                    type: "Cottage",
-                    income: "4000"
-                },
-                {
-                    name: "Cabin in the woods",
-                    type: "Cottage",
-                    income: "350"
-                },
-            ],
+            dateFrom: undefined,
+            dateTo: undefined,
+            allReservations: [],
             reservations: [],
             entities: []
         }
@@ -152,6 +136,38 @@ export default ({
             }
 
             return (averageGrade/(this.entities.length)).toFixed(1);
+        },
+
+        search: function() {
+            while(this.reservations.length)
+                this.reservations.pop();
+
+            let searchDateFrom = undefined;
+            if(!this.dateFrom) {
+                searchDateFrom = new Date(-8640000000000000);
+            }
+            else {
+                searchDateFrom = new Date(this.dateFrom);
+                searchDateFrom.setHours(0,0,0,0);
+            }
+
+            let searchDateTo = undefined;
+            if(!this.dateTo){
+                searchDateTo = new Date(8640000000000000);
+            } 
+            else{
+                searchDateTo = new Date(this.dateTo);
+                searchDateTo.setHours(0,0,0,0);
+            }
+
+            for(let reservation of this.allReservations) {
+                let reservationBegin = new Date(reservation.dateFrom).setHours(0,0,0,0);
+                let reservationEnd = new Date(reservation.dateTo).setHours(0,0,0,0);
+
+                if(searchDateFrom < reservationBegin && reservationEnd < searchDateTo){
+                    this.reservations.push(reservation);
+                }
+            }
         }
     }
 })
