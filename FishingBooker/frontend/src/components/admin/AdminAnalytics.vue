@@ -16,7 +16,7 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')">
             <input type="text" class="form-control form-control-dates" v-model="dateTo" placeholder="Date To"
                 onfocus="(this.type='date')" onblur="(this.type='text')">
-            <button class="btn btn-option"><i class="fas fa-search"></i></button>
+            <button class="btn btn-option" @click="search()"><i class="fas fa-search"></i></button>
             <button class="btn btn-option"><i class="far fa-file-pdf"></i></button>
         </div>
         <div class="requests-table card rounded">
@@ -25,7 +25,7 @@
                     <tr>
                         <th scope="col"></th>
                         <th scope="col">Entity name</th>
-                        <th scope="col">Type</th>
+                        <th scope="col">Client</th>
                         <th scope="col">Income</th>
                     </tr>
                 </thead>
@@ -33,7 +33,7 @@
                     <tr v-for="reservation in reservations" :key="reservation.id">
                         <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
                         <td>{{ reservation.entityName }}</td>
-                        <td>{{ reservation.type }}</td>
+                        <td>{{ reservation.clientEmail }}</td>
                         <td>{{ reservation.income }}</td>
                     </tr>
                 </tbody>
@@ -58,23 +58,7 @@ export default ({
             editMode: false,
             dateFrom: "",
             dateTo: "",
-            allReservations: [ 
-                {
-                    entityName: "Marijina vikendica",
-                    type: "Cottage",
-                    income: "5000"
-                },
-                {
-                    entityName: "Anin brod",
-                    type: "Ship",
-                    income: "4000"
-                },
-                {
-                    entityName: "Fishing in the Sunset",
-                    type: "Adventure",
-                    income: "350"
-                },
-            ],
+            allReservations: [],
             reservations: []
         }
     },
@@ -94,7 +78,12 @@ export default ({
         .then((response) => {
             this.moneyPercentage = response.data;
         })
-        this.reservations = this.allReservations;
+
+        axios.get(`${server.baseUrl}/adminAnalytics/income`, { headers: headers })
+        .then((response) => {
+            this.allReservations = response.data;
+            this.reservations = this.allReservations;
+        })
     },
     methods: {
         saveMoneyPercentage: function() {
@@ -107,6 +96,11 @@ export default ({
             axios.put(`${server.baseUrl}/adminAnalytics/percentage/update`, this.moneyPercentage, {headers: headers})
             .then(() => {
                 this.editMode = false;
+                axios.get(`${server.baseUrl}/adminAnalytics/income`, { headers: headers })
+                .then((response) => {
+                    this.allReservations = response.data;
+                    this.reservations = this.allReservations;
+                })
             })
         },
         getTotalIncome: function() {
@@ -115,6 +109,9 @@ export default ({
                 sum += parseInt(res.income)
             }
             return sum;
+        },
+        search: function() {
+
         }
     }
 })

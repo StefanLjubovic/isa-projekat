@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -91,5 +92,18 @@ public class ReservationService {
             if(r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled()) return true;
         }
         return false;
+    }
+
+    public List<Reservation> getAllFinishedReservations() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> finishedReservations = new ArrayList<>();
+
+        for(Reservation r : reservations) {
+            if(r.getReservationEndTime().before(new Date())) {
+                finishedReservations.add(r);
+            }
+        }
+
+        return finishedReservations;
     }
 }
