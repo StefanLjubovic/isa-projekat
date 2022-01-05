@@ -1,7 +1,5 @@
 package com.backend.dto;
 
-import com.backend.model.UnavailablePeriod;
-
 import java.util.Date;
 
 public class UnavailablePeriodDTO {
@@ -10,6 +8,7 @@ public class UnavailablePeriodDTO {
     private Date fromDateTime;
     private Date toDateTime;
     private String message;
+    private String entityName;
 
     public UnavailablePeriodDTO() {}
 
@@ -18,6 +17,12 @@ public class UnavailablePeriodDTO {
         this.fromDateTime = fromDateTime;
         this.toDateTime = toDateTime;
         this.message = message;
+    }
+
+    public UnavailablePeriodDTO(Date fromDateTime, Date toDateTime, String name){
+        this.fromDateTime = fromDateTime;
+        this.toDateTime = toDateTime;
+        this.entityName = name;
     }
 
     public Integer getId() {
@@ -51,4 +56,8 @@ public class UnavailablePeriodDTO {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public String getEntityName() {   return entityName;  }
+
+    public void setEntityName(String entityName) {  this.entityName = entityName; }
 }

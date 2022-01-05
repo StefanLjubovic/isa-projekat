@@ -1,8 +1,10 @@
 package com.backend.controller;
 
 import com.backend.dto.ShipDTO;
+import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.dto.UpdateShipDTO;
 import com.backend.model.Ship;
+import com.backend.model.UnavailablePeriod;
 import com.backend.service.ShipService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,13 @@ public class ShipController {
     @GetMapping("/getOne/{id}")
     public Ship getOne(@PathVariable("id") Integer id) throws IOException {
         return shipService.findById(id);
+    }
+
+    @PostMapping("/defineUnavailablePeriod")
+    @PreAuthorize("hasRole('SHIP_OWNER')")
+    public ResponseEntity<String> defineUnavailablePeriodForShip(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
+        UnavailablePeriod period = this.shipService.defineUnavailablePeriodForShip(unavailablePeriodDTO);
+        return new ResponseEntity<>("Unavailable period saved!", HttpStatus.OK);
     }
 
     @PostMapping("/add")
