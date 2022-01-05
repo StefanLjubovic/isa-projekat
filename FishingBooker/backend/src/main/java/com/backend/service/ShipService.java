@@ -74,7 +74,9 @@ public class ShipService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
 
         this.unavailablePeriodRepository.save(unavailablePeriod);
-        ship.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName()));
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(ship.getName());
+        unavailablePeriods.add(unavailablePeriod);
+        ship.setUnavailablePeriods(unavailablePeriods);
         this.shipRepository.save(ship);
         return unavailablePeriod;
     }

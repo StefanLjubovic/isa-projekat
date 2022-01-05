@@ -134,7 +134,9 @@ public class CottageService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
 
         this.unavailablePeriodRepository.save(unavailablePeriod);
-        cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(cottage.getName());
+        unavailablePeriods.add(unavailablePeriod);
+        cottage.setUnavailablePeriods(unavailablePeriods);
         this.cottageRepository.save(cottage);
         return unavailablePeriod;
     }

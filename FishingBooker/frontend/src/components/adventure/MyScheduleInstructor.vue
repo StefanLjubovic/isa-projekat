@@ -128,6 +128,7 @@ export default {
                 'Authorization': `Bearer ${this.$store.getters.getToken}`
             }
 
+            console.log(JSON.stringify(period));
             axios.post(`${server.baseUrl}/instructor/unavailablePeriod`, period, {headers: headers})
             .then((response) => {
                 this.events.push({
