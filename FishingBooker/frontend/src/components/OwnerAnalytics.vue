@@ -46,10 +46,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="entity in entities" :key="entity.id">
-                        <th scope="row">{{ entities.indexOf(entity) + 1 }}</th>
-                        <td>{{ entity.name }}</td>
-                        <td>9350</td>
+                    <tr v-for="reservation in reservations" :key="reservation.entityName">
+                        <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
+                        <td>{{ reservation.entityName }}</td>
+                        <td>{{ reservation.income }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -74,7 +74,7 @@ export default ({
             dateTo: undefined,
             allReservations: [],
             reservations: [],
-            entities: []
+            entities: [],
         }
     },
     computed:{
@@ -86,7 +86,6 @@ export default ({
         }
     },
     mounted() {
-       this.reservations = this.allReservations;
        this.fetchData();
 
         if(this.userRole == "ROLE_COTTAGE_OWNER")
@@ -114,27 +113,36 @@ export default ({
                 .then((response) => {
                     this.entities = response.data;
                 })
+                 axios.get(`${server.baseUrl}/cottageOwner/reservation-income`, {headers: headers})
+                    .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
+                })
             }else {
                 axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
                 .then((response) => {
                     this.entities = response.data;
+                    axios.get(`${server.baseUrl}/shipOwner/reservation-income`, {headers: headers})
+                    .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
+                })
                 })
             }
         },
 
         getTotalIncome: function() {
             let sum = 0;
-            for(let res of this.reservations) {
-                sum += parseInt(res.income)
-            }
+            for(let res of this.reservations) 
+                sum += parseInt(res.income);
+            
             return sum;
         },
         getAverageGrade: function() {
             let averageGrade = 0;
-            for(let entity of this.entities){
+            for(let entity of this.entities)
                 averageGrade += entity.averageGrade;
-            }
-
+            
             return (averageGrade/(this.entities.length)).toFixed(1);
         },
 

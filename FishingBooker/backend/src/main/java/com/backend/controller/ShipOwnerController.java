@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import com.backend.dto.EntityDTO;
 import com.backend.dto.ReservationHistoryDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.Ship;
 import com.backend.service.Base64ToImage;
 import com.backend.service.ShipOwnerService;
@@ -52,6 +53,13 @@ public class ShipOwnerController {
     @PreAuthorize("hasAnyRole('SHIP_OWNER')")
     public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForShipOwner(Principal user){
         List<ReservationHistoryDTO> reservations = this.shipOwnerService.getReservationHistoryForShipOwner(user.getName());
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/reservation-income", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('SHIP_OWNER')")
+    public ResponseEntity<List<ReservationIncomeDTO>> getReservationIncomeForCottageOwner(Principal user){
+        List<ReservationIncomeDTO> reservations = this.shipOwnerService.calculateReservationIncomeForShips(user.getName());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 }

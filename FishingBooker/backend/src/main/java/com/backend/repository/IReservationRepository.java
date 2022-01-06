@@ -36,7 +36,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
     List<Reservation> getReservationsByClient_Id(Integer id);
 
     @Query("SELECT new com.backend.dto.ReservationHistoryDTO(r.id, r.dateTime, r.durationInHours, r.price, r.rentingEntity.id, r.rentingEntity.name, r.client.email) " +
-            "FROM Reservation r WHERE r.rentingEntity.name = :name")
+            "FROM Reservation r WHERE r.rentingEntity.name = :name ORDER BY r.dateTime")
     List<ReservationHistoryDTO> fetchReservationHistoryByEntityName(@Param("name") String name);
 
     void deleteAllByClient_Id(Integer id);

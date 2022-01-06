@@ -1,6 +1,7 @@
 package com.backend.service;
 
 import com.backend.dto.ReservationHistoryDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.Client;
 import com.backend.model.Cottage;
 import com.backend.model.Reservation;
@@ -10,9 +11,7 @@ import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CottageOwnerService {
@@ -25,6 +24,9 @@ public class CottageOwnerService {
 
     @Autowired
     private IReservationRepository reservationRepository;
+
+    @Autowired
+    private SystemPropertyService systemPropertyService;
 
     public CottageOwnerService() {}
 
@@ -41,5 +43,31 @@ public class CottageOwnerService {
             }
         }
         return reservations;
+    }
+
+    public List<ReservationIncomeDTO> calculateReservationIncomeForCottages(String email){
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        List<ReservationHistoryDTO> allReservations = getReservationHistoryForCottageOwner(email);
+        for(ReservationHistoryDTO reservation: allReservations)
+            if(!totalIncome.stream().anyMatch(r -> r.getEntityName().equals(reservation.getEntityName()))) {
+                totalIncome.add(new ReservationIncomeDTO(
+                        reservation.getEntityName(),
+                        reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
+                        reservation.getDateTime(),
+                        getReservationEndTime(reservation)));
+            }
+            else {
+                double currentIncome = totalIncome.stream().filter(r -> r.getEntityName().equals(reservation.getEntityName())).findFirst().get().getIncome();
+                currentIncome += reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100;
+                totalIncome.stream().filter(r -> r.getEntityName().equals(reservation.getEntityName())).findFirst().get().setIncome(currentIncome);
+            }
+        return totalIncome;
+    }
+
+    private Date getReservationEndTime(ReservationHistoryDTO dto) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dto.getDateTime());
+        cal.add(Calendar.HOUR_OF_DAY, dto.getDurationInHours());
+        return cal.getTime();
     }
 }

@@ -115,8 +115,8 @@ public class CottageService {
                                     cottage.getCancellationPercentage(),
                                     images,
                                     cottage.getAllowedBehavior(),
-                                               cottage.getUnallowedBehavior(),
-                         address);
+                                    cottage.getUnallowedBehavior(),
+                                    address);
         return entity;
     }
 

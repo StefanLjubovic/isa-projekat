@@ -9,12 +9,20 @@ public class ReservationIncomeDTO {
     private double income;
     private Date dateFrom;
     private Date dateTo;
+    private String ownerEmail;
 
     public ReservationIncomeDTO() {}
 
     public ReservationIncomeDTO(String entityName, String clientEmail, Date dateFrom, Date dateTo) {
         this.entityName = entityName;
         this.clientEmail = clientEmail;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
+
+    public ReservationIncomeDTO(String entityName, Double income, Date dateFrom, Date dateTo) {
+        this.entityName = entityName;
+        this.income = income;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
     }
@@ -59,4 +67,9 @@ public class ReservationIncomeDTO {
         this.dateTo = dateTo;
     }
 
+    public void setIncome(double income) { this.income = income; }
+
+    public String getOwnerEmail() {  return ownerEmail; }
+
+    public void setOwnerEmail(String ownerEmail) {  this.ownerEmail = ownerEmail;  }
 }
