@@ -1,6 +1,5 @@
 package com.backend.service;
 
-import com.backend.dto.ReservationHistoryDTO;
 import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
@@ -8,12 +7,10 @@ import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUnavailablePeriodRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -1,13 +1,7 @@
 package com.backend.service;
 
-import com.backend.model.Adventure;
-import com.backend.model.Client;
-import com.backend.model.RentingEntity;
-import com.backend.model.Sale;
-import com.backend.repository.IAdventureRepository;
-import com.backend.repository.IEntityRepository;
-import com.backend.repository.ISaleRepository;
-import com.backend.repository.IUserRepository;
+import com.backend.model.*;
+import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +17,9 @@ public class SaleService {
 
     @Autowired
     private IAdventureRepository adventureRepository;
+
+    @Autowired
+    private ICottageRepository cottageRepository;
 
     @Autowired
     IUserRepository userRepository;
@@ -75,5 +72,10 @@ public class SaleService {
 
     public void delete(Sale sale) {
         saleRepository.delete(sale);
+    }
+
+    public Set<Sale> getAllSalesForCottage(String name) {
+        Cottage cottage = this.cottageRepository.fetchSalesByName(name);
+        return cottage.getSales();
     }
 }

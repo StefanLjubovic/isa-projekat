@@ -30,6 +30,14 @@ public class SaleController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @GetMapping("/cottage/{name}")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
+        public ResponseEntity<Set<SaleDTO>> getAllSalesForCottage(@PathVariable("name") String name, Principal principal) {
+        Set<Sale> sales = saleService.getAllSalesForCottage(name);
+        Set<SaleDTO> dto = getSaleDTOS(sales);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     private Set<SaleDTO> getSaleDTOS(Set<Sale> sales) {
         Set<SaleDTO> dto = new HashSet<>();
         for(Sale s : sales) {

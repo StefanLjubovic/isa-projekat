@@ -41,7 +41,7 @@ public class CottageService {
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
-        cottage.setSales(new HashSet<Sale>());
+        cottage.setSales(getAllSalesForCottage(cottage.getName()));
         return cottage;
     }
 
