@@ -1,6 +1,6 @@
 package com.backend.controller;
 
-import com.backend.dto.EntityIncomeDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.Reservation;
 import com.backend.service.ReservationService;
 import com.backend.service.SystemPropertyService;
@@ -41,13 +41,13 @@ public class AdminAnalyticsController {
 
     @GetMapping("/income")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Set<EntityIncomeDTO>> getAllEntityIncomes() {
+    public ResponseEntity<Set<ReservationIncomeDTO>> getAllReservationIncomes() {
         List<Reservation> reservations = reservationService.getAllFinishedReservations();
         Double percentage = systemPropertyService.getPercentage();
 
-        Set<EntityIncomeDTO> incomes = new HashSet<>();
+        Set<ReservationIncomeDTO> incomes = new HashSet<>();
         for(Reservation r : reservations) {
-            EntityIncomeDTO dto = new EntityIncomeDTO(r.getRentingEntity().getName(), r.getClient().getEmail(), r.getDateTime(), r.getReservationEndTime());
+            ReservationIncomeDTO dto = new ReservationIncomeDTO(r.getRentingEntity().getName(), r.getClient().getEmail(), r.getDateTime(), r.getReservationEndTime());
             dto.setIncome(r.getPrice(), percentage);
             incomes.add(dto);
         }
