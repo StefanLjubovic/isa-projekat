@@ -42,6 +42,8 @@
                     <tr>
                         <th scope="col"></th>
                         <th scope="col">Name</th>
+                        <th scope="col">Date from</th>
+                        <th scope="col">Date to</th>
                         <th scope="col">Income</th>
                     </tr>
                 </thead>
@@ -49,6 +51,8 @@
                     <tr v-for="reservation in reservations" :key="reservation.entityName">
                         <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
                         <td>{{ reservation.entityName }}</td>
+                        <td>{{ convertToDate(reservation.dateFrom) }}</td>
+                        <td>{{ convertToDate(reservation.dateTo) }}</td>
                         <td>{{ reservation.income }}</td>
                     </tr>
                 </tbody>
@@ -65,6 +69,7 @@
 <script>
 import server from '../server'
 import axios from 'axios'
+import moment from 'moment'
 
 export default ({
     data() {
@@ -107,6 +112,11 @@ export default ({
                 axios.get(`${server.baseUrl}/instructor/adventures`, {headers: headers})
                 .then((response) => {
                     this.entities = response.data;
+                })
+                axios.get(`${server.baseUrl}/instructor/reservation-income`, {headers: headers})
+                    .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
                 })
             } else if (this.userRole == 'ROLE_COTTAGE_OWNER'){
                 axios.get(`${server.baseUrl}/cottageOwner/cottages`, {headers: headers})
@@ -176,6 +186,10 @@ export default ({
                     this.reservations.push(reservation);
                 }
             }
+        },
+        convertToDate(date){
+            var d = new Date(date);
+            return moment(d).format("DD.MM.YYYY. HH:mm");
         }
     }
 })

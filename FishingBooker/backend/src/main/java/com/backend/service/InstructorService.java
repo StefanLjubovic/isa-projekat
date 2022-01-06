@@ -1,5 +1,7 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationHistoryDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
 import com.backend.repository.IReservationRepository;
@@ -29,6 +31,9 @@ public class InstructorService {
 
     @Autowired
     private IReservationRepository reservationRepository;
+
+    @Autowired
+    private SystemPropertyService systemPropertyService;
 
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
@@ -102,4 +107,15 @@ public class InstructorService {
         return false;
     }
 
+    public List<ReservationIncomeDTO> calculateReservationIncomeForInstructor(String email) {
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        List<Reservation> allReservations = getReservationsForInstructor(email);
+        for(Reservation reservation: allReservations)
+            totalIncome.add(new ReservationIncomeDTO(
+                    reservation.getRentingEntity().getName(),
+                    reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
+                    reservation.getDateTime(),
+                    reservation.getReservationEndTime()));
+        return totalIncome;
+    }
 }

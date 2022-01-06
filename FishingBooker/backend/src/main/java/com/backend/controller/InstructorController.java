@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import com.backend.dto.EntityDTO;
 import com.backend.dto.ReservationDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.Adventure;
 import com.backend.model.Reservation;
@@ -99,6 +100,13 @@ public class InstructorController {
         }
 
         return new ResponseEntity<>(reservationDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/reservation-income", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
+    public ResponseEntity<List<ReservationIncomeDTO>> getReservationIncomeForCottageOwner(Principal user){
+        List<ReservationIncomeDTO> reservations = this.instructorService.calculateReservationIncomeForInstructor(user.getName());
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
     private Set<UnavailablePeriodDTO> getUnavailablePeriodDTOS(Set<UnavailablePeriod> periods) {
