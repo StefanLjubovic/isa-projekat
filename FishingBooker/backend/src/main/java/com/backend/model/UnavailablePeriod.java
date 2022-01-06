@@ -53,6 +53,30 @@ public class UnavailablePeriod {
       this.toDateTime = toDateTime;
    }
 
+   public boolean overlapsWithExistingUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriods) {
+      for (UnavailablePeriod period : unavailablePeriods)
+         if (period.getFromDateTime().before(this.getToDateTime()) && period.getToDateTime().after(this.getFromDateTime()))
+            return true;
+
+      return false;
+   }
+
+   public boolean overlapsWithExistingReservations(List<Reservation> reservations) {
+      for(Reservation r : reservations)
+         if (r.getDateTime().before(this.getToDateTime()) && r.getReservationEndTime().after(this.getFromDateTime()))
+            return true;
+
+      return false;
+   }
+
+   public boolean overlapsWithExistingSales(Set<Sale> sales) {
+      for(Sale sale : sales)
+         if (sale.getDateTimeFrom().before(this.getToDateTime()) && sale.getSaleEndTime().after(this.getFromDateTime()))
+               return true;
+
+      return false;
+   }
+
    @Override
    public String toString() {
       return "UnavailablePeriod{}";
