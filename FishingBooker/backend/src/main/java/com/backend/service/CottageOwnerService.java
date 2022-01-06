@@ -49,18 +49,11 @@ public class CottageOwnerService {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<ReservationHistoryDTO> allReservations = getReservationHistoryForCottageOwner(email);
         for(ReservationHistoryDTO reservation: allReservations)
-            if(!totalIncome.stream().anyMatch(r -> r.getEntityName().equals(reservation.getEntityName()))) {
                 totalIncome.add(new ReservationIncomeDTO(
                         reservation.getEntityName(),
                         reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
                         reservation.getDateTime(),
                         getReservationEndTime(reservation)));
-            }
-            else {
-                double currentIncome = totalIncome.stream().filter(r -> r.getEntityName().equals(reservation.getEntityName())).findFirst().get().getIncome();
-                currentIncome += reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100;
-                totalIncome.stream().filter(r -> r.getEntityName().equals(reservation.getEntityName())).findFirst().get().setIncome(currentIncome);
-            }
         return totalIncome;
     }
 

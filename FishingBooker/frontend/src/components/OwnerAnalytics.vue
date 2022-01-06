@@ -114,7 +114,7 @@ export default ({
                     this.entities = response.data;
                 })
                 axios.get(`${server.baseUrl}/instructor/reservation-income`, {headers: headers})
-                    .then((response) => {
+                .then((response) => {
                     this.reservations = response.data;
                     this.allReservations = response.data;
                 })
@@ -132,11 +132,11 @@ export default ({
                 axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
                 .then((response) => {
                     this.entities = response.data;
-                    axios.get(`${server.baseUrl}/shipOwner/reservation-income`, {headers: headers})
-                    .then((response) => {
+                })
+                axios.get(`${server.baseUrl}/shipOwner/reservation-income`, {headers: headers})
+                .then((response) => {
                     this.reservations = response.data;
                     this.allReservations = response.data;
-                })
                 })
             }
         },
@@ -156,9 +156,8 @@ export default ({
             return (averageGrade/(this.entities.length)).toFixed(1);
         },
 
-        search: function() {
-            while(this.reservations.length)
-                this.reservations.pop();
+        search: function() { 
+            this.reservations = []
 
             let searchDateFrom = undefined;
             if(!this.dateFrom) {
@@ -177,8 +176,9 @@ export default ({
                 searchDateTo = new Date(this.dateTo);
                 searchDateTo.setHours(0,0,0,0);
             }
-
+            
             for(let reservation of this.allReservations) {
+                console.log("JSON.stringify(reservation)")
                 let reservationBegin = new Date(reservation.dateFrom).setHours(0,0,0,0);
                 let reservationEnd = new Date(reservation.dateTo).setHours(0,0,0,0);
 
@@ -239,7 +239,7 @@ export default ({
         display: flex;
         justify-content: space-between;
         margin-left: 30px;
-        margin-right:220px;
+        margin-right:160px;
         margin-top: 20px;
         font-size: 20px;
     }
