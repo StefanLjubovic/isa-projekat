@@ -39,7 +39,7 @@ public class ShipService {
         ship.setImages(imageConverter.loadImages(ship.getImages()));
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForCottage(ship.getName()));
-        ship.setSales(new HashSet<Sale>());
+        ship.setSales(getAllSalesForShip(ship.getName()));
         return ship;
     }
 
@@ -96,7 +96,6 @@ public class ShipService {
             item.setRentingEntity(newShip);
             this.pricelistItemRepostory.save(item);
         }
-
         return newShip;
     }
 

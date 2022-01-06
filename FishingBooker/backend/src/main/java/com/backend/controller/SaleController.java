@@ -31,7 +31,7 @@ public class SaleController {
     }
 
     @GetMapping("/cottage/{name}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
         public ResponseEntity<Set<SaleDTO>> getAllSalesForCottage(@PathVariable("name") String name, Principal principal) {
         Set<Sale> sales = saleService.getAllSalesForCottage(name);
         Set<SaleDTO> dto = getSaleDTOS(sales);
