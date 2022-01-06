@@ -61,7 +61,7 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>  
-    <CottageReservations v-if="state==22"/>
+    <ReservationHistory v-if="state==22"/>
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
@@ -82,7 +82,7 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>  
-    <ShipReservations v-if="state==42"/>
+    <ReservationHistory v-if="state==42"/>
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 43"/>
     <OwnerAnalytics v-if="state == 44"/>
@@ -125,9 +125,7 @@ import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
-import ShipReservations from "@/components/ship/ShipReservations.vue"
 import ShipDetails from "@/components/ship/ShipDetails.vue"
-import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewShip from "@/views/AddNewShip.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
@@ -142,6 +140,7 @@ import AdventureReservations from "@/components/adventure/AdventureReservations.
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 import ConfirmModal from "@/components/client/ConfirmModal"
 import AdventureDetails from "@/views/AdventureDetails.vue"
+import ReservationHistory from "@/views/ReservationHistory.vue"
 import server from '../server'
 import axios from 'axios'
 
@@ -158,7 +157,6 @@ export default {
         Requests,
         Complaints,
         RevisionModal,
-        CottageReservations,
         CottageDetails,
         AddNewCottage,
         EditCottage,
@@ -171,10 +169,10 @@ export default {
         AdventureDetails,
         AddNewAdventure,
         EditAdventure,
-        ShipReservations,
         ShipDetails,
         AddNewShip,
-        EditShip
+        EditShip,
+        ReservationHistory
     },
     data(){
       return{
