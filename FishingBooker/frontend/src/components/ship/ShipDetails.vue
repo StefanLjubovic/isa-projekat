@@ -15,16 +15,16 @@
                         </template>
                     </v-date-picker>
 
-                    <input type="text" class="form-control" placeholder="Duration*" v-model="v$.sale.durationInHours.$model"/>
+                    <input type="number" class="form-control" placeholder="Duration*" v-model="v$.sale.durationInHours.$model"/>
                     <div class="text-danger" v-if="v$.sale.durationInHours.$error">{{v$.sale.durationInHours.$errors[0].$message}} </div>
 
-                    <input type="text" class="form-control" placeholder="Maximum number of persons*" v-model="v$.sale.maximumPersons.$model"/>
+                    <input type="number" class="form-control" placeholder="Maximum number of persons*" v-model="v$.sale.maximumPersons.$model"/>
                     <div class="text-danger" v-if="v$.sale.maximumPersons.$error">{{v$.sale.maximumPersons.$errors[0].$message}} </div>
 
                     <input type="text" class="form-control" placeholder="Additional services included*" v-model="v$.sale.additionalServices.$model"/>
                     <div class="text-danger" v-if="v$.sale.additionalServices.$error">{{v$.sale.additionalServices.$errors[0].$message}} </div>
 
-                    <input type="text" class="form-control" placeholder="Price*" v-model="v$.sale.price.$model"/>
+                    <input type="number" class="form-control" placeholder="Price*" v-model="v$.sale.price.$model"/>
                     <div class="text-danger" v-if="v$.sale.price.$error">{{v$.sale.price.$errors[0].$message}} </div>
 
                     <v-date-picker v-model="v$.sale.expireDateTime.$model" mode="dateTime" is24hr>
@@ -53,8 +53,8 @@
             @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-ship', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
         <div class="content">
             <div class="left-side">
-                <ImageGallery :images="ship.images"  description="Photos of our ship"/>
-                <hr/>
+                <ImageGallery :images="ship.images"  description="Photos of our ship"/> <hr/>
+                <Sales :sales="ship.sales" v-if="userRole != ''" :adventure="ship" @sale-to-reservation="saleToReservation"/><br/>
                   <div class="btn-wrap">
                       <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
@@ -77,6 +77,7 @@
     import CalendarView from "@/components/CalendarView.vue"
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import ShipTextDescription from "@/components/ship/ShipTextDescription.vue"
+    import Sales from "@/components/adventure/Sales.vue"
     import Map from "@/components/entities/ShowLocationOnMap.vue"
     import ClientReservation from "@/components/client/ClientReservation.vue"
     import axios from 'axios'
@@ -94,6 +95,7 @@
             PricelistTable,
             ShipTextDescription,
             Map,
+            Sales,
             ClientReservation
         },
         data() {
@@ -109,8 +111,17 @@
                     expireDateTime: '',
                     additionalServices: '',
                     price: ''
-               }
+               },
+               events: []
             } 
+        },
+        computed:{
+            state(){
+                return this.$store.getters.getState;
+            },
+            token(){
+                 return this.$store.getters.getToken;
+            }
         },
         created() {
             this.fetchData()
@@ -149,13 +160,56 @@
                 .get(`${server.baseUrl}/ship/getOne/` + this.entityId)
                 .then(response => {
                     this.ship = response.data;
-                    console.log(this.ship);
+                     for(let sale of this.ship.sales) {
+                        var endTime = new Date(sale.dateTimeFrom);
+                        endTime.setHours(parseInt(endTime.getHours()) + parseInt(sale.durationInHours));
+                        this.events.push({
+                            start : new Date(sale.dateTimeFrom), 
+                            end : endTime,
+                            title : 'SALE',
+                            content: `<p style="font-size: 12px; color="light-gray;"> Expires on ${this.dateFormat(sale.expireDateTime)} </p>`,
+                            class: 'calendar-sale'
+                         })
+                    }
                 })
             },
             openModalForCreatingSale(){
                 window.$('#new-sale-modal').modal('show');
             },
-            createSale: function() { this.v$.$validate();  },
+            createSale: function() { 
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+
+                axios.post(`${server.baseUrl}/sale/${this.id}`, this.sale, { headers: headers })
+                .then((response) => {
+                    this.ship.sales.push(response.data);
+
+                    var endTime = new Date(this.sale.dateTimeFrom);
+                    endTime.setHours(parseInt(endTime.getHours()) + parseInt(this.sale.durationInHours));
+
+                    this.events.push({
+                        start : new Date(this.sale.dateTimeFrom), 
+                        end : endTime,
+                        title : 'SALE',
+                        content: `<p style="font-size: 12px; color="light-gray;"> Expires on ${this.dateFormat(this.sale.expireDateTime)} </p>`,
+                        class: 'calendar-sale'
+                    })
+
+                    window.$('#new-sale-modal').modal('hide');
+                    this.sale = { dateTimeFrom : '', durationInHours: undefined, maximumPersons: undefined, expireDateTime: '', additionalServices: '', price: undefined }
+
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'New sale created!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
+             },
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 window.$('#new-sale-modal').modal('hide');

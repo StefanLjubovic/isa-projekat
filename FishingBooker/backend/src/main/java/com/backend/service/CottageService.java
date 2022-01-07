@@ -1,9 +1,12 @@
 package com.backend.service;
 
+import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +16,18 @@ import java.util.*;
 public class CottageService {
     @Autowired
     private ICottageRepository cottageRepository;
+
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IReservationRepository reservationRepository;
+
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
+
+    @Autowired
+    private IUnavailablePeriodRepository unavailablePeriodRepository;
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
@@ -30,7 +41,7 @@ public class CottageService {
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
-        cottage.setSales(new HashSet<Sale>());
+        cottage.setSales(getAllSalesForCottage(cottage.getName()));
         return cottage;
     }
 
@@ -88,6 +99,11 @@ public class CottageService {
         return cottage.getPricelistItems();
     }
 
+    public Set<Sale> getAllSalesForCottage(String cottageName) {
+        Cottage cottage = this.cottageRepository.fetchSalesByName(cottageName);
+        return cottage.getSales();
+    }
+
     private RentingEntity createEntityFromCottage(Cottage cottage) throws IOException {
         Address address = cottage.getAddress();
         address.setId(null);
@@ -102,6 +118,27 @@ public class CottageService {
                                     cottage.getUnallowedBehavior(),
                                     address);
         return entity;
+    }
+
+    public UnavailablePeriod defineUnavailablePeriodForCottage(UnavailablePeriodDTO unavailablePeriodDTO) {
+        UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
+        Cottage cottage = this.cottageRepository.findByName(unavailablePeriodDTO.getEntityName());
+
+        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
+
+        if (unavailablePeriod.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(cottage.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined reservation in this time range!");
+
+        if(unavailablePeriod.overlapsWithExistingSales(getAllSalesForCottage(cottage.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
+
+        this.unavailablePeriodRepository.save(unavailablePeriod);
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(cottage.getName());
+        unavailablePeriods.add(unavailablePeriod);
+        cottage.setUnavailablePeriods(unavailablePeriods);
+        this.cottageRepository.save(cottage);
+        return unavailablePeriod;
     }
 
     private Set<String> saveImages(Cottage cottage) throws IOException {

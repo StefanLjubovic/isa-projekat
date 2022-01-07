@@ -16,7 +16,7 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')">
             <input type="text" class="form-control form-control-dates" v-model="dateTo" placeholder="Date To"
                 onfocus="(this.type='date')" onblur="(this.type='text')">
-            <button class="btn btn-option"><i class="fas fa-search"></i></button>
+            <button class="btn btn-option" @click="search()"><i class="fas fa-search"></i></button>
             <button class="btn btn-option"><i class="far fa-file-pdf"></i></button>
         </div>
         <div class="requests-table card rounded">
@@ -25,7 +25,7 @@
                     <tr>
                         <th scope="col"></th>
                         <th scope="col">Entity name</th>
-                        <th scope="col">Type</th>
+                        <th scope="col">Client</th>
                         <th scope="col">Income</th>
                     </tr>
                 </thead>
@@ -33,7 +33,7 @@
                     <tr v-for="reservation in reservations" :key="reservation.id">
                         <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
                         <td>{{ reservation.entityName }}</td>
-                        <td>{{ reservation.type }}</td>
+                        <td>{{ reservation.clientEmail }}</td>
                         <td>{{ reservation.income }}</td>
                     </tr>
                 </tbody>
@@ -56,25 +56,9 @@ export default ({
         return {
             moneyPercentage: undefined,
             editMode: false,
-            dateFrom: "",
-            dateTo: "",
-            allReservations: [ 
-                {
-                    entityName: "Marijina vikendica",
-                    type: "Cottage",
-                    income: "5000"
-                },
-                {
-                    entityName: "Anin brod",
-                    type: "Ship",
-                    income: "4000"
-                },
-                {
-                    entityName: "Fishing in the Sunset",
-                    type: "Adventure",
-                    income: "350"
-                },
-            ],
+            dateFrom: undefined,
+            dateTo: undefined,
+            allReservations: [],
             reservations: []
         }
     },
@@ -94,9 +78,15 @@ export default ({
         .then((response) => {
             this.moneyPercentage = response.data;
         })
-        this.reservations = this.allReservations;
+
+        axios.get(`${server.baseUrl}/adminAnalytics/income`, { headers: headers })
+        .then((response) => {
+            this.allReservations = response.data;
+            this.reservations = this.allReservations.slice();
+        })
     },
     methods: {
+
         saveMoneyPercentage: function() {
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -107,14 +97,52 @@ export default ({
             axios.put(`${server.baseUrl}/adminAnalytics/percentage/update`, this.moneyPercentage, {headers: headers})
             .then(() => {
                 this.editMode = false;
+                axios.get(`${server.baseUrl}/adminAnalytics/income`, { headers: headers })
+                .then((response) => {
+                    this.allReservations = response.data;
+                    this.reservations = this.allReservations;
+                })
             })
         },
+
         getTotalIncome: function() {
             let sum = 0;
             for(let res of this.reservations) {
                 sum += parseInt(res.income)
             }
             return sum;
+        },
+
+        search: function() {
+            while(this.reservations.length)
+                this.reservations.pop();
+
+            let searchDateFrom = undefined;
+            if(!this.dateFrom) {
+                searchDateFrom = new Date(-8640000000000000);
+            }
+            else {
+                searchDateFrom = new Date(this.dateFrom);
+                searchDateFrom.setHours(0,0,0,0);
+            }
+
+            let searchDateTo = undefined;
+            if(!this.dateTo){
+                searchDateTo = new Date(8640000000000000);
+            } 
+            else{
+                searchDateTo = new Date(this.dateTo);
+                searchDateTo.setHours(0,0,0,0);
+            }
+
+            for(let reservation of this.allReservations) {
+                let reservationBegin = new Date(reservation.dateFrom).setHours(0,0,0,0);
+                let reservationEnd = new Date(reservation.dateTo).setHours(0,0,0,0);
+
+                if(searchDateFrom < reservationBegin && reservationEnd < searchDateTo){
+                    this.reservations.push(reservation);
+                }
+            }
         }
     }
 })

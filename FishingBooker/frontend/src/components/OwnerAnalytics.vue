@@ -33,7 +33,7 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')">
             <input type="text" class="form-control form-control-dates" v-model="dateTo" placeholder="Date To"
                 onfocus="(this.type='date')" onblur="(this.type='text')">
-            <button class="btn btn-option"><i class="fas fa-search"></i></button>
+            <button class="btn btn-option" @click="search()"><i class="fas fa-search"></i></button>
             <button class="btn btn-option"><i class="far fa-file-pdf"></i></button>
         </div>
         <div class="requests-table card rounded">
@@ -42,14 +42,18 @@
                     <tr>
                         <th scope="col"></th>
                         <th scope="col">Name</th>
+                        <th scope="col">Date from</th>
+                        <th scope="col">Date to</th>
                         <th scope="col">Income</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="entity in entities" :key="entity.id">
-                        <th scope="row">{{ entities.indexOf(entity) + 1 }}</th>
-                        <td>{{ entity.name }}</td>
-                        <td>9350</td>
+                    <tr v-for="reservation in reservations" :key="reservation.entityName">
+                        <th scope="row">{{ reservations.indexOf(reservation) + 1 }}</th>
+                        <td>{{ reservation.entityName }}</td>
+                        <td>{{ convertToDate(reservation.dateFrom) }}</td>
+                        <td>{{ convertToDate(reservation.dateTo) }}</td>
+                        <td>{{ reservation.income }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -65,32 +69,17 @@
 <script>
 import server from '../server'
 import axios from 'axios'
+import moment from 'moment'
 
 export default ({
     data() {
         return {
             entityType: "",
-            dateFrom: "",
-            dateTo: "",
-            allReservations: [ 
-                {
-                    name: "Marijina vikendica",
-                    type: "Cottage",
-                    income: "5000"
-                },
-                {
-                    name: "The Cottage",
-                    type: "Cottage",
-                    income: "4000"
-                },
-                {
-                    name: "Cabin in the woods",
-                    type: "Cottage",
-                    income: "350"
-                },
-            ],
+            dateFrom: undefined,
+            dateTo: undefined,
+            allReservations: [],
             reservations: [],
-            entities: []
+            entities: [],
         }
     },
     computed:{
@@ -102,7 +91,6 @@ export default ({
         }
     },
     mounted() {
-       this.reservations = this.allReservations;
        this.fetchData();
 
         if(this.userRole == "ROLE_COTTAGE_OWNER")
@@ -125,33 +113,83 @@ export default ({
                 .then((response) => {
                     this.entities = response.data;
                 })
+                axios.get(`${server.baseUrl}/instructor/reservation-income`, {headers: headers})
+                .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
+                })
             } else if (this.userRole == 'ROLE_COTTAGE_OWNER'){
                 axios.get(`${server.baseUrl}/cottageOwner/cottages`, {headers: headers})
                 .then((response) => {
                     this.entities = response.data;
+                })
+                 axios.get(`${server.baseUrl}/cottageOwner/reservation-income`, {headers: headers})
+                    .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
                 })
             }else {
                 axios.get(`${server.baseUrl}/shipOwner/ships`, {headers: headers})
                 .then((response) => {
                     this.entities = response.data;
                 })
+                axios.get(`${server.baseUrl}/shipOwner/reservation-income`, {headers: headers})
+                .then((response) => {
+                    this.reservations = response.data;
+                    this.allReservations = response.data;
+                })
             }
         },
 
         getTotalIncome: function() {
             let sum = 0;
-            for(let res of this.reservations) {
-                sum += parseInt(res.income)
-            }
+            for(let res of this.reservations) 
+                sum += parseInt(res.income);
+            
             return sum;
         },
         getAverageGrade: function() {
             let averageGrade = 0;
-            for(let entity of this.entities){
+            for(let entity of this.entities)
                 averageGrade += entity.averageGrade;
+            
+            return (averageGrade/(this.entities.length)).toFixed(1);
+        },
+
+        search: function() { 
+            this.reservations = []
+
+            let searchDateFrom = undefined;
+            if(!this.dateFrom) {
+                searchDateFrom = new Date(-8640000000000000);
+            }
+            else {
+                searchDateFrom = new Date(this.dateFrom);
+                searchDateFrom.setHours(0,0,0,0);
             }
 
-            return (averageGrade/(this.entities.length)).toFixed(1);
+            let searchDateTo = undefined;
+            if(!this.dateTo){
+                searchDateTo = new Date(8640000000000000);
+            } 
+            else{
+                searchDateTo = new Date(this.dateTo);
+                searchDateTo.setHours(0,0,0,0);
+            }
+            
+            for(let reservation of this.allReservations) {
+                console.log("JSON.stringify(reservation)")
+                let reservationBegin = new Date(reservation.dateFrom).setHours(0,0,0,0);
+                let reservationEnd = new Date(reservation.dateTo).setHours(0,0,0,0);
+
+                if(searchDateFrom < reservationBegin && reservationEnd < searchDateTo){
+                    this.reservations.push(reservation);
+                }
+            }
+        },
+        convertToDate(date){
+            var d = new Date(date);
+            return moment(d).format("DD.MM.YYYY. HH:mm");
         }
     }
 })
@@ -201,7 +239,7 @@ export default ({
         display: flex;
         justify-content: space-between;
         margin-left: 30px;
-        margin-right:220px;
+        margin-right:160px;
         margin-top: 20px;
         font-size: 20px;
     }

@@ -22,4 +22,5 @@ public class SystemPropertyService {
     public void updatePercentage(Double percentage) {
         systemPropertyRepository.updateIncomePercentage(percentage.toString());
     }
+
 }

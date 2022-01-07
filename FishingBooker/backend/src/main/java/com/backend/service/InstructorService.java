@@ -1,17 +1,16 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUnavailablePeriodRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,9 @@ public class InstructorService {
 
     @Autowired
     private IReservationRepository reservationRepository;
+
+    @Autowired
+    private SystemPropertyService systemPropertyService;
 
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
@@ -102,4 +104,15 @@ public class InstructorService {
         return false;
     }
 
+    public List<ReservationIncomeDTO> calculateReservationIncomeForInstructor(String email) {
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        List<Reservation> allReservations = getReservationsForInstructor(email);
+        for(Reservation reservation: allReservations)
+            totalIncome.add(new ReservationIncomeDTO(
+                    reservation.getRentingEntity().getName(),
+                    reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
+                    reservation.getDateTime(),
+                    reservation.getReservationEndTime()));
+        return totalIncome;
+    }
 }

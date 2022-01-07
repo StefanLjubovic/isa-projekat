@@ -5,7 +5,8 @@
                 <div>
                     <h3><i class="fas fa-money-bill-wave"></i> SALE </h3>
                     <p>Date&amp;Time: {{this.dateFormat(sale.dateTimeFrom)}}</p>
-                    <p>Duration: {{sale.durationInHours}} hours</p>
+                    <p v-if="!adventure.hasOwnProperty('cottageOwner')">Duration: {{sale.durationInHours}} hours</p>
+                    <p v-else> Duration: {{ convertToDays(sale.durationInHours) }} days </p>
                     <h3>ONLY FOR {{sale.price}} RSD </h3>
                 </div>
                 <div>
@@ -28,7 +29,7 @@ export default ({
     emits: ['sale-to-reservation'],
     data() {
         return {
-            salesArray: this.sales
+            salesArray: this.sales,
         }
     },
     computed:{
@@ -38,13 +39,14 @@ export default ({
     },
     methods: {
         displaySaleInfo: async function(sale) {
+            console.log(JSON.stringify(this.adventure));
             if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR' || this.userRole == ''){
                 this.$swal({
                     title: '<h2>SALE INFO</h2>',
                     icon: 'info',
                     html:
                         `<p style="font-size: 14px">Date&amp;Time: ${this.dateFormat(sale.dateTimeFrom)}</p> ` +
-                        `<p style="font-size: 14px">Duration: ${sale.durationInHours} hours</p> ` +
+                        `<p>Duration: ${sale.durationInHours} hours</p>` +
                         `<p style="font-size: 14px">Maximum persons: ${sale.maximumPersons} </p> ` + 
                         `<p style="font-size: 14px">Additional services: ${sale.additionalServices} </p> ` +
                         `<p style="font-size: 14px">ONLY FOR: ${sale.price} RSD</p> ` + 
@@ -106,6 +108,9 @@ export default ({
         dateFormat(value) {
             return moment(value).format("DD.MM.YYYY. HH:mm");
         },
+        convertToDays(durationInHours){
+            return durationInHours / 24;
+        }
     }
 })
 </script>

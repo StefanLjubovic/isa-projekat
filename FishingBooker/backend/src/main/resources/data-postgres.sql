@@ -27,7 +27,7 @@ VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdrav
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value)
-VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE', '0'),
+VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE', '15'),
        (nextval('system_property_system_properties_id_seq'), 'MAIN_ADMIN_ID', '1');
 
 -- cottage

@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import com.backend.dto.EntityDTO;
 import com.backend.dto.ReservationHistoryDTO;
+import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.Cottage;
 import com.backend.service.Base64ToImage;
 import com.backend.service.CottageOwnerService;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +37,6 @@ public class CottageOwnerController {
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
     public ResponseEntity<List<EntityDTO>> getAllCottagesForCottageOwner(Principal owner) throws IOException {
         List<Cottage> cottages = this.cottageOwnerService.getAllCottagesFromCottageOwner(owner.getName());
-
         List<EntityDTO> dto = new ArrayList<>();
         for(Cottage c : cottages) {
             String[] images = c.getImages().toArray(new String[c.getImages().size()]);
@@ -55,6 +56,13 @@ public class CottageOwnerController {
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<List<ReservationHistoryDTO>> getReservationHistoryForCottageOwner(Principal user){
         List<ReservationHistoryDTO> reservations = this.cottageOwnerService.getReservationHistoryForCottageOwner(user.getName());
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/reservation-income", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
+    public ResponseEntity<List<ReservationIncomeDTO>> getReservationIncomeForCottageOwner(Principal user){
+        List<ReservationIncomeDTO> reservations = this.cottageOwnerService.calculateReservationIncomeForCottages(user.getName());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 }

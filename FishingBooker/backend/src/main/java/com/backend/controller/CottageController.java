@@ -1,8 +1,10 @@
 package com.backend.controller;
 
 import com.backend.dto.CottageDTO;
+import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.dto.UpdateCottageDTO;
 import com.backend.model.Cottage;
+import com.backend.model.UnavailablePeriod;
 import com.backend.service.CottageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,13 @@ public class CottageController {
     @GetMapping("/getOne/{id}")
     public Cottage getOne (@PathVariable("id") Integer id) throws IOException {
         return cottageService.findById(id);
+    }
+
+    @PostMapping("/defineUnavailablePeriod")
+    @PreAuthorize("hasRole('COTTAGE_OWNER')")
+    public ResponseEntity<String> defineUnavailablePeriodForCottage(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
+        UnavailablePeriod period = this.cottageService.defineUnavailablePeriodForCottage(unavailablePeriodDTO);
+        return new ResponseEntity<>("Unavailable period saved!", HttpStatus.OK);
     }
 
     @PostMapping("/add")

@@ -1,17 +1,15 @@
 package com.backend.service;
 
-import com.backend.dto.ReservationHistoryDTO;
+import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
-import com.backend.repository.IPricelistItemRepository;
-import com.backend.repository.IReservationRepository;
-import com.backend.repository.IShipRepository;
-import com.backend.repository.IUserRepository;
+import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +25,9 @@ public class ShipService {
     private IReservationRepository reservationRepository;
     @Autowired
     private IPricelistItemRepository pricelistItemRepostory;
+    @Autowired
+    private IUnavailablePeriodRepository unavailablePeriodRepository;
+
     private Base64ToImage imageConverter = new Base64ToImage();
 
     public ShipService() {}
@@ -38,7 +39,7 @@ public class ShipService {
         ship.setImages(imageConverter.loadImages(ship.getImages()));
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForCottage(ship.getName()));
-        ship.setSales(new HashSet<Sale>());
+        ship.setSales(getAllSalesForShip(ship.getName()));
         return ship;
     }
 
@@ -52,6 +53,32 @@ public class ShipService {
     public Set<PricelistItem> getAllPricelistItemsForCottage(String cottageName) {
         Ship ship = this.shipRepository.fetchPricelistItemsByName(cottageName);
         return ship.getPricelistItems();
+    }
+
+    public Set<Sale> getAllSalesForShip(String shipName) {
+        Ship ship = this.shipRepository.fetchSalesByName(shipName);
+        return ship.getSales();
+    }
+
+    public UnavailablePeriod defineUnavailablePeriodForShip(UnavailablePeriodDTO unavailablePeriodDTO) {
+        UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
+        Ship ship = this.shipRepository.findByName(unavailablePeriodDTO.getEntityName());
+
+        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
+
+        if (unavailablePeriod.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(ship.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined reservation in this time range!");
+
+        if(unavailablePeriod.overlapsWithExistingSales(getAllSalesForShip(ship.getName())))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
+
+        this.unavailablePeriodRepository.save(unavailablePeriod);
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(ship.getName());
+        unavailablePeriods.add(unavailablePeriod);
+        ship.setUnavailablePeriods(unavailablePeriods);
+        this.shipRepository.save(ship);
+        return unavailablePeriod;
     }
 
     public Ship save(Ship ship) throws IOException {
@@ -69,7 +96,6 @@ public class ShipService {
             item.setRentingEntity(newShip);
             this.pricelistItemRepostory.save(item);
         }
-
         return newShip;
     }
 
