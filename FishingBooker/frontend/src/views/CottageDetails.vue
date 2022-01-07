@@ -45,7 +45,7 @@
     </div>
 
     <transition name="fade" appear>
-    <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
     <div id="profile">
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-    import ClientReservation from "@/components/client/ClientReservation.vue"
+    import CreateReservation from "@/components/cottage/CreateReservation.vue"
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
     import Sales from "@/components/adventure/Sales.vue"
@@ -90,7 +90,7 @@
         props:['entityId'],
         emits:['edit-cottage'],
         components: {
-            ClientReservation,
+            CreateReservation,
             AdventureCaption,
             ImageGallery,
             Sales,
