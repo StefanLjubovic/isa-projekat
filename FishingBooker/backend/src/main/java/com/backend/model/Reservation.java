@@ -17,7 +17,7 @@ public class Reservation {
    @Column(name="reservation_id", unique=true, nullable=false)
    private Integer id;
 
-   @Column(unique=true, nullable=false)
+   @Column(unique=false, nullable=false)
    private Date dateTime;
 
    @Column(unique=false, nullable=false)
@@ -44,6 +44,22 @@ public class Reservation {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "entity_id")
    private RentingEntity rentingEntity;
+
+   public Reservation(Date dateTime, int durationInHours, int maxPersons, double price) {
+      this.dateTime = dateTime;
+      this.durationInHours = durationInHours;
+      this.maxPersons = maxPersons;
+      this.price = price;
+   }
+
+   public Reservation(Date dateTime, int durationInHours, int maxPersons, double price, RentingEntity rentingEntity) {
+      this.dateTime = dateTime;
+      this.durationInHours = durationInHours;
+      this.maxPersons = maxPersons;
+      this.price = price;
+      this.rentingEntity = rentingEntity;
+   }
+
 
    public Reservation(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Client client, RentingEntity rentingEntity) {
       this.id = id;

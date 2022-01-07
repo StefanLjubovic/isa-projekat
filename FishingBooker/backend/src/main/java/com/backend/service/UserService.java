@@ -51,7 +51,7 @@ public class UserService {
     public RegisteredUser findById(Integer id) throws AccessDeniedException {
         return userRepository.findById(id).orElseGet(null);
     }
-
+    @Transactional
     public RegistrationRequest saveRequest(UserRequest userRequest){
         RegistrationRequest u = new RegistrationRequest();
         u.setPassword(passwordEncoder.encode(userRequest.getPassword()));

@@ -4,14 +4,14 @@ import com.backend.dto.ReservationDTO;
 import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
-import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 
@@ -31,13 +31,23 @@ public class ReservationService {
     IEntityRepository entityRepository;
 
     public Boolean Save(Reservation reservation){
-        Reservation updatedReservation=entityService.updateUnavailablePeriod(reservation);
+        reservation.setRentingEntity(entityService.fetchWithUnavailablePeriods(reservation.getRentingEntity().getId()));
+        Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
             return false;
-        Reservation res=reservationRepository.save(updatedReservation);
-        if(res == null) return false;
-        mailService.sendReservationMail(res);
+        saveTransactional(updatedReservation);
+        mailService.sendReservationMail(updatedReservation);
         return true;
+    }
+
+    @Transactional
+    public void saveTransactional(Reservation reservation){
+        try{
+            entityRepository.save(reservation.getRentingEntity());
+            reservationRepository.save(reservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ObjectOptimisticLockingFailureException("Entity is already reserved!",e);
+        }
     }
 
     @Transactional

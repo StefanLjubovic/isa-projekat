@@ -5,14 +5,19 @@ import com.backend.dto.ReservationHistoryDTO;
 import com.backend.model.Reservation;
 import com.backend.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.LockModeType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 public interface IReservationRepository extends JpaRepository<Reservation, Integer> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Reservation save(Reservation reservation);
 
     @Query("SELECT new com.backend.dto.ReservationDTO(r.id,r.dateTime,r.durationInHours,r.maxPersons,r.price,r.isCanceled,r.rentingEntity.id,r.rentingEntity.name)  " +
             "FROM Reservation r where r.client.email = ?1 and r.isCanceled = false and r.dateTime > ?2")

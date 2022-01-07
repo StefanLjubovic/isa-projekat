@@ -6,6 +6,7 @@ import com.backend.model.RentingEntity;
 import com.backend.model.Reservation;
 import com.backend.model.VerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -22,15 +23,19 @@ public class MailService{
     @Autowired
     JavaMailSender mailSender;
 
+    @Autowired
+    Environment env;
+
     @Async
     public void sendEmail(VerificationToken verificationToken, String email) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         Mail mail=new Mail();
         mail.setMailFrom("fishingbooker.isa@gmail.com");
         mail.setMailTo(email);
+        String path = env.getProperty("application.url");
         mail.setMailSubject("Confirm your account");
         mail.setMailContent("To confirm your account, please click here : "
-                +"http://localhost:8082/auth/confirm-account?token="+verificationToken.getToken());
+                +path+"/auth/confirm-account?token="+verificationToken.getToken());
         SendMail(mimeMessage, mail);
     }
 
