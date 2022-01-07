@@ -3,13 +3,14 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=30" :searchTitle="searchTitle" @get-offers="getOffers"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=45 && state!=30" :searchTitle="searchTitle" @get-offers="getOffers"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
+    <CottageDetails v-if="state == 25"   :entityId="selectedEntityId"/>
+    <ShipDetails v-if="state == 45"      :entityId="selectedEntityId"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
@@ -46,8 +47,9 @@
     <Complaints v-if="state == 10"/>
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
-    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @entity-deleted="changeState"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"  @entity-deleted="changeState"/>
+    <ShipDetails v-if="state == 45"      :entityId="selectedEntityId"  @entity-deleted="changeState"/>
+    <CottageDetails v-if="state == 25"   :entityId="selectedEntityId"  @entity-deleted="changeState"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
@@ -304,7 +306,7 @@ export default {
         if(this.state == 0 || (this.state ==8 && entity.entityType == 'Adventure')){
           this.selectedEntityId = entity.id;
           this.state = 30;
-        } else if (this.state == 1) {
+        } else if (this.state == 1 || (this.state ==8 && entity.entityType == 'Ship')) {
           this.selectedEntityId = entity.id;
           this.state = 45;
         } else if (this.state == 2 || this.state == 21 || (this.state ==8 && entity.entityType == 'Cottage')) {
