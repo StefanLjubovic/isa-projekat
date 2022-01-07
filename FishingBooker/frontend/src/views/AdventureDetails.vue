@@ -30,7 +30,7 @@
                     <v-date-picker v-model="v$.sale.expireDateTime.$model" mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="Sale expiration date and time*" :value="inputValue" v-on="inputEvents" />
-                            <div class="text-danger" v-if="v$.sale.expireDateTime.$error">Value is required and can't be after the start date</div>
+                            <div class="text-danger" v-if="v$.sale.expireDateTime.$error">Value is required and can't be after the start date and before today</div>
                         </template>
                     </v-date-picker>
                 </div>
@@ -256,6 +256,9 @@ export default {
                     showConfirmButton: false,
                     timer: 2000
                 })
+            })
+            .catch((error) => {
+                this.$swal(error.response.data.message);
             })
         },
         saleToReservation(reservation) {

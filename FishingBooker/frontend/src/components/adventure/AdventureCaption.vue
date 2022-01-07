@@ -4,8 +4,8 @@
             <h1>{{adventureName}}</h1>
         </div>
         <div class="options" v-if="userRole == 'ROLE_CLIENT'">
-            <button class="btn" @click="toggleSubscribe" v-if="!subscribed">Subscribe to this {{this.entityName}}&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
-            <button class="btn" @click="toggleSubscribe" v-else>Unsubscribe from this {{this.entityName}}&nbsp;&ensp;<i class="fas fa-bell-slash"></i> </button>
+            <button class="btn" @click="toggleSubscribe" v-if="!subscribed">Subscribe to this {{this.entityType}}&nbsp;&ensp;<i class="fas fa-bell"></i> </button>
+            <button class="btn" @click="toggleSubscribe" v-else>Unsubscribe from this {{this.entityType}}&nbsp;&ensp;<i class="fas fa-bell-slash"></i> </button>
         </div>
 
         <div class="options" v-if="userRole != 'ROLE_CLIENT' && userRole!=''">
@@ -34,7 +34,7 @@ export default ({
             subscribed: false,
             name: this.adventureName,
             advID: this.adventureId,
-            entityType: ''
+            entityType: this.entityName
         }
     },
     computed:{
@@ -50,13 +50,6 @@ export default ({
         console.log(resp.data)
         if(resp.data == true) this.subscribed = true
         else this.subscribed = false
-
-        if(this.userRole == "ROLE_COTTAGE_OWNER")
-            this.entityType = 'Cottage';
-        else if(this.userRole == "ROLE_SHIP_OWNER")
-            this.entityType = 'Ship';
-        else
-            this.entityType = 'Adventure';
     },
     methods: {
         toggleSubscribe: async function() {

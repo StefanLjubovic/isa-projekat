@@ -59,7 +59,7 @@
                       <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView :unavailablePeriods="undefined"/>
+                <Calendar class="calendar" :events="undefined"/>
                 <p>In case of reservation cancellation, cottage owner retains {{ cottage.cancellationPercentage }}% of the price! </p><hr/>
                 <PricelistTable :pricelistItem="cottage.pricelistItems"/><hr/>
             </div>
@@ -76,7 +76,7 @@
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
     import Sales from "@/components/adventure/Sales.vue"
-    import CalendarView from "@/components/CalendarView.vue"
+    import Calendar from "@/components/Calendar.vue"
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import CottageTextDescription from "@/components/cottage/CottageTextDescription.vue"
     import Map from "@/components/entities/ShowLocationOnMap.vue"
@@ -94,7 +94,7 @@
             AdventureCaption,
             ImageGallery,
             Sales,
-            CalendarView,
+            Calendar,
             PricelistTable,
             CottageTextDescription,
             Map
@@ -307,5 +307,11 @@
         margin-bottom: 5px;
         text-align: left;
         font-size: 13px;
+    }
+
+    .calendar {
+        margin-top: 20px;
+        height: 100vh;
+        margin-bottom: 20px;
     }
 </style>

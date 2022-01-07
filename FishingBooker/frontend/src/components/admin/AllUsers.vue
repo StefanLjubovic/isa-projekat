@@ -246,37 +246,50 @@ export default {
     },
     methods: {
         removeUser: function(user) {
-            if(user.id == 1) {
-                this.$swal({
-                    icon: 'error',
-                    title: 'Ooops...',
-                    text: 'This account can\'t be deleted!',
-                    confirmButtonColor: '#2c3e50'
-                })
-                return;
-            }
-
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
                 Accept: 'application/json',
                 'Authorization': `Bearer ${this.$store.getters.getToken}`
             }
 
-            this.$swal({
-                title: `Are you sure you want to delete ${user.email}'s account?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                confirmButtonColor: '#2c3e50'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    axios.delete(`${server.baseUrl}/user/deleteUser/${user.id}`, { headers: headers })
-                    .then(() => {
-                        let index = this.users.indexOf(user);
-                        if(index > -1) this.users.splice(index, 1);
-                        let indexAll = this.allUsers.indexOf(user);
-                        if(indexAll > -1) this.allUsers.splice(indexAll, 1);
-                    });
+            if(user.id == 1) {
+                this.$swal({
+                    icon: 'error',
+                    title: 'Ooops...',
+                    text: 'This account can\'t be deleted (main administrator)!',
+                    confirmButtonColor: '#2c3e50'
+                })
+                return;
+            }
+
+            axios.get(`${server.baseUrl}/user/getLoggedUser`, { headers: headers })
+            .then((response) => {
+                if(response.data.email == user.email) {
+                    this.$swal({
+                        icon: 'error',
+                        title: 'Ooops...',
+                        text: 'You can\'t delete your own account. Please send request for account deleting.',
+                        confirmButtonColor: '#2c3e50'
+                    })
+                    return;
+                } else {
+                    this.$swal({
+                        title: `Are you sure you want to delete ${user.email}'s account?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        confirmButtonColor: '#2c3e50'
+                    }).then((result) => {
+                        if(result.isConfirmed) {
+                            axios.delete(`${server.baseUrl}/user/deleteUser/${user.id}`, { headers: headers })
+                            .then(() => {
+                                let index = this.users.indexOf(user);
+                                if(index > -1) this.users.splice(index, 1);
+                                let indexAll = this.allUsers.indexOf(user);
+                                if(indexAll > -1) this.allUsers.splice(indexAll, 1);
+                            });
+                        }
+                    })
                 }
             })
         },

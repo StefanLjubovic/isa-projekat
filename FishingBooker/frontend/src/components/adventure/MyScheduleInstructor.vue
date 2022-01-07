@@ -122,6 +122,11 @@ export default {
                 toDateTime : this.range.end
             }
 
+            if (period.fromDateTime < new Date()) {
+                this.$swal("You can't define unavailable period in the past!");
+                return;
+            }
+
             const headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
                 Accept: 'application/json',
@@ -147,7 +152,6 @@ export default {
             })
             .catch((error) => {
                 this.$swal(error.response.data.message);
-                console.log(error.response.data.message);
             })
         },
         dateFormat(value) {
