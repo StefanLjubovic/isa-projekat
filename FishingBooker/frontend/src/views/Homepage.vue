@@ -3,13 +3,14 @@
   
   <!-- Client and unregistrated user options (userRole 0 && 5) -->
   <div v-if="userRole == 'ROLE_CLIENT' || userRole == ''">
-    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=30" :searchTitle="searchTitle" @get-offers="getOffers"  @filter-sort="filterSort" @sort-history="sortHistory"/>
+    <SearchEntities v-if="state!=3 && state!=7 && state!=8 && state!=25 && state!=45 && state!=30" :searchTitle="searchTitle" @get-offers="getOffers"  @filter-sort="filterSort" @sort-history="sortHistory"/>
     <div v-if="state==0 || state==1 || state==2" class="adventures-wrapper">
       <div class="gap" v-for="entity in entitiesForDisplay" :key="entity.name">
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId"/>
+    <CottageDetails v-if="state == 25"   :entityId="selectedEntityId"/>
+    <ShipDetails v-if="state == 45"      :entityId="selectedEntityId"/>
     <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"/>
   </div>
     <div v-if="userRole == 'ROLE_CLIENT'">
@@ -46,8 +47,9 @@
     <Complaints v-if="state == 10"/>
     <MyProfile v-if="state == 3"/>
     <AdminAnalytics v-if="state == 9"/>
-    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId" @entity-deleted="changeState"/>
-    <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @entity-deleted="changeState"/>
+    <AdventureDetails v-if="state == 30" :entityId="selectedEntityId"  @entity-deleted="changeState"/>
+    <ShipDetails v-if="state == 45"      :entityId="selectedEntityId"  @entity-deleted="changeState"/>
+    <CottageDetails v-if="state == 25"   :entityId="selectedEntityId"  @entity-deleted="changeState"/>
   </div>
 
   <!-- Cottage owner options (userRole 'ROLE_COTTAGE_OWNER') -->
@@ -61,7 +63,7 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>  
-    <CottageReservations v-if="state==22"/>
+    <ReservationHistory v-if="state==22"/>
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
@@ -82,7 +84,7 @@
         <Entity :entity="entity" @entity-details="openEntityDetails(entity)"/>
       </div>
     </div>  
-    <ShipReservations v-if="state==42"/>
+    <ReservationHistory v-if="state==42"/>
     <MyProfile v-if="state == 3"/>
     <MyScheduleInstructor v-if="state == 43"/>
     <OwnerAnalytics v-if="state == 44"/>
@@ -125,9 +127,7 @@ import Server from '../server'
 import AllUsers from "@/components/admin/AllUsers.vue"
 import Requests from "@/components/admin/Requests.vue"
 import Complaints from "@/components/admin/Complaints.vue"
-import ShipReservations from "@/components/ship/ShipReservations.vue"
 import ShipDetails from "@/components/ship/ShipDetails.vue"
-import CottageReservations from "@/components/cottage/CottageReservations.vue"
 import CottageDetails from "@/views/CottageDetails.vue"
 import AddNewShip from "@/views/AddNewShip.vue"
 import AddNewCottage from "@/views/AddNewCottage.vue"
@@ -142,6 +142,7 @@ import AdventureReservations from "@/components/adventure/AdventureReservations.
 import MyScheduleInstructor from "@/components/adventure/MyScheduleInstructor.vue"
 import ConfirmModal from "@/components/client/ConfirmModal"
 import AdventureDetails from "@/views/AdventureDetails.vue"
+import ReservationHistory from "@/views/ReservationHistory.vue"
 import server from '../server'
 import axios from 'axios'
 
@@ -158,7 +159,6 @@ export default {
         Requests,
         Complaints,
         RevisionModal,
-        CottageReservations,
         CottageDetails,
         AddNewCottage,
         EditCottage,
@@ -171,10 +171,10 @@ export default {
         AdventureDetails,
         AddNewAdventure,
         EditAdventure,
-        ShipReservations,
         ShipDetails,
         AddNewShip,
-        EditShip
+        EditShip,
+        ReservationHistory
     },
     data(){
       return{
@@ -306,7 +306,7 @@ export default {
         if(this.state == 0 || (this.state ==8 && entity.entityType == 'Adventure')){
           this.selectedEntityId = entity.id;
           this.state = 30;
-        } else if (this.state == 1) {
+        } else if (this.state == 1 || (this.state ==8 && entity.entityType == 'Ship')) {
           this.selectedEntityId = entity.id;
           this.state = 45;
         } else if (this.state == 2 || this.state == 21 || (this.state ==8 && entity.entityType == 'Cottage')) {
