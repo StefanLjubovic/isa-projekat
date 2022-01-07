@@ -3,7 +3,9 @@ package com.backend.service;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,16 +24,27 @@ public class SaleService {
     private ICottageRepository cottageRepository;
 
     @Autowired
-    IUserRepository userRepository;
+    private IUserRepository userRepository;
 
     @Autowired
-    EmailService emailService;
+    private IReservationRepository reservationRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ISaleRepository saleRepository;
 
     public Sale createSaleForEntity(Sale sale, Integer entityId) {
-        RentingEntity entity = entityRepository.fetchById(entityId);
+        RentingEntity entity = entityRepository.fetchWithSalesAndPeriods(entityId);
+
+        if (overlapsWithExistingUnavailablePeriod(sale, entity))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
+        if (overlapsWithExistingSale(sale, entity))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
+        if (overlapsWithExistingReservation(sale, entity))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already booked reservation in this time range!");
+
         sale.setRentingEntity(entity);
         entity.getSales().add(sale);
         entityRepository.save(entity);
@@ -39,6 +52,41 @@ public class SaleService {
         sendEmailForSubscribers(sale, entityId);
 
         return sale;
+    }
+
+    private boolean overlapsWithExistingUnavailablePeriod(Sale sale, RentingEntity entity) {
+        Adventure adventure = adventureRepository.fetchInstructorByAdventureId(entity.getId());
+        if (adventure != null) {
+
+            for (UnavailablePeriod period : userRepository.fetchInstructorWithUnavailablePeriodsById(entity.getId()).getUnavailablePeriods()) {
+                if(period.getFromDateTime().before(sale.getSaleEndTime()) && period.getToDateTime().after(sale.getDateTimeFrom()))
+                    return true;
+            }
+        } else {
+            for (UnavailablePeriod period : entity.getUnavailablePeriods()) {
+                if(period.getFromDateTime().before(sale.getSaleEndTime()) && period.getToDateTime().after(sale.getDateTimeFrom()))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean overlapsWithExistingSale(Sale sale, RentingEntity entity) {
+        for(Sale s : entity.getSales()) {
+            if (s.getDateTimeFrom().before(sale.getSaleEndTime()) && s.getSaleEndTime().after(sale.getDateTimeFrom()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean overlapsWithExistingReservation(Sale sale, RentingEntity entity) {
+        List<Reservation> reservations = reservationRepository.fetchByEntityId(entity.getId());
+        for(Reservation r : reservations) {
+            if (r.getDateTime().before(sale.getSaleEndTime()) && r.getReservationEndTime().after(sale.getDateTimeFrom()))
+                return true;
+        }
+        return false;
     }
 
     public Set<Sale> getAllSalesForLoggedInstructor(String email) {
