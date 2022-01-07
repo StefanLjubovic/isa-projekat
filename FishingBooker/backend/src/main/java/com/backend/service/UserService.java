@@ -9,6 +9,7 @@ import com.backend.repository.IEntityRepository;
 import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,12 @@ public class UserService {
         u.setExplanation("");
         List<Role> roles = roleService.findByName(userRequest.getRoleName());
         u.setRole(roles.get(0));
-        return registrationRequestRepository.save(u);
+        try{
+            return registrationRequestRepository.save(u);
+        }catch(PessimisticLockingFailureException ex){
+            throw PessimisticLockingFailureException(ex,"Two or more accesses to database at same time!");
+        }
+        return null;
     }
 
     public RegisteredUser saveClient(RegistrationRequest userRequest) {

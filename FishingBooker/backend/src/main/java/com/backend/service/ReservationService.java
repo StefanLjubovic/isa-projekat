@@ -5,6 +5,7 @@ import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,19 +36,22 @@ public class ReservationService {
         Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
             return false;
-        saveTransactional(updatedReservation);
+        if(!saveTransactional(updatedReservation)) return false;
         mailService.sendReservationMail(updatedReservation);
         return true;
     }
 
     @Transactional
-    public void saveTransactional(Reservation reservation){
+    public boolean saveTransactional(Reservation reservation){
         try{
             entityRepository.save(reservation.getRentingEntity());
             reservationRepository.save(reservation);
         }catch (ObjectOptimisticLockingFailureException e){
-            throw new ObjectOptimisticLockingFailureException("Entity is already reserved!",e);
+            return false;
+        }catch(PessimisticLockingFailureException ex){
+            return false;
         }
+        return true;
     }
 
     @Transactional
@@ -94,5 +98,15 @@ public class ReservationService {
         }
 
         return finishedReservations;
+    }
+
+    @Transactional
+    public void saveTransactionalForTest(Reservation reservation){
+        try{
+            entityRepository.save(reservation.getRentingEntity());
+            reservationRepository.save(reservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            throw new ObjectOptimisticLockingFailureException("Entity is already reserved!",e);
+        }
     }
 }
