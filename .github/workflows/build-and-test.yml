@@ -4,7 +4,7 @@ on:
   push:
     branches: [ develop ]
 env:
-  PROJECT_PATH : '../FishingBooker/backend/'
+  PROJECT_PATH : '../FishingBooker/backend'
 
 jobs:
   build:
@@ -20,4 +20,4 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file ${{env.PROJECT_PATH}} pom.xml
+      run: mvn -B package --file ${{env.PROJECT_PATH}}/pom.xml
