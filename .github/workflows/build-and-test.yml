@@ -4,7 +4,7 @@ on:
   push:
     branches: [ develop ]
 env:
-  PROJECT_PATH : '../FishingBooker/backend'
+  PROJECT_PATH : './FishingBooker/backend'
 
 jobs:
   build:
