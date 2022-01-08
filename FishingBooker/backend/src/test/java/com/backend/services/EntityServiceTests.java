@@ -53,10 +53,10 @@ public class EntityServiceTests {
         Reservation reservationUpdated = entityService.checkIfAlreadyReserved(reservation);
         Assert.isNull(reservationUpdated);
     }
-    @Test
-    public void test(){
-        RentingEntity e=null;
-        Assert.notNull(e);
-    }
+//    @Test
+//    public void test(){
+//        RentingEntity e=null;
+//        Assert.notNull(e);
+//    }
 
 }
