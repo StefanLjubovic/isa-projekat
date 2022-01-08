@@ -50,7 +50,7 @@
           :formatter="format"
           v-model="dateFrom"/>
       </div>
-      <div class="form-group">
+      <div class="form-group" v-if="searchTitle.includes('Cottage')">
         <input
           placeholder="Date to* "
            class="textbox-n form-control" 
@@ -58,6 +58,32 @@
            onfocus="(this.type='date')"
           id = "dateTofield"
           v-model="dateTo"/>
+      </div>
+      <div v-else class="form-group hours">
+          <div class="start">     
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{start}} : 00
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li v-for="index in getNumbers(7,21)" :key="index">
+                                <span><a class="dropdown-item" href="#" @click="start=index">{{index}}:00 </a></span>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">   
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{end}} : 00
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li v-for="index in getNumbers(start+1,24)" :key="index">
+                                <span><a class="dropdown-item" href="#" @click="end=index">{{index}}:00 </a></span>
+                            </li>
+                        </div>
+                    </div>
+                </div>
       </div>
       <div class="form-group input-mark">
         <input
@@ -102,6 +128,7 @@
 
 
 <script>
+import moment from 'moment'
 export default {
   data() {
     return {
@@ -112,10 +139,12 @@ export default {
       offerActivate : false,
       dateFrom : undefined,
       dateTo : undefined,
+      start : 7,
+      end: 10,
     };
   },
   props: ["searchTitle"],
-  emits:['get-offers'],
+  emits:['get-offers','filter-sort'],
   computed: {
     userRole() {
       return this.$store.getters.getRole;
@@ -127,7 +156,6 @@ export default {
     this.$emit('get-offers',this.offerActivate)
     },
     dateFrom(){
-      console.log(this.dateFrom)
     var today = new Date(this.dateFrom);
     var dd = today.getDate() + 1;
     var mm = today.getMonth() + 1; //January is 0!
@@ -141,7 +169,7 @@ export default {
       mm = '0' + mm;
     } 
     today = yyyy + '-' + mm + '-' + dd;
-    let element=document.getElementById("dateTofield").setAttribute("min", today);
+    let element=document.getElementById("dateTofield")
     if (typeof(element) != 'undefined' && element != null){
       document.getElementById("dateTofield").setAttribute("min", today);
     }
@@ -156,8 +184,15 @@ export default {
       this.sort = state;
       this.$refs.btnToggle.innerText = state;
     },
+    getNumbers:function(start,stop){
+            return new Array(stop-start).fill(start).map((n,i)=>n+i);
+    },
     sortAndFilterEntities: function () {
-      this.$emit("filter-sort", this.sort, this.name, this.address, this.mark , new Date(this.dateFrom),new Date(this.dateTo));
+       if(this.type != 'Cottage') {
+                this.dateFrom =  moment(this.dateFrom).add(this.start*60, 'm').toDate();
+                this.dateTo =moment(this.dateFrom).add((this.end-this.start)*60, 'm').toDate();
+        }
+      this.$emit("filter-sort", this.sort, this.name, this.address, this.mark , this.dateFrom,this.dateTo);
     },
     getOffers(){
       console.log(this.dateFrom)
@@ -230,6 +265,11 @@ input {
 .input-mark{
   width:7%;
 }
+.hours{
+  display: flex;
+  flex-direction: row;
+}
+
 .droptdown-btn {
   width: 100%;
   color: white;
@@ -239,5 +279,9 @@ input {
   color: white;
   background: #0e0f40;
   width: 4vw;
+}
+
+.start{
+  margin-right:0.7rem ;
 }
 </style>

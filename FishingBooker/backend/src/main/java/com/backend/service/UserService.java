@@ -10,9 +10,11 @@ import com.backend.repository.IRegistrationRequestRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.nio.file.AccessDeniedException;
@@ -68,9 +70,8 @@ public class UserService {
         try{
             return registrationRequestRepository.save(u);
         }catch(PessimisticLockingFailureException ex){
-            throw PessimisticLockingFailureException(ex,"Two or more accesses to database at same time!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Try again later!");
         }
-        return null;
     }
 
     public RegisteredUser saveClient(RegistrationRequest userRequest) {

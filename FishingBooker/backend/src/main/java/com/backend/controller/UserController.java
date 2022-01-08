@@ -75,7 +75,7 @@ public class UserController {
     public ResponseEntity<UserTokenState> changePassword(@PathVariable String password, Principal principal){
         String email = principal.getName();
         userService.updatePasswod(principal.getName(), password);
-        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContextHolder.clearContext();
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

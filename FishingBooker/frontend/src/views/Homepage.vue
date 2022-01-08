@@ -145,7 +145,6 @@ import AdventureDetails from "@/views/AdventureDetails.vue"
 import server from '../server'
 import axios from 'axios'
 
-
 export default {
     components:{
         NavBar,

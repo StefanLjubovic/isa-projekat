@@ -163,9 +163,19 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClassWithPeriods(Cottage.class);
         entities=entities
                 .stream()
-                .filter(e-> !checkOverlappingDates(e,unavailablePeriod))
+                .filter(e-> !checkOverlappingDates(e,unavailablePeriod) && instructorAvailable(e,unavailablePeriod))
                 .collect(Collectors.toList());
         return entities;
+    }
+
+    private boolean instructorAvailable(RentingEntity e, UnavailablePeriod unavailablePeriod) {
+        FishingInstructor instructor = userRepository.fetchByAdventureId(e.getId());
+        if(instructor == null) return true;
+        for (UnavailablePeriod period : instructor.getUnavailablePeriods())
+            if (period.getFromDateTime().compareTo(unavailablePeriod.getToDateTime()) <= 0 &&
+                    period.getToDateTime().compareTo(unavailablePeriod.getFromDateTime()) >= 0)
+                return false;
+        return true;
     }
 
     private boolean checkOverlappingDates(RentingEntity e, UnavailablePeriod unavailablePeriod) {
