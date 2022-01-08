@@ -14,13 +14,13 @@
                     <input class="form-control date"    type="date"  id = "dateFromfield" v-model="dateFrom"/>
                 </span>
 
-                <!-- End of reservation for cottage or ship -->
-                <span  v-if="type!='Adventure'">
+                <!-- End of reservation for cottage -->
+                <span  v-if="type=='Cottage'">
                     <h5 class="mb-4">Reservation to: </h5>
                     <input class="form-control date-to" type="date"  id = "dateTofield"   v-model="dateTo"/>
                 </span>
-                <!-- End of reservation for adventure -->
-                <div class="dropdown-row mb-4" v-if="type=='Adventure'">
+                <!-- End of reservation for adventure or ship -->
+                <div class="dropdown-row mb-4" v-if="type!='Cottage'">
                     <h5 id="drop-lab">Start: </h5>          
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="dropdown-row mb-4" v-if="type=='Adventure'">
+                <div class="dropdown-row mb-4" v-if="type!='Cottage'">
                     <h5 id="drop-lab">End: </h5>          
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -120,7 +120,7 @@ export default {
                 mm = '0' + mm;
             } 
             today = yyyy + '-' + mm + '-' + dd;
-            if(this.type != 'Adventure') document.getElementById("dateTofield").setAttribute("min", today);
+            if(this.type == 'Cottage') document.getElementById("dateTofield").setAttribute("min", today);
         },
         dateTo(){
             this.CalculatePrice()
@@ -130,7 +130,7 @@ export default {
         this.rentingEntity = this.entity
         this.requests.push(this.rentingEntity.pricelistItems[0])
         this.priceOneDay +=this.rentingEntity.pricelistItems[0].price
-        if(this.type =='Adventure') this.price = this.priceOneDay * Math.abs(this.end - this.start)
+        if(this.type !='Cottage') this.price = this.priceOneDay * Math.abs(this.end - this.start)
         else this.price = this.priceOneDay
         var today = new Date();
         var dd = today.getDate();
@@ -144,7 +144,7 @@ export default {
         } 
         today = yyyy + '-' + mm + '-' + dd;
         document.getElementById("dateFromfield").setAttribute("min", today);
-        if(this.type != 'Adventure')document.getElementById("dateTofield").setAttribute("min", today);
+        if(this.type == 'Cottage')document.getElementById("dateTofield").setAttribute("min", today);
     },
     methods:{
         getNumbers:function(start,stop){
@@ -222,7 +222,7 @@ export default {
             this.requests.map(r => services.push(r.service))
             let time =0
             let durationRet = 0
-            if(this.type == 'Adventure') {
+            if(this.type != 'Cottage') {
                 time =  moment(this.dateFrom).add(this.start*60, 'm').toDate();
                 durationRet = Math.abs(this.end-this.start)
             }

@@ -72,10 +72,11 @@ public class UserController {
 
     @PutMapping (value="/changePassword/{password}")
     @PreAuthorize("hasAnyRole('ADMIN','COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR','CLIENT')")
-    public ResponseEntity<UserTokenState> changePassword(@PathVariable String password, Principal principal){
+    public ResponseEntity<UserTokenState> changePassword(@PathVariable String password, Principal principal) throws InterruptedException {
         String email = principal.getName();
         userService.updatePasswod(principal.getName(), password);
         SecurityContextHolder.clearContext();
+        Thread.sleep(1000);
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

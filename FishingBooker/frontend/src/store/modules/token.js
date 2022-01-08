@@ -40,7 +40,7 @@ const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada
     },
 
     async updateToken({commit}, data){
-        console.log('Data  '+data)
+        console.log(data)
         commit('setToken', data.accessToken);
         commit('setRole', data.roles);
     }
