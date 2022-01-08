@@ -8,43 +8,39 @@
         </div>
         <div class="content">
             <div class="left">
-                <span>
-                    <h5 class="mb-4">Reservation date: </h5>
-                    <input class="form-control date right-side"  type="date"  id = "dateFromfield" v-model="dateFrom"/>
+                <span class="date-span">
+                    <h5 >Reservation date: </h5>
+                     <v-date-picker class="date-picker-override" v-model="reservation.dateTime" mode="dateTime" is24hr>
+                        <template v-slot="{ inputValue, inputEvents }">
+                            <input class="width:100% px-5 py-2 border rounded focus:outline-none focus:border-blue-300" placeholder="Period date and time*" :value="inputValue" v-on="inputEvents" />
+                            <!--div class="text-danger" v-if="v$.sale.dateTimeFrom.$error">Value is required and can't be before the expiration date </div-->
+                        </template>
+                    </v-date-picker>
                 </span>
-
                 <!-- End of reservation for cottage or ship -->
                 <span  v-if="type!='Adventure'">
                     <h5 class="mb-4">Duration in days: </h5>
-                    <input class="input-field-duration" type="number"  id = "dateTofield"   v-model="dateTo"/>
+                    <input class="input-field-duration" type="number"  id = "dateTofield"   v-model="reservation.durationInHours"/>
                 </span>
                 <!-- End of reservation for adventure -->
-                <div class="dropdown-row mb-4 right-side" v-if="type=='Adventure'">
-                    <h5 id="drop-lab">Start: </h5>          
-                    <div class="dropdown right-side">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{start}} : 00
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li v-for="index in getNumbers(7,21)" :key="index">
-                                <span><a class="dropdown-item" href="#" @click="calculateAdventurePriceStart(index)">{{index}}:00 </a></span>
-                            </li>
-                        </div>
-                    </div>
-                </div>
+                <span  v-if="type=='Adventure'">
+                    <h5 class="mb-4">Duration in hours: </h5>
+                    <input class="input-field-duration-hours" type="number"  id = "dateTofield"   v-model="reservation.durationInHours"/>
+                </span>
                 
                <div class="dropdown-row mb-4">
                     <h5 id="drop-lab">Services: </h5>          
                     <div class="right-side-services">
                         <span class="pricelist-item" v-for="(pricelistItem) in rentingEntity.pricelistItems" :key="pricelistItem.id">
-                            <input type="checkbox" value="pricelistItem.service" >
+                            <input type="checkbox" value="pricelistItem.service" v-model="reservation.additionalServices">
                             <label for="pricelistItem.service"> {{pricelistItem.service}} &nbsp; {{pricelistItem.price}} rsd</label>
                         </span>
+
                     </div>
                 </div>
                 <span>
                     <h5 class="mb-5">Visitors number: </h5><hr/>
-                    <input class="input-field"  type="number"  id = "dateFromfield" v-model="persons"/>
+                    <input class="input-field"  type="number"  id = "dateFromfield" v-model="reservation.maxPersons" disabled/>
                 </span>
                 <hr id="total-hr"/>
                 <div>
@@ -53,7 +49,7 @@
                         <h5>{{price}} rsd</h5>
                     </span><br/>
                      <div class="btn1">
-                        <button class="btn droptdown-btn" @click="saveReservation">Submit</button> 
+                        <button class="submit-btn" @click="saveReservation">Submit</button> 
                         <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
                     </div>
                 </div>
@@ -66,7 +62,8 @@
 
 <script>
 import server from '../../server/index';
-import moment from 'moment';
+import axios from 'axios'
+
 export default {
     props:{
         entity : Object,
@@ -84,49 +81,35 @@ export default {
             start : 7,
             end: 10,
             rentingEntity :this.entity,
-            pricelistItemsCopy: []           
+            pricelistItemsCopy: [],
+            reservation: {
+                dateTime: undefined,
+                durationInHours: undefined,
+                maxPersons: undefined,
+                additionalServices: [],
+                price: undefined,
+                entityId: this.entity.id,
+                entityName: this.entity.name 
+            }           
         }
     },
     watch: {
-        dateFrom(){
-            var today = new Date(this.dateFrom);
-            var dd = today.getDate() + 1;
-            var mm = today.getMonth() + 1; //January is 0!
-            var yyyy = today.getFullYear();
-
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            } 
-            today = yyyy + '-' + mm + '-' + dd;
-            if(this.type != 'Adventure') document.getElementById("dateTofield").setAttribute("min", today);
-        },
         dateTo(){
             this.CalculatePrice()
         }
-  },
+    },
+    computed:{
+        state(){
+             return this.$store.getters.getState;
+        },
+        token(){
+            return this.$store.getters.getToken;
+        }
+    },
     mounted(){
         this.rentingEntity = this.entity
         this.pricelistItemsCopy = this.rentingEntity.pricelistItems.map(a => {return {...a}})
-        this.requests.push(this.rentingEntity.pricelistItems[0])
-        this.priceOneDay +=this.rentingEntity.pricelistItems[0].price
-        if(this.type =='Adventure') this.price = this.priceOneDay * Math.abs(this.end - this.start)
-        else this.price = this.priceOneDay
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
-        if (dd < 10) {
-        dd = '0' + dd;
-        }
-        if (mm < 10) {
-        mm = '0' + mm;
-        } 
-        today = yyyy + '-' + mm + '-' + dd;
-        document.getElementById("dateFromfield").setAttribute("min", today);
-        if(this.type != 'Adventure')document.getElementById("dateTofield").setAttribute("min", today);
+        this.getPersons();
     },
     methods:{
         getNumbers:function(start,stop){
@@ -163,30 +146,21 @@ export default {
             if(this.start > this.end) this.end = index +1
             this.price = this.priceOneDay * Math.abs(this.end - this.start)
         },
-        GetPersons(){
-            if(this.type == 'Adventure') return this.rentingEntity.maxPersons;
+        getPersons(){
+            if(this.type == 'Adventure') this.reservation.maxPersons = this.rentingEntity.maxPersons;
             else if(this.type =='Cottage'){
                 let max = 0;
                 this.rentingEntity.rooms.map(room => {
                     max+=room.bedNumber
                 })
-                return  max
+                this.reservation.maxPersons =  max
             }
-            else return this.rentingEntity.capacity
+            else this.reservation.maxPersons = this.rentingEntity.capacity
         },
-        checkIfAlreadyAdded(pricelistItem){
-            var i;
-            for (i = 0; i < this.requests.length; i++) {
-                if ( this.requests[i].id === pricelistItem.id) {
-                    return true;
-                }
-            }
-            return false;
-        },
+
         CalculatePrice(){
             const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            console.log(diffDays+'  DAYSSSSSSSSSSSSS')
             this.price = this.priceOneDay * diffDays
         },
         GetEntityName(){
@@ -197,50 +171,31 @@ export default {
         changeButtonContext(index){
             this.persons = index
         },
-        async saveReservation(){
-            const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            let services = []
-            this.requests.map(r => services.push(r.service))
-            let time =0
-            let durationRet = 0
-            if(this.type == 'Adventure') {
-                time =  moment(this.dateFrom).add(this.start*60, 'm').toDate();
-                durationRet = Math.abs(this.end-this.start)
+        saveReservation(){
+            const headers = {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.token}`
             }
-            else{
-                time= new Date(this.dateFrom)
-                durationRet= diffDays * 24
-            }
-            const client=await server.getLoggedUser()
-            const reservation = {
-                rentingEntity : this.rentingEntity,
-                dateTime : time,
-                client : client.data,
-                price : this.price,
-                isCanceled : false,
-                additionalServices : services,
-                maxPersons : this.GetPersons(),
-                durationInHours : durationRet
-            }
-            await server.saveReservation(reservation)
-            .then(resp=> {
-                if(resp.success){
-                    this.$swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Reservation succesfully created!',
-                        confirmButtonColor: '#2c3e50'
+
+            if(this.type == 'Cottage')
+                this.reservation.durationInHours *= 24;
+
+            console.log(JSON.stringify(this.reservation))
+            axios.post(`${server.baseUrl}/reservation/createByAdvertiser`, this.reservation, { headers: headers })
+                .then((response) => {
+                    this.$emit('close-modal')
+                    this.reservation = { dateTime: '', durationInHours: '', additionalServices: [], price: undefined }
+
+                    this.$swal({
+                        position: 'inherit',
+                        icon: 'info',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 3000
                     })
-                }else{
-                    console.log(resp.data)
-                    this.$swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: resp.data.message,
-                    })     
-                }
-            })
+                })
+          
             this.$emit('close-modal')
         }
     }
@@ -267,6 +222,10 @@ export default {
         bottom: 0;
         z-index: 98;
         background-color: rgba(0, 0, 0, 0.3);
+    }
+    .date-picker-override{
+        margin-left: 3.3%;
+        width: 0px;
     }
     .container{
         flex-direction: column;
@@ -295,16 +254,29 @@ export default {
      .input-field{
         border-color: lightgrey;
         border-radius: 3px;
-        width: 50%;
+        width: 51.5%;
         height: 35px;
         margin-left: 5%; 
+    }
+    .date-span{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
     .input-field-duration{
         border-color: lightgrey;
         border-radius: 3px;
-        width: 50%;
+        width: 51.5%;
         height: 35px;
-        margin-left: 4%; 
+        margin-left: 4%;
+    }
+
+    .input-field-duration-hours{
+        border-color: lightgrey;
+        border-radius: 3px;
+        width: 51%;
+        height: 35px;
+        margin-left: 0px;
     }
     .content{
         display: flex;
@@ -397,12 +369,12 @@ export default {
     #drop-lab{
         margin-right: 1rem;
     }
-    .droptdown-btn{
+    .submit-btn{
         width: 5vw;
         height: 3rem;
-        color:white;
         border-radius: 5px;
-    background: #0e0f40;
+        background-color: #2c3e50;
+        color: white;
     }
     .persons{
         margin-left:1rem ;

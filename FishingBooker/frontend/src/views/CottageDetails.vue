@@ -214,8 +214,6 @@
                     'Authorization': `Bearer ${this.token}`
                 }
 
-                console.log(JSON.stringify(this.sale))
-
                 axios.post(`${server.baseUrl}/sale/${this.id}`, this.sale, { headers: headers })
                 .then((response) => {
                     this.cottage.sales.push(response.data);

@@ -6,9 +6,12 @@ import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,5 +111,43 @@ public class ReservationService {
         }catch (ObjectOptimisticLockingFailureException e){
             throw new ObjectOptimisticLockingFailureException("Entity is already reserved!",e);
         }
+    }
+
+    public String saveReservationCreatedByAdvertiser(Reservation newReservation) {
+        List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
+        Reservation currentReservation = null;
+        for(Reservation r : entityReservations) {
+            if (isEntityBooked(r)) {
+                currentReservation = r;
+                break;
+            }
+        }
+
+        try{
+            if (currentReservation.equals(null))
+                return  "You can only create reservation if there is a current reservation!";
+        } catch (NullPointerException e) { return  "You can only create reservation for client with current reservation!"; }
+
+
+        newReservation.setClient(currentReservation.getClient());
+        return saveReservationIfThereIsNoOverlapping(newReservation);
+    }
+
+    private String saveReservationIfThereIsNoOverlapping(Reservation newReservation) {
+        if(newReservation.overlapsWithExistingUnavailablePeriods(this.entityRepository.fetchWithPeriods(newReservation.getRentingEntity().getId()).getUnavailablePeriods()))
+            return "There is already defined unavailable period in this time range!";
+
+        if (newReservation.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(newReservation.getRentingEntity().getName())))
+            return "There is already defined reservation in this time range!";
+
+        if(newReservation.overlapsWithExistingSales(this.entityRepository.fetchWithSales(newReservation.getRentingEntity().getId()).getSales()))
+            return "There is already defined sale in this time range!";
+
+       this.reservationRepository.save(newReservation);
+       return "Successfully created reservation!";
+    }
+
+    private boolean isEntityBooked(Reservation r) {
+        return r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled();
     }
 }
