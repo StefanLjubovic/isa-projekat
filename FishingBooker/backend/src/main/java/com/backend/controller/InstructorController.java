@@ -104,7 +104,7 @@ public class InstructorController {
 
     @GetMapping(value="/reservation-income", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
-    public ResponseEntity<List<ReservationIncomeDTO>> getReservationIncomeForCottageOwner(Principal user){
+    public ResponseEntity<List<ReservationIncomeDTO>> getReservationIncomeForInstructor(Principal user){
         List<ReservationIncomeDTO> reservations = this.instructorService.calculateReservationIncomeForInstructor(user.getName());
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }

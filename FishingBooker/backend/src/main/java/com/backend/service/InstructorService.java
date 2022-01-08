@@ -55,7 +55,7 @@ public class InstructorService {
     }
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForInstructorById(Integer id) {
-        FishingInstructor fishingInstructor = userRepository.fetchById(id);
+        FishingInstructor fishingInstructor = userRepository.fetchInstructorWithUnavailablePeriodsById(id);
         return fishingInstructor.getUnavailablePeriods();
     }
 
