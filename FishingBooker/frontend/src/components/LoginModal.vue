@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="modal-overlay" @click="$emit('close-modal')"></div>
+    <div class="modal-overlay"></div>
     <div class="modal-inner">
       <div class="login" v-if="!this.changePassword">
         <h1>Log In</h1>
@@ -75,7 +75,7 @@ export default {
         }
     },
   methods:{
-    ...mapActions(['fetchToken']),
+    ...mapActions(['fetchToken', 'updateToken']),
     async Login(){
       const loginRequest = {
         'email' : this.email,
@@ -114,13 +114,15 @@ export default {
         if(response.success){
           this.$emit('close-modal')
           this.changePassword = false;
-
-          this.$swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Password changed!',
-            showConfirmButton: false,
-            timer: 1500
+          this.updateToken(response.data)
+          .then(() => {
+            this.$swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Password changed!',
+              showConfirmButton: false,
+              timer: 1500
+            })
           })
         }else{
           this.$swal.fire({
