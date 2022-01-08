@@ -4,7 +4,7 @@
   <div class="container">
     <div class='wrapper'>
         <div class="header-border">
-              <h2>Create reservation:</h2>
+              <h2>Create reservation</h2>
         </div>
         <div class="content">
             <div class="left">
@@ -46,16 +46,16 @@
                     <h5 class="mb-5">Visitors number: </h5><hr/>
                     <input class="input-field"  type="number"  id = "dateFromfield" v-model="persons"/>
                 </span>
-                <hr/>
-                <!--div class="header-border"></div><br/-->
-                <div class="button-div">
-                    <span>
-                        <h4 id="price"> Total : {{price}} rsd</h4>
-                        <div class="btn1">
-                            <button class="btn droptdown-btn" @click="saveReservation">Save</button> 
-                            <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
-                        </div>
-                    </span>
+                <hr id="total-hr"/>
+                <div>
+                    <span class="bottom-span">
+                        <h5 id="price"> Total : </h5>
+                        <h5>{{price}} rsd</h5>
+                    </span><br/>
+                     <div class="btn1">
+                        <button class="btn droptdown-btn" @click="saveReservation">Submit</button> 
+                        <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -285,6 +285,13 @@ export default {
         justify-content: center;
         flex-direction: column;
     }
+    .bottom-span{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 20%;
+    }
      .input-field{
         border-color: lightgrey;
         border-radius: 3px;
@@ -312,12 +319,16 @@ export default {
         margin-inline-start: 15%;
     }
     .left{
-        padding: 4rem;
+        padding: 3rem;
+        padding-left: 12%;
         display: flex;
         justify-content: flex-start;
         flex-direction: column;
         gap: 10px;
         width: 100%;
+    }
+    #total-hr{
+        margin-right: 15%;
     }
     .dropdown-row{
         display:flex;
@@ -341,7 +352,7 @@ export default {
         display: flex;
         justify-self: flex-end;
         align-self: flex-end;
-        margin-left:11rem ;
+        margin-left:17rem ;
     }
     .button-div{
         justify-content: space-between;

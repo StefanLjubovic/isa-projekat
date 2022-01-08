@@ -68,7 +68,7 @@ public class UserService {
         try{
             return registrationRequestRepository.save(u);
         }catch(PessimisticLockingFailureException ex){
-            throw PessimisticLockingFailureException(ex,"Two or more accesses to database at same time!");
+            //throw PessimisticLockingFailureException(ex,"Two or more accesses to database at same time!");
         }
         return null;
     }
