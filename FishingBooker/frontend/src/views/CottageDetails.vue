@@ -44,8 +44,11 @@
         </div>
     </div>
 
-    <transition name="fade" appear>
-    <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    <transition name="fade" appear v-if="userRoleIsClient()">
+        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
+    <transition name="fade" appear v-else>
+        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
     <div id="profile">
@@ -73,6 +76,7 @@
 
 <script>
     import CreateReservation from "@/components/cottage/CreateReservation.vue"
+    import ClientReservation from "@/components/client/ClientReservation.vue"
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
     import Sales from "@/components/adventure/Sales.vue"
@@ -91,6 +95,7 @@
         emits:['edit-cottage'],
         components: {
             CreateReservation,
+            ClientReservation,
             AdventureCaption,
             ImageGallery,
             Sales,
@@ -136,8 +141,11 @@
                events: []
             } 
         },
-         computed:{
-             state(){
+        computed:{
+            userRole(){
+                return this.$store.getters.getRole;
+            },
+            state(){
                 return this.$store.getters.getState;
             },
              token(){
@@ -249,6 +257,10 @@
             dateFormat(value) {
                 return moment(value).format("DD.MM.YYYY. HH:mm");
             },
+            userRoleIsClient(){
+                if(this.userRole == "ROLE_CLIENT") return true;
+                else return false;
+            }
         }
     }
 
