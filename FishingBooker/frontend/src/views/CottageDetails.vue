@@ -44,8 +44,11 @@
         </div>
     </div>
 
-    <transition name="fade" appear>
-    <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    <transition name="fade" appear v-if="userRoleIsClient()">
+        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
+    <transition name="fade" appear v-else>
+        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
     <div id="profile">
@@ -72,6 +75,7 @@
 </template>
 
 <script>
+    import CreateReservation from "@/components/cottage/CreateReservation.vue"
     import ClientReservation from "@/components/client/ClientReservation.vue"
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
@@ -90,6 +94,7 @@
         props:['entityId'],
         emits:['edit-cottage'],
         components: {
+            CreateReservation,
             ClientReservation,
             AdventureCaption,
             ImageGallery,
@@ -136,8 +141,11 @@
                events: []
             } 
         },
-         computed:{
-             state(){
+        computed:{
+            userRole(){
+                return this.$store.getters.getRole;
+            },
+            state(){
                 return this.$store.getters.getState;
             },
              token(){
@@ -214,8 +222,6 @@
                     'Authorization': `Bearer ${this.token}`
                 }
 
-                console.log(JSON.stringify(this.sale))
-
                 axios.post(`${server.baseUrl}/sale/${this.id}`, this.sale, { headers: headers })
                 .then((response) => {
                     this.cottage.sales.push(response.data);
@@ -251,6 +257,10 @@
             dateFormat(value) {
                 return moment(value).format("DD.MM.YYYY. HH:mm");
             },
+            userRoleIsClient(){
+                if(this.userRole == "ROLE_CLIENT") return true;
+                else return false;
+            }
         }
     }
 

@@ -30,6 +30,9 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
     @Query(value = "select e from RentingEntity e left join fetch e.unavailablePeriods where e.id = :id")
     <T extends RentingEntity> T fetchWithPeriods(@Param("id") Integer id);
 
+    @Query(value = "select e from RentingEntity e left join fetch e.sales where e.id = :id")
+    <T extends RentingEntity> T fetchWithSales(@Param("id") Integer id);
+
     @Query("select sub" +
             " from Client client left join client.subscriptions sub on sub.id = ?2 where client.email = ?1")
     RentingEntity checkIfSubscribed(String email,Integer entityId);

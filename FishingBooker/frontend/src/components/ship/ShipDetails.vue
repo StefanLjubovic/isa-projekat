@@ -44,8 +44,11 @@
         </div>
     </div>
 
-    <transition name="fade" appear>
-        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
+    <transition name="fade" appear v-if="userRoleIsClient()">
+        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
+    <transition name="fade" appear v-else>
+        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
     </transition>
 
     <div id="profile" v-if="ship">
@@ -79,6 +82,7 @@
     import ShipTextDescription from "@/components/ship/ShipTextDescription.vue"
     import Sales from "@/components/adventure/Sales.vue"
     import Map from "@/components/entities/ShowLocationOnMap.vue"
+    import CreateReservation from "@/components/cottage/CreateReservation.vue"
     import ClientReservation from "@/components/client/ClientReservation.vue"
     import axios from 'axios'
     import server from '../../server/index'
@@ -96,6 +100,7 @@
             ShipTextDescription,
             Map,
             Sales,
+            CreateReservation,
             ClientReservation
         },
         data() {
@@ -115,7 +120,10 @@
                events: []
             } 
         },
-        computed:{
+        computed: {
+            userRole(){
+                return this.$store.getters.getRole;
+            },
             state(){
                 return this.$store.getters.getState;
             },
@@ -220,7 +228,20 @@
                 document.getElementById('appContainer').style.height='unset';
             },
             editEntity: function() {},
-            makeReservation: function() {},  
+            makeReservation: function() {
+                this.displayReservationModal = true;
+                document.getElementById('appContainer').style.overflow ='hidden';
+                document.getElementById('appContainer').style.height='100vh';
+            },  
+            closeModal: function(){
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
+            },
+            userRoleIsClient(){
+                if(this.userRole == "ROLE_CLIENT") return true;
+                else return false;
+            }
         }
     }
 

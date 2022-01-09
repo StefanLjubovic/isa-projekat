@@ -107,7 +107,7 @@
                 <ul v-if="newShip.pricelistItems">
                     <li v-for="item in newShip.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
@@ -188,8 +188,8 @@
                     },
                     pricelistItems: [
                         {
-                            service:'',
-                            price: undefined
+                            service:'Standard offer',
+                            price: 3000
                         }
                     ],
                     type: '',
@@ -261,7 +261,8 @@
                 })
             },
             removePricelistItem(){
-                this.newShip.pricelistItems.pop()
+                if(this.newShip.pricelistItems.length > 1)
+                    this.newShip.pricelistItems.pop()
             },
             imageAdded(e) {
                 const file = e.target.files[0];  

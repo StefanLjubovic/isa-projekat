@@ -70,7 +70,7 @@
                 <ul v-if="newAdventure.pricelistItems">
                     <li v-for="item in newAdventure.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
                             <input type="number" class="form-control" v-model="item.price" placeholder="Price*"/>
                         </div>
                     </li>
@@ -167,8 +167,8 @@
                     },
                     pricelistItems: [
                         {
-                            service:'',
-                            price: undefined
+                            service:'Standard offer',
+                            price: 3500
                         }
                     ],
                     fishingInstructor: {
@@ -231,8 +231,10 @@
                 })
             },
             removePricelistItem: function() {
-                this.pricelistItems -= 1;
-                this.newAdventure.pricelistItems.pop()
+                if(this.newAdventure.pricelistItems.length > 1){
+                    this.pricelistItems -= 1;
+                    this.newAdventure.pricelistItems.pop()
+                }
             },
             imageAdded: function(e) {
                 const file = e.target.files[0];  

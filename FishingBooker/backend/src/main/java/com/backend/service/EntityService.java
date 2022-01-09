@@ -47,7 +47,7 @@ public class EntityService {
     }
 
     public RentingEntity getEntityById(Integer id) {
-        return entityRepository.getById(id);
+        return entityRepository.findById(id).get();
     }
 
     public List<? extends RentingEntity> GetByUsersSubscriptions(String email) {

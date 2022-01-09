@@ -66,7 +66,7 @@
                 <ul v-if="newCottage.pricelistItems">
                     <li v-for="item in newCottage.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
@@ -147,8 +147,8 @@
                     },
                     pricelistItems: [
                         {
-                            service:'',
-                            price: undefined
+                            service:'Standard offer',
+                            price: 2500
                         }
                     ],
                     rooms: [
@@ -228,7 +228,8 @@
             },
 
             removePricelistItem(){
-                this.newCottage.pricelistItems.pop()
+                if(this.newCottage.pricelistItems.length > 1)
+                    this.newCottage.pricelistItems.pop()
             },
 
             imageAdded(e) {

@@ -57,7 +57,6 @@ public class ReportController {
             ReportDTO dto = new ReportDTO(r.getContent(), r.isBadReview(), r.isNotAppeared(), r.getClient().getEmail(), r.getRentingEntity().getId(), r.getClient().getFullName(), advertiser.getFullName(), r.getRentingEntity().getName());
             DTOs.add(dto);
         }
-
         return new ResponseEntity<>(DTOs, HttpStatus.OK);
     }
 }

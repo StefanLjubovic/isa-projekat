@@ -44,10 +44,13 @@
         </div>
     </div>
 
-        <transition name="fade" appear>
-    <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    <transition name="fade" appear v-if="userRoleIsClient()">
+        <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
 
+    <transition name="fade" appear v-else>
+        <CreateReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+    </transition>
 
     <div id="page" v-if="adventure">
         <AdventureCaption :adventureName="adventure.name" :adventureId="adventure.id" :entityName="'adventure'"
@@ -80,6 +83,7 @@
 </template>
 
 <script>
+import CreateReservation from "@/components/cottage/CreateReservation.vue"
 import ClientReservation from "@/components/client/ClientReservation.vue"
 import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
 import InstructorDetails from "@/components/adventure/InstructorDetails.vue"
@@ -105,6 +109,7 @@ export default {
         Calendar,
         PricelistTable,
         ClientReservation,
+        CreateReservation,
         Sales
     },
     props: [
@@ -288,6 +293,11 @@ export default {
         dateFormat(value) {
             return moment(value).format("DD.MM.YYYY. HH:mm");
         },
+        userRoleIsClient(){
+            if(this.userRole == "ROLE_CLIENT") return true;
+            else return false;
+        }
+        
     }
 }
 </script>

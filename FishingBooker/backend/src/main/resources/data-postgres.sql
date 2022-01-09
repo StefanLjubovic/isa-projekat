@@ -58,7 +58,7 @@ VALUES (2, 'Bringing pets to the adventure.'), (2, 'Alcohol is allowed!');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (2, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
-VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure', 2);
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Standard offer', 2);
 
 -- ship
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
@@ -74,7 +74,7 @@ VALUES (3, 'Music is allowed'), (3, 'Alcohol is allowed!');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (3, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
-VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Two hours ship ride', 3);
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Standard offer', 3);
 
 INSERT INTO subscriptions(client_id,entity_id)
 VALUES (4,2);
@@ -87,6 +87,7 @@ VALUES  (nextval('reservation_seq_gen'),'2022-01-05',72,false,7,4000,4,1),
         (nextval('reservation_seq_gen'),'2022-01-07 08:00:00',5,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2021-10-05',72,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2020-07-25', 2,false,15,7500,4,3),
+        (nextval('reservation_seq_gen'),'2022-01-07', 72,false,5,7500,4,1),
         (nextval('reservation_seq_gen'),Date(now()) +7, 72,false,15,8500,4,3);
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
 VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-05','2022-01-08'),

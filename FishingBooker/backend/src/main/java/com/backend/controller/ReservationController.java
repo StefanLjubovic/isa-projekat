@@ -6,9 +6,11 @@ import com.backend.dto.ReservationSaleDTO;
 import com.backend.dto.RevisionDTO;
 import com.backend.model.Reservation;
 import com.backend.model.Sale;
+import com.backend.service.EntityService;
 import com.backend.service.ReservationService;
 import com.backend.service.RevisionService;
 import com.backend.service.SaleService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +32,12 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @Autowired
+    private EntityService entityService;
+
+    @Autowired
     SaleService saleService;
+
+    private ModelMapper modelMapper = new ModelMapper();
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
@@ -39,6 +46,15 @@ public class ReservationController {
         boolean saved = reservationService.Save(reservation);
         if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/createByAdvertiser")
+    @PreAuthorize("hasAnyRole('COTTAGE_OWNER, SHIP_OWNER, INSTRUCTOR')")
+    public ResponseEntity<String> saveReservationByAdvertiser(@RequestBody ReservationDTO reservationDTO) {
+        Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
+        reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
+        String createdReservation = reservationService.saveReservationCreatedByAdvertiser(reservation);
+        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/future-reservations",produces = MediaType.APPLICATION_JSON_VALUE)

@@ -73,7 +73,7 @@
                 <ul v-if="adventure.pricelistItems">
                     <li v-for="item in adventure.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
                             <input type="number" class="form-control" v-model="item.price" placeholder="Price*"/>
                         </div>
                     </li>
@@ -241,6 +241,16 @@
                     this.pricelistItems = this.adventure.pricelistItems.length;
                     this.fishingEquipment = this.adventure.fishingEquipment.length;
                     this.backupAdventure = {...this.adventure};
+
+                    this.adventure.pricelistItems = [];
+                    let firstEl = undefined;
+                     for (let el of this.backupAdventure.pricelistItems)
+                        if(el.service == 'Standard offer')
+                            firstEl = el;
+                    
+                    this.adventure.pricelistItems.push(firstEl);
+                    let otherElems = this.backupAdventure.pricelistItems.filter(function(item) { return item.service != "Standard offer"; }); 
+                    this.adventure.pricelistItems.push.apply(this.adventure.pricelistItems, otherElems);
                 })
             },
 
@@ -255,8 +265,10 @@
                 })
             },
             removePricelistItem: function() {
-                this.pricelistItems -= 1;
-                this.adventure.pricelistItems.pop()
+                if(this.adventure.pricelistItems.length > 1){
+                    this.pricelistItems -= 1;
+                    this.adventure.pricelistItems.pop()
+                }
             },
 
             removeImage(image) {
