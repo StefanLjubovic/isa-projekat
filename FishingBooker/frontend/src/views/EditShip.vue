@@ -292,6 +292,16 @@
                     this.pricelistItemNum = this.ship.pricelistItems.length;
                     this.fishingEquipmentNum = this.ship.fishingEquipmentNum.length;
                     this.backupShip = {...this.ship}
+
+                    this.ship.pricelistItems = [];
+                    let firstEl = undefined;
+                     for (let el of this.backupShip.pricelistItems)
+                        if(el.service == 'Standard offer')
+                            firstEl = el;
+                    
+                    this.ship.pricelistItems.push(firstEl);
+                    let otherElems = this.backupCShip.pricelistItems.filter(function(item) { return item.service != "Standard offer"; }); 
+                    this.ship.pricelistItems.push.apply(this.ship.pricelistItems, otherElems)
                 })
             },
             addPricelistItem() {
@@ -302,8 +312,10 @@
                 })
             },
             removePricelistItem(){
-                this.pricelistItemsNum -= 1;
-                this.ship.pricelistItems.pop()
+                if(this.ship.pricelistItems.length > 1){
+                    this.pricelistItemsNum -= 1;
+                    this.ship.pricelistItems.pop()
+                }
             },
             removeImage(image) {
                 const index = this.ship.images.indexOf(image);

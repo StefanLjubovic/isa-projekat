@@ -68,8 +68,8 @@
                 <ul v-if="cottage.pricelistItems">
                     <li v-for="item in cottage.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
-                            <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
+                            <input type="text"    class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
+                            <input type="number"  class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
                 </ul><hr/>
@@ -251,6 +251,16 @@
                     this.pricelistItemNum = this.cottage.pricelistItems.length;
                     this.roomsNum = this.cottage.rooms.length;
                     this.backupCottage = {...this.cottage}
+
+                    this.cottage.pricelistItems = [];
+                    let firstEl = undefined;
+                     for (let el of this.backupCottage.pricelistItems)
+                        if(el.service == 'Standard offer')
+                            firstEl = el;
+                    
+                    this.cottage.pricelistItems.push(firstEl);
+                    let otherElems = this.backupCottage.pricelistItems.filter(function(item) { return item.service != "Standard offer"; }); 
+                    this.cottage.pricelistItems.push.apply(this.cottage.pricelistItems, otherElems);
                 })
             },
 
@@ -272,8 +282,10 @@
             },
 
             removePricelistItem(){
-                this.pricelistItemsNum -= 1;
-                this.cottage.pricelistItems.pop()
+                if(this.cottage.pricelistItems.length > 1){
+                    this.pricelistItemsNum -= 1;
+                    this.cottage.pricelistItems.pop()
+                }
             },
 
             removeImage(image) {
