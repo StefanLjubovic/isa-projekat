@@ -58,7 +58,7 @@ VALUES (2, 'Bringing pets to the adventure.'), (2, 'Alcohol is allowed!');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (2, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
-VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Basic adventure', 2);
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Standard offer', 2);
 
 -- ship
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
@@ -74,7 +74,7 @@ VALUES (3, 'Music is allowed'), (3, 'Alcohol is allowed!');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (3, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
-VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Two hours ship ride', 3);
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 2000, 'Standard offer', 3);
 
 INSERT INTO subscriptions(client_id,entity_id)
 VALUES (4,2);

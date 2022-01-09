@@ -18,35 +18,37 @@
                     </v-date-picker>
                 </span>
                 <!-- End of reservation for cottage or ship -->
-                <span  v-if="type!='Adventure'">
+                <span  v-if="type=='Cottage'">
                     <h5 class="mb-4">Duration in days: </h5>
                     <input class="input-field-duration" type="number"  id = "dateTofield"   v-model="reservation.durationInHours"/>
                 </span>
                 <!-- End of reservation for adventure -->
-                <span  v-if="type=='Adventure'">
-                    <h5 class="mb-4">Duration in hours: </h5>
+                <span  v-if="type!='Cottage'">
+                    <h5> Duration in hours: </h5>
                     <input class="input-field-duration-hours" type="number"  id = "dateTofield"   v-model="reservation.durationInHours"/>
                 </span>
-                
+                <!-- Services -->
                <div class="dropdown-row mb-4">
                     <h5 id="drop-lab">Services: </h5>          
                     <div class="right-side-services">
-                        <span class="pricelist-item" v-for="(pricelistItem) in rentingEntity.pricelistItems" :key="pricelistItem.id">
-                            <input type="checkbox" value="pricelistItem.service" v-model="reservation.additionalServices">
+                        <input type="checkbox" checked disabled value="Standard offer">
+                        <label > Standard offer &nbsp; {{price}} rsd</label><br/>
+                        <span class="pricelist-item" v-for="(pricelistItem) in pricelistItemsCopy" :key="pricelistItem.id">
+                            <input type="checkbox" :value="pricelistItem.service" @change="changeTotalPrice()" v-model="reservation.additionalServices">
                             <label for="pricelistItem.service"> {{pricelistItem.service}} &nbsp; {{pricelistItem.price}} rsd</label>
                         </span>
 
                     </div>
                 </div>
                 <span>
-                    <h5 class="mb-5">Visitors number: </h5><hr/>
+                    <h5 class="mb-5">Guest number: </h5><hr/>
                     <input class="input-field"  type="number"  id = "dateFromfield" v-model="reservation.maxPersons" disabled/>
                 </span>
                 <hr id="total-hr"/>
                 <div>
                     <span class="bottom-span">
                         <h5 id="price"> Total : </h5>
-                        <h5>{{price}} rsd</h5>
+                        <h5>{{reservation.price}} rsd</h5>
                     </span><br/>
                      <div class="btn1">
                         <button class="submit-btn" @click="saveReservation">Submit</button> 
@@ -80,7 +82,7 @@ export default {
             persons : undefined,
             start : 7,
             end: 10,
-            rentingEntity :this.entity,
+            rentingEntity: this.entity,
             pricelistItemsCopy: [],
             reservation: {
                 dateTime: undefined,
@@ -110,6 +112,8 @@ export default {
         this.rentingEntity = this.entity
         this.pricelistItemsCopy = this.rentingEntity.pricelistItems.map(a => {return {...a}})
         this.getPersons();
+        this.getPrice();
+        this.pricelistItemsCopy = this.rentingEntity.pricelistItems.filter(function(el) { return el.service != "Standard offer"; }); 
     },
     methods:{
         getNumbers:function(start,stop){
@@ -128,9 +132,13 @@ export default {
             this.priceOneDay +=this.rentingEntity.pricelistItems[index].price
              this.price = this.priceOneDay * Math.abs(this.end - this.start)
         },
-        GetFirstService(){
-             if(this.rentingEntity.pricelistItems.length)
-                return this.rentingEntity.pricelistItems[0].service + '  '+ this.rentingEntity.pricelistItems[0].price + '  rsd';
+        getPrice(){
+             for (let el of this.pricelistItemsCopy){
+                if(el.service == 'Standard offer'){
+                    this.reservation.price = el.price;
+                    this.price = el.price;
+            }
+        }
         },
         removeRequest(index){
             this.priceOneDay -=this.requests[index].price
@@ -158,10 +166,12 @@ export default {
             else this.reservation.maxPersons = this.rentingEntity.capacity
         },
 
-        CalculatePrice(){
-            const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            this.price = this.priceOneDay * diffDays
+        changeTotalPrice(){
+            this.reservation.price = this.price;
+            for(let el of this.reservation.additionalServices){
+                let mapEl = this.rentingEntity.pricelistItems.filter(item => { if (item.service == el) return item; });
+                this.reservation.price += mapEl[0].price;
+            }
         },
         GetEntityName(){
             if(this.type =='Adventure') return this.rentingEntity.name;
@@ -276,7 +286,7 @@ export default {
         border-radius: 3px;
         width: 51%;
         height: 35px;
-        margin-left: 0px;
+        margin-left: 3%;
     }
     .content{
         display: flex;

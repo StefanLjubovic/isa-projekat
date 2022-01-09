@@ -45,7 +45,7 @@
     </div>
 
     <transition name="fade" appear>
-        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
+        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
     </transition>
 
     <div id="profile" v-if="ship">
@@ -79,7 +79,7 @@
     import ShipTextDescription from "@/components/ship/ShipTextDescription.vue"
     import Sales from "@/components/adventure/Sales.vue"
     import Map from "@/components/entities/ShowLocationOnMap.vue"
-    import ClientReservation from "@/components/client/ClientReservation.vue"
+    import CreateReservation from "@/components/cottage/CreateReservation.vue"
     import axios from 'axios'
     import server from '../../server/index'
     import useValidate from '@vuelidate/core'
@@ -96,7 +96,7 @@
             ShipTextDescription,
             Map,
             Sales,
-            ClientReservation
+            CreateReservation
         },
         data() {
             return {
@@ -220,7 +220,16 @@
                 document.getElementById('appContainer').style.height='unset';
             },
             editEntity: function() {},
-            makeReservation: function() {},  
+            makeReservation: function() {
+                this.displayReservationModal = true;
+                document.getElementById('appContainer').style.overflow ='hidden';
+                document.getElementById('appContainer').style.height='100vh';
+            },  
+            closeModal: function(){
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
+            },
         }
     }
 
