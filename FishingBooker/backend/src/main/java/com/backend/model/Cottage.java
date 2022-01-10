@@ -34,6 +34,10 @@ public class Cottage extends RentingEntity {
         this.cottageOwner = cottageOwner;
     }
 
+    public Cottage(RentingEntity entity) {
+        super(entity);
+    }
+
     public Set<Room> getRooms() {
         return rooms;
     }

@@ -1,6 +1,6 @@
 <template>
-    <div class="sales-placeholder" v-if="sales.length != 0">
-        <div v-for="sale in sales" :key="sale.id" class="sale-for">
+    <div class="sales-placeholder" v-if="salesArray.length != 0">
+        <div v-for="sale in salesArray" :key="sale.id" class="sale-for">
             <div class="btn btn-sale" @click="displaySaleInfo(sale)">
                 <div>
                     <h3><i class="fas fa-money-bill-wave"></i> SALE </h3>
@@ -15,7 +15,7 @@
             </div>
         </div> 
     </div>
-    <hr v-if="sales.length != 0"/>
+    <hr v-if="salesArray.length != 0"/>
 </template>
 
 <script>
@@ -39,6 +39,7 @@ export default ({
     },
     methods: {
         displaySaleInfo: async function(sale) {
+            console.log(this.salesArray)
             console.log(JSON.stringify(this.adventure));
             if(this.userRole == 'ROLE_COTTAGE_OWNER' || this.userRole == 'ROLE_SHIP_OWNER' || this.userRole == 'ROLE_INSTRUCTOR' || this.userRole == ''){
                 this.$swal({
@@ -96,7 +97,8 @@ export default ({
                                     text: 'Reservation succesfully created!',
                                     confirmButtonColor: '#2c3e50'
                                 })
-
+                                console.log('Indexxx'+ this.salesArray.indexOf(sale))
+                                console.log(this.salesArray)
                                 this.$emit('sale-to-reservation', reservation);
                                 this.salesArray.splice(this.salesArray.indexOf(sale), 1);
                             }

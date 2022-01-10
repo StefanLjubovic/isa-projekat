@@ -44,7 +44,8 @@ VALUES (1, 'Bringing pets'), (1, 'Music');
 INSERT INTO renting_entity_unallowed_behavior(entity_id, unallowed_behaviour)
 VALUES (1, 'Smoking');
 INSERT INTO pricelist_item(pricelist_item_id, price, service, entity_id)
-VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 5000, 'Per night', 1);
+VALUES (nextval('pricelist_item_pricelist_item_id_seq'), 5000, 'Per night', 1),
+       (nextval('pricelist_item_pricelist_item_id_seq'), 1000, 'Music', 1);
 
 -- adventure
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name,version, address_id)
@@ -99,7 +100,9 @@ VALUES(1,1),
 
 -- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)
-VALUES (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,4000,2);
+VALUES (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,4000,2),
+       (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',24,'2022-01-08 08:00:00',8,10000,1),
+       (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,10000,3);
 
 -- instructor - unavailable period
 INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)

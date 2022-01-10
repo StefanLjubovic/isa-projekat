@@ -3,8 +3,10 @@ package com.backend.services;
 import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
+import com.backend.repository.IUserRepository;
 import com.backend.service.EntityService;
 import com.backend.service.ReservationService;
+import com.backend.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,10 +35,11 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class EntityServiceTests {
 
+    @Mock
+    private IEntityRepository entityRepository;
 
-    @Autowired
+    @InjectMocks
     private EntityService entityService;
-
 
     @Test
     public void updateUnavailablePeriod(){
@@ -53,10 +57,12 @@ public class EntityServiceTests {
         Reservation reservationUpdated = entityService.checkIfAlreadyReserved(reservation);
         Assert.isNull(reservationUpdated);
     }
-//    @Test
-//    public void test(){
-//        RentingEntity e=null;
-//        Assert.notNull(e);
-//    }
+
+    @Test
+    public void  getAllEntitiesTest(){
+        when(entityRepository.getEntityByClass(Adventure.class)).thenReturn(null);
+        List<? extends RentingEntity> entities=entityService.GetAllEntities(0);
+        Assert.isNull(entities);
+    }
 
 }

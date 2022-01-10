@@ -163,7 +163,8 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClassWithPeriods(Cottage.class);
         entities=entities
                 .stream()
-                .filter(e-> !checkOverlappingDates(e,unavailablePeriod) && instructorAvailable(e,unavailablePeriod))
+                .filter(e-> !checkOverlappingDates(e,unavailablePeriod) && instructorAvailable(e,unavailablePeriod)
+                && !checkReservationPeriods(e,unavailablePeriod))
                 .collect(Collectors.toList());
         return entities;
     }
@@ -176,6 +177,15 @@ public class EntityService {
                     period.getToDateTime().compareTo(unavailablePeriod.getFromDateTime()) >= 0)
                 return false;
         return true;
+    }
+    private boolean checkReservationPeriods(RentingEntity entity,UnavailablePeriod unavailablePeriod) {
+        for(Reservation dbReservation: reservationRepository.getReservationByRentingEntity_Id(entity.getId())){
+            Date dbEndDate =getEndDate(dbReservation.getDateTime(),dbReservation.getDurationInHours());
+            if(dbReservation.getDateTime().compareTo(unavailablePeriod.getToDateTime()) <=0 &&
+                    dbEndDate.compareTo(unavailablePeriod.getFromDateTime())>=0)
+                return true;
+        }
+        return false;
     }
 
     private boolean checkOverlappingDates(RentingEntity e, UnavailablePeriod unavailablePeriod) {

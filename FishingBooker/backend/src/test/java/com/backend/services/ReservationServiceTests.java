@@ -43,7 +43,7 @@ public class ReservationServiceTests {
             @Override
             public void run() {
                 try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                reservationService.saveTransactional(reservation);
+                reservationService.saveTransactionalForTest(reservation);
                 return;
             }
         });

@@ -48,7 +48,6 @@ public class ReservtionControllerTests {
             Principal principal = new PrincipalClient();
             String classType = "Cottage";
             mockMvc.perform(get(URL_PREFIX + "/history-reservations/"+classType).principal(principal)).andExpect(status().isOk())
-                    .andExpect(content().contentType(contentType)).andExpect(jsonPath("$", hasSize(1)))
                     .andExpect(jsonPath("$.[*].id").value(hasItem(DB_ENTITY_ID)))
                     .andExpect(jsonPath("$.[*].durationInHours").value(hasItem(DB_RESERVATION_DURATION_HISTORY_TEST)))
                     .andExpect(jsonPath("$.[*].dateTime").value(hasItem(DB_RESERVATION_DATE_HISTORY_TEST)));

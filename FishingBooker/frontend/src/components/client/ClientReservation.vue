@@ -75,7 +75,7 @@
                 </div>
                 <h5 class="mb-5">Maximum people: &nbsp;{{GetPersons()}}</h5>
                 <div class="button-div">
-                    <span><h4 id="price">Price : {{price}} rsd</h4><div class="btn1"><button class="btn droptdown-btn" @click="saveReservation">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button></div></span>
+                    <span><h4 id="price">Price : {{price}} rsd</h4><div class="btn1"><button class="btn droptdown-btn" @click="saveReservation" :disabled="!enabled">Save</button> <button class="btn cancel-btn"  @click="$emit('close-modal')">Cancel</button></div></span>
                 </div>
             </div>
         </div>
@@ -103,7 +103,8 @@ export default {
             persons : 1,
             start : 7,
             end: 10,
-            rentingEntity :this.entity           
+            rentingEntity :this.entity,
+            enabled : false           
         }
     },
     watch: {
@@ -120,6 +121,7 @@ export default {
                 mm = '0' + mm;
             } 
             today = yyyy + '-' + mm + '-' + dd;
+            this.enabled = true;
             if(this.type == 'Cottage') document.getElementById("dateTofield").setAttribute("min", today);
         },
         dateTo(){
@@ -162,6 +164,7 @@ export default {
             this.requests.push(this.rentingEntity.pricelistItems[index])
             this.priceOneDay +=this.rentingEntity.pricelistItems[index].price
              this.price = this.priceOneDay * Math.abs(this.end - this.start)
+              if(this.type == 'Cottage') this.CalculatePrice()
         },
         GetFirstService(){
              if(this.rentingEntity.pricelistItems.length)
@@ -170,7 +173,8 @@ export default {
         removeRequest(index){
             this.priceOneDay -=this.requests[index].price
             this.price = this.priceOneDay * Math.abs(this.end - this.start)
-            this.requests.splice(index, 1)          
+            this.requests.splice(index, 1)   
+            if(this.type == 'Cottage') this.CalculatePrice()       
         },
         calculateAdventurePriceEnd(index){
             this.end = index;
@@ -204,7 +208,6 @@ export default {
         CalculatePrice(){
             const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            console.log(diffDays+'  DAYSSSSSSSSSSSSS')
             this.price = this.priceOneDay * diffDays
         },
         GetEntityName(){
