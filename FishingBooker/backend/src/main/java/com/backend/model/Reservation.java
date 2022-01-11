@@ -154,7 +154,7 @@ public class Reservation {
 
    public boolean overlapsWithExistingUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriods) {
       for (UnavailablePeriod period : unavailablePeriods)
-         if (period.getFromDateTime().before(this.getDateTime()) && period.getToDateTime().after(this.getReservationEndTime()))
+         if (period.getFromDateTime().before(this.getReservationEndTime()) && period.getToDateTime().after(this.getDateTime()))
             return true;
 
       return false;
@@ -162,7 +162,7 @@ public class Reservation {
 
    public boolean overlapsWithExistingReservations(List<Reservation> reservations) {
       for(Reservation r : reservations)
-         if (r.getDateTime().before(this.getDateTime()) && r.getReservationEndTime().after(this.getReservationEndTime()))
+         if (r.getDateTime().before(this.getReservationEndTime()) && r.getReservationEndTime().after(this.getDateTime()))
             return true;
 
       return false;
@@ -170,7 +170,7 @@ public class Reservation {
 
    public boolean overlapsWithExistingSales(Set<Sale> sales) {
       for(Sale sale : sales)
-         if (sale.getDateTimeFrom().before(this.getDateTime()) && sale.getSaleEndTime().after(this.getReservationEndTime()))
+         if (sale.getDateTimeFrom().before(this.getReservationEndTime()) && sale.getSaleEndTime().after(this.getDateTime()))
             return true;
 
       return false;
