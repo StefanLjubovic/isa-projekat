@@ -38,8 +38,10 @@ public class CottageOwnerService {
         for (Cottage cottage : cottages) {
             List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchReservationHistoryByEntityName(cottage.getName());
             for (ReservationHistoryDTO reservation : reservationsPerCottage) {
-                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
-                reservations.add(reservation);
+                if(this.getReservationEndTime(reservation).before(new Date())) {
+                    reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                    reservations.add(reservation);
+                }
             }
         }
         return reservations;

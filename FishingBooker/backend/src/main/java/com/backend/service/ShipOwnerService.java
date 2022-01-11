@@ -41,8 +41,10 @@ public class ShipOwnerService {
         for (Ship ship: ships) {
             List<ReservationHistoryDTO> reservationsPerShip = this.reservationRepository.fetchReservationHistoryByEntityName(ship.getName());
             for (ReservationHistoryDTO reservation : reservationsPerShip) {
-                reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
-                reservations.add(reservation);
+                if(this.getReservationEndTime(reservation).before(new Date())) {
+                    reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                    reservations.add(reservation);
+                }
             }
         }
         return reservations;
