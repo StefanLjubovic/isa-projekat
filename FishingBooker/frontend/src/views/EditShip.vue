@@ -332,7 +332,7 @@
             
                 reader.onload = (e) =>{
                     let img = e.target.result;
-                    this.cottage.images.push(img);
+                    this.ship.images.push(img);
                 }
                 reader.readAsDataURL(file);
             },
