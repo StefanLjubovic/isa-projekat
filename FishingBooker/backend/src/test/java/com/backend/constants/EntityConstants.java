@@ -10,5 +10,5 @@ public class EntityConstants {
     public static final Date DB_UNAVAILABLE_PERIOD_START = new Date(2021,12,26);
     public static final Date DB_UNAVAILABLE_PERIOD_END = new Date(2022,12,28);
     public static final int DB_ENTITY_ID = 1;
-    public static final int DB_ENTITY_SUBSCRIPED_ID = 1;
+    public static final int DB_ENTITY_SUBSCRIBED_ID = 1;
 }

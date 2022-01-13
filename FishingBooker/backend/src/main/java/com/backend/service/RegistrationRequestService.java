@@ -17,19 +17,16 @@ import java.util.List;
 public class RegistrationRequestService {
 
     @Autowired
-    IRegistrationRequestRepository registrationRequestRepository;
+    private IRegistrationRequestRepository registrationRequestRepository;
 
     @Autowired
-    IAddressRepository addressRepository;
+    private IUserRepository userRepository;
 
     @Autowired
-    IUserRepository userRepository;
+    private RoleService roleService;
 
     @Autowired
-    RoleService roleService;
-
-    @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     public List<RegistrationRequest> getAllRequests() {
         return registrationRequestRepository.findAll();

@@ -3,12 +3,9 @@ package com.backend.controller;
 
 import com.backend.dto.ReservationDTO;
 import com.backend.dto.ReservationSaleDTO;
-import com.backend.dto.RevisionDTO;
 import com.backend.model.Reservation;
-import com.backend.model.Sale;
 import com.backend.service.EntityService;
 import com.backend.service.ReservationService;
-import com.backend.service.RevisionService;
 import com.backend.service.SaleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +92,7 @@ public class ReservationController {
     @GetMapping(value = "/booked/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER', 'SHIP_OWNER', 'INSTRUCTOR')")
     public ResponseEntity<Boolean> isEntityBooked(@PathVariable("id") Integer id) {
-        Boolean isBooked = reservationService.isEntityBooked(id);
+        Boolean isBooked = reservationService.isEntityBookedNow(id);
         return new ResponseEntity<>(isBooked, HttpStatus.OK);
     }
 

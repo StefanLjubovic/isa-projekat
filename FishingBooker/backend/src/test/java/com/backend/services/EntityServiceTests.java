@@ -31,7 +31,7 @@ import static com.backend.constants.RegisteredUserConstants.*;
 import static com.backend.constants.ReservationConstants.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class )
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class EntityServiceTests {
 

@@ -54,7 +54,7 @@ public class SaleService {
         return sale;
     }
 
-    private boolean overlapsWithExistingUnavailablePeriod(Sale sale, RentingEntity entity) {
+    public boolean overlapsWithExistingUnavailablePeriod(Sale sale, RentingEntity entity) {
         Adventure adventure = adventureRepository.fetchInstructorByAdventureId(entity.getId());
         if (adventure != null) {
 
@@ -72,7 +72,7 @@ public class SaleService {
         return false;
     }
 
-    private boolean overlapsWithExistingSale(Sale sale, RentingEntity entity) {
+    public boolean overlapsWithExistingSale(Sale sale, RentingEntity entity) {
         for(Sale s : entity.getSales()) {
             if (s.getDateTimeFrom().before(sale.getSaleEndTime()) && s.getSaleEndTime().after(sale.getDateTimeFrom()))
                 return true;
@@ -80,7 +80,7 @@ public class SaleService {
         return false;
     }
 
-    private boolean overlapsWithExistingReservation(Sale sale, RentingEntity entity) {
+    public boolean overlapsWithExistingReservation(Sale sale, RentingEntity entity) {
         List<Reservation> reservations = reservationRepository.fetchByEntityId(entity.getId());
         for(Reservation r : reservations) {
             if (r.getDateTime().before(sale.getSaleEndTime()) && r.getReservationEndTime().after(sale.getDateTimeFrom()))

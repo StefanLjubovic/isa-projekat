@@ -15,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.security.Principal;
 
-import static com.backend.constants.EntityConstants.DB_ENTITY_SUBSCRIPED_ID;
+import static com.backend.constants.EntityConstants.DB_ENTITY_SUBSCRIBED_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,7 +42,7 @@ public class EntityControllerTests {
     @WithMockUser(username = "ljubovicstefan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
     public void testCheckIfSubscribed() throws Exception{
         Principal principal = new PrincipalClient();
-        mockMvc.perform(get(URL_PREFIX + "/check-subscription/"+DB_ENTITY_SUBSCRIPED_ID).principal(principal)).andExpect(status().isOk())
+        mockMvc.perform(get(URL_PREFIX + "/check-subscription/"+ DB_ENTITY_SUBSCRIBED_ID).principal(principal)).andExpect(status().isOk())
                 .andExpect(content().string("false"));
     }
 }

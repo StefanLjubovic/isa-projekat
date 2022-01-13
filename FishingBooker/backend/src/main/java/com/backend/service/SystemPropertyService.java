@@ -22,7 +22,7 @@ public class SystemPropertyService {
 
     @Transactional(readOnly = false)
     public void updatePercentage(SystemProperty percentage) {
-            systemPropertyRepository.save(percentage);
+        systemPropertyRepository.save(percentage);
     }
 
 }

@@ -39,6 +39,15 @@ public class Sale {
 
    public Sale() {}
 
+   public Sale(Date dateTimeFrom, int durationInHours, int maximumPersons, Date expireDateTime, String additionalServices, double price) {
+      this.dateTimeFrom = dateTimeFrom;
+      this.durationInHours = durationInHours;
+      this.maximumPersons = maximumPersons;
+      this.expireDateTime = expireDateTime;
+      this.additionalServices = additionalServices;
+      this.price = price;
+   }
+
    public Integer getId() {
       return id;
    }

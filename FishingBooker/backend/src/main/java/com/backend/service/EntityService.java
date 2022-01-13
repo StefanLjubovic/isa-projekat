@@ -1,11 +1,9 @@
 package com.backend.service;
 
-import com.backend.dto.ComplaintDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;

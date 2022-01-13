@@ -6,13 +6,10 @@ import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
-import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +79,7 @@ public class ReservationService {
         return reservationRepository.getReservationByRentingEntity_Id(id).stream().filter(r -> r.getCanceled() == Boolean.FALSE).collect(Collectors.toList());
     }
 
-    public Boolean isEntityBooked(Integer id) {
+    public Boolean isEntityBookedNow(Integer id) {
         List<Reservation> reservations = reservationRepository.getReservationByRentingEntity_Id(id);
         for(Reservation r : reservations) {
             if(r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled()) return true;
@@ -117,7 +114,7 @@ public class ReservationService {
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;
         for(Reservation r : entityReservations) {
-            if (isEntityBooked(r)) {
+            if (isEntityBookedNow(r)) {
                 currentReservation = r;
                 break;
             }
@@ -147,7 +144,7 @@ public class ReservationService {
        return "Successfully created reservation!";
     }
 
-    private boolean isEntityBooked(Reservation r) {
+    private boolean isEntityBookedNow(Reservation r) {
         return r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled();
     }
 }

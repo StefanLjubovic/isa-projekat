@@ -41,6 +41,16 @@ public class RegistrationRequest {
 
    public RegistrationRequest() { }
 
+   public RegistrationRequest(Integer id, String firstName, String lastName, String phoneNumber, String email, String password, String explanation) {
+      this.id = id;
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.phoneNumber = phoneNumber;
+      this.email = email;
+      this.password = password;
+      this.explanation = explanation;
+   }
+
    public Integer getId() {
       return id;
    }
