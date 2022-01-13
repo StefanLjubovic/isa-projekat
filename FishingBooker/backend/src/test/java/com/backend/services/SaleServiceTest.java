@@ -48,6 +48,7 @@ public class SaleServiceTest {
         // 3. Verifikacija
         assertFalse(overlapsWithExistingReservation);
         verify(reservationRepositoryMock, times(1)).fetchByEntityId(DB_ENTITY_ID);
+        verifyNoMoreInteractions(reservationRepositoryMock);
 
     }
 }
