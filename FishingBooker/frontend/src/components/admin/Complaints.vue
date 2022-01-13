@@ -140,6 +140,10 @@ export default ({
                     timer: 2000
                 })
             })
+            .catch((error) => {
+                this.$swal(error.response.data.message);
+                console.log(error)
+            })
         },
         cancelResponding: function() {
             window.$('#response-to-complaint-modal').modal('hide');

@@ -107,10 +107,11 @@ public class InstructorService {
     public List<ReservationIncomeDTO> calculateReservationIncomeForInstructor(String email) {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<Reservation> allReservations = getReservationsForInstructor(email);
+        Double percentage = Double.parseDouble(this.systemPropertyService.getPercentage().getValue());
         for(Reservation reservation: allReservations)
             totalIncome.add(new ReservationIncomeDTO(
                     reservation.getRentingEntity().getName(),
-                    reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
+                    reservation.getPrice() * (100 - percentage)/100,
                     reservation.getDateTime(),
                     reservation.getReservationEndTime()));
         return totalIncome;

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -51,7 +52,12 @@ public class ComplaintController {
     @PutMapping("/respond/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> respondToComplaint(@PathVariable("id") Integer id, @RequestBody String response) {
-        complaintService.respondToComplaint(id, response);
+        try {
+            complaintService.respondToComplaint(id, response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator responded to this complaint right now!");
+        }
+
         return new ResponseEntity<>("Responded to complaint!", HttpStatus.OK);
     }
 }

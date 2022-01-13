@@ -53,10 +53,11 @@ public class ShipOwnerService {
     public List<ReservationIncomeDTO> calculateReservationIncomeForShips(String email) {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<ReservationHistoryDTO> allReservations = getReservationHistoryForShipOwner(email);
+        Double percentage = Double.parseDouble(this.systemPropertyService.getPercentage().getValue());
         for(ReservationHistoryDTO reservation: allReservations)
                 totalIncome.add(new ReservationIncomeDTO(
                         reservation.getEntityName(),
-                        reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
+                        reservation.getPrice() * (100 - percentage)/100,
                         reservation.getDateTime(),
                         getReservationEndTime(reservation)));
         return totalIncome;

@@ -50,12 +50,14 @@ public class CottageOwnerService {
     public List<ReservationIncomeDTO> calculateReservationIncomeForCottages(String email){
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<ReservationHistoryDTO> allReservations = getReservationHistoryForCottageOwner(email);
-        for(ReservationHistoryDTO reservation: allReservations)
-                totalIncome.add(new ReservationIncomeDTO(
-                        reservation.getEntityName(),
-                        reservation.getPrice() * (100 - this.systemPropertyService.getPercentage())/100,
-                        reservation.getDateTime(),
-                        getReservationEndTime(reservation)));
+        for(ReservationHistoryDTO reservation: allReservations) {
+            Double percentage = Double.parseDouble(this.systemPropertyService.getPercentage().getValue());
+            totalIncome.add(new ReservationIncomeDTO(
+                    reservation.getEntityName(),
+                    reservation.getPrice() * (100 - percentage) / 100,
+                    reservation.getDateTime(),
+                    getReservationEndTime(reservation)));
+        }
         return totalIncome;
     }
 

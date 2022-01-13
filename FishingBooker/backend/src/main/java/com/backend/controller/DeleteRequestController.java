@@ -3,12 +3,14 @@ package com.backend.controller;
 import com.backend.dto.DeleteRequestDTO;
 import com.backend.model.DeleteRequest;
 import com.backend.service.DeleteRequestService;
+import org.hibernate.PessimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -45,14 +47,24 @@ public class DeleteRequestController {
     @PutMapping("/reject/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> rejectDeleteRequest(@PathVariable("id") Integer id, @RequestBody String response) {
-        deleteRequestService.rejectDeleteRequest(id, response);
+        try {
+            deleteRequestService.rejectDeleteRequest(id, response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator is dealing with this request! Try again later.");
+        }
+
         return new ResponseEntity<>("Delete request rejected!", HttpStatus.OK);
     }
 
     @PutMapping("/approve")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> approveDeleteRequest(@RequestBody Integer id) {
-        deleteRequestService.approveDeleteRequest(id);
+        try {
+            deleteRequestService.approveDeleteRequest(id);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator is dealing with this request! Try again later.");
+        }
+
         return new ResponseEntity<>("Delete request approved", HttpStatus.OK);
     }
 }

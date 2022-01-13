@@ -4,7 +4,8 @@
         <div class="money-percentage">
             <h5>Money percentage from successful reservation:</h5>
             <div class="input-percentage">
-                <input type="text" class="form-control form-control-money" v-model="moneyPercentage" :disabled="!editMode">
+                <input type="text" class="form-control form-control-money" v-model="moneyPercentage.value" :disabled="!editMode"
+                v-if="moneyPercentage">
                 <p>%</p>
                 <button class="btn" @click="editMode = !editMode" :disabled="editMode"><i class="fas fa-pen"></i></button>
                 <button class="btn" @click="saveMoneyPercentage()" :disabled="!editMode"><i class="fas fa-check"></i></button>
@@ -102,6 +103,10 @@ export default ({
                     this.allReservations = response.data;
                     this.reservations = this.allReservations;
                 })
+            })
+            .catch((error) => {
+                this.$swal(error.response.data.message);
+                console.log(error)
             })
         },
 

@@ -14,7 +14,8 @@ VALUES (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '2100
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Bulevar Despota Stefana', '10'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Safarikova', '1b'),
        (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Kralja Aleksandra', '12'),
-       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Petra Drapsina', '2');
+       (nextval('address_address_id_seq'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Petra Drapsina', '2'),
+       (nextval('address_address_id_seq'), 'Sabac', 'Srbija', 0.0, 0.0, '15000', 'dr Andre Jovanovica', '6');
 
 -- users
 -- passwords 123456
@@ -23,12 +24,13 @@ VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdrav
        ('INSTRUCTOR', nextval('user_seq_gen'), 'ana.gavrilovic247@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
        ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
-       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4);
+       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4),
+       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 2);
 
 -- system property
-INSERT INTO system_property(system_properties_id, key, value)
-VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE', '15'),
-       (nextval('system_property_system_properties_id_seq'), 'MAIN_ADMIN_ID', '1');
+INSERT INTO system_property(system_properties_id, key, value, version)
+VALUES (nextval('system_property_system_properties_id_seq'), 'INCOME_PERCENTAGE', '15', 0),
+       (nextval('system_property_system_properties_id_seq'), 'MAIN_ADMIN_ID', '1', 0);
 
 -- cottage
 INSERT INTO renting_entity(entity_id, average_grade, cancellation_percentage, description, name, version,address_id)

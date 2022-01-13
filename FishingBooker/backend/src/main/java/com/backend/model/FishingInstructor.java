@@ -42,4 +42,5 @@ public class FishingInstructor extends RegisteredUser {
    public void setUnavailablePeriods(Set<UnavailablePeriod> unavailablePeriod) {
       this.unavailablePeriods = unavailablePeriod;
    }
+
 }

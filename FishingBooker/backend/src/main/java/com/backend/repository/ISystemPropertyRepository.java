@@ -9,8 +9,4 @@ public interface ISystemPropertyRepository extends JpaRepository<SystemProperty,
 
     @Query("select sp from SystemProperty sp where sp.key = 'INCOME_PERCENTAGE'")
     SystemProperty getIncomePercentage();
-
-    @Modifying
-    @Query("update SystemProperty sp set sp.value = ?1 where sp.key = 'INCOME_PERCENTAGE'")
-    void updateIncomePercentage(String percentage);
 }

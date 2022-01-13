@@ -6,6 +6,7 @@ import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -25,19 +26,21 @@ public class DeleteRequestService {
     @Autowired
     private DeleteUserService deleteUserService;
 
-
+    @Transactional(readOnly = false)
     public void save(String email,String content){
         RegisteredUser user=userRepository.findByEmail(email);
         DeleteRequest deleteRequest = new DeleteRequest(user,content);
         deleteRequestRepository.save(deleteRequest);
     }
 
+    @Transactional(readOnly = true)
     public List<DeleteRequest> getAllRequests() {
         return deleteRequestRepository.findAll();
     }
 
+    @Transactional(readOnly = false)
     public void rejectDeleteRequest(Integer requestId, String response) {
-        DeleteRequest deleteRequest = deleteRequestRepository.findById(requestId).get();
+        DeleteRequest deleteRequest = deleteRequestRepository.findOneById(requestId);
         if (deleteRequest == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request");
 
         deleteRequestRepository.delete(deleteRequest);
@@ -52,10 +55,12 @@ public class DeleteRequestService {
         emailService.sendSimpleMessage(email, "Delete Request Rejected", stringBuilder.toString());
     }
 
+    @Transactional(readOnly = false)
     public void approveDeleteRequest(Integer id) {
-        DeleteRequest deleteRequest = deleteRequestRepository.findById(id).get();
-        RegisteredUser registeredUser = deleteRequest.getRegisteredUser();
+        DeleteRequest deleteRequest = deleteRequestRepository.findOneById(id);
+        if (deleteRequest == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request");
 
+        RegisteredUser registeredUser = deleteRequest.getRegisteredUser();
         deleteUserService.deleteUser(registeredUser.getId());
         sendApprovalEmail(registeredUser.getEmail());
     }

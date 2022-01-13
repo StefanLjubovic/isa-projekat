@@ -44,7 +44,7 @@ public class ReservationService {
         return true;
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public boolean saveTransactional(Reservation reservation){
         try{
             entityRepository.save(reservation.getRentingEntity());

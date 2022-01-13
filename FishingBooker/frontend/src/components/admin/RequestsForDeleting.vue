@@ -149,6 +149,9 @@ export default ({
                     timer: 2000
                 })
             })
+            .catch((error) => {
+                this.$swal(error.response.data.message);
+            })
         },
         disapproveRequest: function(request) {
             this.selectedRequest = request;
@@ -172,6 +175,10 @@ export default ({
                     showConfirmButton: false,
                     timer: 2000
                 })
+            })
+            .catch((error) => {
+                this.$swal(error.response.data.message);
+                console.log(error)
             })
         },
         cancelRejection: function() {
