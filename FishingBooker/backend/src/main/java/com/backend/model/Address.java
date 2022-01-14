@@ -7,7 +7,8 @@ import javax.persistence.Entity;
 public class Address {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "addressSeqGen", sequenceName = "addressSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "addressSeqGen")
    @Column(name="address_id", unique=true, nullable=false)
    private Integer id;
 

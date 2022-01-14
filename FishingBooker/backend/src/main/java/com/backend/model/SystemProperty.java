@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class SystemProperty {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "systemPropertySeqGen", sequenceName = "systemPropertySeqGen", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "systemPropertySeqGen")
     @Column(name="system_properties_id", unique=true, nullable=false)
     private Integer id;
 

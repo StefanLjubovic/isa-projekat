@@ -12,7 +12,8 @@ import java.util.*;
 public class PricelistItem {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "pricelistItemSeqGen", sequenceName = "pricelistItemSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pricelistItemSeqGen")
    @Column(name="pricelist_item_id", unique=true, nullable=false)
    private Integer id;
 

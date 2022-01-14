@@ -6,7 +6,8 @@ import javax.persistence.*;
 public class RegistrationRequest {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "registrationRequestSeqGen", sequenceName = "registrationRequestSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "registrationRequestSeqGen")
    @Column(name="reg_request_id", unique=true, nullable=false)
    private Integer id;
 

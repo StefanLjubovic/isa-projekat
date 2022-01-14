@@ -25,7 +25,7 @@ VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdrav
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
        ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
        ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4),
-       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 2);
+       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 1);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value, version)
@@ -91,7 +91,7 @@ VALUES  (nextval('reservation_seq_gen'),'2022-01-05 00:00',72,false,7,4000,4,1),
         (nextval('reservation_seq_gen'),'2021-10-05',72,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2020-07-25', 2,false,15,7500,4,3),
         (nextval('reservation_seq_gen'),'2022-01-13', 72,false,5,7500,4,1),
-        (nextval('reservation_seq_gen'),Date(now()) +7, 72,false,15,8500,4,3);
+        (nextval('reservation_seq_gen'),'2022-01-21', 72,false,15,8500,4,3);
 
 -- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)
@@ -114,8 +114,10 @@ VALUES (nextval('revision_seq_gen'), 'Super!', false, 4, 3),
 -- complaints
 INSERT INTO complaint(complaint_id, content, reg_user_id, entity_id)
 VALUES (nextval('complaint_seq_gen'), 'Ne svidja mi se avantura.', 4, 2),
-       (nextval('complaint_seq_gen'), 'Ne svidja mi se vikendica.', 4, 1);
+       (nextval('complaint_seq_gen'), 'Ne svidja mi se vikendica.', 4, 1),
+       (nextval('complaint_seq_gen'), 'Ne svidja mi se brod.', 4, 3);
 
 -- delete requests
 INSERT INTO delete_request(delete_req_id, content, reg_user_id)
 VALUES (nextval('delete_request_seq_gen'), 'zelim', 2);
+

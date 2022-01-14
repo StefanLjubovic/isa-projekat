@@ -5,8 +5,10 @@ import java.util.*;
 
 @Entity
 public class UnavailablePeriod {
+
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "unavailablePeriodSeqGen", sequenceName = "unavailablePeriodSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "unavailablePeriodSeqGen")
    @Column(name="period_id", unique=true, nullable=false)
    private Integer id;
 

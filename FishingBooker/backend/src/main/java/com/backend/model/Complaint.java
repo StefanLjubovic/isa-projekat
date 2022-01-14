@@ -6,7 +6,8 @@ import java.util.*;
 public class Complaint {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "complaintSeqGen", sequenceName = "complaintSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "complaintSeqGen")
    @Column(name="complaint_id", unique=true, nullable=false)
    private Integer id;
 

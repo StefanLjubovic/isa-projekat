@@ -6,7 +6,8 @@ import java.util.*;
 public class Revision {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "revisionSeqGen", sequenceName = "revisionSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "revisionSeqGen")
    @Column(name="revision_id", unique=true, nullable=false)
    private Integer id;
 

@@ -7,7 +7,8 @@ import java.util.*;
 public class Room {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "roomSeqGen", sequenceName = "roomSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roomSeqGen")
    @Column(name="room_id", unique=true, nullable=false)
    private Integer id;
 

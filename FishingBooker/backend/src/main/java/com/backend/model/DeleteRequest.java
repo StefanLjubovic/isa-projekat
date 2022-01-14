@@ -6,7 +6,8 @@ import java.util.*;
 public class DeleteRequest {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "deleteRequestSeqGen", sequenceName = "deleteRequestSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deleteRequestSeqGen")
    @Column(name="delete_req_id", unique=true, nullable=false)
    private Integer id;
 

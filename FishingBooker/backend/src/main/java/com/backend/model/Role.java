@@ -18,7 +18,8 @@ public class Role implements GrantedAuthority {
 
    @Id
    @Column(name="id")
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "roleSeqGen", sequenceName = "roleSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roleSeqGen")
    Integer id;
 
    @Column(name="name")

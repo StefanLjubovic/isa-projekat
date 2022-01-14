@@ -6,7 +6,8 @@ import java.util.*;
 public class Report {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "reportSeqGen", sequenceName = "reportSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reportSeqGen")
    @Column(name="report_id", unique=true, nullable=false)
    private Integer id;
 

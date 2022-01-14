@@ -10,7 +10,8 @@ import java.util.*;
 public class Sale {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @SequenceGenerator(name = "saleSeqGen", sequenceName = "saleSeqGen", initialValue = 1, allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "saleSeqGen")
    @Column(name="sale_id", unique=true, nullable=false)
    private Integer id;
 

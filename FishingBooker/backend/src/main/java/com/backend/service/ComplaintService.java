@@ -50,7 +50,7 @@ public class ComplaintService {
         if(complaint == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such complaint!");
 
         sendResponseEmail(complaint, response);
-        complaintRepository.delete(complaint);
+        complaintRepository.deleteById(complaint.getId());
     }
 
     private void sendResponseEmail(Complaint complaint, String response) {
