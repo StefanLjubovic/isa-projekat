@@ -49,7 +49,6 @@
         <div v-if="userRole == 'ROLE_COTTAGE_OWNER'" class="cottage-owner">
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==2 }" @click="changeState(2)">My Cottages</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==22 }" @click="changeState(22)">Reservation History</a>
-          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==23 }" @click="changeState(23)">My Schedule</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==24 }" @click="changeState(24)">Analytics</a>
         </div>
 
@@ -57,7 +56,6 @@
         <div v-if="userRole == 'ROLE_SHIP_OWNER'" class="cottage-owner">
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==1 }"  @click="changeState(1)">My Ships</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==42 }" @click="changeState(42)">Reservation History</a>
-          <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==43 }" @click="changeState(43)">My Schedule</a>
           <a class="nav-item nav-link active" href="#"  v-bind:class="{ 'active-link text-light': state==44 }" @click="changeState(44)">Analytics</a>
         </div>
 

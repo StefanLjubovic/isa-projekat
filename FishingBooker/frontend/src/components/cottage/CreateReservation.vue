@@ -71,6 +71,7 @@ export default {
         entity : Object,
         type : String
     },
+    emits: ['new-reservation'],
     data(){
         return{
             requests: [],
@@ -194,7 +195,7 @@ export default {
             console.log(JSON.stringify(this.reservation))
             axios.post(`${server.baseUrl}/reservation/createByAdvertiser`, this.reservation, { headers: headers })
                 .then((response) => {
-                    this.$emit('close-modal')
+                    this.$emit('new-reservation', this.reservation)
                     this.reservation = { dateTime: '', durationInHours: '', additionalServices: [], price: undefined }
 
                     this.$swal({
@@ -205,8 +206,7 @@ export default {
                         timer: 3000
                     })
                 })
-          
-            this.$emit('close-modal')
+                this.$emit('close-modal')
         }
     }
 }

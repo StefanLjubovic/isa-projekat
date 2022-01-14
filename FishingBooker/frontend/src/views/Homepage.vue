@@ -65,7 +65,6 @@
     </div>  
     <ReservationHistory v-if="state==22"/>
     <MyProfile v-if="state == 3"/>
-    <MyScheduleInstructor v-if="state == 23"/>
     <OwnerAnalytics v-if="state == 24"/>
     <CottageDetails v-if="state == 25" :entityId="selectedEntityId" @edit-cottage="editCottage" @entity-deleted="changeState"/>
     <AddNewCottage v-if="state == 26" />
@@ -86,7 +85,6 @@
     </div>  
     <ReservationHistory v-if="state==42"/>
     <MyProfile v-if="state == 3"/>
-    <MyScheduleInstructor v-if="state == 43"/>
     <OwnerAnalytics v-if="state == 44"/>
     <ShipDetails v-if="state == 45" :entityId="selectedEntityId" @edit-ship="editShip" @entity-deleted="changeState"/>
     <AddNewShip  v-if="state == 46" />

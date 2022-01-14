@@ -45,10 +45,10 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal'/>
+        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal' @new-reservation="showReservation"/>
     </transition>
 
     <div id="profile" v-if="ship">
@@ -62,7 +62,7 @@
                       <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <CalendarView :unavailablePeriods="undefined"/>
+                <Calendar class="calendar" :events="events"/>
                 <p>In case of reservation cancellation, ship owner retains {{ ship.cancellationPercentage }}% of the price! </p><hr/>
                 <PricelistTable :pricelistItem="ship.pricelistItems"/><hr/>
             </div>
@@ -77,7 +77,7 @@
 <script>
     import AdventureCaption from "@/components/adventure/AdventureCaption.vue"
     import ImageGallery from "@/components/ImageGallery.vue"
-    import CalendarView from "@/components/CalendarView.vue"
+    import Calendar from "@/components/Calendar.vue"
     import PricelistTable from "@/components/entities/PricelistTable.vue"  
     import ShipTextDescription from "@/components/ship/ShipTextDescription.vue"
     import Sales from "@/components/adventure/Sales.vue"
@@ -95,7 +95,7 @@
         components: {
             AdventureCaption,
             ImageGallery,
-            CalendarView,
+            Calendar,
             PricelistTable,
             ShipTextDescription,
             Map,
@@ -168,7 +168,7 @@
                 .get(`${server.baseUrl}/ship/getOne/` + this.entityId)
                 .then(response => {
                     this.ship = response.data;
-                     for(let sale of this.ship.sales) {
+                    for(let sale of this.ship.sales) {
                         var endTime = new Date(sale.dateTimeFrom);
                         endTime.setHours(parseInt(endTime.getHours()) + parseInt(sale.durationInHours));
                         this.events.push({
@@ -179,6 +179,29 @@
                             class: 'calendar-sale'
                          })
                     }
+
+                    for(let period of this.ship.unavailablePeriods) {
+                        this.events.push({
+                            start : new Date(period.fromDateTime), 
+                            end : new Date(period.toDateTime),
+                            title : period.message,
+                            class: 'calendar-unavailable'
+                        })
+                    }
+
+                    axios.get(`${server.baseUrl}/reservation/entity/${this.ship.id}`)
+                    .then((res) => {
+                        for(let reservation of res.data) {
+                            var endTime = new Date(reservation.dateTime);
+                            endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                            this.events.push({
+                                start : new Date(reservation.dateTime), 
+                                end : endTime,
+                                title : 'BOOKED',
+                                class: 'calendar-booked'
+                            })
+                        }
+                    })
                 })
             },
             openModalForCreatingSale(){
@@ -207,7 +230,6 @@
                     })
 
                     window.$('#new-sale-modal').modal('hide');
-                    this.sale = { dateTimeFrom : '', durationInHours: undefined, maximumPersons: undefined, expireDateTime: '', additionalServices: '', price: undefined }
 
                     this.$swal({
                         position: 'top-end',
@@ -216,6 +238,8 @@
                         showConfirmButton: false,
                         timer: 2000
                     })
+
+                    this.sale = { dateTimeFrom : '', durationInHours: undefined, maximumPersons: undefined, expireDateTime: '', additionalServices: '', price: undefined }
                 })
              },
             cancelSale: function() {
@@ -241,6 +265,31 @@
             userRoleIsClient(){
                 if(this.userRole == "ROLE_CLIENT") return true;
                 else return false;
+            },
+            saleToReservation(reservation) {
+                for(let e of this.events) {
+                    var endTime = new Date(reservation.dateTime);
+                    endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                    
+                    if(e.start.getTime() === new Date(reservation.dateTime).getTime() && e.end.getTime() === endTime.getTime()) {
+                        e.title = "BOOKED";
+                        e.class = "calendar-booked";
+                        e.content = "";
+                        break;
+                    }
+                }
+            },
+            showReservation(reservation) {
+                this.events.push({
+                    start : new Date(reservation.dateFrom), 
+                    end : new Date(reservation.dateTo),
+                    title : 'BOOKED',
+                    content: "",
+                    class: 'calendar-booked'
+                })
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
             }
         }
     }
@@ -299,5 +348,11 @@
         margin-bottom: 5px;
         text-align: left;
         font-size: 13px;
+    }
+
+    .calendar {
+        margin-top: 20px;
+        height: 100vh;
+        margin-bottom: 20px;
     }
 </style>

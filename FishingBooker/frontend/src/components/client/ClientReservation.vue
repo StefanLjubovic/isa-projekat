@@ -92,6 +92,7 @@ export default {
         entity : Object,
         type : String
     },
+    emits: ['new-reservation'],
     data(){
         return{
             requests: [],
@@ -247,6 +248,10 @@ export default {
             await server.saveReservation(reservation)
             .then(resp=> {
                 if(resp.success){
+                    var endTime = new Date(reservation.dateTime);
+                    endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                    this.$emit('new-reservation', { dateFrom: reservation.dateTime, dateTo: endTime});
+                    
                     this.$swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -260,9 +265,9 @@ export default {
                             title: 'Oops...',
                             text: resp.data.message,
                     })     
+                    this.$emit('close-modal')
                 }
             })
-            this.$emit('close-modal')
         }
     }
 }
