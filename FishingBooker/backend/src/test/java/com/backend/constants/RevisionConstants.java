@@ -13,4 +13,6 @@ public class RevisionConstants {
     public static final String DB_REVISION_CONTENT_3 = "Svidja mi se!";
     public static final int DB_REVISION_MARK_3 = 5;
     public static final Boolean DB_REVISION_IS_APPROVED_3 = false;
+
+    public static final Integer DB_REVISION_ID = 1;
 }

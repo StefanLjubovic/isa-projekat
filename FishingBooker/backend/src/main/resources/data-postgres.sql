@@ -85,8 +85,8 @@ VALUES (4,2);
 
 -- reservation
 INSERT INTO reservation(reservation_id,date_time,duration_in_hours,is_canceled,max_persons,price,reg_user_id,entity_id)
-VALUES  (nextval('reservation_seq_gen'),'2022-01-05',72,false,7,4000,4,1),
-        (nextval('reservation_seq_gen'),'2021-11-05',48,false,10,8000,4,2),
+VALUES  (nextval('reservation_seq_gen'),'2022-01-05 00:00',72,false,7,4000,4,1),
+        (nextval('reservation_seq_gen'),'2021-11-05 00:00',48,false,10,8000,4,2),
         (nextval('reservation_seq_gen'),'2022-01-07 08:00:00',5,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2021-10-05',72,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2020-07-25', 2,false,15,7500,4,3),
