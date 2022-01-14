@@ -44,6 +44,39 @@
         </div>
     </div>
 
+     <!-- Define new unavailable period modal -->
+    <div class="modal fade" id="unavailable-period-modal" role="dialog">
+        <div class="modal-dialog rounded" role="document">
+            <div class="modal-content">
+                <div class="modal-header" @click="cancelUnavailablePeriod()">
+                    <h3>Define Unavailable period</h3>
+                    <button class="btn btn-close close"></button>
+                </div>
+                <div class="modal-body">
+                    <v-date-picker v-model="v$.unavailablePeriod.fromDateTime.$model" mode="dateTime" is24hr>
+                        <template v-slot="{ inputValue, inputEvents }">
+                            <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="Start period date and time*" :value="inputValue" v-on="inputEvents"/>
+                            <div class="text-danger" v-if="v$.unavailablePeriod.fromDateTime.$error">Value is required and can't be before the end date </div>
+                        </template>
+                    </v-date-picker>
+
+                    <v-date-picker v-model="v$.unavailablePeriod.toDateTime.$model" mode="dateTime" is24hr>
+                        <template v-slot="{ inputValue, inputEvents }">
+                            <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="End period date and time*" :value="inputValue" v-on="inputEvents"/>
+                            <div class="text-danger" v-if="v$.unavailablePeriod.toDateTime.$error">Value is required and can't be after the start date</div>
+                        </template>
+                    </v-date-picker>
+                </div>
+                <div class="modal-footer">
+                    <div class="confirm-buttons">
+                        <button class="btn submit-btn" @click="createUnavailablePeriod()" >Submit</button>
+                        <button class="btn cancel-btn" @click="cancelUnavailablePeriod()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <transition name="fade" appear v-if="userRoleIsClient()">
         <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
     </transition>
@@ -58,8 +91,10 @@
             <div class="left-side">
                 <ImageGallery :images="cottage.images"  description="Photos of our cottage"/><hr/>
                 <Sales :sales="cottage.sales" v-if="userRole != ''" :adventure="cottage" @sale-to-reservation="saleToReservation"/><br/>
-                  <div class="btn-wrap">
-                      <h2>Schedule for this adventure</h2>
+                 
+                <div class="btn-wrap">
+                    <h2>Schedule for this adventure</h2>
+                    <button class="btn" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
                 <Calendar class="calendar" :events="undefined"/>
@@ -138,6 +173,11 @@
                     additionalServices: '',
                     price: ''
                },
+               unavailablePeriod:{
+                    fromDateTime: '',
+                    toDateTime: '',
+                    entityName : ''
+               },  
                events: []
             } 
         },
@@ -180,6 +220,23 @@
                     },
                     price: { required, numeric },
                     additionalServices: {  }
+                },
+                unavailablePeriod: {
+                    fromDateTime : { 
+                        required,
+                        minValue(val) {
+                            return new Date(val) > new Date();
+                        },
+                    },
+                    toDateTime: { 
+                        required, 
+                        minValue(val) {
+                            return new Date(val) > new Date();
+                        },
+                        maxValue(val, {fromDateTime}){
+                            return new Date(fromDateTime) < new Date(val);
+                        }
+                    },
                 }
             }
         },
@@ -214,6 +271,47 @@
                 this.displayReservationModal = false;
                 document.getElementById('appContainer').style.overflow = 'unset';
                 document.getElementById('appContainer').style.height='unset';
+            },
+            openModalForDefineUnavailablePeriod: function(){
+                window.$('#unavailable-period-modal').modal('show');
+            },
+            cancelUnavailablePeriod: function() {
+                this.unavailablePeriod = { fromDateTime: '', toDateTime: '' }
+                window.$('#unavailable-period-modal').modal('hide');
+            },
+            createUnavailablePeriod: function(){
+                const headers = {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                }
+
+                this.unavailablePeriod.entityName = this.cottage.name;
+
+                axios.post(`${server.baseUrl}/cottage/defineUnavailablePeriod`, this.unavailablePeriod, { headers: headers })
+                .then((response) => {
+                   
+                    this.unavailablePeriod = { fromDateTime: '', toDateTime: '' }
+                    window.$('#unavailable-period-modal').modal('hide');
+
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.data,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
+                .catch(error => {
+                     this.$swal({
+                        position: 'top-end',
+                        icon: 'info',
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
+
             },
             createSale: function() { 
                 const headers = {
@@ -295,6 +393,11 @@
         display: flex;
         justify-content: space-between;
     }
+    .btn-wrap-period {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
     .btn {
         background-color: #2c3e50;
         color: white;
@@ -318,7 +421,6 @@
         text-align: left;
         font-size: 13px;
     }
-
     .calendar {
         margin-top: 20px;
         height: 100vh;
