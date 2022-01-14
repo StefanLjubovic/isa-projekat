@@ -45,11 +45,11 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+        <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
 
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+        <CreateReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
 
     <div id="page" v-if="adventure">
@@ -251,7 +251,6 @@ export default {
                 })
 
                 window.$('#new-sale-modal').modal('hide');
-                this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
 
                 console.log(this.adventure.sales);
                 this.$swal({
@@ -261,6 +260,8 @@ export default {
                     showConfirmButton: false,
                     timer: 2000
                 })
+                
+                this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
             })
             .catch((error) => {
                 this.$swal(error.response.data.message);
@@ -278,6 +279,19 @@ export default {
                     break;
                 }
             }
+        },
+        showReservation(reservation) {
+            console.log("ksdjbkf", reservation);
+            this.events.push({
+                start : new Date(reservation.dateFrom), 
+                end : new Date(reservation.dateTo),
+                title : 'BOOKED',
+                content: "",
+                class: 'calendar-booked'
+            })
+            this.displayReservationModal = false;
+            document.getElementById('appContainer').style.overflow = 'unset';
+            document.getElementById('appContainer').style.height='unset';
         },
         editEntity: function() {},
         makeReservation: function() {

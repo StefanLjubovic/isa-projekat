@@ -45,10 +45,10 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal'/>
+        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
 
     <div id="profile">
@@ -62,7 +62,7 @@
                       <h2>Schedule for this adventure</h2>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
-                <Calendar class="calendar" :events="undefined"/>
+                <Calendar class="calendar" :events="events"/>
                 <p>In case of reservation cancellation, cottage owner retains {{ cottage.cancellationPercentage }}% of the price! </p><hr/>
                 <PricelistTable :pricelistItem="cottage.pricelistItems"/><hr/>
             </div>
@@ -148,7 +148,7 @@
             state(){
                 return this.$store.getters.getState;
             },
-             token(){
+            token(){
                  return this.$store.getters.getToken;
             }
         },
@@ -200,6 +200,29 @@
                             class: 'calendar-sale'
                          })
                     }
+
+                    for(let period of this.cottage.unavailablePeriods) {
+                        this.events.push({
+                            start : new Date(period.fromDateTime), 
+                            end : new Date(period.toDateTime),
+                            title : period.message,
+                            class: 'calendar-unavailable'
+                        })
+                    }
+
+                    axios.get(`${server.baseUrl}/reservation/entity/${this.cottage.id}`)
+                    .then((res) => {
+                        for(let reservation of res.data) {
+                            var endTime = new Date(reservation.dateTime);
+                            endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                            this.events.push({
+                                start : new Date(reservation.dateTime), 
+                                end : endTime,
+                                title : 'BOOKED',
+                                class: 'calendar-booked'
+                            })
+                        }
+                    })
                 })
             },
             openModalForCreatingSale(){
@@ -238,7 +261,6 @@
                     })
 
                     window.$('#new-sale-modal').modal('hide');
-                    this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
 
                     this.$swal({
                         position: 'top-end',
@@ -247,6 +269,8 @@
                         showConfirmButton: false,
                         timer: 2000
                     })
+
+                    this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 })
               },
             cancelSale: function() {
@@ -260,6 +284,31 @@
             userRoleIsClient(){
                 if(this.userRole == "ROLE_CLIENT") return true;
                 else return false;
+            },
+            saleToReservation(reservation) {
+                for(let e of this.events) {
+                    var endTime = new Date(reservation.dateTime);
+                    endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
+                    
+                    if(e.start.getTime() === new Date(reservation.dateTime).getTime() && e.end.getTime() === endTime.getTime()) {
+                        e.title = "BOOKED";
+                        e.class = "calendar-booked";
+                        e.content = "";
+                        break;
+                    }
+                }
+            },
+            showReservation(reservation) {
+                this.events.push({
+                    start : new Date(reservation.dateFrom), 
+                    end : new Date(reservation.dateTo),
+                    title : 'BOOKED',
+                    content: "",
+                    class: 'calendar-booked'
+                })
+                this.displayReservationModal = false;
+                document.getElementById('appContainer').style.overflow = 'unset';
+                document.getElementById('appContainer').style.height='unset';
             }
         }
     }

@@ -92,18 +92,11 @@ VALUES  (nextval('reservation_seq_gen'),'2022-01-05 00:00',72,false,7,4000,4,1),
         (nextval('reservation_seq_gen'),'2020-07-25', 2,false,15,7500,4,3),
         (nextval('reservation_seq_gen'),'2022-01-13', 72,false,5,7500,4,1),
         (nextval('reservation_seq_gen'),Date(now()) +7, 72,false,15,8500,4,3);
-INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
-VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-05','2022-01-08'),
-       (nextval('unavailable_period_period_id_seq'),'2022-01-09 08:00:00','2022-01-09 12:00:00');
-
-INSERT INTO renting_entity_unavailable_periods(renting_entity_entity_id,unavailable_periods_period_id)
-VALUES(1,1),
-       (2,2);
 
 -- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)
 VALUES (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,4000,2),
-       (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',24,'2022-01-08 08:00:00',8,10000,1),
+       (nextval('sale_sale_id_seq'),'2022-01-14 08:00:00',24,'2022-01-08 08:00:00',8,10000,1),
        (nextval('sale_sale_id_seq'),'2022-01-11 08:00:00',4,'2022-01-08 08:00:00',8,10000,3);
 
 -- instructor - unavailable period
@@ -111,7 +104,7 @@ INSERT INTO unavailable_period(period_id,from_date_time,to_date_time)
 VALUES (nextval('unavailable_period_period_id_seq'),'2022-01-04 08:00:00','2022-01-04 12:30:00');
 
 INSERT INTO registered_user_unavailable_periods(fishing_instructor_reg_user_id, unavailable_periods_period_id)
-VALUES (2, 3);
+VALUES (2, 1);
 
 -- revision
 INSERT INTO revision(revision_id, content, is_approved, mark, reservation_id)
