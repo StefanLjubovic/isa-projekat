@@ -140,6 +140,7 @@ public class ReservationServiceTests {
 
     }
 
+    @Test
     public void testIsEntityBooked() {
         Reservation reservation = new Reservation(DB_RESERVATION_DATE_TEST,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE);
         Assert.assertFalse(reservationService.isEntityBooked(reservation));

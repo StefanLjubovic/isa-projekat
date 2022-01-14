@@ -116,7 +116,7 @@ public class ReservationService {
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;
         for(Reservation r : entityReservations) {
-            if (isEntityBookedNow(r)) {
+            if (isEntityBooked(r)) {
                 currentReservation = r;
                 break;
             }
