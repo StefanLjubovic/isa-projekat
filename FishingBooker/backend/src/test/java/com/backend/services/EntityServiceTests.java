@@ -42,7 +42,7 @@ public class EntityServiceTests {
     private EntityService entityService;
 
     @Test
-    public void updateUnavailablePeriod(){
+    public void checkIfOverlaping(){
         Address address=new Address(DB_STREET_NAME,DB_STREET_NUMBER,DB_POSTAL_CODE,DB_CITY,DB_COUNTRY);
 
         RegisteredUser user = new RegisteredUser(DB_ID,DB_FIRST_NAME,DB_LAST_NAME,DB_PHONE_NUMBER,DB_EMAIL,DB_PASSWORD,DB_USER_STATUS,DB_ENABLED,new Role(DB_ID,DB_ROLE_NAME),DB_DATE,address);
