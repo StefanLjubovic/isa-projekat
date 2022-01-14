@@ -1,5 +1,5 @@
 <template>
-    <div class="sales-placeholder" v-if="salesArray.length != 0">
+    <div class="sales-placeholder" v-if="sales !== undefined && sales.length > 0">
         <div v-for="sale in salesArray" :key="sale.id" class="sale-for">
             <div class="btn btn-sale" @click="displaySaleInfo(sale)">
                 <div>
@@ -15,7 +15,7 @@
             </div>
         </div> 
     </div>
-    <hr v-if="salesArray.length != 0"/>
+    <hr v-if="sales !== undefined && sales.length != 0"/>
 </template>
 
 <script>

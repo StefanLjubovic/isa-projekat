@@ -84,7 +84,7 @@
         <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
     </transition>
 
-    <div id="profile">
+    <div id="profile" v-if="cottage">
         <AdventureCaption :adventureName="this.cottage.name" :adventureId="this.entityId" :entityName="'cottage'"
             @create-sale="openModalForCreatingSale()" @edit-entity="this.$emit('edit-cottage', this.entityId)" @entity-deleted="this.$emit('entity-deleted', 2)"/>
         <div class="content">
@@ -94,7 +94,7 @@
                  
                 <div class="btn-wrap">
                     <h2>Schedule for this adventure</h2>
-                    <button class="btn" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
+                    <button class="btn" v-if="userRole != '' && userRole != 'ROLE_CLIENT'" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
                 <Calendar class="calendar" :events="events"/>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{ description }}</h2>
-    <div class="images" v-viewer v-if="images.length > 0">
+    <div class="images" v-viewer v-if="images!== undefined && images.length > 0">
       <span class="gallery" v-for="src in images" :key="src">
           <img :src="src" v-if="images.indexOf(src) < 6">
       </span>

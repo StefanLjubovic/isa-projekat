@@ -93,7 +93,7 @@
                 <Sales :sales="ship.sales" v-if="userRole != ''" :adventure="ship" @sale-to-reservation="saleToReservation"/><br/>
                 <div class="btn-wrap">
                     <h2>Schedule for this adventure</h2>
-                    <button class="btn" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
+                    <button class="btn" v-if="userRole != '' && userRole != 'ROLE_CLIENT'" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                     <button class="btn" @click="makeReservation()">Make a reservation&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
                 </div>
                 <Calendar class="calendar" :events="events"/>
@@ -143,7 +143,40 @@
                 id: this.entityId,
                 displayReservationModal : false,
                 type: 'Ship',
-                ship: {},
+                ship: {
+                    name: '',
+                    description: '',
+                    cancellationPercentage: undefined,
+                    images: [],
+                    allowedBehavior: [],
+                    unallowedBehavior: [],
+                    address: {
+                        streetName: "Bulevar Cara Lazara",
+                        streetNumber: "171",
+                        postalCode: "21000",
+                        city: "Novi Sad",
+                        country:  "Serbia",
+                        longitude: 19,
+                        latitude: 45
+                    },
+                    pricelistItems: [
+                        {
+                            service:'Standard offer',
+                            price: 3000
+                        }
+                    ],
+                    type: '',
+                    length: undefined,
+                    engineNumber: undefined,
+                    enginePower: undefined,
+                    maxSpeed: undefined,
+                    capacity: undefined,
+                    navigationEquipment: [],
+                    fishingEquipment: [],
+                    shipOwner:{
+                        email: ''
+                    }
+                },
                 sale: {
                     dateTimeFrom : '',
                     durationInHours: '',

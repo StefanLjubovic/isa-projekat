@@ -1,6 +1,6 @@
 <template>
         <div id="edit-entity-form"> 
-        <div class="title"><h1>Edit '{{backupShip.name}}' </h1></div> 
+        <div class="title"><h1>Edit ship </h1></div> 
         <div class="content">
             <div class="left-side">
                 <input type="text" class="form-control" placeholder="Name*" v-model="ship.name"/>
@@ -107,7 +107,7 @@
                 <ul v-if="ship.pricelistItems">
                     <li v-for="item in ship.pricelistItems" :key="item.id">
                         <div class="pricelistItem">
-                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*"/>
+                            <input type="text"   class="form-control" v-model="item.service" placeholder="Service*" :disabled="item.service == 'Standard offer'"/>
                             <input type="number" class="form-control" v-model="item.price"   placeholder="Price*"/>
                         </div>
                     </li>
@@ -290,8 +290,11 @@
                     this.allowedBehaviorNum = this.ship.allowedBehavior.length;
                     this.unallowedBehaviorNum = this.ship.unallowedBehavior.length;
                     this.pricelistItemNum = this.ship.pricelistItems.length;
-                    this.fishingEquipmentNum = this.ship.fishingEquipmentNum.length;
-                    this.backupShip = {...this.ship}
+                    if(this.ship.fishingEquipment)
+                         this.fishingEquipmentNum = this.ship.fishingEquipmentNum.length;
+                    
+                    this.backupShip = {...this.ship};
+                    this.backupShip.name = this.ship.name;
 
                     this.ship.pricelistItems = [];
                     let firstEl = undefined;
@@ -354,7 +357,7 @@
     #edit-entity-form{
         padding-top: 50px;
         padding-bottom: 50px;
-        margin-left: 15%;
+        margin-left: 18%;
         margin-right: 15%;
     }
     .percentage-label{
@@ -386,6 +389,18 @@
         width : 80%;
         margin-right: 10px;
         margin-bottom: 10px;
+    }
+    .navigation-equipment-inputs{
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        margin-left: 7%;
+    }
+    .navigation-equipment-inputs label{
+        margin-left: 2%;
+    }
+    input[type=checkbox] {
+        transform: scale(1.5);
     }
     .reason-area{
         width: 90%;
