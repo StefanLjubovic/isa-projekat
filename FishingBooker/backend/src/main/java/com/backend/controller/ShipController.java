@@ -35,9 +35,10 @@ public class ShipController {
 
     @PostMapping("/defineUnavailablePeriod")
     @PreAuthorize("hasRole('SHIP_OWNER')")
-    public ResponseEntity<String> defineUnavailablePeriodForShip(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
+    public ResponseEntity<UnavailablePeriodDTO> defineUnavailablePeriodForShip(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
         UnavailablePeriod period = this.shipService.defineUnavailablePeriodForShip(unavailablePeriodDTO);
-        return new ResponseEntity<>("Unavailable period saved!", HttpStatus.OK);
+        UnavailablePeriodDTO dto = new UnavailablePeriodDTO(period.getFromDateTime(), period.getToDateTime(), "Unavailable period created!");
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
