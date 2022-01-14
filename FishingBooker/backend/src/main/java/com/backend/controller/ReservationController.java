@@ -50,6 +50,7 @@ public class ReservationController {
     public ResponseEntity<String> saveReservationByAdvertiser(@RequestBody ReservationDTO reservationDTO) {
         Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
         reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
+        reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
         String createdReservation = reservationService.saveReservationCreatedByAdvertiser(reservation);
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }

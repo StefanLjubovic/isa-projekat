@@ -60,7 +60,6 @@ public class Reservation {
       this.rentingEntity = rentingEntity;
    }
 
-
    public Reservation(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Client client, RentingEntity rentingEntity) {
       this.id = id;
       this.dateTime = dateTime;

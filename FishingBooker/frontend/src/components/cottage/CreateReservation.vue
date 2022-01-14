@@ -91,7 +91,8 @@ export default {
                 additionalServices: [],
                 price: undefined,
                 entityId: this.entity.id,
-                entityName: this.entity.name 
+                entityName: this.entity.name,
+                entityVersion: this.entity.version 
             }           
         }
     },
@@ -191,7 +192,6 @@ export default {
             if(this.type == 'Cottage')
                 this.reservation.durationInHours *= 24;
 
-            console.log(JSON.stringify(this.reservation))
             axios.post(`${server.baseUrl}/reservation/createByAdvertiser`, this.reservation, { headers: headers })
                 .then((response) => {
                     this.$emit('close-modal')

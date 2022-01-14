@@ -39,6 +39,18 @@ public class RegistrationRequest {
    @JoinColumn(name = "address_id")
    private Address address;
 
+   public RegistrationRequest(String firstName, String lastName, String phoneNumber, String email, String password, Role role, String explanation, String biography, Address address) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.phoneNumber = phoneNumber;
+      this.email = email;
+      this.password = password;
+      this.role = role;
+      this.explanation = explanation;
+      this.biography = biography;
+      this.address = address;
+   }
+
    public RegistrationRequest() { }
 
    public RegistrationRequest(Integer id, String firstName, String lastName, String phoneNumber, String email, String password, String explanation) {

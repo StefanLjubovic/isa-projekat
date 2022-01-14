@@ -1,13 +1,14 @@
 package com.backend.services;
 
 import static org.junit.Assert.assertTrue;
-
 import com.backend.model.RentingEntity;
 import com.backend.model.Reservation;
 import com.backend.model.UnavailablePeriod;
+import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.service.ReservationService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,15 +19,17 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static com.backend.constants.EntityConstants.DB_UNAVAILABLE_PERIOD_END;
-import static com.backend.constants.EntityConstants.DB_UNAVAILABLE_PERIOD_START;
+import static com.backend.constants.EntityConstants.*;
 import static com.backend.constants.ReservationConstants.*;
 import static org.mockito.Mockito.*;
+import static com.backend.constants.UnavailaiblePeriodConstants.*;
 
 @RunWith(SpringRunner.class )
 @SpringBootTest
@@ -36,6 +39,9 @@ public class ReservationServiceTests {
     private IEntityRepository entityRepository;
 
     @Autowired
+    private IReservationRepository reservationRepository;
+
+    @Autowired
     private ReservationService reservationService;
 
     @Mock
@@ -43,6 +49,47 @@ public class ReservationServiceTests {
 
     @InjectMocks
     private ReservationService reservationServiceMock;
+
+    @Test(expected = ObjectOptimisticLockingFailureException.class)
+    public void testAdvertiserAndClientMakeReservationAtTheSameTime() throws Throwable{
+        RentingEntity entity = entityRepository.fetchWithSales(1);
+        Sale sale = new Sale (DB_DATE_ENTITY, DB_RESERVATION_DURATION, DB_MAX_PERSONS, DB_PRICE);
+        entity.getSales().add(sale);
+
+        Reservation reservation1 = new Reservation(DB_DATE_ENTITY,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE,entity);
+        Reservation reservation2 = new Reservation(DB_DATE_ENTITY2,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE);
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Future<?> future1 = executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try { Thread.sleep(3000); } catch (InterruptedException e) {}
+                reservationService.saveReservationAdv(reservation1);
+                return;
+            }
+        });
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                //RentingEntity entity = entityRepository.getById(1);
+                Set<Sale> sales = new HashSet<>();
+                entity.setAverageGrade(2);
+                entity.setSales(new HashSet<>());
+                entityRepository.save(entity);
+                reservationService.saveReservationAdv(reservation2);
+            }
+        });
+        try {
+            future1.get();
+        } catch (ExecutionException e) {
+            System.out.println("Exception from thread " + e.getCause().getClass());
+            throw e.getCause();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        executor.shutdown();
+    }
+
 
     @Test(expected = ObjectOptimisticLockingFailureException.class)
     public void testOptimisticLockingEntity() throws Throwable{
@@ -91,5 +138,10 @@ public class ReservationServiceTests {
         verify(reservationRepositoryMock, times(1)).getReservationByRentingEntity_Id(DB_RESERVATION_ID);
         verifyNoMoreInteractions(reservationRepositoryMock);
 
+    }
+
+    public void testIsEntityBooked() {
+        Reservation reservation = new Reservation(DB_RESERVATION_DATE_TEST,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE);
+        Assert.assertFalse(reservationService.isEntityBooked(reservation));
     }
 }

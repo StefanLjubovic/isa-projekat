@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -78,6 +79,11 @@ public class EntityController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<Boolean> checkIfSubscribed(@PathVariable Integer id, Principal principal) {
         return new ResponseEntity<>(entityService.checkIfSubscribed(principal.getName(), id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/version/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> getVersion(@PathVariable Integer id) {
+        return new ResponseEntity<>(entityService.getEntityById(id).getVersion(), HttpStatus.OK);
     }
 
     @GetMapping(value="/get-on-sale/{state}",produces = MediaType.APPLICATION_JSON_VALUE)

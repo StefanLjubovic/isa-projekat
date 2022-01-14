@@ -19,10 +19,21 @@ public class ReservationDTO {
     private Boolean isCanceled = false;
     private Integer entityId;
     private String entityName;
+    private Integer entityVersion;
     private String clientName;
     private String clientEmail;
 
     public ReservationDTO() {}
+
+    public ReservationDTO(Date dateTime, int durationInHours, int maxPersons, double price, Boolean isCanceled, Integer entityId, String entityName) {
+        this.dateTime = dateTime;
+        this.durationInHours = durationInHours;
+        this.maxPersons = maxPersons;
+        this.price = price;
+        this.isCanceled = isCanceled;
+        this.entityId = entityId;
+        this.entityName = entityName;
+    }
 
     public ReservationDTO(Integer id, Date dateTime, int durationInHours, int maxPersons, double price, Boolean isCanceled, Integer entityId, String entityName) {
         this.id = id;
@@ -130,6 +141,10 @@ public class ReservationDTO {
     public void setEntityName(String entityName) {
         this.entityName = entityName;
     }
+
+    public Integer getEntityVersion() { return entityVersion; }
+
+    public void setEntityVersion(Integer entityVersion) {  this.entityVersion = entityVersion;  }
 
     public String getClientName() {
         return clientName;

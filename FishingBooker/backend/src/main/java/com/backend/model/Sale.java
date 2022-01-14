@@ -45,6 +45,12 @@ public class Sale {
       this.maximumPersons = maximumPersons;
       this.expireDateTime = expireDateTime;
       this.additionalServices = additionalServices;
+   }
+
+   public Sale(Date dateTimeFrom, int durationInHours, int maximumPersons, double price) {
+      this.dateTimeFrom = dateTimeFrom;
+      this.durationInHours = durationInHours;
+      this.maximumPersons = maximumPersons;
       this.price = price;
    }
 

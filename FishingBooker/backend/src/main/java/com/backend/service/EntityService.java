@@ -140,6 +140,10 @@ public class EntityService {
     public RentingEntity fetchWithUnavailablePeriods(Integer id){
         return entityRepository.fetchWithPeriods(id);
     }
+
+    @Transactional(readOnly = true)
+    public RentingEntity fetchWithSales (Integer id) { return entityRepository.fetchWithSales(id); }
+
     public boolean checkIfSubscribed(String email,Integer entityId){
         RentingEntity e = entityRepository.checkIfSubscribed(email,entityId);
         if(e == null) return false;

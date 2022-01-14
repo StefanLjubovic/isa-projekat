@@ -5,6 +5,7 @@ import com.backend.model.*;
 import com.backend.repository.IEntityRepository;
 import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -110,6 +111,7 @@ public class ReservationService {
         }
     }
 
+    @Transactional
     public String saveReservationCreatedByAdvertiser(Reservation newReservation) {
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;
@@ -130,6 +132,7 @@ public class ReservationService {
         return saveReservationIfThereIsNoOverlapping(newReservation);
     }
 
+    @Transactional
     private String saveReservationIfThereIsNoOverlapping(Reservation newReservation) {
         if(newReservation.overlapsWithExistingUnavailablePeriods(this.entityRepository.fetchWithPeriods(newReservation.getRentingEntity().getId()).getUnavailablePeriods()))
             return "There is already defined unavailable period in this time range!";
@@ -140,11 +143,22 @@ public class ReservationService {
         if(newReservation.overlapsWithExistingSales(this.entityRepository.fetchWithSales(newReservation.getRentingEntity().getId()).getSales()))
             return "There is already defined sale in this time range!";
 
-       this.reservationRepository.save(newReservation);
-       return "Successfully created reservation!";
+        saveReservationAdv(newReservation);
+
+        return "Successfully created reservation!";
     }
 
-    private boolean isEntityBookedNow(Reservation r) {
+    @Transactional
+    public void saveReservationAdv(Reservation newReservation) {
+        try {
+            this.reservationRepository.save(newReservation);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new ObjectOptimisticLockingFailureException("Entity is already reserved!", e);
+        }
+    }
+
+    @Transactional
+    public boolean isEntityBooked(Reservation r) {
         return r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled();
     }
 }
