@@ -42,9 +42,10 @@ public class CottageController {
 
     @PostMapping("/defineUnavailablePeriod")
     @PreAuthorize("hasRole('COTTAGE_OWNER')")
-    public ResponseEntity<String> defineUnavailablePeriodForCottage(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
+    public ResponseEntity<UnavailablePeriodDTO> defineUnavailablePeriodForCottage(@RequestBody UnavailablePeriodDTO unavailablePeriodDTO, Principal user) throws ResponseStatusException{
         UnavailablePeriod period = this.cottageService.defineUnavailablePeriodForCottage(unavailablePeriodDTO);
-        return new ResponseEntity<>("Unavailable period saved!", HttpStatus.OK);
+        UnavailablePeriodDTO dto = new UnavailablePeriodDTO(period.getFromDateTime(), period.getToDateTime(), "Unavailable period created!");
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/add")

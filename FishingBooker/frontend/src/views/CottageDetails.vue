@@ -317,10 +317,17 @@
                     this.unavailablePeriod = { fromDateTime: '', toDateTime: '' }
                     window.$('#unavailable-period-modal').modal('hide');
 
+                    this.events.push({
+                        start : new Date(response.data.fromDateTime), 
+                        end : new Date(response.data.toDateTime),
+                        title : response.data.message,
+                        class: 'calendar-unavailable'
+                    });
+
                     this.$swal({
                         position: 'top-end',
                         icon: 'success',
-                        title: response.data,
+                        title: "Unavailable period saved!",
                         showConfirmButton: false,
                         timer: 2000
                     })
