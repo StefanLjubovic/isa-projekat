@@ -53,6 +53,11 @@ public class EntityService {
     }
 
     @Transactional
+    public RentingEntity findLockedById(Integer id){
+        return entityRepository.findLockedById(id);
+    }
+
+    @Transactional
     public void deleteEntity(Integer id) {
         if(isEntityBooked(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entity is now booked.");
 

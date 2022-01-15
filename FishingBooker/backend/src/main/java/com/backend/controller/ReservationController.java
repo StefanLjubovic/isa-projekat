@@ -47,11 +47,11 @@ public class ReservationController {
 
     @PostMapping(value = "/createByAdvertiser")
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER, SHIP_OWNER, INSTRUCTOR')")
-    public ResponseEntity<String> saveReservationByAdvertiser(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<Reservation> saveReservationByAdvertiser(@RequestBody ReservationDTO reservationDTO) {
         Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
-        reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
-        reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
-        String createdReservation = reservationService.saveReservationCreatedByAdvertiser(reservation);
+        //reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
+        //reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
+        Reservation createdReservation = reservationService.saveReservationCreatedByAdvertiser(reservation, reservationDTO.getEntityId());
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 

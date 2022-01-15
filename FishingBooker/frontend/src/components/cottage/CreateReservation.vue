@@ -194,18 +194,27 @@ export default {
                 this.reservation.durationInHours *= 24;
 
             axios.post(`${server.baseUrl}/reservation/createByAdvertiser`, this.reservation, { headers: headers })
-                .then((response) => {
+                .then(() => {
                     this.$emit('new-reservation', this.reservation)
                     this.reservation = { dateTime: '', durationInHours: '', additionalServices: [], price: undefined }
 
                     this.$swal({
-                        position: 'inherit',
-                        icon: 'info',
-                        title: response.data,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Successfully created reservation!',
                         showConfirmButton: false,
                         timer: 3000
                     })
                 })
+                .catch(error => {
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'info',
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                 })
                 this.$emit('close-modal')
         }
     }

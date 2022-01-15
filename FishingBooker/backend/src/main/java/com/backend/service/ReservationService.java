@@ -7,9 +7,11 @@ import com.backend.repository.IReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,8 +34,9 @@ public class ReservationService {
     @Autowired
     IEntityRepository entityRepository;
 
+    @Transactional
     public Boolean Save(Reservation reservation){
-        reservation.setRentingEntity(entityService.fetchWithUnavailablePeriods(reservation.getRentingEntity().getId()));
+        reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
         Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
             return false;
@@ -112,7 +115,11 @@ public class ReservationService {
     }
 
     @Transactional
-    public String saveReservationCreatedByAdvertiser(Reservation newReservation) {
+    public Reservation saveReservationCreatedByAdvertiser(Reservation newReservation, Integer entityId) throws PessimisticLockingFailureException{
+        RentingEntity entity = this.entityService.findLockedById(entityId);
+        if(entity == null)
+            throw new PessimisticLockingFailureException("Two or more access to database at the same time!");
+        newReservation.setRentingEntity(this.entityService.findLockedById(entityId));
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;
         for(Reservation r : entityReservations) {
@@ -124,40 +131,37 @@ public class ReservationService {
 
         try{
             if (currentReservation.equals(null))
-                return  "You can only create reservation if there is a current reservation!";
-        } catch (NullPointerException e) { return  "You can only create reservation for client with current reservation!"; }
-
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only create reservation if there is a current reservation!");
+        } catch (NullPointerException e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only create reservation if there is a current reservation!"); }
 
         newReservation.setClient(currentReservation.getClient());
         return saveReservationIfThereIsNoOverlapping(newReservation);
     }
 
     @Transactional
-    private String saveReservationIfThereIsNoOverlapping(Reservation newReservation) {
+    public Reservation saveReservationIfThereIsNoOverlapping(Reservation newReservation) {
         if(newReservation.overlapsWithExistingUnavailablePeriods(this.entityRepository.fetchWithPeriods(newReservation.getRentingEntity().getId()).getUnavailablePeriods()))
-            return "There is already defined unavailable period in this time range!";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
 
         if (newReservation.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(newReservation.getRentingEntity().getName())))
-            return "There is already defined reservation in this time range!";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined reservation in this time range!");
 
         if(newReservation.overlapsWithExistingSales(this.entityRepository.fetchWithSales(newReservation.getRentingEntity().getId()).getSales()))
-            return "There is already defined sale in this time range!";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
 
-        saveReservationAdv(newReservation);
-
-        return "Successfully created reservation!";
+        return saveReservationAdv(newReservation);
     }
 
     @Transactional
-    public void saveReservationAdv(Reservation newReservation) {
+    public Reservation saveReservationAdv(Reservation newReservation) {
         try {
-            this.reservationRepository.save(newReservation);
-        } catch (ObjectOptimisticLockingFailureException e) {
-            throw new ObjectOptimisticLockingFailureException("Entity is already reserved!", e);
+            Reservation savedReservation = this.reservationRepository.save(newReservation);
+            return savedReservation;
+        } catch (PessimisticLockingFailureException e) {
+            throw new PessimisticLockingFailureException("Two or more access to database at the same time!", e);
         }
     }
 
-    @Transactional
     public boolean isEntityBooked(Reservation r) {
         return r.getDateTime().before(new Date()) && r.getReservationEndTime().after(new Date()) && !r.getCanceled();
     }
