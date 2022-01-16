@@ -39,7 +39,11 @@ public class SaleService {
 
     @Transactional
     public Sale createSaleForEntity(Sale sale, Integer entityId) throws PessimisticLockingFailureException{
-        RentingEntity entity = entityRepository.findLockedById(entityId);
+        RentingEntity entity;
+        try {
+                entity = entityRepository.findLockedById(entityId);
+        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
+
         entity.setSales(entityRepository.fetchWithSales(entityId).getSales());
         entity.setUnavailablePeriods(entityRepository.fetchWithPeriods(entityId).getUnavailablePeriods());
 

@@ -36,7 +36,9 @@ public class ReservationService {
 
     @Transactional
     public Boolean Save(Reservation reservation){
-        reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
+        try {
+            reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
+        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Owner already reserved this entity!"); }
         Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
             return false;
@@ -116,9 +118,9 @@ public class ReservationService {
 
     @Transactional
     public ReservationDTO saveReservationCreatedByAdvertiser(Reservation newReservation, Integer entityId) throws PessimisticLockingFailureException{
-        RentingEntity entity = this.entityService.findLockedById(entityId);
-        if(entity == null)
-            throw new PessimisticLockingFailureException("Two or more access to database at the same time!");
+        try {
+            RentingEntity entity = this.entityService.findLockedById(entityId);
+        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
         newReservation.setRentingEntity(this.entityService.findLockedById(entityId));
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;

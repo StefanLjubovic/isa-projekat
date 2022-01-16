@@ -25,7 +25,8 @@ VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdrav
        ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
        ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
        ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4),
-       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 2);
+       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 2),
+       ('CLIENT', nextval('user_seq_gen'), 'mikamikic@gmail.com', true, 'Mika', 'Mikic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value, version)
