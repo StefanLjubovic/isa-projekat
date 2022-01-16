@@ -4,10 +4,12 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -28,6 +30,9 @@ public class CottageService {
 
     @Autowired
     private IUnavailablePeriodRepository unavailablePeriodRepository;
+
+    @Autowired
+    private IEntityRepository entityRepository;
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
@@ -120,24 +125,28 @@ public class CottageService {
         return entity;
     }
 
+    @Transactional
     public UnavailablePeriod defineUnavailablePeriodForCottage(UnavailablePeriodDTO unavailablePeriodDTO) {
         UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
-        Cottage cottage = this.cottageRepository.findByName(unavailablePeriodDTO.getEntityName());
+        RentingEntity entity;
+        try{
+             entity = this.entityRepository.findLockedById(unavailablePeriodDTO.getEntityId());
+        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
 
-        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName())))
+        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(entity.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
 
-        if (unavailablePeriod.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(cottage.getName())))
+        if (unavailablePeriod.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(entity.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined reservation in this time range!");
 
-        if(unavailablePeriod.overlapsWithExistingSales(getAllSalesForCottage(cottage.getName())))
+        if(unavailablePeriod.overlapsWithExistingSales(getAllSalesForCottage(entity.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
 
         this.unavailablePeriodRepository.save(unavailablePeriod);
-        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(cottage.getName());
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(entity.getName());
         unavailablePeriods.add(unavailablePeriod);
-        cottage.setUnavailablePeriods(unavailablePeriods);
-        this.cottageRepository.save(cottage);
+        entity.setUnavailablePeriods(unavailablePeriods);
+        this.entityRepository.save(entity);
         return unavailablePeriod;
     }
 

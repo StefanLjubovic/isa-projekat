@@ -8,6 +8,7 @@ public class UnavailablePeriodDTO {
     private Date fromDateTime;
     private Date toDateTime;
     private String message;
+    private Integer entityId;
     private String entityName;
 
     public UnavailablePeriodDTO() {}
@@ -23,6 +24,12 @@ public class UnavailablePeriodDTO {
         this.fromDateTime = fromDateTime;
         this.toDateTime = toDateTime;
         this.entityName = name;
+    }
+
+    public UnavailablePeriodDTO(Date fromDateTime, Date toDateTime, Integer id){
+        this.fromDateTime = fromDateTime;
+        this.toDateTime = toDateTime;
+        this.entityId = id;
     }
 
     public Integer getId() {
@@ -56,6 +63,10 @@ public class UnavailablePeriodDTO {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public Integer getEntityId() { return entityId; }
+
+    public void setEntityId(Integer entityId) { this.entityId = entityId; }
 
     public String getEntityName() {   return entityName;  }
 

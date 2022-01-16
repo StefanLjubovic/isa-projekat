@@ -47,4 +47,6 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "0")})
     RentingEntity findLockedById(Integer id);
+
+    RentingEntity findByName(String name);
 }

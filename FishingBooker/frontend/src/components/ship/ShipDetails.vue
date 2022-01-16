@@ -311,7 +311,7 @@
                     'Authorization': `Bearer ${this.token}`
                 }
 
-                this.unavailablePeriod.entityName = this.ship.name;
+                this.unavailablePeriod.entityId = this.id;
 
                 axios.post(`${server.baseUrl}/ship/defineUnavailablePeriod`, this.unavailablePeriod, { headers: headers })
                 .then((response) => {
@@ -353,6 +353,7 @@
                 }
 
                 axios.post(`${server.baseUrl}/sale/${this.id}`, this.sale, { headers: headers })
+
                 .then((response) => {
                     this.ship.sales.push(response.data);
 

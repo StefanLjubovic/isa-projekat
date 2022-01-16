@@ -309,7 +309,7 @@
                     'Authorization': `Bearer ${this.token}`
                 }
 
-                this.unavailablePeriod.entityName = this.cottage.name;
+                this.unavailablePeriod.entityId = this.id;
 
                 axios.post(`${server.baseUrl}/cottage/defineUnavailablePeriod`, this.unavailablePeriod, { headers: headers })
                 .then((response) => {

@@ -4,8 +4,10 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
@@ -27,6 +29,8 @@ public class ShipService {
     private IPricelistItemRepository pricelistItemRepostory;
     @Autowired
     private IUnavailablePeriodRepository unavailablePeriodRepository;
+    @Autowired
+    private IEntityRepository entityRepository;
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
@@ -37,20 +41,20 @@ public class ShipService {
     public Ship findById(Integer id) throws IOException {
         Ship ship = shipRepository.findById(id).get();
         ship.setImages(imageConverter.loadImages(ship.getImages()));
-        ship.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName()));
-        ship.setPricelistItems(getAllPricelistItemsForCottage(ship.getName()));
+        ship.setUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName()));
+        ship.setPricelistItems(getAllPricelistItemsForShip(ship.getName()));
         ship.setSales(getAllSalesForShip(ship.getName()));
         return ship;
     }
 
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
-    public Set<UnavailablePeriod> getAllUnavailablePeriodsForCottage(String cottageName) {
+    public Set<UnavailablePeriod> getAllUnavailablePeriodsForShip(String cottageName) {
         Ship ship = this.shipRepository.fetchUnavailablePeriodsByName(cottageName);
         return ship.getUnavailablePeriods();
     }
 
-    public Set<PricelistItem> getAllPricelistItemsForCottage(String cottageName) {
+    public Set<PricelistItem> getAllPricelistItemsForShip(String cottageName) {
         Ship ship = this.shipRepository.fetchPricelistItemsByName(cottageName);
         return ship.getPricelistItems();
     }
@@ -60,11 +64,15 @@ public class ShipService {
         return ship.getSales();
     }
 
+    @Transactional
     public UnavailablePeriod defineUnavailablePeriodForShip(UnavailablePeriodDTO unavailablePeriodDTO) {
         UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
-        Ship ship = this.shipRepository.findByName(unavailablePeriodDTO.getEntityName());
+        RentingEntity ship;
+        try{
+            ship = this.entityRepository.findLockedById(unavailablePeriodDTO.getEntityId());
+        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
 
-        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(ship.getName())))
+        if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName())))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
 
         if (unavailablePeriod.overlapsWithExistingReservations(this.reservationRepository.fetchByEntityName(ship.getName())))
@@ -74,10 +82,10 @@ public class ShipService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
 
         this.unavailablePeriodRepository.save(unavailablePeriod);
-        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForCottage(ship.getName());
+        Set<UnavailablePeriod> unavailablePeriods = getAllUnavailablePeriodsForShip(ship.getName());
         unavailablePeriods.add(unavailablePeriod);
         ship.setUnavailablePeriods(unavailablePeriods);
-        this.shipRepository.save(ship);
+        this.entityRepository.save(ship);
         return unavailablePeriod;
     }
 
