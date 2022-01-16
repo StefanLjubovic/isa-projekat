@@ -377,6 +377,15 @@
 
                     this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
                 })
+                .catch(error => {
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'info',
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                 })
               },
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }

@@ -55,7 +55,7 @@ public class RentingEntity {
    private Set<PricelistItem> pricelistItems = new HashSet<PricelistItem>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @JsonIgnoreProperties("rentingEntity")
+   @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<Sale> sales = new HashSet<Sale>();
 
    @Version

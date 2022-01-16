@@ -379,6 +379,15 @@
 
                     this.sale = { dateTimeFrom : '', durationInHours: undefined, maximumPersons: undefined, expireDateTime: '', additionalServices: '', price: undefined }
                 })
+                .catch(error => {
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'info',
+                        title: error.response.data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                 })
              },
             cancelSale: function() {
                 this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }

@@ -3,8 +3,10 @@ package com.backend.service;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
@@ -35,8 +37,11 @@ public class SaleService {
     @Autowired
     private ISaleRepository saleRepository;
 
-    public Sale createSaleForEntity(Sale sale, Integer entityId) {
-        RentingEntity entity = entityRepository.fetchWithSalesAndPeriods(entityId);
+    @Transactional
+    public Sale createSaleForEntity(Sale sale, Integer entityId) throws PessimisticLockingFailureException{
+        RentingEntity entity = entityRepository.findLockedById(entityId);
+        entity.setSales(entityRepository.fetchWithSales(entityId).getSales());
+        entity.setUnavailablePeriods(entityRepository.fetchWithPeriods(entityId).getUnavailablePeriods());
 
         if (overlapsWithExistingUnavailablePeriod(sale, entity))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");

@@ -115,7 +115,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation saveReservationCreatedByAdvertiser(Reservation newReservation, Integer entityId) throws PessimisticLockingFailureException{
+    public ReservationDTO saveReservationCreatedByAdvertiser(Reservation newReservation, Integer entityId) throws PessimisticLockingFailureException{
         RentingEntity entity = this.entityService.findLockedById(entityId);
         if(entity == null)
             throw new PessimisticLockingFailureException("Two or more access to database at the same time!");
@@ -135,7 +135,8 @@ public class ReservationService {
         } catch (NullPointerException e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only create reservation if there is a current reservation!"); }
 
         newReservation.setClient(currentReservation.getClient());
-        return saveReservationIfThereIsNoOverlapping(newReservation);
+        Reservation savedReservation = saveReservationIfThereIsNoOverlapping(newReservation);
+        return new ReservationDTO(savedReservation.getDateTime(), savedReservation.getDurationInHours(), savedReservation.getMaxPersons(), savedReservation.getPrice(), currentReservation.getCanceled(), entityId, savedReservation.getRentingEntity().getName());
     }
 
     @Transactional
