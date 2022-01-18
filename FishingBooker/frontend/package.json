@@ -6,8 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "babel-node ./index.js",
-    "production": "vue-cli-service serve --mode production"
+    "postinstall": "npm run build",
+    "start": "node server.js"
   },
   "dependencies": {
     "@popperjs/core": "^2.10.2",
