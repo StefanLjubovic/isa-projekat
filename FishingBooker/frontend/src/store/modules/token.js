@@ -18,7 +18,7 @@ const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada
     async fetchToken({commit}, loginRequest){
         const options = {
             method: 'POST',
-            url: 'http://localhost:8082/auth/login',
+            url: process.env.VUE_APP_BACKEND_URL+'/auth/login',
             data: loginRequest,
         };
         const response = await axios(options)
@@ -33,7 +33,7 @@ const actions = {       // takodje za izmenu stanja iz state ali asinhrono, kada
         commit('setRole', '');
         const options = {
             method: 'POST',
-            url: 'http://localhost:8082/auth/logout',
+            url: process.env.VUE_APP_BACKEND_URL+'/auth/logout',
             'Authorization': `Bearer ${token}`
         };
         await axios(options)
