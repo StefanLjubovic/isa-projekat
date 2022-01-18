@@ -1,7 +1,7 @@
 import axios from 'axios';
 import localStorage from '../store';
 let server = {};
-server.baseUrl = 'http://localhost:8082';
+server.baseUrl = 'https://isa-fishing-booker.herokuapp.com/';
 
 server.getAllEntities = async (state) =>{
     const options ={
