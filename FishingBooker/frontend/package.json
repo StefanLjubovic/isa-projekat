@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "babel-node ./index.js",
+    "start": "serve -s build",
     "production": "vue-cli-service serve --mode production"
   },
   "dependencies": {
