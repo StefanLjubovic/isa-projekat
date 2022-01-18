@@ -7,7 +7,9 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start": "serve -s build",
-    "production": "vue-cli-service serve --mode production"
+    "production": "vue-cli-service serve --mode production",
+    "heroku-prebuild": "npm install -f",
+    "heroku-postbuild": "npm run prod"
   },
   "dependencies": {
     "@popperjs/core": "^2.10.2",
