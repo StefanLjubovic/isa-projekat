@@ -1,7 +1,7 @@
 import axios from 'axios';
 import localStorage from '../store';
 let server = {};
-server.baseUrl = 'http://localhost:8082';
+server.baseUrl = process.env.VUE_APP_BACKEND_URL;
 
 server.getAllEntities = async (state) =>{
     const options ={
