@@ -30,7 +30,7 @@ public class AdventureService {
     private IPricelistItemRepository pricelistItemRepostory;
 
     @Autowired
-    private IReservationRepository reservationRepository;
+    private InstructorService instructorService;
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
@@ -56,6 +56,7 @@ public class AdventureService {
         RegisteredUser user = userRepository.findByEmail(adventure.getFishingInstructor().getEmail());
         FishingInstructor instructor = (FishingInstructor) user;
         adventure.setFishingInstructor(instructor);
+        adventure.setUnavailablePeriods(instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail()));
 
         adventureRepository.save(adventure);
 

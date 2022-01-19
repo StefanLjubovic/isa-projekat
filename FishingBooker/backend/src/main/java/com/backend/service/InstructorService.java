@@ -9,6 +9,7 @@ import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -32,12 +33,14 @@ public class InstructorService {
     @Autowired
     private SystemPropertyService systemPropertyService;
 
+    @Transactional(readOnly = false)
     public UnavailablePeriod defineUnavailablePeriodForInstructor(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
+        List<Adventure> adventures = adventureRepository.fetchAdventuresByFishingInstructor_Email(instructorEmail);
 
         if (overlapsWithExistingUnavailablePeriod(unavailablePeriod, fishingInstructor))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined unavailable period in this time range!");
-        if (overlapsWithExistingSale(unavailablePeriod, instructorEmail))
+        if (overlapsWithExistingSale(unavailablePeriod, adventures))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already defined sale in this time range!");
         if (overlapsWithExistingReservation(unavailablePeriod, instructorEmail))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is already booked reservation in this time range!");
@@ -45,20 +48,32 @@ public class InstructorService {
         UnavailablePeriod savedPeriod = unavailablePeriodRepository.save(unavailablePeriod);
         fishingInstructor.getUnavailablePeriods().add(savedPeriod);
         userRepository.save(fishingInstructor);
+        saveUnavailablePeriodToAdventures(adventures, savedPeriod);
 
         return savedPeriod;
     }
 
+    @Transactional(readOnly = false)
+    public void saveUnavailablePeriodToAdventures(List<Adventure> adventures, UnavailablePeriod savedPeriod) {
+        for(Adventure a : adventures) {
+            a.getUnavailablePeriods().add(savedPeriod);
+            adventureRepository.save(a);
+        }
+    }
+
+    @Transactional(readOnly = true)
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForInstructor(String instructorEmail) {
         FishingInstructor fishingInstructor = userRepository.fetchByEmail(instructorEmail);
         return fishingInstructor.getUnavailablePeriods();
     }
 
+    @Transactional(readOnly = true)
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForInstructorById(Integer id) {
         FishingInstructor fishingInstructor = userRepository.fetchInstructorWithUnavailablePeriodsById(id);
         return fishingInstructor.getUnavailablePeriods();
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> getReservationsForInstructor(String email) {
         List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(email);
         List<Reservation> reservations = new ArrayList<>();
@@ -83,9 +98,7 @@ public class InstructorService {
         return false;
     }
 
-    private boolean overlapsWithExistingSale(UnavailablePeriod unavailablePeriod, String instructorEmail) {
-        List<Adventure> adventures = adventureRepository.fetchAdventuresByFishingInstructor_Email(instructorEmail);
-
+    private boolean overlapsWithExistingSale(UnavailablePeriod unavailablePeriod, List<Adventure> adventures) {
         for(Adventure a : adventures) {
             for(Sale s : a.getSales()) {
                 if (s.getDateTimeFrom().before(unavailablePeriod.getToDateTime()) && s.getSaleEndTime().after(unavailablePeriod.getFromDateTime()))
@@ -104,6 +117,7 @@ public class InstructorService {
         return false;
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationIncomeDTO> calculateReservationIncomeForInstructor(String email) {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<Reservation> allReservations = getReservationsForInstructor(email);

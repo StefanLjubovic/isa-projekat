@@ -50,8 +50,10 @@ public class ReservationService {
     @Transactional(readOnly = false)
     public boolean saveTransactional(Reservation reservation){
         try{
-            entityRepository.save(reservation.getRentingEntity());
-            reservationRepository.save(reservation);
+            Reservation savedReservation = reservationRepository.save(reservation);
+            RentingEntity entity = reservation.getRentingEntity();
+            entity.getReservations().add(savedReservation);
+            entityRepository.save(entity);
         }catch (ObjectOptimisticLockingFailureException e){
             return false;
         }catch(PessimisticLockingFailureException ex){
@@ -159,6 +161,9 @@ public class ReservationService {
     public Reservation saveReservationAdv(Reservation newReservation) {
         try {
             Reservation savedReservation = this.reservationRepository.save(newReservation);
+            RentingEntity entity = newReservation.getRentingEntity();
+            entity.getReservations().add(savedReservation);
+            entityRepository.save(entity);
             return savedReservation;
         } catch (PessimisticLockingFailureException e) {
             throw new PessimisticLockingFailureException("Two or more access to database at the same time!", e);
