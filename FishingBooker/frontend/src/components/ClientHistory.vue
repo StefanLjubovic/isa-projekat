@@ -29,14 +29,18 @@
 export default {
   props:['state','sort','reservations'],
   emits:['open-complaint','open-revision'],
-  updated(){
-    this.reservationsForDisplay = JSON.parse(JSON.stringify(this.reservations));
-    if(this.$props.sort == 'Price')this.reservationsForDisplay.sort(function(a, b){return a.price-b.price});
-    if(this.$props.sort == 'Duration')this.reservationsForDisplay.sort(function(a, b){return a.durationInHours-b.durationInHours});
-    if(this.$props.sort == 'Date')this.reservationsForDisplay.sort(function(a, b){ return new Date(b.dateTime) - new Date(a.dateTime)});
-    if(this.state==4) this.entityName='Cottage'   
-    else if(this.state==5) this.entityName='Ship';
-    else if(this.state==6) this.entityName='Adventure';
+  watch:{
+    reservations: function(){
+      this.reservationsForDisplay = JSON.parse(JSON.stringify(this.reservations));
+    },
+    sort: function(){
+      if(this.$props.sort == 'Price')this.reservationsForDisplay.sort(function(a, b){return a.price-b.price});
+      if(this.$props.sort == 'Duration')this.reservationsForDisplay.sort(function(a, b){return a.durationInHours-b.durationInHours});
+      if(this.$props.sort == 'Date')this.reservationsForDisplay.sort(function(a, b){ return new Date(b.dateTime) - new Date(a.dateTime)});
+      if(this.state==4) this.entityName='Cottage'   
+      else if(this.state==5) this.entityName='Ship';
+      else if(this.state==6) this.entityName='Adventure';
+    }
   },
   data(){
     return{

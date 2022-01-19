@@ -281,6 +281,7 @@ server.alterSubscriptions = async(id)=>{
 };
 
 server.getEntitiesOnSale = async(state)=>{
+    console.log('tuuuu')
     const token = localStorage.getters.getToken
     const options ={
         method: 'GET',

@@ -195,7 +195,6 @@ export default {
       this.$emit("filter-sort", this.sort, this.name, this.address, this.mark , this.dateFrom,this.dateTo);
     },
     getOffers(){
-      console.log(this.dateFrom)
       this.offerActivate= !this.offerActivate
       this.$emit('get-offers',this.offerActivate)
     },

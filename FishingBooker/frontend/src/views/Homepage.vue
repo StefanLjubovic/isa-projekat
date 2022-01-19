@@ -317,7 +317,6 @@ export default {
         document.getElementById('appContainer').style.height='unset';
       },
       openComplaint: function(reservation){
-        console.log(reservation)
         this.showComplaint=true;
         document.getElementById('appContainer').style.overflow ='hidden';
         document.getElementById('appContainer').style.height='100vh';
@@ -331,7 +330,6 @@ export default {
           content : content,
           entityId : this.selectedReservation.entityId
         }
-        console.log(complaintDTO)
          await Server.saveComplaint(complaintDTO)
       },
       closeRevision: function(){
@@ -405,12 +403,13 @@ export default {
         this.historySort = value
       },
       async getOffers(offerActive){
-        console.log(offerActive)
-        if(!offerActive && (this.state== 1 || this.state==2 || this.state==3)){
+        console.log(this.state+offerActive)
+        if(!offerActive && (this.state== 0 || this.state==1 || this.state==2)){
         const resp=await Server.getAllEntities(this.state)
         this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
         this.entities = resp.data
-        }else if(offerActive && (this.state== 1 || this.state==2 || this.state==3)){ 
+        }else if(offerActive && (this.state== 0 || this.state==1 || this.state==2)){ 
+          console.log('eeeeeeeeeeeeee')
           const resp=await Server.getEntitiesOnSale(this.state)
         this.entitiesForDisplay=JSON.parse(JSON.stringify(resp.data));
         console.log(resp.data)
