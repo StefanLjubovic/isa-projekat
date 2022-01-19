@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class )
 @SpringBootTest
-public class UserServiceTests {
+public class UserServiceTest {
 
     @Mock
     private IUserRepository userRepository;

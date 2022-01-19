@@ -117,7 +117,7 @@ public class AuthenticationController {
             throw new Exception("auth.message.expired");
         }
         RegisteredUser user=userService.saveClient(requestReg);
-        URI frontend = new URI("http://localhost:8081?id="+user.getId());
+        URI frontend = new URI("https://isa-fishing-booker.herokuapp.com?id="+user.getId());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(frontend);
         return new ResponseEntity<>(user,httpHeaders, HttpStatus.SEE_OTHER);

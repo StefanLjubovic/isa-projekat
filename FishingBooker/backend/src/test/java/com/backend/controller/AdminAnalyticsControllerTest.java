@@ -25,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class AdminAnalyticsControllerTests {
+public class AdminAnalyticsControllerTest {
 
     private static final String URL_PREFIX = "/adminAnalytics";
 

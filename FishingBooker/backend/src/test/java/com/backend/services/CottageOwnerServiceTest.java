@@ -22,7 +22,7 @@ import static com.backend.constants.ReservationConstants.*;
 
 @RunWith(SpringRunner.class )
 @SpringBootTest
-public class CottageOwnerServiceTests {
+public class CottageOwnerServiceTest {
 
     @Autowired
     private ICottageRepository cottageRepository;

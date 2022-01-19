@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CottageOwnerControllerTests {
+public class CottageOwnerControllerTest {
 
     private static final String URL_PREFIX = "/cottageOwner";
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RevisionControllerTests {
+public class RevisionControllerTest {
 
     private static final String URL_PREFIX = "/revision";
 

@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EntityControllerTests {
+public class EntityControllerTest {
 
     private static final String URL_PREFIX = "/entity";
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EntityServiceTests {
+public class EntityServiceTest {
 
     @Mock
     private IEntityRepository entityRepository;

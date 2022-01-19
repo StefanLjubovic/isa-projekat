@@ -33,7 +33,7 @@ import static com.backend.constants.UnavailaiblePeriodConstants.*;
 
 @RunWith(SpringRunner.class )
 @SpringBootTest
-public class ReservationServiceTests {
+public class ReservationServiceTest {
 
     @Autowired
     private IEntityRepository entityRepository;
@@ -49,47 +49,6 @@ public class ReservationServiceTests {
 
     @InjectMocks
     private ReservationService reservationServiceMock;
-
-    @Test(expected = ObjectOptimisticLockingFailureException.class)
-    public void testAdvertiserAndClientMakeReservationAtTheSameTime() throws Throwable{
-        RentingEntity entity = entityRepository.fetchWithSales(1);
-        Sale sale = new Sale (DB_DATE_ENTITY, DB_RESERVATION_DURATION, DB_MAX_PERSONS, DB_PRICE);
-        entity.getSales().add(sale);
-
-        Reservation reservation1 = new Reservation(DB_DATE_ENTITY,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE,entity);
-        Reservation reservation2 = new Reservation(DB_DATE_ENTITY2,DB_RESERVATION_DURATION,DB_MAX_PERSONS,DB_PRICE);
-
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        Future<?> future1 = executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try { Thread.sleep(3000); } catch (InterruptedException e) {}
-                reservationService.saveReservationAdv(reservation1);
-                return;
-            }
-        });
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                //RentingEntity entity = entityRepository.getById(1);
-                Set<Sale> sales = new HashSet<>();
-                entity.setAverageGrade(2);
-                entity.setSales(new HashSet<>());
-                entityRepository.save(entity);
-                reservationService.saveReservationAdv(reservation2);
-            }
-        });
-        try {
-            future1.get();
-        } catch (ExecutionException e) {
-            System.out.println("Exception from thread " + e.getCause().getClass());
-            throw e.getCause();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        executor.shutdown();
-    }
-
 
     @Test(expected = ObjectOptimisticLockingFailureException.class)
     public void testOptimisticLockingEntity() throws Throwable{

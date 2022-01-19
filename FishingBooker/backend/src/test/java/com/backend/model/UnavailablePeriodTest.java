@@ -18,7 +18,7 @@ import static com.backend.constants.RegisteredUserConstants.DB_ID;
 
 @RunWith(SpringRunner.class )
 @SpringBootTest
-public class UnavailablePeriodTests {
+public class UnavailablePeriodTest {
 
     @Test
     public void testCheckIfOverlapsWithExistingUnavailablePeriod(){
