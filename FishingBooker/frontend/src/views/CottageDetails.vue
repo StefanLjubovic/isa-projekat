@@ -8,7 +8,7 @@
                     <button class="btn btn-close close"></button>
                 </div>
                 <div class="modal-body">
-                    <v-date-picker v-model="v$.sale.dateTimeFrom.$model" mode="dateTime" is24hr>
+                    <v-date-picker v-model="v$.sale.dateTimeFrom.$model" :min-date='new Date()' mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="Period date and time*" :value="inputValue" v-on="inputEvents" />
                             <div class="text-danger" v-if="v$.sale.dateTimeFrom.$error">Value is required and can't be before the expiration date </div>
@@ -27,7 +27,7 @@
                     <input type="number" class="form-control" placeholder="Price*" v-model="v$.sale.price.$model"/>
                     <div class="text-danger" v-if="v$.sale.price.$error">{{v$.sale.price.$errors[0].$message}} </div>
 
-                    <v-date-picker v-model="v$.sale.expireDateTime.$model" mode="dateTime" is24hr>
+                    <v-date-picker v-model="v$.sale.expireDateTime.$model" :min-date='new Date()' mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="Sale expiration date and time*" :value="inputValue" v-on="inputEvents" />
                             <div class="text-danger" v-if="v$.sale.expireDateTime.$error">Value is required and can't be after the start date</div>
@@ -53,14 +53,14 @@
                     <button class="btn btn-close close"></button>
                 </div>
                 <div class="modal-body">
-                    <v-date-picker v-model="v$.unavailablePeriod.fromDateTime.$model" mode="dateTime" is24hr>
+                    <v-date-picker v-model="v$.unavailablePeriod.fromDateTime.$model" :min-date='new Date()' mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="Start period date and time*" :value="inputValue" v-on="inputEvents"/>
                             <div class="text-danger" v-if="v$.unavailablePeriod.fromDateTime.$error">Value is required and can't be before the end date </div>
                         </template>
                     </v-date-picker>
 
-                    <v-date-picker v-model="v$.unavailablePeriod.toDateTime.$model" mode="dateTime" is24hr>
+                    <v-date-picker v-model="v$.unavailablePeriod.toDateTime.$model" :min-date='new Date()' mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300" placeholder="End period date and time*" :value="inputValue" v-on="inputEvents"/>
                             <div class="text-danger" v-if="v$.unavailablePeriod.toDateTime.$error">Value is required and can't be after the start date</div>

@@ -58,6 +58,9 @@ public class RentingEntity {
    @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<Sale> sales = new HashSet<Sale>();
 
+   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   private Set<Reservation> reservations = new HashSet<>();
+
    @Version
    private Integer version;
 
@@ -220,6 +223,14 @@ public class RentingEntity {
 
    public void setSales(Set<Sale> sale) {
       this.sales = sale;
+   }
+
+   public Set<Reservation> getReservations() {
+      return reservations;
+   }
+
+   public void setReservations(Set<Reservation> reservations) {
+      this.reservations = reservations;
    }
 
    @Override

@@ -44,6 +44,7 @@ public class ShipService {
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForShip(ship.getName()));
         ship.setSales(getAllSalesForShip(ship.getName()));
+        ship.setReservations(null);
         return ship;
     }
 
