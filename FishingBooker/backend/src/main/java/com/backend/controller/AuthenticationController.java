@@ -14,6 +14,7 @@ import com.backend.service.VerificationTokenService;
 import com.backend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,6 +55,9 @@ public class AuthenticationController {
 
     @Autowired
     VerificationTokenService verificationTokenService;
+
+    @Autowired
+    Environment env;
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
@@ -116,8 +120,9 @@ public class AuthenticationController {
         if ((token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new Exception("auth.message.expired");
         }
+        String path = env.getProperty("frontent.url");
         RegisteredUser user=userService.saveClient(requestReg);
-        URI frontend = new URI("https://isa-fishing-booker.herokuapp.com?id="+user.getId());
+        URI frontend = new URI(path+"?id="+user.getId());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(frontend);
         return new ResponseEntity<>(user,httpHeaders, HttpStatus.SEE_OTHER);
