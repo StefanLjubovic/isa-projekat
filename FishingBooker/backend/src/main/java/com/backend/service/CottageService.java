@@ -4,6 +4,8 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,7 @@ public class CottageService {
         cottage.setReservations(null);
         return cottage;
     }
-
+    @Cacheable("cottage")
     public Cottage findByName(String name) {
         return cottageRepository.findByName(name);
     }
@@ -71,6 +73,7 @@ public class CottageService {
         return newCottage;
     }
 
+    @CachePut(cacheNames = "cottage", key = "#product.id")
     public Cottage update (Cottage cottage) throws IOException {
         Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
         cottageToUpdate.setName(cottage.getName());
