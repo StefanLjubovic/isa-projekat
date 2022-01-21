@@ -44,5 +44,12 @@
             <heap>2</heap>
         </resources>
     </cache>
+    <cache alias="adventure" uses-template="default">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.backend.model.Adventure</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
 
 </config>

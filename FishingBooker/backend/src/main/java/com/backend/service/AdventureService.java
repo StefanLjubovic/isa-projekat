@@ -6,6 +6,8 @@ import com.backend.repository.IPricelistItemRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,6 +36,7 @@ public class AdventureService {
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
+    @Cacheable("adventure")
     public Adventure getById(Integer id) throws  IOException {
         Adventure adventure = adventureRepository.fetchById(id);
         adventure.setImages(loadImages(adventure.getImages()));
@@ -45,6 +48,7 @@ public class AdventureService {
         return adventureRepository.getAdventuresByFishingInstructor_Email(email);
     }
 
+    @Cacheable("adventure")
     public Adventure findByName(String name) {
         return adventureRepository.findAdventureByName(name);
     }
@@ -90,6 +94,7 @@ public class AdventureService {
         return  base64Images;
     }
 
+    @CachePut(cacheNames = "adventure", key = "#adventure.id")
     public Adventure update(Adventure adventure) throws IOException {
         Adventure adventureToUpdate = adventureRepository.findById(adventure.getId()).get();
         adventureToUpdate.setName(adventure.getName());

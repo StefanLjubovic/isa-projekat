@@ -73,7 +73,7 @@ public class CottageService {
         return newCottage;
     }
 
-    @CachePut(cacheNames = "cottage", key = "#product.id")
+    @CachePut(cacheNames = "cottage", key = "#cottage.id")
     public Cottage update (Cottage cottage) throws IOException {
         Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
         cottageToUpdate.setName(cottage.getName());
