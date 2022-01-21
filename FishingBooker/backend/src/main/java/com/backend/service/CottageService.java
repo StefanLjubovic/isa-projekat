@@ -49,6 +49,7 @@ public class CottageService {
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
         cottage.setSales(getAllSalesForCottage(cottage.getName()));
+        cottage.setReservations(null);
         return cottage;
     }
     @Cacheable("cottage")

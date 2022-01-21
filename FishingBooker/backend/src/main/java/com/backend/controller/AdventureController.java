@@ -35,6 +35,7 @@ public class AdventureController {
 
         try {
             adventure = adventureService.getById(id);
+            adventure.setReservations(null);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not load images!");
         }

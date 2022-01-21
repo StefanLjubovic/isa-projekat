@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -63,9 +64,13 @@ public class InstructorController {
     @PostMapping("/unavailablePeriod")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<UnavailablePeriodDTO> defineUnavailablePeriodForInstructor(@RequestBody UnavailablePeriod unavailablePeriod, Principal user) throws ResponseStatusException{
-        UnavailablePeriod period = instructorService.defineUnavailablePeriodForInstructor(unavailablePeriod, user.getName());
-        UnavailablePeriodDTO dto = new UnavailablePeriodDTO(period.getId(), period.getFromDateTime(), period.getToDateTime(), "Instructor unavailable.");
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        try {
+            UnavailablePeriod period = instructorService.defineUnavailablePeriodForInstructor(unavailablePeriod, user.getName());
+            UnavailablePeriodDTO dto = new UnavailablePeriodDTO(period.getId(), period.getFromDateTime(), period.getToDateTime(), "Instructor unavailable.");
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Looks like someone is booking your entity now. Please try again later.");
+        }
     }
 
     @GetMapping("/unavailablePeriods")
