@@ -4,6 +4,8 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,7 @@ public class ShipService {
         return ship;
     }
 
+    @Cacheable("ship")
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForShip(String cottageName) {
@@ -108,6 +111,7 @@ public class ShipService {
         return newShip;
     }
 
+    @CachePut(cacheNames = "ship", key = "#ship.id")
     public Ship update(Ship ship) throws IOException {
         Ship shipToUpdate = this.shipRepository.findById(ship.getId()).get();
         shipToUpdate.setName(ship.getName());
