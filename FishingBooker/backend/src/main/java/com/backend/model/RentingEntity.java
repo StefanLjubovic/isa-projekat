@@ -48,6 +48,7 @@ public class RentingEntity {
    private Address address;
 
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<UnavailablePeriod> unavailablePeriods = new HashSet<UnavailablePeriod>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -59,6 +60,7 @@ public class RentingEntity {
    private Set<Sale> sales = new HashSet<Sale>();
 
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<Reservation> reservations = new HashSet<>();
 
    @Version
