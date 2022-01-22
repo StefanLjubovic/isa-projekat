@@ -78,10 +78,10 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
+        <ClientReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
+        <CreateReservation :entity="cottage" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
 
     <div id="profile" v-if="cottage">
@@ -90,7 +90,7 @@
         <div class="content">
             <div class="left-side">
                 <ImageGallery :images="cottage.images"  description="Photos of our cottage"/><hr/>
-                <Sales :sales="cottage.sales" v-if="userRole != ''" :adventure="cottage" @sale-to-reservation="saleToReservation"/><br/>
+                <Sales :sales="cottage.sales" v-if="userRole != ''" :adventure="cottage" @sale-to-reservation="saleToReservation" @update-entity="updateEntity"/><br/>
                  
                 <div class="btn-wrap">
                     <h2>Schedule for this adventure</h2>
@@ -285,6 +285,11 @@
             openModalForCreatingSale(){
                 window.$('#new-sale-modal').modal('show');
             },
+             updateEntity(adventure){
+            console.log('aaa')
+            console.log(adventure);
+            this.adventure = adventure;
+        },
             makeReservation: function() {
                 this.displayReservationModal = true;
                 document.getElementById('appContainer').style.overflow ='hidden';

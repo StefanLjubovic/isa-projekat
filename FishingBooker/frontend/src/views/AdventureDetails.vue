@@ -45,11 +45,11 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
+        <ClientReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
 
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
+        <CreateReservation :entity="adventure" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
 
     <div id="page" v-if="adventure">
@@ -60,7 +60,7 @@
                 <InstructorDetails :instructor="adventure.fishingInstructor"/><hr/>
                 <ImageGallery :images="adventure.images" description="Photos from previous events"/><hr/>
 
-                <Sales :sales="adventure.sales" v-if="userRole != ''" :adventure="adventure" @sale-to-reservation="saleToReservation"/><br/>
+                <Sales :sales="adventure.sales" v-if="userRole != ''" :adventure="adventure" @sale-to-reservation="saleToReservation" @update-entity="updateEntity"/><br/>
 
                 <div class="btn-placeholder">
                     <h2>Schedule for this adventure</h2>
@@ -227,6 +227,11 @@ export default {
         cancelSale: function() {
             this.sale = { dateTimeFrom : '', durationInHours: '', maximumPersons: '', expireDateTime: '', additionalServices: '', price: '' }
             window.$('#new-sale-modal').modal('hide');
+        },
+        updateEntity(adventure){
+            console.log('aaa')
+            console.log(adventure);
+            this.adventure = adventure;
         },
         createSale: function() {
             const headers = {

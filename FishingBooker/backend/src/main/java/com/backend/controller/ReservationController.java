@@ -3,6 +3,7 @@ package com.backend.controller;
 
 import com.backend.dto.ReservationDTO;
 import com.backend.dto.ReservationSaleDTO;
+import com.backend.model.RentingEntity;
 import com.backend.model.Reservation;
 import com.backend.service.EntityService;
 import com.backend.service.ReservationService;
@@ -38,14 +39,14 @@ public class ReservationController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Void> saveReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<RentingEntity> saveReservation(@RequestBody ReservationDTO reservationDTO) {
         if(reservationDTO ==null || reservationDTO.getDurationInHours() <= 0 || reservationDTO.getDateTime() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
         Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
         reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
         reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
-        boolean saved = reservationService.Save(reservation);
-        if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
-        return new ResponseEntity<>(HttpStatus.OK);
+        RentingEntity entity = reservationService.Save(reservation);
+        if(entity == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
+        return new ResponseEntity<>(entity,HttpStatus.OK);
     }
 
     @PostMapping(value = "/createByAdvertiser")
@@ -103,12 +104,12 @@ public class ReservationController {
 
     @PostMapping(value = "/fast-reservation/",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Boolean> saveFastReservation(@RequestBody ReservationSaleDTO dto) {
+    public ResponseEntity<RentingEntity> saveFastReservation(@RequestBody ReservationSaleDTO dto) {
         if(dto.getReservation() ==null || dto.getSale() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
         saleService.delete(dto.getSale());
-        boolean saved = reservationService.Save(dto.getReservation());
-        if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
-        return new ResponseEntity<>(true,HttpStatus.OK);
+        RentingEntity entity = reservationService.Save(dto.getReservation());
+        if(entity == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
+        return new ResponseEntity<>(entity,HttpStatus.OK);
     }
 
 }

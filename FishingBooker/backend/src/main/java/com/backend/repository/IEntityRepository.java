@@ -48,5 +48,15 @@ public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> 
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "0")})
     RentingEntity findLockedById(Integer id);
 
+    @Query(value = "SELECT c FROM RentingEntity c LEFT JOIN FETCH c.sales where c.name = :name")
+    RentingEntity fetchSalesByName(@Param("name") String name);
+    @Query(value = "SELECT c FROM RentingEntity c LEFT JOIN FETCH c.unavailablePeriods where c.name = :name")
+    RentingEntity fetchUnavailablePeriodsByName(@Param("name") String name);
+    @Query(value="SELECT c FROM RentingEntity c LEFT JOIN FETCH c.pricelistItems pl WHERE c.name = :name")
+    RentingEntity fetchPricelistItemsByName(@Param("name") String name);
+
+    @Query(value="SELECT c FROM RentingEntity c LEFT JOIN FETCH c.reservations pl WHERE c.name = :name")
+    RentingEntity fetchReservationsByName(@Param("name") String name);
+
     RentingEntity findByName(String name);
 }

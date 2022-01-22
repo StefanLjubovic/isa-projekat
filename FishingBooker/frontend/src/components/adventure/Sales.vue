@@ -26,10 +26,11 @@ export default ({
         sales: Array,
         adventure: Object
     },
-    emits: ['sale-to-reservation'],
+    emits: ['sale-to-reservation','update-entity'],
     data() {
         return {
             salesArray: this.sales,
+            entityId: this.adventure.id       
         }
     },
     computed:{
@@ -75,15 +76,17 @@ export default ({
                     if (result.value) {
                         const client=await server.getLoggedUser()
                         const reservation = {
-                            rentingEntity : this.adventure,
-                            dateTime : sale.dateTimeFrom,
-                            client : client.data,
-                            price : sale.price,
-                            isCanceled : false,
-                            additionalServices : [],
-                            maxPersons : sale.maximumPersons,
-                            durationInHours : sale.durationInHours
-                        }
+                dateTime : sale.dateTimeFrom,
+                durationInHours :  sale.durationInHours,
+                maxPersons : sale.maximumPersons,
+                additionalServices : this.adventure.additionalServices,
+                price : sale.price,
+                isCanceled : false,
+                entityId: this.entityId,
+                client : client.data,
+                entityVersion: this.adventure.version
+            }
+            console.log(this.adventure.id)
                         const dto={
                             reservation : reservation,
                             sale : sale
@@ -99,6 +102,7 @@ export default ({
                                 })
                                 console.log('Indexxx'+ this.salesArray.indexOf(sale))
                                 console.log(this.salesArray)
+                                this.$emit('update-entity',resp.data);
                                 this.$emit('sale-to-reservation', reservation);
                                 this.salesArray.splice(this.salesArray.indexOf(sale), 1);
                             }

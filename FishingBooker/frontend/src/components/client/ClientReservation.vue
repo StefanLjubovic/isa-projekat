@@ -93,7 +93,7 @@ export default {
         entity : Object,
         type : String
     },
-    emits: ['new-reservation'],
+    emits: ['new-reservation','update-entity'],
     data(){
         return{
             requests: [],
@@ -264,7 +264,7 @@ export default {
                     var endTime = new Date(reservation.dateTime);
                     endTime.setHours(parseInt(endTime.getHours()) + parseInt(reservation.durationInHours));
                     this.$emit('new-reservation', { dateFrom: reservation.dateTime, dateTo: endTime});
-                    
+                    this.$emit('update-entity',resp.data);
                     this.$swal.fire({
                         icon: 'success',
                         title: 'Success',

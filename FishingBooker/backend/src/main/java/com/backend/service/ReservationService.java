@@ -32,16 +32,22 @@ public class ReservationService {
     @Autowired
     IEntityRepository entityRepository;
 
-    public Boolean Save(Reservation reservation){
+    @Transactional
+    public RentingEntity Save(Reservation reservation){
         //try {
         //    reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
        // } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Owner already reserved this entity!"); }
         Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
-            return false;
-        if(!saveReservationClient(updatedReservation)) return false;
+            return null;
+        if(!saveReservationClient(updatedReservation)) return null;
         mailService.sendReservationMail(updatedReservation);
-        return true;
+        RentingEntity entity = entityRepository.findById(reservation.getRentingEntity().getId()).get();
+        entity.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(entity.getName()));
+        entity.setPricelistItems(getAllPricelistItemsForCottage(entity.getName()));
+        entity.setSales(getAllSalesForCottage(entity.getName()));
+        entity.setReservations(null);
+        return entity;
     }
 
     @Transactional(readOnly = false)
@@ -50,13 +56,33 @@ public class ReservationService {
             Reservation savedReservation = reservationRepository.save(reservation);
             RentingEntity entity = reservation.getRentingEntity();
             entity.getReservations().add(savedReservation);
-            entityRepository.save(entity);
         }catch (ObjectOptimisticLockingFailureException e){
             return false;
         }catch(PessimisticLockingFailureException ex){
             return false;
         }
         return true;
+    }
+
+
+
+    public Set<UnavailablePeriod> getAllUnavailablePeriodsForCottage(String cottageName) {
+        RentingEntity cottage = this.entityRepository.fetchUnavailablePeriodsByName(cottageName);
+        return cottage.getUnavailablePeriods();
+    }
+
+    public Set<Reservation> getAllReservationsForEntity(String cottageName) {
+        RentingEntity cottage = this.entityRepository.fetchReservationsByName(cottageName);
+        return cottage.getReservations();
+    }
+    public Set<PricelistItem> getAllPricelistItemsForCottage(String cottageName) {
+        RentingEntity cottage = this.entityRepository.fetchPricelistItemsByName(cottageName);
+        return cottage.getPricelistItems();
+    }
+
+    public Set<Sale> getAllSalesForCottage(String cottageName) {
+        RentingEntity cottage = this.entityRepository.fetchSalesByName(cottageName);
+        return cottage.getSales();
     }
 
     @Transactional
