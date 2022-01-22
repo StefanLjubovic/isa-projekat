@@ -141,8 +141,12 @@ export default ({
                 })
             })
             .catch((error) => {
+                if(error.response.data.message == "No such complaint.") {
+                    this.allComplaints.splice(this.allComplaints.indexOf(this.selectedComplaint), 1);
+                    this.complaints.splice(this.complaints.indexOf(this.selectedComplaint), 1);
+                    window.$('#response-to-complaint-modal').modal('hide');
+                }
                 this.$swal(error.response.data.message);
-                console.log(error)
             })
         },
         cancelResponding: function() {

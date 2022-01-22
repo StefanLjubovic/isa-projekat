@@ -138,6 +138,14 @@ export default ({
                     timer: 2000
                 })
             })
+            .catch((error) => {
+                if(error.response.data.message == "No such revision.") {
+                    this.revisions.splice(this.revisions.indexOf(this.selectedRevision), 1);
+                    this.allRevisions.splice(this.allRevisions.indexOf(this.selectedRevision), 1);
+                    window.$('#revision-modal').modal('hide');
+                }
+                this.$swal(error.response.data.message);
+            })
         },
         disapproveRevision: function() {
             const headers = {
@@ -145,11 +153,20 @@ export default ({
                 Accept: 'application/json',
                 'Authorization': `Bearer ${this.token}`
             }
+            
             axios.delete(`${server.baseUrl}/revision/disapprove/${this.selectedRevision.id}`, { headers: headers })
             .then(() => {
                 this.revisions.splice(this.revisions.indexOf(this.selectedRevision), 1);
                 this.allRevisions.splice(this.allRevisions.indexOf(this.selectedRevision), 1);
                 window.$('#revision-modal').modal('hide');
+            })
+            .catch((error) => {
+                if(error.response.data.message == "No such revision.") {
+                    this.revisions.splice(this.revisions.indexOf(this.selectedRevision), 1);
+                    this.allRevisions.splice(this.allRevisions.indexOf(this.selectedRevision), 1);
+                    window.$('#revision-modal').modal('hide');
+                }
+                this.$swal(error.response.data.message);
             })
         }
     }
