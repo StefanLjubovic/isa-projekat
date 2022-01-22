@@ -36,7 +36,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="confirm-buttons">
-                        <button class="btn submit-btn" @click="createSale()" >Submit</button>
+                        <button class="btn submit-btn" @click="createSale()" :disabled="v$.sale.$invalid" >Submit</button>
                         <button class="btn cancel-btn" @click="cancelSale()">Cancel</button>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="confirm-buttons">
-                        <button class="btn submit-btn" @click="createUnavailablePeriod()" >Submit</button>
+                        <button class="btn submit-btn" @click="createUnavailablePeriod()" :disabled="v$.unavailablePeriod.$invalid">Submit</button>
                         <button class="btn cancel-btn" @click="cancelUnavailablePeriod()">Cancel</button>
                     </div>
                 </div>

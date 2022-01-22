@@ -208,12 +208,12 @@
                 console.log(this.adventure)
                 this.adventure.fishingInstructor = {}
                 axios.put(`${server.baseUrl}/adventure/update`, this.adventure, {headers: headers})
-                .then((response) => {
+                .then(() => {
                     
                     this.$emit('adventure-updated', this.adventure.id)
                     this.$swal({
                         icon: 'success',
-                        title: response.data,
+                        title: 'Successfully edited adventure!',
                         showConfirmButton: false,
                         timer: 2000
                     })
