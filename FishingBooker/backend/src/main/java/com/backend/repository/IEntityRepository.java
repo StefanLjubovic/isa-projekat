@@ -12,7 +12,7 @@ import java.util.Set;
 @Repository
 public interface IEntityRepository extends JpaRepository<RentingEntity,Integer> {
 
-    @Query("SELECT e  FROM RentingEntity e LEFT JOIN FETCH e.images where type(e) = ?1")
+    @Query("SELECT distinct e FROM RentingEntity e LEFT JOIN FETCH e.images where type(e) = ?1")
     <T extends RentingEntity> List<T> getEntityByClass(Class<?> type);
 
     @Query("select entity" +
