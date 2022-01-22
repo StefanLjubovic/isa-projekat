@@ -43,7 +43,7 @@ public class AdminAnalyticsControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "zdravkocolic@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
+    @WithMockUser(username = "user.fishingbooker+admin@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
     public void testGetIncomePercentage() throws Exception {
         mockMvc.perform(get(URL_PREFIX + "/percentage")).andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
@@ -52,7 +52,7 @@ public class AdminAnalyticsControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "zdravkocolic@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
+    @WithMockUser(username = "user.fishingbooker+admin@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
     public void testGetAllReservationIncomes() throws Exception {
         mockMvc.perform(get(URL_PREFIX + "/income")).andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
