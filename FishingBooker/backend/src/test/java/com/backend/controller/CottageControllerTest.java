@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class CottageControllerTests {
+public class CottageControllerTest {
 
     private static final String URL_PREFIX = "/cottage";
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
