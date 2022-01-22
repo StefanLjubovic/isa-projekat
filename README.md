@@ -8,11 +8,15 @@
 
 ### Running our project locally
 #### Backend
-The backend is a Maven SpringBoot application. Source code is in the <i>./FishingBooker/backend</i> folder. It can be started normally as a Java project in Eclipse or IntelliJ. We used Java 15 version.\
+The backend is a Maven SpringBoot application. Source code is in the <i>./FishingBooker/backend</i> folder. It can be started normally as a Java project in Eclipse or IntelliJ. We used Java 15 version. Server is running on port 8082.\
 PostgreSQL is needed for the backend. Local database connection parameters are configured in the <i>application.properties</i> file.
   
 #### Frontend
-The frontend is a Vue.js application. Source code is in the <i>./FishingBooker/frontend</i> folder. It can be started by running <code>npm install</code> and then <code>npm run serve</code> in the mentioned folder.
+The frontend is a Vue.js application. Source code is in the <i>./FishingBooker/frontend</i> folder. It can be started by running <code>npm install</code> and then <code>npm run serve</code> in the mentioned folder. Then, URL address is http://localhost:8081/.
+
+### Hroku deployment
+Frontend - https://isa-fishing-booker.herokuapp.com/
+Backend - https://isa-fishing-booker-backend.herokuapp.com/
 
 ### Emails and passwords for all roles
 - Client: ljubovicstefan@gmail.com, 123456
