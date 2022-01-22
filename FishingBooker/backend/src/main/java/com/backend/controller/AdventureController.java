@@ -1,10 +1,6 @@
 package com.backend.controller;
 
-import com.backend.dto.CottageDTO;
-import com.backend.dto.UpdateCottageDTO;
 import com.backend.model.Adventure;
-import com.backend.model.Cottage;
-import com.backend.model.FishingInstructor;
 import com.backend.repository.IUserRepository;
 import com.backend.service.AdventureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +30,7 @@ public class AdventureController {
         Adventure adventure = null;
 
         try {
-            adventure = adventureService.getById(id);
+            adventure = adventureService.fetchById(id);
             adventure.setReservations(null);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not load images!");
