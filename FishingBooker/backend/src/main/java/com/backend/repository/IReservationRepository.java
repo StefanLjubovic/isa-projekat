@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface IReservationRepository extends JpaRepository<Reservation, Integer> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    //@Lock(LockModeType.PESSIMISTIC_WRITE)
     Reservation save(Reservation reservation);
 
     @Query("SELECT new com.backend.dto.ReservationDTO(r.id,r.dateTime,r.durationInHours,r.maxPersons,r.price,r.isCanceled,r.rentingEntity.id,r.rentingEntity.name)  " +

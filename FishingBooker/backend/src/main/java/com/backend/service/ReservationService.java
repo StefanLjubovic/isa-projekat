@@ -32,15 +32,14 @@ public class ReservationService {
     @Autowired
     IEntityRepository entityRepository;
 
-    @Transactional
     public Boolean Save(Reservation reservation){
-        try {
-            reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
-        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Owner already reserved this entity!"); }
+        //try {
+        //    reservation.setRentingEntity(this.entityRepository.findLockedById(reservation.getRentingEntity().getId()));
+       // } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Owner already reserved this entity!"); }
         Reservation updatedReservation=entityService.checkIfAlreadyReserved(reservation);
         if(updatedReservation==null)
             return false;
-        if(!saveTransactional(updatedReservation)) return false;
+        if(!saveReservationClient(updatedReservation)) return false;
         mailService.sendReservationMail(updatedReservation);
         return true;
     }
@@ -165,6 +164,23 @@ public class ReservationService {
         } catch (OptimisticLockingFailureException e) {
             throw new OptimisticLockingFailureException("Two or more access to database at the same time!", e);
         }
+    }
+
+    @Transactional(readOnly = false)
+    public boolean saveReservationClient(Reservation newReservation) {
+        try {
+            //Reservation savedReservation = this.reservationRepository.save(newReservation);
+            Set<Reservation> entityRes = new HashSet<>();
+            entityRes.addAll(reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId()));
+            entityRes.add(newReservation);
+            RentingEntity entity = newReservation.getRentingEntity();
+            entity.setReservations(entityRes);
+            entityRepository.save(entity);
+            return true;
+        } catch (OptimisticLockingFailureException e) {
+            throw new OptimisticLockingFailureException("Two or more access to database at the same time!", e);
+        }
+        //return false;
     }
 
     public boolean isEntityBooked(Reservation r) {

@@ -45,7 +45,7 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClass(Cottage.class);
         return entities;
     }
-    @Cacheable("entity")
+
     public RentingEntity getEntityById(Integer id) {
         return entityRepository.findById(id).get();
     }
@@ -129,7 +129,8 @@ public class EntityService {
     }
 
     private boolean checkEntityPeriods(Reservation reservation, Date endDate) {
-        for(UnavailablePeriod period : reservation.getRentingEntity().getUnavailablePeriods())
+        Set<UnavailablePeriod> periods = this.entityRepository.fetchWithPeriods(reservation.getRentingEntity().getId()).getUnavailablePeriods();
+        for(UnavailablePeriod period : periods)
             if(period.getFromDateTime().compareTo(endDate) <=0 &&
                     period.getToDateTime().compareTo(reservation.getDateTime())>=0)
                 return true;

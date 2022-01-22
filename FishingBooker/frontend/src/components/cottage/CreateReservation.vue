@@ -94,7 +94,8 @@ export default {
                 entityId: this.entity.id,
                 entityName: this.entity.name,
                 entityVersion: this.entity.version 
-            }            
+            },
+            verison: undefined            
         }
     },
     watch: {
@@ -184,7 +185,10 @@ export default {
             this.persons = index
         },
         fetchEntity(){
-
+             axios.get(`${server.baseUrl}/entity/version${this.reservation.entityId}`)
+                    .then((res) => {
+                        this.reservation.entityVersion = res.data;
+                })
         },
         saveReservation(){
             const headers = {
@@ -196,9 +200,13 @@ export default {
             if(this.type == 'Cottage')
                 this.reservation.durationInHours *= 24;
 
+            //this.fetchEntity();
+            console.log(this.reservation.entityVersion);
+
             axios.post(`${server.baseUrl}/reservation/createByAdvertiser`, this.reservation, { headers: headers })
-                .then(() => {
+                .then((resp) => {
                     this.$emit('new-reservation', this.reservation)
+                    this.reservation.entityVersion = resp.data.entityVersion;
                     this.reservation = { dateTime: '', durationInHours: '', additionalServices: [], price: undefined }
 
                     this.$swal({

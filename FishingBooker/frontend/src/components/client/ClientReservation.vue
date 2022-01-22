@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import server from '../../server/index';
 import moment from 'moment';
 export default {
@@ -105,7 +106,8 @@ export default {
             start : 7,
             end: 10,
             rentingEntity :this.entity,
-            enabled : false           
+            enabled : false,
+            entityId: this.entity.id          
         }
     },
     watch: {
@@ -219,6 +221,12 @@ export default {
         changeButtonContext(index){
             this.persons = index
         },
+         fetchEntity(){
+             axios.get(`${server.baseUrl}/entity/version${this.entityId}`)
+                    .then((res) => {
+                        this.entityVersion = res.data;
+                })
+        },
         async saveReservation(){
             const diffTime = Math.abs(new Date(this.dateTo) - new Date(this.dateFrom));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
@@ -235,16 +243,21 @@ export default {
                 durationRet= diffDays * 24
             }
             const client=await server.getLoggedUser()
+
             const reservation = {
-                rentingEntity : this.rentingEntity,
                 dateTime : time,
-                client : client.data,
+                durationInHours : durationRet,
+                maxPersons : this.GetPersons(),
+                additionalServices : services,
                 price : this.price,
                 isCanceled : false,
-                additionalServices : services,
-                maxPersons : this.GetPersons(),
-                durationInHours : durationRet
+                entityId: this.entityId,
+                client : client.data,
+                entityVersion: this.rentingEntity.version
             }
+
+            this.fetchEntity();
+         
             await server.saveReservation(reservation)
             .then(resp=> {
                 if(resp.success){

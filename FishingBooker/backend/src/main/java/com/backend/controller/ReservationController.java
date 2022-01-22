@@ -38,8 +38,11 @@ public class ReservationController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<Void> saveReservation(@RequestBody Reservation reservation) {
-        if(reservation ==null || reservation.getDurationInHours() <= 0 || reservation.getDateTime() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
+    public ResponseEntity<Void> saveReservation(@RequestBody ReservationDTO reservationDTO) {
+        if(reservationDTO ==null || reservationDTO.getDurationInHours() <= 0 || reservationDTO.getDateTime() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
+        Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
+        reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
+        reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
         boolean saved = reservationService.Save(reservation);
         if(!saved) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(HttpStatus.OK);
@@ -52,6 +55,7 @@ public class ReservationController {
         reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
         reservation.getRentingEntity().setVersion(reservationDTO.getEntityVersion());
         ReservationDTO createdReservation = reservationService.saveReservationCreatedByAdvertiser(reservation);
+        createdReservation.setEntityVersion(this.entityService.getEntityById(reservationDTO.getEntityId()).getVersion());
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
