@@ -45,8 +45,8 @@ public class ShipController {
     @PreAuthorize("hasAnyRole('SHIP_OWNER')")
     public ResponseEntity<String> addNewShip(Principal user, @RequestBody ShipDTO shipDTO) throws IOException {
         Ship ship = modelMapper.map(shipDTO, Ship.class);
-        if(shipService.findByName(ship.getName()) != null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ship with this name already exists!");
+       // if(shipService.findByName(ship.getName()) != null)
+        //    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ship with this name already exists!");
 
         ship.getShipOwner().setEmail(user.getName());
         this.shipService.save(ship);

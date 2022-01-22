@@ -36,7 +36,7 @@ public class AdventureService {
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
-    @Cacheable("adventure")
+    //@Cacheable("adventure")
     public Adventure getById(Integer id) throws  IOException {
         Adventure adventure = adventureRepository.fetchById(id);
         adventure.setImages(loadImages(adventure.getImages()));
@@ -48,7 +48,7 @@ public class AdventureService {
         return adventureRepository.getAdventuresByFishingInstructor_Email(email);
     }
 
-    //@Cacheable("adventure")
+    @Cacheable("adventure")
     public Adventure findByName(String name) {
         return adventureRepository.findAdventureByName(name);
     }
@@ -94,7 +94,7 @@ public class AdventureService {
         return  base64Images;
     }
 
-    //@CachePut(cacheNames = "adventure", key = "#adventure.id")
+    @CachePut(cacheNames = "adventure", key = "#adventure.id")
     public Adventure update(Adventure adventure) throws IOException {
         Adventure adventureToUpdate = adventureRepository.findById(adventure.getId()).get();
         adventureToUpdate.setName(adventure.getName());

@@ -49,8 +49,8 @@ public class AdventureController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<String> addNewAdventure(Principal user, @RequestBody Adventure adventure) throws IOException {
 
-        if(adventureService.findByName(adventure.getName()) != null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adventure with this name already exists!");
+        //if(adventureService.findByName(adventure.getName()) != null)
+         //   throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Adventure with this name already exists!");
 
         adventure.getFishingInstructor().setEmail(user.getName());
         adventureService.save(adventure);
@@ -67,8 +67,8 @@ public class AdventureController {
         return new ResponseEntity<>("Successfully edited cottage!", HttpStatus.OK);
     }
 
-    private boolean existsAdventureWithSameName(Adventure adventure) {
-        Adventure existedAdventure = adventureService.findByName(adventure.getName());
+    private boolean existsAdventureWithSameName(Adventure adventure) throws IOException {
+        Adventure existedAdventure = adventureService.getById(adventure.getId());
         return existedAdventure != null && existedAdventure.getId() != adventure.getId();
     }
 }

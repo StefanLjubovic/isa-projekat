@@ -52,8 +52,8 @@ public class CottageController {
     @PreAuthorize("hasAnyRole('COTTAGE_OWNER')")
     public ResponseEntity<String> addNewCottage(Principal user, @RequestBody CottageDTO cottageDTO) throws IOException {
         Cottage cottage = modelMapper.map(cottageDTO, Cottage.class);
-        if(cottageService.findByName(cottage.getName()) != null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage with this name already exists!");
+       // if(cottageService.findByName(cottage.getName()) != null)
+       //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cottage with this name already exists!");
 
         cottage.getCottageOwner().setEmail(user.getName());
         this.cottageService.save(cottage);
@@ -71,8 +71,8 @@ public class CottageController {
         return new ResponseEntity<>("Successfully edited cottage!", HttpStatus.OK);
     }
 
-    private boolean existCottageWithSameName(Cottage cottage) {
-        Cottage existedCottage = this.cottageService.findByName(cottage.getName());
+    private boolean existCottageWithSameName(Cottage cottage) throws IOException {
+        Cottage existedCottage = this.cottageService.findById(cottage.getId());
         return existedCottage != null && existedCottage.getId() != cottage.getId();
     }
 }

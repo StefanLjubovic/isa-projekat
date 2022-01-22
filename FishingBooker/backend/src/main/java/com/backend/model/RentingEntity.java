@@ -47,7 +47,7 @@ public class RentingEntity {
    @JoinColumn(name = "address_id")
    private Address address;
 
-   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @OneToMany(fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
    @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<UnavailablePeriod> unavailablePeriods = new HashSet<UnavailablePeriod>();
 
