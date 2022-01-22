@@ -10,7 +10,7 @@
             <div class="left">
                 <span class="date-span">
                     <h5 >Reservation date: </h5>
-                     <v-date-picker class="date-picker-override" v-model="reservation.dateTime" mode="dateTime" is24hr>
+                     <v-date-picker class="date-picker-override" v-model="reservation.dateTime" :min-date='new Date()' mode="dateTime" is24hr>
                         <template v-slot="{ inputValue, inputEvents }">
                             <input class="width:100% px-5 py-2 border rounded focus:outline-none focus:border-blue-300" placeholder="Period date and time*" :value="inputValue" v-on="inputEvents" />
                             <!--div class="text-danger" v-if="v$.sale.dateTimeFrom.$error">Value is required and can't be before the expiration date </div-->
