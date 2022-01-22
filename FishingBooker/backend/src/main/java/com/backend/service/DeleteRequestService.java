@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.util.List;
 
 @Service
@@ -39,9 +40,9 @@ public class DeleteRequestService {
     }
 
     @Transactional(readOnly = false)
-    public void rejectDeleteRequest(Integer requestId, String response) {
+    public void rejectDeleteRequest(Integer requestId, String response) throws NoSuchObjectException {
         DeleteRequest deleteRequest = deleteRequestRepository.findOneById(requestId);
-        if (deleteRequest == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request");
+        if (deleteRequest == null) throw new NoSuchObjectException("No such revision");
 
         deleteRequestRepository.delete(deleteRequest);
         sendRejectionEmail(deleteRequest.getRegisteredUser().getEmail(), response);
@@ -56,9 +57,9 @@ public class DeleteRequestService {
     }
 
     @Transactional(readOnly = false)
-    public void approveDeleteRequest(Integer id) {
+    public void approveDeleteRequest(Integer id) throws NoSuchObjectException {
         DeleteRequest deleteRequest = deleteRequestRepository.findOneById(id);
-        if (deleteRequest == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request");
+        if (deleteRequest == null) throw new NoSuchObjectException("No such revision");
 
         RegisteredUser registeredUser = deleteRequest.getRegisteredUser();
         deleteUserService.deleteUser(registeredUser.getId());

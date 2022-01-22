@@ -46,7 +46,7 @@ public class ReservationControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
         @Test
-        @WithMockUser(username = "ljubovicstefan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
+        @WithMockUser(username = "user.fishingbooker+client1@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
         public void testGetClientHistoryOfReservations() throws Exception{
             Principal principal = new PrincipalClient();
             String classType = "Cottage";
@@ -57,7 +57,7 @@ public class ReservationControllerTest {
         }
 
         @Test
-        @WithMockUser(username = "ljubovicstefan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
+        @WithMockUser(username = "user.fishingbooker+client1@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
         public void testGetClientFutureReservations() throws Exception{
             Principal principal = new PrincipalClient();
             mockMvc.perform(get(URL_PREFIX + "/future-reservations/").principal(principal)).andExpect(status().isOk())

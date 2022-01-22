@@ -4,6 +4,8 @@ import com.backend.dto.UnavailablePeriodDTO;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,14 +40,19 @@ public class ShipService {
 
     public List<Ship> getAll() { return this.shipRepository.findAll(); }
 
-    public Ship findById(Integer id) throws IOException {
-        Ship ship = shipRepository.findById(id).get();
+    public Ship fetchById(Integer id) throws IOException {
+        Ship ship = findById(id);
         ship.setImages(imageConverter.loadImages(ship.getImages()));
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForShip(ship.getName()));
         ship.setSales(getAllSalesForShip(ship.getName()));
         ship.setReservations(null);
         return ship;
+    }
+
+    @Cacheable("ship")
+    public Ship findById(Integer id) {
+        return this.shipRepository.findById(id).get();
     }
 
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
@@ -108,8 +115,9 @@ public class ShipService {
         return newShip;
     }
 
+    @CachePut(cacheNames = "ship", key = "#ship.id")
     public Ship update(Ship ship) throws IOException {
-        Ship shipToUpdate = this.shipRepository.findById(ship.getId()).get();
+        Ship shipToUpdate = findById(ship.getId());
         shipToUpdate.setName(ship.getName());
         shipToUpdate.setDescription(ship.getDescription());
         shipToUpdate.setCancellationPercentage(ship.getCancellationPercentage());

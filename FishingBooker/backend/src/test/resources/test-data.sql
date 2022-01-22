@@ -20,12 +20,12 @@ VALUES (nextval('address_seq_gen'), 'Novi Sad', 'Srbija', 0.0, 0.0, '21000', 'Bu
 -- users
 -- passwords 123456
 INSERT INTO registered_user (type, reg_user_id, email, enabled, first_name, last_name, last_password_reset_date, password, phone_number, user_status, initial_password_changed, cancellation_number, client_type, points, short_biography, address_id, role_id)
-VALUES ('ADMIN', nextval('user_seq_gen'), 'zdravkocolic@gmail.com', true, 'Zdravko', 'Colic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 1, 2),
-       ('INSTRUCTOR', nextval('user_seq_gen'), 'ana.gavrilovic247@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
-       ('COTTAGE_OWNER', nextval('user_seq_gen'), 'marijakljestan@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
-       ('CLIENT', nextval('user_seq_gen'), 'ljubovicstefan@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
-       ('SHIP_OWNER', nextval('user_seq_gen'), 'pantictamara@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4),
-       ('ADMIN', nextval('user_seq_gen'), 'zg.gavrilovic@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 1);
+VALUES ('ADMIN', nextval('user_seq_gen'), 'user.fishingbooker+admin1@gmail.com', true, 'Zdravko', 'Colic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 1, 2),
+       ('INSTRUCTOR', nextval('user_seq_gen'), 'user.fishingbooker+instr@gmail.com', true, 'Ana', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648623758', 0, null, null, null, null, 'Zavrsila je Sabacku gimnaziju i FTN smer e2.', 3, 5),
+       ('COTTAGE_OWNER', nextval('user_seq_gen'), 'user.fishingbooker+cottage@gmail.com', true, 'Marija', 'Kljestan', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0641234567', 0, null, null, null, null, null, 5, 3),
+       ('CLIENT', nextval('user_seq_gen'), 'user.fishingbooker+client1@gmail.com', true, 'Stefan', 'Ljubovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0648855959', 0, null, 0, 0, 0, null, 4, 1),
+       ('SHIP_OWNER', nextval('user_seq_gen'), 'user.fishingbooker+ship@gmail.com', true, 'Tamara', 'Pantic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '066225883', 0, null, null, null, null, null, 8, 4),
+       ('ADMIN', nextval('user_seq_gen'), 'user.fishingbooker+admin2@gmail.com', true, 'Zoran', 'Gavrilovic', '2021-03-24 16:48:05.591', '$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW', '0645656565', 0, true, null, null, null, null, 9, 2);
 
 -- system property
 INSERT INTO system_property(system_properties_id, key, value, version)
@@ -91,7 +91,7 @@ VALUES  (nextval('reservation_seq_gen'),'2022-01-05 00:00',72,false,7,4000,4,1),
         (nextval('reservation_seq_gen'),'2021-10-05',72,false,11,7000,4,2),
         (nextval('reservation_seq_gen'),'2020-07-25', 2,false,15,7500,4,3),
         (nextval('reservation_seq_gen'),'2022-01-13', 72,false,5,7500,4,1),
-        (nextval('reservation_seq_gen'),'2022-01-21', 72,false,15,8500,4,3);
+        (nextval('reservation_seq_gen'),'2022-01-30', 72,false,15,8500,4,3);
 
 -- sales
 INSERT INTO sale(sale_id,date_time_from,duration_in_hours,expire_date_time,maximum_persons,price,entity_id)

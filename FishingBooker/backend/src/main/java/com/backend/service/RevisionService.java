@@ -11,8 +11,10 @@ import com.backend.repository.IRevisionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,20 +42,24 @@ public class RevisionService {
     }
 
     public List<Revision> getAllPendingRevisions() {
-        return revisionRepository.findAll().stream().filter(r -> r.getApproved() == Boolean.FALSE).collect(Collectors.toList());
+        return revisionRepository.findAllByOrderByIdAsc().stream().filter(r -> r.getApproved() == Boolean.FALSE).collect(Collectors.toList());
     }
 
     public Revision getById(Integer id) {
         return revisionRepository.findById(id).get();
     }
 
-    public void deleteById(Integer id) {
-        revisionRepository.deleteById(id);
+    @Transactional
+    public void deleteById(Integer id) throws NoSuchObjectException {
+        Revision revision = revisionRepository.findOneById(id);
+        if (revision == null) throw new NoSuchObjectException("No such revision");
+        revisionRepository.delete(revision);
     }
 
-    public void approveRevision(Integer id) {
-        Revision revision = getById(id);
-        if (revision == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such revision!");
+    @Transactional
+    public void approveRevision(Integer id) throws NoSuchObjectException {
+        Revision revision = revisionRepository.findOneById(id);
+        if (revision == null || revision.getApproved()) throw new NoSuchObjectException("No such revision");
 
         revision.setApproved(true);
         revisionRepository.save(revision);

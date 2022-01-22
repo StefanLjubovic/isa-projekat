@@ -39,7 +39,7 @@ public class CottageOwnerControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "marijakljestan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "COTTAGE_OWNER")
+    @WithMockUser(username = "user.fishingbooker+cottage@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "COTTAGE_OWNER")
     public void testGetReservationHistory() throws Exception{
         Principal principal = new PrincipalCottageOwner();
         mockMvc.perform(get(URL_PREFIX + "/reservation-history").principal(principal)).andExpect(status().isOk())

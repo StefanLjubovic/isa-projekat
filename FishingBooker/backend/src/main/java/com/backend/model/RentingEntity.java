@@ -59,6 +59,7 @@ public class RentingEntity {
    private Set<Sale> sales = new HashSet<Sale>();
 
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JsonIgnoreProperties("rentingEntity")
    private Set<Reservation> reservations = new HashSet<>();
 
    @Version

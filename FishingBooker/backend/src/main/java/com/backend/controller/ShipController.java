@@ -30,7 +30,7 @@ public class ShipController {
 
     @GetMapping("/getOne/{id}")
     public Ship getOne(@PathVariable("id") Integer id) throws IOException {
-        return shipService.findById(id);
+        return shipService.fetchById(id);
     }
 
     @PostMapping("/defineUnavailablePeriod")

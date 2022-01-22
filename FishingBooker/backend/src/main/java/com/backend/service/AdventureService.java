@@ -6,8 +6,11 @@ import com.backend.repository.IPricelistItemRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
@@ -34,11 +37,16 @@ public class AdventureService {
 
     private Base64ToImage imageConverter = new Base64ToImage();
 
-    public Adventure getById(Integer id) throws  IOException {
+    public Adventure fetchById(Integer id) throws  IOException {
         Adventure adventure = adventureRepository.fetchById(id);
         adventure.setImages(loadImages(adventure.getImages()));
         adventure.setUnavailablePeriods(new HashSet<>());
         return adventure;
+    }
+
+    @Cacheable("adventure")
+    public Adventure findById(Integer id) {
+        return adventureRepository.findById(id).get();
     }
 
     public List<Adventure> getAllAdventuresFromInstructor(String email) {
@@ -49,6 +57,7 @@ public class AdventureService {
         return adventureRepository.findAdventureByName(name);
     }
 
+    @Transactional
     public void save(Adventure adventure) throws IOException {
         Set<String> images = saveImages(adventure);
         adventure.setImages(images);
@@ -56,7 +65,10 @@ public class AdventureService {
         RegisteredUser user = userRepository.findByEmail(adventure.getFishingInstructor().getEmail());
         FishingInstructor instructor = (FishingInstructor) user;
         adventure.setFishingInstructor(instructor);
-        adventure.setUnavailablePeriods(instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail()));
+
+        for(UnavailablePeriod up : instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail())) {
+            adventure.getUnavailablePeriods().add(up);
+        }
 
         adventureRepository.save(adventure);
 
@@ -90,8 +102,9 @@ public class AdventureService {
         return  base64Images;
     }
 
+    @CachePut(cacheNames = "adventure", key = "#adventure.id")
     public Adventure update(Adventure adventure) throws IOException {
-        Adventure adventureToUpdate = adventureRepository.findById(adventure.getId()).get();
+        Adventure adventureToUpdate = this.findById(adventure.getId());
         adventureToUpdate.setName(adventure.getName());
         adventureToUpdate.setDescription(adventure.getDescription());
         adventureToUpdate.setMaxPersons(adventure.getMaxPersons());

@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,8 @@ public class DeleteRequestController {
     public ResponseEntity<?> rejectDeleteRequest(@PathVariable("id") Integer id, @RequestBody String response) {
         try {
             deleteRequestService.rejectDeleteRequest(id, response);
+        } catch (NoSuchObjectException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request.");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator is dealing with this request! Try again later.");
         }
@@ -61,6 +64,8 @@ public class DeleteRequestController {
     public ResponseEntity<?> approveDeleteRequest(@RequestBody Integer id) {
         try {
             deleteRequestService.approveDeleteRequest(id);
+        } catch (NoSuchObjectException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such request.");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator is dealing with this request! Try again later.");
         }

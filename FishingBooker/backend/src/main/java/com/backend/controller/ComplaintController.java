@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +55,8 @@ public class ComplaintController {
     public ResponseEntity<?> respondToComplaint(@PathVariable("id") Integer id, @RequestBody String response) {
         try {
             complaintService.respondToComplaint(id, response);
+        } catch (NoSuchObjectException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such complaint.");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another administrator responded to this complaint right now!");
         }

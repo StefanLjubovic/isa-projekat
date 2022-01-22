@@ -3,6 +3,8 @@ package com.backend.service;
 import com.backend.model.*;
 import com.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,7 @@ public class EntityService {
         else if(state==2) entities=entityRepository.getEntityByClass(Cottage.class);
         return entities;
     }
-
+    @Cacheable("entity")
     public RentingEntity getEntityById(Integer id) {
         return entityRepository.findById(id).get();
     }
@@ -58,6 +60,7 @@ public class EntityService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "entity", key = "#id")
     public void deleteEntity(Integer id) {
         if(isEntityBooked(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entity is now booked.");
 

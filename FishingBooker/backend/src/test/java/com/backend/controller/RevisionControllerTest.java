@@ -37,13 +37,13 @@ public class RevisionControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "zdravkocolic@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
+    @WithMockUser(username = "user.fishingbooker+admin@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
     public void testApproveRevision() throws Exception {
         this.mockMvc.perform(put(URL_PREFIX + "/approve").contentType(contentType).content(String.valueOf(DB_REVISION_ID))).andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "zdravkocolic@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
+    @WithMockUser(username = "user.fishingbooker+admin@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "ADMIN")
     public void testDisapproveRevision() throws Exception {
         this.mockMvc.perform(delete(URL_PREFIX + "/disapprove").contentType(contentType).content(String.valueOf(DB_REVISION_ID))).andExpect(status().isNotFound());
     }

@@ -39,7 +39,7 @@ public class EntityControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "ljubovicstefan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
+    @WithMockUser(username = "user.fishingbooker+client1@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "CLIENT")
     public void testCheckIfSubscribed() throws Exception{
         Principal principal = new PrincipalClient();
         mockMvc.perform(get(URL_PREFIX + "/check-subscription/"+ DB_ENTITY_SUBSCRIBED_ID).principal(principal)).andExpect(status().isOk())

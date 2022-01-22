@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.util.List;
 
 @Service
@@ -45,9 +46,9 @@ public class ComplaintService {
     }
 
     @Transactional(readOnly = false)
-    public void respondToComplaint(Integer complaintId, String response) {
+    public void respondToComplaint(Integer complaintId, String response) throws NoSuchObjectException {
         Complaint complaint = complaintRepository.findOneById(complaintId);
-        if(complaint == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such complaint!");
+        if(complaint == null) throw new NoSuchObjectException("No such revision");
 
         sendResponseEmail(complaint, response);
         complaintRepository.deleteById(complaint.getId());
