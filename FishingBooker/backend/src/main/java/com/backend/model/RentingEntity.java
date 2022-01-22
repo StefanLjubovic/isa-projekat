@@ -51,7 +51,7 @@ public class RentingEntity {
    private Set<UnavailablePeriod> unavailablePeriods = new HashSet<UnavailablePeriod>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @JsonIgnoreProperties("rentingEntity")
+   @JsonIgnoreProperties(value = {"rentingEntity"}, allowSetters = true)
    private Set<PricelistItem> pricelistItems = new HashSet<PricelistItem>();
 
    @OneToMany(mappedBy = "rentingEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

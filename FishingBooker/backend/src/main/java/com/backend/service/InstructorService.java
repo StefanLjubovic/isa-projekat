@@ -1,5 +1,6 @@
 package com.backend.service;
 
+import com.backend.dto.ReservationHistoryDTO;
 import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.*;
 import com.backend.repository.IAdventureRepository;
@@ -84,6 +85,17 @@ public class InstructorService {
         return reservations;
     }
 
+    @Transactional(readOnly = true)
+    public List<Reservation> getCanceledReservationsForInstructor(String email) {
+        List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(email);
+        List<Reservation> reservations = new ArrayList<>();
+        for(Adventure a : instructorAdventures) {
+            List<Reservation> r = reservationRepository.fetchByEntityId(a.getId()).stream().filter(res -> res.getCanceled() == Boolean.TRUE).collect(Collectors.toList());
+            reservations.addAll(r);
+        }
+        return reservations;
+    }
+
     private boolean overlapsWithExistingReservation(UnavailablePeriod unavailablePeriod, String instructorEmail) {
         List<Adventure> instructorAdventures = adventureRepository.getAdventureByFishingInstructorEmail(instructorEmail);
 
@@ -120,6 +132,13 @@ public class InstructorService {
     @Transactional(readOnly = true)
     public List<ReservationIncomeDTO> calculateReservationIncomeForInstructor(String email) {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        totalIncome.addAll(getTotalIncomeFromNonCanceledReservations(email));
+        totalIncome.addAll(getTotalIncomeFromCanceledReservations(email));
+        return totalIncome;
+    }
+
+    private List<ReservationIncomeDTO> getTotalIncomeFromNonCanceledReservations(String email) {
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<Reservation> allReservations = getReservationsForInstructor(email);
         Double percentage = Double.parseDouble(this.systemPropertyService.getPercentage().getValue());
         for(Reservation reservation: allReservations)
@@ -128,6 +147,20 @@ public class InstructorService {
                     reservation.getPrice() * (100 - percentage)/100,
                     reservation.getDateTime(),
                     reservation.getReservationEndTime()));
+        return totalIncome;
+    }
+
+    private Collection<? extends ReservationIncomeDTO> getTotalIncomeFromCanceledReservations(String email) {
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        List<Reservation> allReservations = getCanceledReservationsForInstructor(email);
+        for(Reservation reservation: allReservations) {
+            Double percentage = reservation.getRentingEntity().getCancellationPercentage();
+            totalIncome.add(new ReservationIncomeDTO(
+                    reservation.getRentingEntity().getName(),
+                    reservation.getPrice() * percentage / 100,
+                    reservation.getDateTime(),
+                    reservation.getReservationEndTime()));
+        }
         return totalIncome;
     }
 }

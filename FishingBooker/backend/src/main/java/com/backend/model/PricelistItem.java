@@ -25,7 +25,7 @@ public class PricelistItem {
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "entity_id")
-   @JsonIgnoreProperties("pricelistItems")
+   @JsonIgnoreProperties(value = {"pricelistItems"}, allowSetters = true)
    private RentingEntity rentingEntity;
 
    public PricelistItem() {}

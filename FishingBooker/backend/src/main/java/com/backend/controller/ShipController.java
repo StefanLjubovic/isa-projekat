@@ -64,8 +64,8 @@ public class ShipController {
         return new ResponseEntity<>("Successfully edited ship!", HttpStatus.OK);
     }
 
-    private boolean existShipeWithSameName(Ship ship) {
-        Ship existedShip = this.shipService.findByName(ship.getName());
+    private boolean existShipeWithSameName(Ship ship) throws IOException {
+        Ship existedShip = this.shipService.findById(ship.getId());
         return existedShip != null && existedShip.getId() != ship.getId();
     }
 }

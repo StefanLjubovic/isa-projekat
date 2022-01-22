@@ -52,7 +52,7 @@ public class CottageService {
         cottage.setReservations(null);
         return cottage;
     }
-    @Cacheable("cottage")
+    //@Cacheable("cottage")
     public Cottage findByName(String name) {
         return cottageRepository.findByName(name);
     }
@@ -73,7 +73,7 @@ public class CottageService {
         return newCottage;
     }
 
-    @CachePut(cacheNames = "cottage", key = "#cottage.id")
+    //@CachePut(cacheNames = "cottage", key = "#cottage.id")
     public Cottage update (Cottage cottage) throws IOException {
         Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
         cottageToUpdate.setName(cottage.getName());

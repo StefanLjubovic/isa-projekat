@@ -44,5 +44,9 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
             "FROM Reservation r WHERE r.rentingEntity.name = :name and r.isCanceled = false ORDER BY r.dateTime")
     List<ReservationHistoryDTO> fetchReservationHistoryByEntityName(@Param("name") String name);
 
+    @Query("SELECT new com.backend.dto.ReservationHistoryDTO(r.id, r.dateTime, r.durationInHours, r.price, r.rentingEntity.id, r.rentingEntity.name, r.client.email) " +
+            "FROM Reservation r WHERE r.rentingEntity.name = :name and r.isCanceled = true ORDER BY r.dateTime")
+    List<ReservationHistoryDTO> fetchCanceledReservationsByEntityName(@Param("name") String name);
+
     void deleteAllByClient_Id(Integer id);
 }

@@ -4,7 +4,6 @@ import com.backend.dto.ReservationHistoryDTO;
 import com.backend.dto.ReservationIncomeDTO;
 import com.backend.model.Client;
 import com.backend.model.Cottage;
-import com.backend.model.Reservation;
 import com.backend.repository.ICottageRepository;
 import com.backend.repository.IReservationRepository;
 import com.backend.repository.IUserRepository;
@@ -47,7 +46,27 @@ public class CottageOwnerService {
         return reservations;
     }
 
+    public List<ReservationHistoryDTO> getCanceledReservationsForCottageOwner(String email) {
+        List<ReservationHistoryDTO> reservations = new ArrayList<ReservationHistoryDTO>();
+        List<Cottage> cottages = getAllCottagesFromCottageOwner(email);
+        for (Cottage cottage : cottages) {
+            List<ReservationHistoryDTO> reservationsPerCottage = this.reservationRepository.fetchCanceledReservationsByEntityName(cottage.getName());
+            for (ReservationHistoryDTO reservation : reservationsPerCottage) {
+                    reservation.setClient(new Client(this.userRepository.findByEmail(reservation.getClientEmail())));
+                    reservations.add(reservation);
+            }
+        }
+        return reservations;
+    }
+
     public List<ReservationIncomeDTO> calculateReservationIncomeForCottages(String email){
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        totalIncome.addAll(getTotalIncomeFromNonCanceledReservations(email));
+        totalIncome.addAll(getTotalIncomeFromCanceledReservations(email));
+        return totalIncome;
+    }
+
+    private Collection<? extends ReservationIncomeDTO> getTotalIncomeFromNonCanceledReservations(String email) {
         List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
         List<ReservationHistoryDTO> allReservations = getReservationHistoryForCottageOwner(email);
         for(ReservationHistoryDTO reservation: allReservations) {
@@ -55,6 +74,20 @@ public class CottageOwnerService {
             totalIncome.add(new ReservationIncomeDTO(
                     reservation.getEntityName(),
                     reservation.getPrice() * (100 - percentage) / 100,
+                    reservation.getDateTime(),
+                    getReservationEndTime(reservation)));
+        }
+        return totalIncome;
+    }
+
+    private Collection<? extends ReservationIncomeDTO> getTotalIncomeFromCanceledReservations(String email) {
+        List<ReservationIncomeDTO> totalIncome = new ArrayList<>();
+        List<ReservationHistoryDTO> allReservations = getCanceledReservationsForCottageOwner(email);
+        for(ReservationHistoryDTO reservation: allReservations) {
+            Double percentage = this.cottageRepository.findById(reservation.getEntityId()).get().getCancellationPercentage();
+            totalIncome.add(new ReservationIncomeDTO(
+                    reservation.getEntityName(),
+                    reservation.getPrice() * percentage / 100,
                     reservation.getDateTime(),
                     getReservationEndTime(reservation)));
         }
