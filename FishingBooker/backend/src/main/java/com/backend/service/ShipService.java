@@ -40,8 +40,8 @@ public class ShipService {
 
     public List<Ship> getAll() { return this.shipRepository.findAll(); }
 
-    public Ship findById(Integer id) throws IOException {
-        Ship ship = shipRepository.findById(id).get();
+    public Ship fetchById(Integer id) throws IOException {
+        Ship ship = findById(id);
         ship.setImages(imageConverter.loadImages(ship.getImages()));
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForShip(ship.getName()));
@@ -50,7 +50,11 @@ public class ShipService {
         return ship;
     }
 
-    //@Cacheable("ship")
+    @Cacheable("ship")
+    public Ship findById(Integer id) {
+        return this.shipRepository.findById(id).get();
+    }
+
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForShip(String cottageName) {
@@ -113,7 +117,7 @@ public class ShipService {
 
     @CachePut(cacheNames = "ship", key = "#ship.id")
     public Ship update(Ship ship) throws IOException {
-        Ship shipToUpdate = this.shipRepository.findById(ship.getId()).get();
+        Ship shipToUpdate = findById(ship.getId());
         shipToUpdate.setName(ship.getName());
         shipToUpdate.setDescription(ship.getDescription());
         shipToUpdate.setCancellationPercentage(ship.getCancellationPercentage());
