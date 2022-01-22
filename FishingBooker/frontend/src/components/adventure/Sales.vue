@@ -79,19 +79,16 @@ export default ({
                 dateTime : sale.dateTimeFrom,
                 durationInHours :  sale.durationInHours,
                 maxPersons : sale.maximumPersons,
-                additionalServices : this.adventure.additionalServices,
+                additionalServices : ['item'],
                 price : sale.price,
                 isCanceled : false,
                 entityId: this.entityId,
                 client : client.data,
-                entityVersion: this.adventure.version
+                entityVersion: this.adventure.version,
+                sale : sale
             }
-            console.log(this.adventure.id)
-                        const dto={
-                            reservation : reservation,
-                            sale : sale
-                        }
-                        await server.saveFastReservation(dto)
+            console.log(this.adventure.pricelistItems)
+                        await server.saveFastReservation(reservation)
                         .then(resp=> {
                             if(resp.success){
                                 this.$swal.fire({

@@ -105,9 +105,12 @@ public class ReservationController {
     @PostMapping(value = "/fast-reservation/",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<RentingEntity> saveFastReservation(@RequestBody ReservationSaleDTO dto) {
-        if(dto.getReservation() ==null || dto.getSale() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
+        if(dto.getSale() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request from client!");
         saleService.delete(dto.getSale());
-        RentingEntity entity = reservationService.Save(dto.getReservation());
+        ReservationDTO reservationDTO= new ReservationDTO(dto.getId(),dto.getDateTime(),dto.getDurationInHours(),dto.getMaxPersons(),dto.getPrice(),dto.getCanceled(),dto.getEntityId(),dto.getEntityName(), dto.getClient());
+        Reservation reservation = modelMapper.map(reservationDTO, Reservation.class);
+        reservation.setRentingEntity(this.entityService.getEntityById(reservationDTO.getEntityId()));
+        RentingEntity entity = reservationService.Save(reservation);
         if(entity == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The given period is occupied!");
         return new ResponseEntity<>(entity,HttpStatus.OK);
     }

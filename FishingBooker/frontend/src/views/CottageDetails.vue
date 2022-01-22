@@ -288,7 +288,7 @@
              updateEntity(adventure){
             console.log('aaa')
             console.log(adventure);
-            this.adventure = adventure;
+            this.cottage = adventure;
         },
             makeReservation: function() {
                 this.displayReservationModal = true;

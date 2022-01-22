@@ -78,10 +78,10 @@
     </div>
 
     <transition name="fade" appear v-if="userRoleIsClient()">
-        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation"/>
+        <ClientReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
     <transition name="fade" appear v-else>
-        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal' @new-reservation="showReservation"/>
+        <CreateReservation :entity="ship" :type="type" v-if="displayReservationModal" @close-modal='closeReservationModal' @new-reservation="showReservation" @update-entity="updateEntity"/>
     </transition>
 
     <div id="profile" v-if="ship">
@@ -90,7 +90,7 @@
         <div class="content">
             <div class="left-side">
                 <ImageGallery :images="ship.images"  description="Photos of our ship"/> <hr/>
-                <Sales :sales="ship.sales" v-if="userRole != ''" :adventure="ship" @sale-to-reservation="saleToReservation"/><br/>
+                <Sales :sales="ship.sales" v-if="userRole != ''" :adventure="ship" @sale-to-reservation="saleToReservation" @update-entity="updateEntity"/><br/>
                 <div class="btn-wrap">
                     <h2>Schedule for this adventure</h2>
                     <button class="btn" v-if="userRole != '' && userRole != 'ROLE_CLIENT'" @click="openModalForDefineUnavailablePeriod()">Unavailable period&nbsp;&ensp;<i class="fas fa-calendar-check"></i> </button>
@@ -416,6 +416,11 @@
             userRoleIsClient(){
                 if(this.userRole == "ROLE_CLIENT") return true;
                 else return false;
+            },
+            updateEntity(adventure){
+            console.log('aaa')
+            console.log(adventure);
+            this.ship = adventure;
             },
             saleToReservation(reservation) {
                 for(let e of this.events) {
