@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -119,11 +117,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDTO saveReservationCreatedByAdvertiser(Reservation newReservation, Integer entityId) throws PessimisticLockingFailureException{
-        try {
-            RentingEntity entity = this.entityService.findLockedById(entityId);
-        } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
-        newReservation.setRentingEntity(this.entityService.findLockedById(entityId));
+    public ReservationDTO saveReservationCreatedByAdvertiser(Reservation newReservation) throws PessimisticLockingFailureException{
         List<Reservation> entityReservations = this.reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId());
         Reservation currentReservation = null;
         for(Reservation r : entityReservations) {
@@ -140,7 +134,7 @@ public class ReservationService {
 
         newReservation.setClient(currentReservation.getClient());
         Reservation savedReservation = saveReservationIfThereIsNoOverlapping(newReservation);
-        return new ReservationDTO(savedReservation.getDateTime(), savedReservation.getDurationInHours(), savedReservation.getMaxPersons(), savedReservation.getPrice(), currentReservation.getCanceled(), entityId, savedReservation.getRentingEntity().getName());
+        return new ReservationDTO(savedReservation.getDateTime(), savedReservation.getDurationInHours(), savedReservation.getMaxPersons(), savedReservation.getPrice(), currentReservation.getCanceled(), newReservation.getRentingEntity().getId(), savedReservation.getRentingEntity().getName());
     }
 
     @Transactional
@@ -160,13 +154,16 @@ public class ReservationService {
     @Transactional
     public Reservation saveReservationAdv(Reservation newReservation) {
         try {
-            Reservation savedReservation = this.reservationRepository.save(newReservation);
+            //Reservation savedReservation = this.reservationRepository.save(newReservation);
+            Set<Reservation> entityRes = new HashSet<>();
+            entityRes.addAll(reservationRepository.fetchByEntityId(newReservation.getRentingEntity().getId()));
+            entityRes.add(newReservation);
             RentingEntity entity = newReservation.getRentingEntity();
-            entity.getReservations().add(savedReservation);
+            entity.setReservations(entityRes);
             entityRepository.save(entity);
-            return savedReservation;
-        } catch (PessimisticLockingFailureException e) {
-            throw new PessimisticLockingFailureException("Two or more access to database at the same time!", e);
+            return newReservation;
+        } catch (OptimisticLockingFailureException e) {
+            throw new OptimisticLockingFailureException("Two or more access to database at the same time!", e);
         }
     }
 

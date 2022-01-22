@@ -94,7 +94,7 @@ export default {
                 entityId: this.entity.id,
                 entityName: this.entity.name,
                 entityVersion: this.entity.version 
-            }           
+            }            
         }
     },
     watch: {
@@ -182,6 +182,9 @@ export default {
         },
         changeButtonContext(index){
             this.persons = index
+        },
+        fetchEntity(){
+
         },
         saveReservation(){
             const headers = {
