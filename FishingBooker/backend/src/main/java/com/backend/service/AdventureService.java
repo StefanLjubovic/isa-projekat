@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
@@ -48,11 +49,12 @@ public class AdventureService {
         return adventureRepository.getAdventuresByFishingInstructor_Email(email);
     }
 
-    @Cacheable("adventure")
+    //@Cacheable("adventure")
     public Adventure findByName(String name) {
         return adventureRepository.findAdventureByName(name);
     }
 
+    @Transactional
     public void save(Adventure adventure) throws IOException {
         Set<String> images = saveImages(adventure);
         adventure.setImages(images);
@@ -60,7 +62,10 @@ public class AdventureService {
         RegisteredUser user = userRepository.findByEmail(adventure.getFishingInstructor().getEmail());
         FishingInstructor instructor = (FishingInstructor) user;
         adventure.setFishingInstructor(instructor);
-        adventure.setUnavailablePeriods(instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail()));
+
+        for(UnavailablePeriod up : instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail())) {
+            adventure.getUnavailablePeriods().add(up);
+        }
 
         adventureRepository.save(adventure);
 

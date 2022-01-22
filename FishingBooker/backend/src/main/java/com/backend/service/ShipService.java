@@ -50,7 +50,7 @@ public class ShipService {
         return ship;
     }
 
-    @Cacheable("ship")
+    //@Cacheable("ship")
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForShip(String cottageName) {

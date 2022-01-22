@@ -52,7 +52,8 @@ public class CottageService {
         cottage.setReservations(null);
         return cottage;
     }
-    @Cacheable("cottage")
+
+    //@Cacheable("cottage")
     public Cottage findByName(String name) {
         return cottageRepository.findByName(name);
     }
