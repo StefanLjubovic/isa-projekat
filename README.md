@@ -23,4 +23,4 @@ The frontend is a Vue.js application. Source code is in the <i>./FishingBooker/f
 - Cottage owner: user.fishingbooker+cottage@gmail.com, 123456
 - Ship owner: user.fishingbooker+ship@gmail.com, 123456
 - Instructor: user.fishingbooker+instr@gmail.com, 123456
-- Administrator: user.fishingbooker+admin1@gmail.com, 123456; user.fishingbooker+admin1@gmail.com, 123456
+- Administrator: user.fishingbooker+admin1@gmail.com, 123456; user.fishingbooker+admin1@gmail.com, 123456  
