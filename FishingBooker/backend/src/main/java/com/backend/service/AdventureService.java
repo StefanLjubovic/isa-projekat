@@ -67,7 +67,8 @@ public class AdventureService {
         adventure.setFishingInstructor(instructor);
 
         for(UnavailablePeriod up : instructorService.getAllUnavailablePeriodsForInstructor(instructor.getEmail())) {
-            adventure.getUnavailablePeriods().add(up);
+            UnavailablePeriod unavailablePeriod = new UnavailablePeriod(up.getFromDateTime(), up.getToDateTime());
+            adventure.getUnavailablePeriods().add(unavailablePeriod);
         }
 
         adventureRepository.save(adventure);
