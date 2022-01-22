@@ -58,8 +58,8 @@ public class AdventureService {
 
     @Transactional
     public void save(Adventure adventure) throws IOException {
-        Set<String> images = saveImages(adventure);
-        adventure.setImages(images);
+        //Set<String> images = saveImages(adventure);
+        //adventure.setImages(images);
 
         RegisteredUser user = userRepository.findByEmail(adventure.getFishingInstructor().getEmail());
         FishingInstructor instructor = (FishingInstructor) user;
