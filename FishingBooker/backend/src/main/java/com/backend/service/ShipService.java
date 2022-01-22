@@ -50,7 +50,6 @@ public class ShipService {
         return ship;
     }
 
-    //@Cacheable("ship")
     public Ship findByName(String name) { return this.shipRepository.findByName(name); }
 
     public Set<UnavailablePeriod> getAllUnavailablePeriodsForShip(String cottageName) {
@@ -73,7 +72,7 @@ public class ShipService {
         UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
         RentingEntity ship;
         try{
-            ship = this.entityRepository.findLockedById(unavailablePeriodDTO.getEntityId());
+            ship = this.entityRepository.findById(unavailablePeriodDTO.getEntityId()).get();
         } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
 
         if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName())))

@@ -135,7 +135,7 @@ public class CottageService {
         UnavailablePeriod unavailablePeriod = new UnavailablePeriod(unavailablePeriodDTO.getFromDateTime(), unavailablePeriodDTO.getToDateTime());
         RentingEntity entity;
         try{
-             entity = this.entityRepository.findLockedById(unavailablePeriodDTO.getEntityId());
+             entity = this.entityRepository.findById(unavailablePeriodDTO.getEntityId()).get();
         } catch(PessimisticLockingFailureException ex) { throw  new PessimisticLockingFailureException("Client already reserved this entity!"); }
 
         if(unavailablePeriod.overlapsWithExistingUnavailablePeriods(getAllUnavailablePeriodsForCottage(entity.getName())))
