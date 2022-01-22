@@ -42,8 +42,10 @@ public class CottageService {
 
     public List<Cottage> getAll() { return cottageRepository.findAll(); }
 
-    public Cottage findById(int id) throws IOException {
-        Cottage cottage = cottageRepository.findById(id).get();
+
+    public Cottage fetchById(int id) throws IOException {
+        Cottage cottage = this.findById(id);
+        cottage.setImages(imageConverter.loadImages(cottage.getImages()));
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
@@ -52,7 +54,11 @@ public class CottageService {
         return cottage;
     }
 
-    //@Cacheable("cottage")
+    @Cacheable("cottage")
+    public Cottage findById(Integer id) {
+        return cottageRepository.findById(id).get();
+    }
+
     public Cottage findByName(String name) {
         return cottageRepository.findByName(name);
     }
@@ -75,7 +81,7 @@ public class CottageService {
 
     //@CachePut(cacheNames = "cottage", key = "#cottage.id")
     public Cottage update (Cottage cottage) throws IOException {
-        Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
+        Cottage cottageToUpdate = this.findById(cottage.getId());
         cottageToUpdate.setName(cottage.getName());
         cottageToUpdate.setDescription(cottage.getDescription());
         cottageToUpdate.setCancellationPercentage(cottage.getCancellationPercentage());

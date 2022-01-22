@@ -269,10 +269,10 @@
                 }
                 
                 axios.put(`${server.baseUrl}/ship/update/`, editedShip, {headers: headers})
-                .then((response) => {
+                .then(() => {
                     this.$swal({
                         icon: 'success',
-                        title: response.data,
+                        title: 'Successfully edited ship!',
                         showConfirmButton: false,
                         timer: 2000
                     })
