@@ -44,15 +44,15 @@ public class CottageControllerTests {
     void contextLoads() {
     }
 
-//    @Test
-//    @WithMockUser(username = "marijakljestan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "COTTAGE_OWNER")
-//    public void testDefineUnavailablePeriod() throws Exception {
-//        UnavailablePeriodDTO periodDTO = new UnavailablePeriodDTO(DB_UNAVAILABLE_PERIOD_START, DB_UNAVAILABLE_PERIOD_END, DB_ENTITY_NAME);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        String json = mapper.writeValueAsString(periodDTO);
-//        Principal principal = new PrincipalCottageOwner();
-//        this.mockMvc.perform(post(URL_PREFIX+ "/defineUnavailablePeriod").contentType(contentType).content(json).principal(principal)).andExpect(status().isOk());
-//    }
+    @org.junit.Test
+    @WithMockUser(username = "marijakljestan@gmail.com", password = "$2a$10$3kfQZW0qQFJIlfDcadR9UOmPwUDDz4wwkcxxAi1aQmfqZqRxAU/FW", roles = "COTTAGE_OWNER")
+    public void testDefineUnavailablePeriod() throws Exception {
+        UnavailablePeriodDTO periodDTO = new UnavailablePeriodDTO(DB_UNAVAILABLE_PERIOD_START, DB_UNAVAILABLE_PERIOD_END, DB_ENTITY_ID);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String json = mapper.writeValueAsString(periodDTO);
+        Principal principal = new PrincipalCottageOwner();
+        this.mockMvc.perform(post(URL_PREFIX+ "/defineUnavailablePeriod").contentType(contentType).content(json).principal(principal)).andExpect(status().isOk());
+    }
 }
