@@ -24,7 +24,7 @@ public class RentingEntity {
    private String description;
 
    @Column(unique=false, nullable=false)
-   private double averageGrade = 5.0;
+   private double averageGrade = 0;
 
    private double cancellationPercentage;
 

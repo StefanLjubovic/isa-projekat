@@ -55,8 +55,10 @@ public class InstructorService {
 
     @Transactional(readOnly = false)
     public void saveUnavailablePeriodToAdventures(List<Adventure> adventures, UnavailablePeriod savedPeriod) {
+
         for(Adventure a : adventures) {
-            a.getUnavailablePeriods().add(savedPeriod);
+            UnavailablePeriod unavailablePeriod = new UnavailablePeriod(savedPeriod.getFromDateTime(), savedPeriod.getToDateTime());
+            a.getUnavailablePeriods().add(unavailablePeriod);
             adventureRepository.save(a);
         }
     }

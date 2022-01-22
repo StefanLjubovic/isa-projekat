@@ -41,6 +41,7 @@ public class DeleteUserService {
     public void deleteUser(Integer id) {
         RegisteredUser registeredUser = userRepository.findById(id).get();
         deleteRequestRepository.deleteAllByUser_Id(id);
+        complaintRepository.deleteAllByClient_Id(registeredUser.getId());
 
         if (registeredUser.getRole().getName().equals("ROLE_COTTAGE_OWNER") ||
                 registeredUser.getRole().getName().equals("ROLE_SHIP_OWNER") ||
@@ -55,7 +56,6 @@ public class DeleteUserService {
         }
 
         if (registeredUser.getRole().getName().equals("ROLE_CLIENT")) {
-            complaintRepository.deleteAllByClient_Id(registeredUser.getId());
             reportRepository.deleteAllByClient_Id(registeredUser.getId());
 
             List<Reservation> reservations = reservationRepository.getReservationsByClient_Id(registeredUser.getId());
