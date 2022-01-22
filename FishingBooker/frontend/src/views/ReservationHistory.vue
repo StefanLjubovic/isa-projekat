@@ -21,7 +21,7 @@
         <td v-if="entityType == 'Cottage'">{{convertToDays(reservation.durationInHours)}} days</td>
         <td v-else> {{ reservation.durationInHours }} hours</td>
         <td>{{reservation.price}} </td>
-        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation.client.email, reservation.entityId)"></i></td>
+        <td><i class="fas fa-plus-square icon" @click="openModalForReport(reservation, reservation.entityId)"></i></td>
       </tr>
     </tbody>
   </table>
@@ -173,9 +173,9 @@ export default {
         this.selectedClient = client;
         window.$('#client-details-modal').modal('show');
       },
-      openModalForReport : function(clientEmail, rentingEntityId) {
-        this.selectedClient = clientEmail;
-        this.report.clientEmail = clientEmail;
+      openModalForReport : function(reportReservation, rentingEntityId) {
+        this.selectedClient = reportReservation.client;
+        this.report.clientEmail = reportReservation.client.email;
         this.report.rentingEntityId = rentingEntityId;
         window.$('#report-modal').modal('show');
       },
