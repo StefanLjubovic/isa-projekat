@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.rmi.NoSuchObjectException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,15 +56,26 @@ public class RevisionController {
     @PutMapping("/approve")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> approveRevision(@RequestBody Integer id) {
-        revisionService.approveRevision(id);
+        try {
+            revisionService.approveRevision(id);
+        } catch (NoSuchObjectException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such revision.");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Looks like some other admin is reviewing this revision right now.");
+        }
         return new ResponseEntity<>("Revision approved!", HttpStatus.OK);
     }
 
     @DeleteMapping("/disapprove/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> disapproveRevision(@PathVariable("id") Integer id) {
-        if (revisionService.getById(id) == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such revision!");
-        revisionService.deleteById(id);
+        try{
+            revisionService.deleteById(id);
+        } catch (NoSuchObjectException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such revision.");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Looks like some other admin is reviewing this revision right now.");
+        }
         return new ResponseEntity<>("Revision disapproved and deleted!", HttpStatus.OK);
     }
 }

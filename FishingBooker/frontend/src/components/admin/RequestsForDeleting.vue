@@ -150,6 +150,10 @@ export default ({
                 })
             })
             .catch((error) => {
+                if(error.response.data.message == "No such request.") {
+                    this.requests.splice(this.requests.indexOf(this.selectedRequest), 1);
+                    this.allRequests.splice(this.allRequests.indexOf(this.selectedRequest), 1);
+                }
                 this.$swal(error.response.data.message);
             })
         },
@@ -168,6 +172,7 @@ export default ({
                 this.requests.splice(this.requests.indexOf(this.selectedRequest), 1);
                 this.allRequests.splice(this.allRequests.indexOf(this.selectedRequest), 1);
                 window.$('#response-to-request-modal').modal('hide');
+                this.response = '';
                 this.$swal({
                     position: 'top-end',
                     icon: 'success',
@@ -177,8 +182,13 @@ export default ({
                 })
             })
             .catch((error) => {
+                if(error.response.data.message == "No such request.") {
+                    this.requests.splice(this.requests.indexOf(this.selectedRequest), 1);
+                    this.allRequests.splice(this.allRequests.indexOf(this.selectedRequest), 1);
+                    window.$('#response-to-request-modal').modal('hide');
+                    this.response = '';
+                }
                 this.$swal(error.response.data.message);
-                console.log(error)
             })
         },
         cancelRejection: function() {
