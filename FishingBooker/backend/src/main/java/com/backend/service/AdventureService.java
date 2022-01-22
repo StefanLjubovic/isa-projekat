@@ -39,7 +39,6 @@ public class AdventureService {
 
     public Adventure fetchById(Integer id) throws  IOException {
         Adventure adventure = adventureRepository.fetchById(id);
-        adventure.setImages(loadImages(adventure.getImages()));
         adventure.setUnavailablePeriods(new HashSet<>());
         return adventure;
     }
@@ -59,8 +58,8 @@ public class AdventureService {
 
     @Transactional
     public void save(Adventure adventure) throws IOException {
-        Set<String> images = saveImages(adventure);
-        adventure.setImages(images);
+        //Set<String> images = saveImages(adventure);
+        //adventure.setImages(images);
 
         RegisteredUser user = userRepository.findByEmail(adventure.getFishingInstructor().getEmail());
         FishingInstructor instructor = (FishingInstructor) user;
@@ -113,7 +112,7 @@ public class AdventureService {
         adventureToUpdate.setAllowedBehavior(adventure.getAllowedBehavior());
         adventureToUpdate.setUnallowedBehavior(adventure.getUnallowedBehavior());
         adventureToUpdate.setFishingEquipment(adventure.getFishingEquipment());
-        adventureToUpdate.setImages(saveImages(adventure));
+        adventureToUpdate.setImages(adventure.getImages());
 
         adventureToUpdate.setPricelistItems(adventure.getPricelistItems());
         for (PricelistItem item : adventureToUpdate.getPricelistItems()){

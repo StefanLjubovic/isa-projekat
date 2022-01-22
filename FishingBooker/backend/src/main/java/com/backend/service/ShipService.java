@@ -42,7 +42,7 @@ public class ShipService {
 
     public Ship fetchById(Integer id) throws IOException {
         Ship ship = findById(id);
-        ship.setImages(imageConverter.loadImages(ship.getImages()));
+        //ship.setImages(imageConverter.loadImages(ship.getImages()));
         ship.setUnavailablePeriods(getAllUnavailablePeriodsForShip(ship.getName()));
         ship.setPricelistItems(getAllPricelistItemsForShip(ship.getName()));
         ship.setSales(getAllSalesForShip(ship.getName()));
@@ -121,7 +121,7 @@ public class ShipService {
         shipToUpdate.setName(ship.getName());
         shipToUpdate.setDescription(ship.getDescription());
         shipToUpdate.setCancellationPercentage(ship.getCancellationPercentage());
-        shipToUpdate.setImages(this.saveImages(ship));
+        shipToUpdate.setImages(ship.getImages());
         shipToUpdate.setAllowedBehavior(ship.getAllowedBehavior());
         shipToUpdate.setUnallowedBehavior(ship.getUnallowedBehavior());
         shipToUpdate.setAddress(ship.getAddress());
@@ -144,10 +144,10 @@ public class ShipService {
     private RentingEntity createEntityFromShip(Ship ship) throws IOException {
         Address address = ship.getAddress();
         address.setId(null);
-        Set<String> images = saveImages(ship);
+        //Set<String> images = saveImages(ship);
 
         RentingEntity entity = new RentingEntity(ship.getName(), ship.getDescription(),
-                ship.getAverageGrade(), ship.getCancellationPercentage(), images,
+                ship.getAverageGrade(), ship.getCancellationPercentage(), ship.getImages(),
                 ship.getAllowedBehavior(), ship.getUnallowedBehavior(), address);
         return entity;
     }

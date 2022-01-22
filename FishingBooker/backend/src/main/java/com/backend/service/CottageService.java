@@ -44,7 +44,6 @@ public class CottageService {
 
     public Cottage findById(int id) throws IOException {
         Cottage cottage = cottageRepository.findById(id).get();
-        cottage.setImages(imageConverter.loadImages(cottage.getImages()));
         cottage.setUnavailablePeriods(getAllUnavailablePeriodsForCottage(cottage.getName()));
         cottage.setPricelistItems(getAllPricelistItemsForCottage(cottage.getName()));
         cottage.setRooms(getAllRoomsForCottage(cottage.getName()));
@@ -74,7 +73,7 @@ public class CottageService {
         return newCottage;
     }
 
-    @CachePut(cacheNames = "cottage", key = "#cottage.id")
+    //@CachePut(cacheNames = "cottage", key = "#cottage.id")
     public Cottage update (Cottage cottage) throws IOException {
         Cottage cottageToUpdate = this.cottageRepository.findById(cottage.getId()).get();
         cottageToUpdate.setName(cottage.getName());
@@ -89,7 +88,7 @@ public class CottageService {
             this.pricelistItemRepostory.save(item);
         }
         cottageToUpdate.setAddress(cottage.getAddress());
-        cottageToUpdate.setImages(this.saveImages(cottage));
+        cottageToUpdate.setImages(cottage.getImages());
 
         return this.cottageRepository.save(cottageToUpdate);
     }
@@ -117,13 +116,13 @@ public class CottageService {
     private RentingEntity createEntityFromCottage(Cottage cottage) throws IOException {
         Address address = cottage.getAddress();
         address.setId(null);
-        Set<String> images = saveImages(cottage);
+        //Set<String> images = saveImages(cottage);
 
         RentingEntity entity = new RentingEntity(cottage.getName(),
                                     cottage.getDescription(),
                                     cottage.getAverageGrade(),
                                     cottage.getCancellationPercentage(),
-                                    images,
+                                    cottage.getImages(),
                                     cottage.getAllowedBehavior(),
                                     cottage.getUnallowedBehavior(),
                                     address);
